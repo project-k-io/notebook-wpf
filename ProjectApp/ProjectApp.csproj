@@ -76,7 +76,7 @@
     <Resource Include="images\icn_edit.png" />
     <Resource Include="images\largeicon.png" />
     <Resource Include="images\modify.png" />
-    <Resource Include="images\new_002520document.png" />
+    <Resource Include="images\new_document.png" />
     <Resource Include="images\open16.png" />
     <Resource Include="images\project.jpg" />
     <Resource Include="images\repair.png" />

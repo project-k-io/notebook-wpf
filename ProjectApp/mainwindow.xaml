@@ -63,7 +63,7 @@
             </Ribbon.QuickAccessToolBar>
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu SmallImageSource="Images\FileGroup_10135_32x.png">
-                    <RibbonApplicationMenuItem Header="New" Command="New" ImageSource="Images/New document.png"
+                    <RibbonApplicationMenuItem Header="New" Command="New" ImageSource="Images/new_document.png"
                                                KeyTip="O" />
                     <RibbonApplicationMenuItem Header="Open" Command="Open" ImageSource="Images/Open16.png" KeyTip="O" />
                     <RibbonApplicationMenuItem Header="Save" Command="Save" ImageSource="Images/Save16.png" KeyTip="S" />
