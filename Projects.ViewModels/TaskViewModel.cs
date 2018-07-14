@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using Vibor.Generic.ViewModels;
 using Vibor.Helpers;
+using Vibor.Mvvm;
 
 namespace Projects.ViewModels
 {
@@ -334,7 +334,7 @@ namespace Projects.ViewModels
       this.DateStarted = model.DateStarted;
       this.DateEnded = model.DateEnded;
       this.Title = model.Title;
-      if (Vibor.Generic.Models.XList.IsNullOrEmpty<Projects.Models.Versions.Version1.TaskModel>((ICollection<Projects.Models.Versions.Version1.TaskModel>) model.SubTasks))
+      if (Vibor.Helpers.XList.IsNullOrEmpty<Projects.Models.Versions.Version1.TaskModel>((ICollection<Projects.Models.Versions.Version1.TaskModel>) model.SubTasks))
         return;
       this.SubTasks = new ObservableCollection<TaskViewModel>();
       foreach (Projects.Models.Versions.Version1.TaskModel subTask in model.SubTasks)
@@ -397,7 +397,7 @@ namespace Projects.ViewModels
     {
       if (this.IsPersonalType)
         return;
-      if (Vibor.Generic.Models.XList.IsNullOrEmpty<TaskViewModel>((ICollection<TaskViewModel>) this.SubTasks))
+      if (Vibor.Helpers.XList.IsNullOrEmpty<TaskViewModel>((ICollection<TaskViewModel>) this.SubTasks))
       {
         this.Total = this.Duration;
       }

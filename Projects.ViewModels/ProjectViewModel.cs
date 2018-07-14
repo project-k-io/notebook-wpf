@@ -8,8 +8,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Vibor.Generic.ViewModels;
 using Vibor.Helpers;
+using Vibor.Mvvm;
 
 namespace Projects.ViewModels
 {
@@ -101,7 +101,7 @@ namespace Projects.ViewModels
       EventHandler selectedDaysChanged = this.SelectedDaysChanged;
       if (selectedDaysChanged == null)
         return;
-      selectedDaysChanged((object) this, EventArgs.Empty);
+      selectedDaysChanged( this, EventArgs.Empty);
     }
 
     public TaskViewModel FindTask(Guid id)
@@ -117,7 +117,7 @@ namespace Projects.ViewModels
       this.SelectedTaskList.Clear();
       XTask.AddToList<TaskViewModel>((ICollection<TaskViewModel>) this.SelectedTaskList, task);
       this.OnSelectedDaysChanged();
-      this.SelectedTask = !Vibor.Generic.Models.XList.IsNullOrEmpty<TaskViewModel>((ICollection<TaskViewModel>) this.SelectedTaskList) ? this.SelectedTaskList[0] : task;
+      this.SelectedTask = !Vibor.Helpers.XList.IsNullOrEmpty<TaskViewModel>((ICollection<TaskViewModel>) this.SelectedTaskList) ? this.SelectedTaskList[0] : task;
       this.OnPropertyChanged("SelectedTaskList");
     }
 

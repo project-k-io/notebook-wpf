@@ -9,13 +9,14 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
 using Vibor.Helpers;
+using Vibor.Logging;
 
 namespace Vibor.View.Helpers.Converters
 {
   [ValueConversion(typeof (string), typeof (double))]
   public class TextToDoubleConverter : ConverterMarkupExtension<TextToDoubleConverter>, IValueConverter
   {
-    private static readonly ILog Log = XLogger.GetLogger();
+    private static readonly ILog Log = LogManager.GetLogger();
     private readonly DoubleConverter _converter;
 
     public TextToDoubleConverter()

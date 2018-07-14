@@ -33,7 +33,9 @@ namespace Vibor.View.Helpers.Misc
 
     public static void DoEvents(DispatcherObject o)
     {
-      o.Dispatcher.Invoke(DispatcherPriority.Background, (Delegate) (() => {}));
+#if AK_1
+            o.Dispatcher.Invoke(DispatcherPriority.Background, () => {});
+#endif
     }
   }
 }

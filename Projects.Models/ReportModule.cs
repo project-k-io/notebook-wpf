@@ -28,7 +28,7 @@ namespace Projects.Models
 
     public static void AppendHoursAndMinutes(StringBuilder sb, TimeSpan ts)
     {
-      sb.AppendFormat("{0:00}:{1:00}", (object) ts.TotalHours, (object) ts.Minutes);
+      sb.AppendFormat("{0:00}:{1:00}",  ts.TotalHours,  ts.Minutes);
     }
 
     public static void AppendRecord(StringBuilder sb, ReportRecord r, int maxWidth, string tab)
@@ -136,7 +136,7 @@ namespace Projects.Models
       while (delta < 20.0)
       {
         TimeSpan dev = this.CalculateDev(delta);
-        Debug.WriteLine((object) dev.TotalHours);
+        Debug.WriteLine( dev.TotalHours);
         if (dev.TotalHours > maxDelta)
           return delta;
         delta += 0.1;

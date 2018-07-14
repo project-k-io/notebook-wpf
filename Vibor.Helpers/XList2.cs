@@ -1,5 +1,5 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Vibor.Generic.Models.XList
+// Type: Vibor.Helpers.XList2
 // Assembly: Vibor.Helpers, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null
 // MVID: E29329B7-F05A-4CC7-B834-7BAFB4348D90
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Helpers.dll
@@ -10,9 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Vibor.Generic.Models
+namespace Vibor.Helpers
 {
-  public class XList
+  public class XList2
   {
     public static bool IsValidIndex2(IList a, int ii)
     {
@@ -23,7 +23,7 @@ namespace Vibor.Generic.Models
 
     public static bool IsNullOrEmpty2(IList a)
     {
-      return !XList.IsValidIndex2(a, 0);
+      return !XList2.IsValidIndex2(a, 0);
     }
 
     public static bool IsValidIndex<T>(ICollection<T> a, int ii)
@@ -35,17 +35,17 @@ namespace Vibor.Generic.Models
 
     public static bool IsNullOrEmpty<T>(ICollection<T> a)
     {
-      return !XList.IsValidIndex<T>(a, 0);
+      return !XList2.IsValidIndex<T>(a, 0);
     }
 
     public static bool Equal(IList<short> a, IList<short> b)
     {
-      return XList.Equal<short>(a, b, (Func<short, short, bool>) ((a1, b1) => (int) a1 == (int) b1));
+      return XList2.Equal<short>(a, b, (Func<short, short, bool>) ((a1, b1) => (int) a1 == (int) b1));
     }
 
     public static bool Equal(IList<byte> a, IList<byte> b)
     {
-      return XList.Equal<byte>(a, b, (Func<byte, byte, bool>) ((a1, b1) => (int) a1 == (int) b1));
+      return XList2.Equal<byte>(a, b, (Func<byte, byte, bool>) ((a1, b1) => (int) a1 == (int) b1));
     }
 
     public static bool Equal<T>(IList<T> a, IList<T> b, Func<T, T, bool> equal)
@@ -65,20 +65,20 @@ namespace Vibor.Generic.Models
       foreach (T obj in list)
       {
         string format1 = format(obj);
-        sb.AppendFormat(format1, (object) obj);
+        sb.AppendFormat(format1,  obj);
         sb.AppendFormat(separator);
       }
     }
 
     public static void AddCommaSeparatedText(StringBuilder sb, List<string> list, string separator = ",")
     {
-      XList.AddSeparatedText<string>(sb, list, (Func<string, string>) (s => s), separator);
+      XList2.AddSeparatedText<string>(sb, list, (Func<string, string>) (s => s), separator);
     }
 
     public static string GetCommaSepartedString(List<string> r)
     {
       StringBuilder sb = new StringBuilder();
-      XList.AddCommaSeparatedText(sb, r, ",");
+      XList2.AddCommaSeparatedText(sb, r, ",");
       return sb.ToString();
     }
 
@@ -99,12 +99,12 @@ namespace Vibor.Generic.Models
 
     public static TKey FindMaximKey<TKey>(Dictionary<TKey, short> aveageValues)
     {
-      return XList.FindBestKey<TKey, short>(aveageValues, short.MinValue, (Func<short, short, bool>) ((a, b) => (int) a >= (int) b));
+      return XList2.FindBestKey<TKey, short>(aveageValues, short.MinValue, (Func<short, short, bool>) ((a, b) => (int) a >= (int) b));
     }
 
     public static TKey FindMinumKey<TKey>(Dictionary<TKey, short> aveageValues)
     {
-      return XList.FindBestKey<TKey, short>(aveageValues, short.MaxValue, (Func<short, short, bool>) ((a, b) => (int) a <= (int) b));
+      return XList2.FindBestKey<TKey, short>(aveageValues, short.MaxValue, (Func<short, short, bool>) ((a, b) => (int) a <= (int) b));
     }
 
     public static bool FindInRangeKey<TKey, TVal>(Dictionary<TKey, TVal> aveageValues, TVal minValue, TVal maxValue, Func<TVal, TVal, bool> less, ref TKey key)
@@ -124,7 +124,7 @@ namespace Vibor.Generic.Models
 
     public static bool FindInRangeKey<TKey>(Dictionary<TKey, short> aveageValues, short minValue, short maxValue, ref TKey key)
     {
-      return XList.FindInRangeKey<TKey, short>(aveageValues, minValue, maxValue, (Func<short, short, bool>) ((a, b) => (int) a <= (int) b), ref key);
+      return XList2.FindInRangeKey<TKey, short>(aveageValues, minValue, maxValue, (Func<short, short, bool>) ((a, b) => (int) a <= (int) b), ref key);
     }
 
     public static List<T> PopulateArray<T>(string line, Func<string, T> convert, char separator = ',')
@@ -140,7 +140,7 @@ namespace Vibor.Generic.Models
 
     public static List<double> PopulateArray(string line, char separator = ',')
     {
-      return XList.PopulateArray<double>(line, new Func<string, double>(XConverter.ConvertToDouble), separator);
+      return XList2.PopulateArray<double>(line, new Func<string, double>(XConverter.ConvertToDouble), separator);
     }
 
     public static byte[] AllocateBytes(int size, byte zero)

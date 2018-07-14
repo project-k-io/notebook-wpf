@@ -28,7 +28,7 @@ namespace Projects.Models
 
     public override string ToString()
     {
-      return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", (object) this.Day, (object) this.Start, (object) this.End, (object) this.Type, (object) this.Type1, (object) this.Task, (object) this.Type2, (object) this.SubTask);
+      return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}",  this.Day,  this.Start,  this.End,  this.Type,  this.Type1,  this.Task,  this.Type2,  this.SubTask);
     }
 
     public bool TryParse(string line)

@@ -10,89 +10,92 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
-  [XmlRoot("Dictionary")]
-  [Serializable]
-  public class SerializableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IXmlSerializable
-  {
-    private static readonly ILog Log = XLogger.GetLogger();
-
-    public XmlSchema GetSchema()
+    [XmlRoot("Dictionary")]
+    [Serializable]
+    public class SerializableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IXmlSerializable
     {
-      return (XmlSchema) null;
-    }
-
-    public void ReadXml(XmlReader reader)
-    {
-      try
-      {
-        XmlSerializer fromType1 = XmlSerializer.FromTypes(new Type[1]
+        private static readonly ILog Log = LogManager.GetLogger("SerializableDictionary");
+        public XmlSchema GetSchema()
         {
-          typeof (TKey)
-        })[0];
-        XmlSerializer fromType2 = XmlSerializer.FromTypes(new Type[1]
-        {
-          typeof (TValue)
-        })[0];
-        bool isEmptyElement = reader.IsEmptyElement;
-        reader.Read();
-        if (isEmptyElement)
-          return;
-        while (reader.NodeType != XmlNodeType.EndElement)
-        {
-          try
-          {
-            reader.ReadStartElement("item");
-            reader.ReadStartElement("key");
-            TKey key = (TKey) fromType1.Deserialize(reader);
-            reader.ReadEndElement();
-            reader.ReadStartElement("value");
-            TValue obj = (TValue) fromType2.Deserialize(reader);
-            reader.ReadEndElement();
-            this.TryAdd(key, obj);
-            reader.ReadEndElement();
-            int content = (int) reader.MoveToContent();
-          }
-          catch (Exception ex)
-          {
-            SerializableDictionary<TKey, TValue>.Log.Error(ex);
-            break;
-          }
+            return (XmlSchema)null;
         }
-        reader.ReadEndElement();
-      }
-      catch (Exception ex)
-      {
-        SerializableDictionary<TKey, TValue>.Log.Error(ex);
-      }
-    }
 
-    public void WriteXml(XmlWriter writer)
-    {
-      XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-      namespaces.Add("", "");
-      XmlSerializer fromType1 = XmlSerializer.FromTypes(new Type[1]
-      {
+        public void ReadXml(XmlReader reader)
+        {
+            try
+            {
+                XmlSerializer fromType1 = XmlSerializer.FromTypes(new Type[1]
+                {
+          typeof (TKey)
+                })[0];
+                XmlSerializer fromType2 = XmlSerializer.FromTypes(new Type[1]
+                {
+          typeof (TValue)
+                })[0];
+                bool isEmptyElement = reader.IsEmptyElement;
+                reader.Read();
+                if (isEmptyElement)
+                {
+                    return;
+                }
+
+                while (reader.NodeType != XmlNodeType.EndElement)
+                {
+                    try
+                    {
+                        reader.ReadStartElement("item");
+                        reader.ReadStartElement("key");
+                        TKey key = (TKey)fromType1.Deserialize(reader);
+                        reader.ReadEndElement();
+                        reader.ReadStartElement("value");
+                        TValue obj = (TValue)fromType2.Deserialize(reader);
+                        reader.ReadEndElement();
+                        TryAdd(key, obj);
+                        reader.ReadEndElement();
+                        int content = (int)reader.MoveToContent();
+                    }
+                    catch (Exception ex)
+                    {
+                        SerializableDictionary<TKey, TValue>.Log.Error(ex);
+                        break;
+                    }
+                }
+                reader.ReadEndElement();
+            }
+            catch (Exception ex)
+            {
+                SerializableDictionary<TKey, TValue>.Log.Error(ex);
+            }
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+            namespaces.Add("", "");
+            XmlSerializer fromType1 = XmlSerializer.FromTypes(new Type[1]
+            {
         typeof (TKey)
-      })[0];
-      XmlSerializer fromType2 = XmlSerializer.FromTypes(new Type[1]
-      {
+            })[0];
+            XmlSerializer fromType2 = XmlSerializer.FromTypes(new Type[1]
+            {
         typeof (TValue)
-      })[0];
-      foreach (TKey key in (IEnumerable<TKey>) this.Keys)
-      {
-        writer.WriteStartElement("item");
-        writer.WriteStartElement("key");
-        fromType1.Serialize(writer, (object) key);
-        writer.WriteEndElement();
-        writer.WriteStartElement("value");
-        TValue obj = this[key];
-        fromType2.Serialize(writer, (object) obj, namespaces);
-        writer.WriteEndElement();
-        writer.WriteEndElement();
-      }
+            })[0];
+            foreach (TKey key in (IEnumerable<TKey>)Keys)
+            {
+                writer.WriteStartElement("item");
+                writer.WriteStartElement("key");
+                fromType1.Serialize(writer, key);
+                writer.WriteEndElement();
+                writer.WriteStartElement("value");
+                TValue obj = this[key];
+                fromType2.Serialize(writer, obj, namespaces);
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+            }
+        }
     }
-  }
 }

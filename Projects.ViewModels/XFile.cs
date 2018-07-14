@@ -27,13 +27,13 @@ namespace Projects.ViewModels
         string str2 = directoryName == null ? "Logs" : Path.Combine(directoryName, "Logs");
         if (!Directory.Exists(str2))
           Directory.CreateDirectory(str2);
-        string path2 = string.Format("{0}{1}", (object) string.Format("{0}_{1}", (object) withoutExtension, (object) str1), (object) extension);
+        string path2 = string.Format("{0}{1}",  string.Format("{0}_{1}",  withoutExtension,  str1),  extension);
         string destFileName = Path.Combine(str2, path2);
         File.Copy(path, destFileName);
       }
       catch (Exception ex)
       {
-        Debug.WriteLine((object) ex);
+        Debug.WriteLine( ex);
       }
     }
 
@@ -44,12 +44,12 @@ namespace Projects.ViewModels
         try
         {
           StreamWriter text = File.CreateText(filename);
-          new XmlSerializer(typeof (T)).Serialize((TextWriter) text, (object) (T) model);
+          new XmlSerializer(typeof (T)).Serialize((TextWriter) text,  (T) model);
           text.Close();
         }
         catch (Exception ex)
         {
-          Debug.WriteLine((object) ex);
+          Debug.WriteLine( ex);
         }
       }));
     }
@@ -68,7 +68,7 @@ namespace Projects.ViewModels
         }
         catch (Exception ex)
         {
-          Debug.WriteLine((object) ex);
+          Debug.WriteLine( ex);
           return default (T);
         }
       }));

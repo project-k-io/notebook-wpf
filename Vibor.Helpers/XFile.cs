@@ -33,7 +33,7 @@ namespace Vibor.Helpers
 
     private static string GetPrefix(int n)
     {
-      return string.Format("{0}", (object) n.ToString("D4"));
+      return string.Format("{0}",  n.ToString("D4"));
     }
 
     public static string GetNextSubFolder(string path)

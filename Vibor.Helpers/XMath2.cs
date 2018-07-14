@@ -1,5 +1,5 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Vibor.Generic.Models.XMath
+// Type: Vibor.Helpers.XMath2
 // Assembly: Vibor.Helpers, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null
 // MVID: E29329B7-F05A-4CC7-B834-7BAFB4348D90
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Helpers.dll
@@ -7,9 +7,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace Vibor.Generic.Models
+namespace Vibor.Helpers
 {
-  public class XMath
+  public class XMath2
   {
     public static double GetPercentage(int a, int b)
     {
@@ -30,7 +30,7 @@ namespace Vibor.Generic.Models
           num1 = averageValue.Value;
           num2 = averageValue.Key;
         }
-        else if (XMath.FindClosestToZero((int) num2, (int) num1, (int) averageValue.Key, (int) averageValue.Value, out bestKey))
+        else if (XMath2.FindClosestToZero((int) num2, (int) num1, (int) averageValue.Key, (int) averageValue.Value, out bestKey))
           return true;
       }
       return false;
@@ -110,7 +110,7 @@ namespace Vibor.Generic.Models
 
     public static bool PointToLine(int x0, int y0, int x1, int y1, int px, int py, double tol)
     {
-      return XMath.PointToLineDist(x0, y0, x1, y1, px, py) < tol;
+      return XMath2.PointToLineDist(x0, y0, x1, y1, px, py) < tol;
     }
 
     public static double PointToPointDist(int x0, int y0, int px, int py)
@@ -120,7 +120,7 @@ namespace Vibor.Generic.Models
 
     public static bool PointToPoint(int x0, int y0, int px, int py, double tol)
     {
-      return XMath.PointToPointDist(x0, y0, px, py) < tol;
+      return XMath2.PointToPointDist(x0, y0, px, py) < tol;
     }
 
     public static ushort CalculateChecksum(IList<ushort> words)
@@ -133,7 +133,7 @@ namespace Vibor.Generic.Models
 
     public static ushort CalculateChecksum(IList<byte> bytes)
     {
-      return XMath.CalculateChecksum((IList<ushort>) BitByteConverter.BytesToWords(bytes));
+      return XMath2.CalculateChecksum((IList<ushort>) BitByteConverter.BytesToWords(bytes));
     }
 
     public static ushort CalculateCrc(IList<byte> bytes)

@@ -7,16 +7,19 @@
 using System.IO;
 using System.Reflection;
 
-public class XApp
+namespace Vibor.Helpers
 {
-  public static string AppName
-  {
-    get
+    public class XApp
     {
-      Assembly entryAssembly = Assembly.GetEntryAssembly();
-      if (entryAssembly == (Assembly) null)
-        return nameof (AppName);
-      return Path.GetFileName(entryAssembly.GetName().CodeBase);
+        public static string AppName
+        {
+            get
+            {
+                Assembly entryAssembly = Assembly.GetEntryAssembly();
+                if (entryAssembly == (Assembly) null)
+                    return nameof (AppName);
+                return Path.GetFileName(entryAssembly.GetName().CodeBase);
+            }
+        }
     }
-  }
 }

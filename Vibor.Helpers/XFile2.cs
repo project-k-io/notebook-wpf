@@ -1,10 +1,9 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Vibor.Generic.Models.XFile2
+// Type: Vibor.Helpers.XFile2
 // Assembly: Vibor.Helpers, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null
 // MVID: E29329B7-F05A-4CC7-B834-7BAFB4348D90
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Helpers.dll
 
-using log4net;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +11,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
+using Vibor.Helpers;
+using Vibor.Logging;
 
-namespace Vibor.Generic.Models
+namespace Vibor.Helpers
 {
   public class XFile2
   {
@@ -27,7 +28,7 @@ namespace Vibor.Generic.Models
     public static string SaveToXmlString<T>(T t)
     {
       StringBuilder sb = new StringBuilder();
-      if ((object) t != null)
+      if ( t != null)
         XFile2.SaveToXmlStream<T>((TextWriter) new StringWriter(sb), t);
       return sb.ToString();
     }
@@ -59,7 +60,7 @@ namespace Vibor.Generic.Models
       }
       catch (Exception ex)
       {
-        XFile2.Logger.Error((object) ex);
+        XFile2.Logger.Error( ex);
       }
       return default (T);
     }
@@ -76,13 +77,13 @@ namespace Vibor.Generic.Models
         XmlSerializer.FromTypes(new Type[1]
         {
           typeof (T)
-        })[0].Serialize(xmlWriter, (object) model);
+        })[0].Serialize(xmlWriter,  model);
         xmlWriter.Close();
         textWriter.Close();
       }
       catch (Exception ex)
       {
-        XFile2.Logger.Error((object) ex);
+        XFile2.Logger.Error( ex);
       }
     }
 
@@ -98,7 +99,7 @@ namespace Vibor.Generic.Models
       }
       catch (Exception ex)
       {
-        XFile2.Logger.Error((object) ex);
+        XFile2.Logger.Error( ex);
       }
       return flag;
     }
@@ -130,7 +131,7 @@ namespace Vibor.Generic.Models
         if (File.Exists(path))
         {
           if (directoryName != null)
-            path = Path.Combine(directoryName, withoutExtension + " " + (object) num + extension);
+            path = Path.Combine(directoryName, withoutExtension + " " +  num + extension);
           ++num;
         }
         else
@@ -141,17 +142,17 @@ namespace Vibor.Generic.Models
 
     public static string GetFileNameFromDateAndTime(DateTime d)
     {
-      return string.Format("{0:yyyy-MM-dd_hh-mm-ss-tt}", (object) d);
+      return string.Format("{0:yyyy-MM-dd_hh-mm-ss-tt}",  d);
     }
 
     public static string GetFileNameFromTime(DateTime d)
     {
-      return string.Format("{0:hh-mm-ss-tt}", (object) d);
+      return string.Format("{0:hh-mm-ss-tt}",  d);
     }
 
     public static string GetFileNameFromDate(DateTime d)
     {
-      return string.Format("{0:yyyy-MM-dd}", (object) d);
+      return string.Format("{0:yyyy-MM-dd}",  d);
     }
 
     public static string GetDirectoryName(string path)
@@ -176,7 +177,7 @@ namespace Vibor.Generic.Models
       }
       catch (Exception ex)
       {
-        XFile2.Logger.Error((object) ex);
+        XFile2.Logger.Error( ex);
         return false;
       }
     }
@@ -222,7 +223,7 @@ namespace Vibor.Generic.Models
       }
       catch (Exception ex)
       {
-        logger.Error((object) ex);
+        logger.Error( ex);
         return (IList<string>) null;
       }
     }

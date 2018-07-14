@@ -4,7 +4,6 @@
 // MVID: A7331AD2-AF8A-4A84-BF9D-60C36001D1E0
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\ProjectApp.exe
 
-using log4net;
 using ProjectApp.Properties;
 using Projects.Models.Versions.Version2;
 using Projects.ViewModels;
@@ -14,6 +13,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Vibor.Logging;
 
 namespace ProjectApp
 {
@@ -30,7 +30,7 @@ namespace ProjectApp
       await this._mainModel.LoadDataAsync();
       await this._mainModel.UpdateTypeListAsync();
       this.LoadSettings(this._mainModel.Config.Layout);
-      this._mainWindow.DataContext = (object) this._mainModel;
+      this._mainWindow.DataContext =  this._mainModel;
       this._mainWindow.Show();
       await this.StartSavingAsync();
     }
@@ -75,7 +75,7 @@ namespace ProjectApp
       }
       catch (Exception ex)
       {
-        App.Logger.Error((object) ex);
+        App.Logger.Error( ex);
       }
       this._mainModel.Layout.NavigatorWidth = s1.LayoutNavigatorWidth;
     }
@@ -100,7 +100,7 @@ namespace ProjectApp
       }
       catch (Exception ex)
       {
-        App.Logger.Error((object) ex);
+        App.Logger.Error( ex);
       }
     }
 

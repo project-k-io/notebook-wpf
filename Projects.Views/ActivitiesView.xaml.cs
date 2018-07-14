@@ -16,29 +16,9 @@ namespace Projects.Views
 {
   public partial class ActivitiesView : UserControl, IComponentConnector
   {
-    private bool _contentLoaded;
-
     public ActivitiesView()
     {
       this.InitializeComponent();
-    }
-
-    [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-    [DebuggerNonUserCode]
-    public void InitializeComponent()
-    {
-      if (this._contentLoaded)
-        return;
-      this._contentLoaded = true;
-      Application.LoadComponent((object) this, new Uri("/Projects.Views;component/activitiesview.xaml", UriKind.Relative));
-    }
-
-    [DebuggerNonUserCode]
-    [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    void IComponentConnector.Connect(int connectionId, object target)
-    {
-      this._contentLoaded = true;
     }
   }
 }

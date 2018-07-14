@@ -47,7 +47,7 @@ namespace ProjectApp.Properties
       }
       set
       {
-        this[nameof (MainWindowState)] = (object) value;
+        this[nameof (MainWindowState)] =  value;
       }
     }
   }

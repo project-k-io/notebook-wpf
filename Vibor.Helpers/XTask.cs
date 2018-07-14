@@ -9,12 +9,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
   public class XTask
   {
-    private static readonly ILog Log = XLogger.GetLogger();
+    private static readonly ILog Log = LogManager.GetLogger("XTask");
 
     public static async void RunAsync<T>(IList<T> files, Action<T> action, Action<int> progress)
     {

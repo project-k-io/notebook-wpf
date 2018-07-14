@@ -15,12 +15,12 @@ namespace Projects.Views.Helpers
   {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      return (object) new GridLength((double) (int) value);
+      return  new GridLength((double) (int) value);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      return (object) (int) ((GridLength) value).Value;
+      return  (int) ((GridLength) value).Value;
     }
   }
 }

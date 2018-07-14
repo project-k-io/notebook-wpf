@@ -8,14 +8,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
   public class WebHelper
   {
-    private static readonly ILog Log = XLogger.GetLogger();
+    private static readonly ILog Log = LogManager.GetLogger("WebHelper");
 
-    public static string[] GetLines(string urlString)
+        public static string[] GetLines(string urlString)
     {
       List<string> stringList = new List<string>();
       try

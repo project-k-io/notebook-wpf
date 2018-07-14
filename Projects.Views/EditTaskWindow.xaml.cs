@@ -16,49 +16,9 @@ namespace Projects.Views
 {
   public partial class EditTaskWindow : Window, IComponentConnector
   {
-    internal Button buttonOk;
-    internal Button buttonCancel;
-    private bool _contentLoaded;
-
     public EditTaskWindow()
     {
       this.InitializeComponent();
-    }
-
-    [DebuggerNonUserCode]
-    [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-    public void InitializeComponent()
-    {
-      if (this._contentLoaded)
-        return;
-      this._contentLoaded = true;
-      Application.LoadComponent((object) this, new Uri("/Projects.Views;component/edittaskwindow.xaml", UriKind.Relative));
-    }
-
-    [DebuggerNonUserCode]
-    [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-    internal Delegate _CreateDelegate(Type delegateType, string handler)
-    {
-      return Delegate.CreateDelegate(delegateType, (object) this, handler);
-    }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-    [DebuggerNonUserCode]
-    void IComponentConnector.Connect(int connectionId, object target)
-    {
-      switch (connectionId)
-      {
-        case 1:
-          this.buttonOk = (Button) target;
-          break;
-        case 2:
-          this.buttonCancel = (Button) target;
-          break;
-        default:
-          this._contentLoaded = true;
-          break;
-      }
     }
   }
 }

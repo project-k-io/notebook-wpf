@@ -1,13 +1,14 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Vibor.Generic.Models.Matrix`1
+// Type: Vibor.Helpers.Matrix`1
 // Assembly: Vibor.Helpers, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null
 // MVID: E29329B7-F05A-4CC7-B834-7BAFB4348D90
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Helpers.dll
 
 using System;
 using System.Collections.Generic;
+using Vibor.Helpers;
 
-namespace Vibor.Generic.Models
+namespace Vibor.Helpers
 {
   public class Matrix<T>
   {
@@ -85,7 +86,7 @@ namespace Vibor.Generic.Models
     {
       if (this.IsEmpty)
         return "empty";
-      return string.Format("has data, rows: {0}  cols:{1}.", (object) this.RowCount, (object) this.ColCount);
+      return string.Format("has data, rows: {0}  cols:{1}.",  this.RowCount,  this.ColCount);
     }
 
     public T FindValueAndLoaction(T minValue, Func<T, T, bool> compare, out int maxRowIndex, out int maxColIndex)

@@ -16,33 +16,9 @@ namespace Projects.Views
 {
   public partial class ExcelCsvView : UserControl, IComponentConnector
   {
-    internal Button buttonCopyFromExelCsvFormat;
-    private bool _contentLoaded;
-
     public ExcelCsvView()
     {
       this.InitializeComponent();
-    }
-
-    [DebuggerNonUserCode]
-    [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-    public void InitializeComponent()
-    {
-      if (this._contentLoaded)
-        return;
-      this._contentLoaded = true;
-      Application.LoadComponent((object) this, new Uri("/Projects.Views;component/excelcsvview.xaml", UriKind.Relative));
-    }
-
-    [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [DebuggerNonUserCode]
-    void IComponentConnector.Connect(int connectionId, object target)
-    {
-      if (connectionId == 1)
-        this.buttonCopyFromExelCsvFormat = (Button) target;
-      else
-        this._contentLoaded = true;
     }
   }
 }

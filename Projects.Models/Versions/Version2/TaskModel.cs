@@ -37,7 +37,7 @@ namespace Projects.Models.Versions.Version2
 
     public override string ToString()
     {
-      return string.Format("{0}:{1}:{2}:{3}:{4}", (object) this.Context, (object) this.Type, (object) this.Title, (object) this.DateStarted, (object) this.DateEnded);
+      return string.Format("{0}:{1}:{2}:{3}:{4}",  this.Context,  this.Type,  this.Title,  this.DateStarted,  this.DateEnded);
     }
   }
 }

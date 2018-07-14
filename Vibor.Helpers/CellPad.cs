@@ -68,12 +68,12 @@ namespace Vibor.Helpers
 
     public static string GetHeader(string s)
     {
-      return string.Format(CellPad.FormatH, (object) s);
+      return string.Format(CellPad.FormatH,  s);
     }
 
     public override string ToString()
     {
-      return string.Format(CellPad.FormatV, (object) this.Average, (object) this.Total, (object) this.Count);
+      return string.Format(CellPad.FormatV,  this.Average,  this.Total,  this.Count);
     }
   }
 }

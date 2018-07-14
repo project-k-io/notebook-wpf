@@ -4,7 +4,7 @@
 // MVID: AA177939-1C69-401F-8524-6C17EE86E3CA
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Projects.ViewModels.dll
 
-using Vibor.Generic.ViewModels;
+using Vibor.Mvvm;
 
 namespace Projects.ViewModels
 {

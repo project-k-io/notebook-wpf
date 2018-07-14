@@ -1,5 +1,5 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Vibor.Generic.Models.Crc16
+// Type: Vibor.Helpers.Crc16
 // Assembly: Vibor.Helpers, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null
 // MVID: E29329B7-F05A-4CC7-B834-7BAFB4348D90
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Helpers.dll
@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vibor.Generic.Models
+namespace Vibor.Helpers
 {
   public class Crc16
   {

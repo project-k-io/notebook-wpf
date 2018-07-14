@@ -17,7 +17,7 @@ namespace Projects.Views.Helpers
 
     public object Convert(object o, Type type, object parameter, CultureInfo culture)
     {
-      return (object) new Thickness((double) (int) o * 19.0, 0.0, 0.0, 0.0);
+      return  new Thickness((double) (int) o * 19.0, 0.0, 0.0, 0.0);
     }
 
     public object ConvertBack(object o, Type type, object parameter, CultureInfo culture)

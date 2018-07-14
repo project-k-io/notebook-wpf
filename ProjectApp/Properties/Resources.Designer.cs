@@ -30,7 +30,7 @@ namespace ProjectApp.Properties
     {
       get
       {
-        if (object.ReferenceEquals((object) ProjectApp.Properties.Resources.resourceMan, (object) null))
+        if (object.ReferenceEquals( ProjectApp.Properties.Resources.resourceMan,  null))
           ProjectApp.Properties.Resources.resourceMan = new ResourceManager("ProjectApp.Properties.Resources", typeof (ProjectApp.Properties.Resources).Assembly);
         return ProjectApp.Properties.Resources.resourceMan;
       }

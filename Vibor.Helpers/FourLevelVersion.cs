@@ -1,14 +1,15 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Vibor.Generic.Models.FourLevelVersion
+// Type: Vibor.Helpers.FourLevelVersion
 // Assembly: Vibor.Helpers, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null
 // MVID: E29329B7-F05A-4CC7-B834-7BAFB4348D90
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Helpers.dll
 
-using log4net;
 using System;
 using System.Collections.Generic;
+using Vibor.Helpers;
+using Vibor.Logging;
 
-namespace Vibor.Generic.Models
+namespace Vibor.Helpers
 {
   public class FourLevelVersion
   {
@@ -50,9 +51,9 @@ namespace Vibor.Generic.Models
 
     public static bool operator ==(FourLevelVersion a, FourLevelVersion b)
     {
-      if (object.ReferenceEquals((object) a, (object) b))
+      if (object.ReferenceEquals( a,  b))
         return true;
-      if ((object) a == null || (object) b == null)
+      if ( a == null ||  b == null)
         return false;
       return (int) a.Major == (int) b.Major && (int) a.Minor == (int) b.Minor && (a.IgnoreProtocolVersion || (int) a.Protocol == (int) b.Protocol);
     }
@@ -74,7 +75,7 @@ namespace Vibor.Generic.Models
 
     public override string ToString()
     {
-      string str = this.IgnoreProtocolVersion ? string.Format("{0}.{1}", (object) this.Major, (object) this.Minor) : string.Format("{0}.{1}.{2}", (object) this.Major, (object) this.Minor, (object) this.Protocol);
+      string str = this.IgnoreProtocolVersion ? string.Format("{0}.{1}",  this.Major,  this.Minor) : string.Format("{0}.{1}.{2}",  this.Major,  this.Minor,  this.Protocol);
       return this.Build == (short) 0 || this.IgnoreProtocolVersion ? str : str + "." + this.Build.ToString();
     }
 
@@ -108,7 +109,7 @@ namespace Vibor.Generic.Models
       }
       catch (Exception ex)
       {
-        this._logger.Error((object) ex);
+        this._logger.Error( ex);
       }
     }
   }

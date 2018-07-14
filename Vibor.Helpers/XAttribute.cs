@@ -8,7 +8,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Generic.Models
+namespace Vibor.Helpers
 {
   public static class XAttribute
   {
@@ -25,14 +25,14 @@ namespace Generic.Models
         throw new ArgumentException("No values found");
       MemberExpression body = propertyLambda.Body as MemberExpression;
       if (body == null)
-        throw new ArgumentException(string.Format("Expression '{0}' refers to a method, not a property.", (object) propertyLambda));
+        throw new ArgumentException(string.Format("Expression '{0}' refers to a method, not a property.",  propertyLambda));
       PropertyInfo member = body.Member as PropertyInfo;
       if (member == (PropertyInfo) null)
-        throw new ArgumentException(string.Format("Expression '{0}' refers to a field, not a property.", (object) propertyLambda));
+        throw new ArgumentException(string.Format("Expression '{0}' refers to a field, not a property.",  propertyLambda));
       if (type != member.ReflectedType && !type.IsSubclassOf(member.ReflectedType))
-        throw new ArgumentException(string.Format("Expresion '{0}' refers to a property that is not from type {1}.", (object) propertyLambda, (object) type));
+        throw new ArgumentException(string.Format("Expresion '{0}' refers to a property that is not from type {1}.",  propertyLambda,  type));
       TAttribute attribute = attributes[0];
-      return member.GetValue((object) attribute, (object[]) null);
+      return member.GetValue( attribute, (object[]) null);
     }
 
     public static string GetAssemblyDescription(Assembly assembly)
@@ -58,7 +58,7 @@ namespace Generic.Models
     public static string GetAssemblyVersion(Assembly assembly)
     {
       Version version = assembly.GetName().Version;
-      return string.Format("{0}.{1}.{2}", (object) version.Major, (object) version.Minor, (object) version.Build);
+      return string.Format("{0}.{1}.{2}",  version.Major,  version.Minor,  version.Build);
     }
   }
 }

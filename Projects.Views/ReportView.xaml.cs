@@ -4,7 +4,6 @@
 // MVID: BCB19E50-AB69-4CA9-9CF4-1A9C4DEAF8F2
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Projects.Views.dll
 
-using log4net;
 using Projects.Models;
 using Projects.ViewModels;
 using System;
@@ -18,13 +17,13 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using Vibor.Logging;
 
 namespace Projects.Views
 {
   public partial class ReportView : UserControl, IComponentConnector
   {
     private static readonly ILog Logger = LogManager.GetLogger("Converter");
-    private bool _contentLoaded;
 
     public ReportView()
     {
@@ -63,13 +62,13 @@ namespace Projects.Views
         if (project.SelectedTask != null && project.SelectedTask.Context == "Week")
         {
           DateTime dateStarted = project.SelectedTask.SubTasks.LastOrDefault<TaskViewModel>().DateStarted;
-          File.WriteAllText(string.Format("Alan Kharebov Worksheet {0}-{1:00}-{2:00}.txt", (object) dateStarted.Year, (object) dateStarted.Month, (object) dateStarted.Day), dataContext.Report);
+          File.WriteAllText(string.Format("Alan Kharebov Worksheet {0}-{1:00}-{2:00}.txt",  dateStarted.Year,  dateStarted.Month,  dateStarted.Day), dataContext.Report);
         }
         dataContext.Report = sb.ToString();
       }
       catch (Exception ex)
       {
-        ReportView.Logger.Error((object) ex);
+        ReportView.Logger.Error( ex);
       }
     }
 
@@ -87,7 +86,7 @@ namespace Projects.Views
       sb.Append(dateStarted2.ToShortDateString());
       sb.AppendLine();
       sb.AppendLine();
-      sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ", (object) dateStarted2.Year, (object) dateStarted2.Month, (object) dateStarted2.Day);
+      sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ",  dateStarted2.Year,  dateStarted2.Month,  dateStarted2.Day);
       sb.AppendLine();
       sb.AppendLine();
     }
@@ -128,24 +127,6 @@ namespace Projects.Views
         reportModule.TotalRecord.Duration += reportRecord1.Duration;
       }
       return reportModule;
-    }
-
-    [DebuggerNonUserCode]
-    [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-    public void InitializeComponent()
-    {
-      if (this._contentLoaded)
-        return;
-      this._contentLoaded = true;
-      Application.LoadComponent((object) this, new Uri("/Projects.Views;component/reportview.xaml", UriKind.Relative));
-    }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [DebuggerNonUserCode]
-    [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-    void IComponentConnector.Connect(int connectionId, object target)
-    {
-      this._contentLoaded = true;
     }
   }
 }

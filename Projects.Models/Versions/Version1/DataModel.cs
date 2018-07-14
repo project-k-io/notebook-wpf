@@ -5,7 +5,7 @@
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Projects.Models.dll
 
 using System.Xml.Serialization;
-using Vibor.Generic.Models;
+using Vibor.Helpers;
 
 namespace Projects.Models.Versions.Version1
 {

@@ -1,30 +1,30 @@
 ﻿// Decompiled with JetBrains decompiler
-// Type: Vibor.Generic.Models.XMatrix
+// Type: Vibor.Helpers.XMatrix
 // Assembly: Vibor.Helpers, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null
 // MVID: E29329B7-F05A-4CC7-B834-7BAFB4348D90
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Helpers.dll
 
-using log4net;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Vibor.Logging;
 
-namespace Vibor.Generic.Models
+namespace Vibor.Helpers
 {
   public class XMatrix
   {
     private static readonly ILog Logger = LogManager.GetLogger("StartUpFlowViewModel");
 
-    public static void CheckSize<T>(List<List<T>> m, int colCount, int rowCount, T zero = null)
+    public static void CheckSize<T>(List<List<T>> m, int colCount, int rowCount, T zero = default(T))
     {
       if (XMatrix.IsSameDimensions<T>(m, colCount, rowCount))
         return;
       XMatrix.Resize<T>(m, colCount, rowCount, default (T));
     }
 
-    public static void Resize<T>(List<List<T>> m, int colCount, int rowCount, T zero = null)
+    public static void Resize<T>(List<List<T>> m, int colCount, int rowCount, T zero = default(T))
     {
       XMatrix.Clear<T>(m);
       for (int index1 = 0; index1 < rowCount; ++index1)
@@ -36,7 +36,7 @@ namespace Vibor.Generic.Models
       }
     }
 
-    public static void Init<T>(List<List<T>> matrixA, List<List<T>> matrixB, T zero = null)
+    public static void Init<T>(List<List<T>> matrixA, List<List<T>> matrixB, T zero = default(T))
     {
       matrixA.AddRange(matrixB.Select<List<T>, List<T>>((Func<List<T>, List<T>>) (rowB => rowB.Select<T, T>((Func<T, T>) (value => zero)).ToList<T>())));
     }
@@ -159,7 +159,7 @@ namespace Vibor.Generic.Models
 
     public static bool IsEqual<T>(List<List<T>> matrxiA, List<List<T>> matrixB) where T : IComparable
     {
-      return XMatrix.IsEqual<T>(matrxiA, matrixB, default (T), (Func<T, T, T, bool>) ((a, b, d) => a.Equals((object) b)));
+      return XMatrix.IsEqual<T>(matrxiA, matrixB, default (T), (Func<T, T, T, bool>) ((a, b, d) => a.Equals( b)));
     }
 
     public static bool IsEqual(List<List<double>> matrixA, List<List<double>> matrixB, double delta)
@@ -212,7 +212,7 @@ namespace Vibor.Generic.Models
       StringBuilder sb = new StringBuilder();
       foreach (List<T> list in m)
       {
-        XList.AddSeparatedText<T>(sb, list, format, separator1);
+        XList2.AddSeparatedText<T>(sb, list, format, separator1);
         if (bAppendLine)
           sb.AppendLine();
       }
@@ -228,7 +228,7 @@ namespace Vibor.Generic.Models
         string line;
         while ((line = stringReader.ReadLine()) != null)
         {
-          List<T> objList = XList.PopulateArray<T>(line, convert, separator);
+          List<T> objList = XList2.PopulateArray<T>(line, convert, separator);
           if (!XList.IsNullOrEmpty<T>((ICollection<T>) objList))
             matrix.Add(objList);
         }
@@ -280,14 +280,14 @@ namespace Vibor.Generic.Models
       try
       {
         if (a.Count != b.Count)
-          XMatrix.Logger.Warn((object) "Row Counts are not equal");
+          XMatrix.Logger.Warn( "Row Counts are not equal");
         int num1 = Math.Min(a.Count, b.Count);
         for (int index1 = 0; index1 < num1; ++index1)
         {
           List<T1> objList1 = a[index1];
           List<T2> objList2 = b[index1];
           if (objList1.Count != objList2.Count)
-            XMatrix.Logger.Warn((object) "Column Counts are not equal");
+            XMatrix.Logger.Warn( "Column Counts are not equal");
           int num2 = Math.Min(objList1.Count, objList2.Count);
           for (int index2 = 0; index2 < num2; ++index2)
             objList1[index2] = add(objList1[index2], objList2[index2]);
@@ -295,7 +295,7 @@ namespace Vibor.Generic.Models
       }
       catch (Exception ex)
       {
-        XMatrix.Logger.Error((object) ex);
+        XMatrix.Logger.Error( ex);
         throw;
       }
     }
@@ -317,7 +317,7 @@ namespace Vibor.Generic.Models
       XMatrix.Avearge<int, short>(averageMatrix, matrixSamples, (Func<int, short, int>) ((a, b) => a + (int) b), (Func<int, int, int>) ((a, b) => a / b), 0);
     }
 
-    public static void Avearge<T1, T2>(List<List<T1>> averageMatrix, ICollection<List<List<T2>>> matrixSamples, Func<T1, T2, T1> add, Func<T1, int, T1> divide, T1 zero = null)
+    public static void Avearge<T1, T2>(List<List<T1>> averageMatrix, ICollection<List<List<T2>>> matrixSamples, Func<T1, T2, T1> add, Func<T1, int, T1> divide, T1 zero = default(T1))
     {
       XMatrix.Reset<T1>(averageMatrix, zero);
       foreach (List<List<T2>> matrixSample in (IEnumerable<List<List<T2>>>) matrixSamples)
@@ -377,7 +377,7 @@ namespace Vibor.Generic.Models
 
     public static void Percentage(List<List<int>> matrixA, List<List<int>> matrixB, List<List<double>> percentageMatrix)
     {
-      XMatrix.Percentage<int, double>(matrixA, matrixB, percentageMatrix, new Func<int, int, double>(XMath.GetPercentage));
+      XMatrix.Percentage<int, double>(matrixA, matrixB, percentageMatrix, new Func<int, int, double>(XMath2.GetPercentage));
     }
 
     private static void Percentage<T1, T2>(List<List<T1>> matrixA, List<List<T1>> matrixB, List<List<T2>> percentageMatrix, Func<T1, T1, T2> getPercentage)
@@ -625,7 +625,7 @@ namespace Vibor.Generic.Models
       {
         for (int index2 = 0; index2 < count1; ++index2)
         {
-          stringBuilder.Append((object) matrix[index1][index2]);
+          stringBuilder.Append( matrix[index1][index2]);
           if (index2 != count1 - 1 || index1 != count2 - 1)
             stringBuilder.Append(", ");
         }
@@ -744,7 +744,7 @@ namespace Vibor.Generic.Models
       }
       catch (Exception ex)
       {
-        XMatrix.Logger.Error((object) ex);
+        XMatrix.Logger.Error( ex);
       }
     }
 

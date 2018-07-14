@@ -21,7 +21,7 @@ namespace Vibor.View.Helpers.Converters
     {
       try
       {
-        double num = Convert.ToDouble(value, (IFormatProvider) culture);
+        double num = System.Convert.ToDouble(value, (IFormatProvider) culture);
         string format = parameter as string;
         if (string.IsNullOrEmpty(format))
           format = "N0";
