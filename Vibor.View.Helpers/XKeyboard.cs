@@ -8,30 +8,13 @@ using System.Windows.Input;
 
 namespace Vibor.View.Helpers
 {
-  public class XKeyboard
-  {
-    public static bool IsCtrlShiftPressed
+    public class XKeyboard
     {
-      get
-      {
-        return (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) == (ModifierKeys.Control | ModifierKeys.Shift);
-      }
-    }
+        public static bool IsCtrlShiftPressed => (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Shift)) ==
+                                                 (ModifierKeys.Control | ModifierKeys.Shift);
 
-    public static bool IsShiftPressed
-    {
-      get
-      {
-        return (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift;
-      }
-    }
+        public static bool IsShiftPressed => (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift;
 
-    public static bool IsControlPressed
-    {
-      get
-      {
-        return (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
-      }
+        public static bool IsControlPressed => (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
     }
-  }
 }

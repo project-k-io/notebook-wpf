@@ -8,245 +8,206 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Projects.Models.Versions.Version2;
 using Vibor.Helpers;
 using Vibor.Mvvm;
 
 namespace Projects.ViewModels
 {
-  public class ProjectViewModel : BaseViewModel
-  {
-    private TaskViewModel _rootTask = new TaskViewModel();
-    private readonly ObservableCollection<TaskViewModel> _selectedTaskList = new ObservableCollection<TaskViewModel>();
-    private ObservableCollection<string> _contextList = new ObservableCollection<string>();
-    private TaskViewModel _selectedTreeTask;
-    private TaskViewModel _selectedTask;
-
-    public ObservableCollection<TaskViewModel> SelectedTaskList
+    public class ProjectViewModel : BaseViewModel
     {
-      get
-      {
-        return this._selectedTaskList;
-      }
-    }
+        private TaskViewModel _selectedTask;
+        private TaskViewModel _selectedTreeTask;
 
-    public TaskViewModel RootTask
-    {
-      get
-      {
-        return this._rootTask;
-      }
-      set
-      {
-        this._rootTask = value;
-      }
-    }
+        public ObservableCollection<TaskViewModel> SelectedTaskList { get; } =
+            new ObservableCollection<TaskViewModel>();
 
-    public TaskViewModel SelectedTreeTask
-    {
-      get
-      {
-        return this._selectedTreeTask;
-      }
-      set
-      {
-        if (this._selectedTreeTask == value)
-          return;
-        this._selectedTreeTask = value;
-        this.OnPropertyChanged(nameof (SelectedTreeTask));
-      }
-    }
+        public TaskViewModel RootTask { get; set; } = new TaskViewModel();
 
-    public TaskViewModel SelectedTask
-    {
-      get
-      {
-        return this._selectedTask;
-      }
-      set
-      {
-        if (this._selectedTask == value)
-          return;
-        this._selectedTask = value;
-        this.OnPropertyChanged(nameof (SelectedTask));
-      }
-    }
-
-    public ObservableCollection<string> ContextList
-    {
-      get
-      {
-        return this._contextList;
-      }
-      set
-      {
-        this._contextList = value;
-      }
-    }
-
-    public List<DateTime> GetSelectedDays()
-    {
-      List<DateTime> dateTimeList = new List<DateTime>();
-      foreach (TaskViewModel selectedTask in (Collection<TaskViewModel>) this.SelectedTaskList)
-      {
-        if (!(selectedTask.Context != "Day"))
-          dateTimeList.Add(selectedTask.DateStarted);
-      }
-      return dateTimeList;
-    }
-
-    public event EventHandler SelectedDaysChanged = null;
-
-    public void OnSelectedDaysChanged()
-    {
-      EventHandler selectedDaysChanged = this.SelectedDaysChanged;
-      if (selectedDaysChanged == null)
-        return;
-      selectedDaysChanged( this, EventArgs.Empty);
-    }
-
-    public TaskViewModel FindTask(Guid id)
-    {
-      return this.RootTask.FindTask(id);
-    }
-
-    public void SelectTreeTask(TaskViewModel task)
-    {
-      if (task == null)
-        return;
-      this.SelectedTreeTask = task;
-      this.SelectedTaskList.Clear();
-      XTask.AddToList<TaskViewModel>((ICollection<TaskViewModel>) this.SelectedTaskList, task);
-      this.OnSelectedDaysChanged();
-      this.SelectedTask = !Vibor.Helpers.XList.IsNullOrEmpty<TaskViewModel>((ICollection<TaskViewModel>) this.SelectedTaskList) ? this.SelectedTaskList[0] : task;
-      this.OnPropertyChanged("SelectedTaskList");
-    }
-
-    public void SelectTreeTask(Guid id)
-    {
-      this.SelectTreeTask(this.FindTask(id));
-    }
-
-    public void SelectTask(TaskViewModel task)
-    {
-      if (task == null)
-        return;
-      this.SelectedTask = task;
-      this.OnPropertyChanged("SelectedTaskList");
-    }
-
-    public void SelectTask(Guid id)
-    {
-      this.SelectTask(this.FindTask(id));
-    }
-
-    public static bool ContainDate(IList dates, DateTime a)
-    {
-      foreach (object date in (IEnumerable) dates)
-      {
-        if (date is DateTime)
+        public TaskViewModel SelectedTreeTask
         {
-          DateTime dateTime = (DateTime) date;
-          if (a.Day == dateTime.Day && a.Month == dateTime.Month && a.Year == dateTime.Year)
-            return true;
+            get => _selectedTreeTask;
+            set
+            {
+                if (_selectedTreeTask == value)
+                    return;
+                _selectedTreeTask = value;
+                OnPropertyChanged(nameof(SelectedTreeTask));
+            }
         }
-      }
-      return false;
-    }
 
-    private static void AddToList(ICollection<TaskViewModel> list, TaskViewModel task, IList dates)
-    {
-      if (ProjectViewModel.ContainDate(dates, task.DateStarted))
-        list.Add(task);
-      foreach (TaskViewModel subTask in (Collection<TaskViewModel>) task.SubTasks)
-        ProjectViewModel.AddToList(list, subTask, dates);
-    }
-
-    private static void SaveTo(Projects.Models.Versions.Version2.DataModel model, TaskViewModel task)
-    {
-      model.Tasks.Add(task.Model);
-      if (task.Model.Id == Guid.Empty)
-        task.Model.Id = Guid.NewGuid();
-      foreach (TaskViewModel subTask in (Collection<TaskViewModel>) task.SubTasks)
-      {
-        ProjectViewModel.SaveTo(model, subTask);
-        subTask.Model.ParentId = task.Model.Id;
-      }
-    }
-
-    public void LoadFrom(Projects.Models.Versions.Version1.DataModel model)
-    {
-      this.Clear();
-      this.RootTask.LoadFrom(model.RootTask);
-    }
-
-    public void LoadFrom(Projects.Models.Versions.Version2.DataModel model)
-    {
-      if (model == null)
-        return;
-      this.Clear();
-      SortedList<Guid, TaskViewModel> sortedList = new SortedList<Guid, TaskViewModel>();
-      foreach (Projects.Models.Versions.Version2.TaskModel task in model.Tasks)
-      {
-        if (task.ParentId == Guid.Empty)
+        public TaskViewModel SelectedTask
         {
-          this.RootTask.Model = task;
-          sortedList.Add(task.Id, this.RootTask);
+            get => _selectedTask;
+            set
+            {
+                if (_selectedTask == value)
+                    return;
+                _selectedTask = value;
+                OnPropertyChanged(nameof(SelectedTask));
+            }
         }
-        else if (!sortedList.ContainsKey(task.Id))
+
+        public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
+
+        public List<DateTime> GetSelectedDays()
         {
-          TaskViewModel taskViewModel = new TaskViewModel() { Model = task };
-          sortedList.Add(task.Id, taskViewModel);
+            var dateTimeList = new List<DateTime>();
+            foreach (var selectedTask in SelectedTaskList)
+                if (!(selectedTask.Context != "Day"))
+                    dateTimeList.Add(selectedTask.DateStarted);
+            return dateTimeList;
         }
-      }
-      foreach (Projects.Models.Versions.Version2.TaskModel task in model.Tasks)
-      {
-        if (!(task.ParentId == Guid.Empty))
-          sortedList[task.ParentId].SubTasks.Add(sortedList[task.Id]);
-      }
-    }
 
-    public void SaveTo(Projects.Models.Versions.Version2.DataModel model)
-    {
-      model.Tasks.Clear();
-      ProjectViewModel.SaveTo(model, this.RootTask);
-    }
+        public event EventHandler SelectedDaysChanged;
 
-    public void FixTime()
-    {
-      this.SelectedTreeTask.FixTime();
-    }
+        public void OnSelectedDaysChanged()
+        {
+            var selectedDaysChanged = SelectedDaysChanged;
+            if (selectedDaysChanged == null)
+                return;
+            selectedDaysChanged(this, EventArgs.Empty);
+        }
 
-    public void Clear()
-    {
-      this.RootTask.SubTasks.Clear();
-    }
+        public TaskViewModel FindTask(Guid id)
+        {
+            return RootTask.FindTask(id);
+        }
 
-    public void ExtractContext()
-    {
-      this.ContextList.Clear();
-      this.RootTask.ExtractContext(this.ContextList);
-      this.OnPropertyChanged("ContextList");
-    }
+        public void SelectTreeTask(TaskViewModel task)
+        {
+            if (task == null)
+                return;
+            SelectedTreeTask = task;
+            SelectedTaskList.Clear();
+            XTask.AddToList(SelectedTaskList, task);
+            OnSelectedDaysChanged();
+            SelectedTask = !XList.IsNullOrEmpty(SelectedTaskList) ? SelectedTaskList[0] : task;
+            OnPropertyChanged("SelectedTaskList");
+        }
 
-    public void FixContext()
-    {
-      this.SelectedTreeTask.FixContext();
-    }
+        public void SelectTreeTask(Guid id)
+        {
+            SelectTreeTask(FindTask(id));
+        }
 
-    public void FixTitles()
-    {
-      this.SelectedTreeTask.FixTitles();
-    }
+        public void SelectTask(TaskViewModel task)
+        {
+            if (task == null)
+                return;
+            SelectedTask = task;
+            OnPropertyChanged("SelectedTaskList");
+        }
 
-    public void FixTypes()
-    {
-      this.SelectedTreeTask.FixTypes();
-    }
+        public void SelectTask(Guid id)
+        {
+            SelectTask(FindTask(id));
+        }
 
-    public void UpdateSelectDayTaks(IList dates)
-    {
-      this.SelectedTaskList.Clear();
-      ProjectViewModel.AddToList((ICollection<TaskViewModel>) this.SelectedTaskList, this.RootTask, dates);
+        public static bool ContainDate(IList dates, DateTime a)
+        {
+            foreach (var date in dates)
+                if (date is DateTime)
+                {
+                    var dateTime = (DateTime) date;
+                    if (a.Day == dateTime.Day && a.Month == dateTime.Month && a.Year == dateTime.Year)
+                        return true;
+                }
+
+            return false;
+        }
+
+        private static void AddToList(ICollection<TaskViewModel> list, TaskViewModel task, IList dates)
+        {
+            if (ContainDate(dates, task.DateStarted))
+                list.Add(task);
+            foreach (var subTask in task.SubTasks)
+                AddToList(list, subTask, dates);
+        }
+
+        private static void SaveTo(DataModel model, TaskViewModel task)
+        {
+            model.Tasks.Add(task.Model);
+            if (task.Model.Id == Guid.Empty)
+                task.Model.Id = Guid.NewGuid();
+            foreach (var subTask in task.SubTasks)
+            {
+                SaveTo(model, subTask);
+                subTask.Model.ParentId = task.Model.Id;
+            }
+        }
+
+        public void LoadFrom(Models.Versions.Version1.DataModel model)
+        {
+            Clear();
+            RootTask.LoadFrom(model.RootTask);
+        }
+
+        public void LoadFrom(DataModel model)
+        {
+            if (model == null)
+                return;
+            Clear();
+            var sortedList = new SortedList<Guid, TaskViewModel>();
+            foreach (var task in model.Tasks)
+                if (task.ParentId == Guid.Empty)
+                {
+                    RootTask.Model = task;
+                    sortedList.Add(task.Id, RootTask);
+                }
+                else if (!sortedList.ContainsKey(task.Id))
+                {
+                    var taskViewModel = new TaskViewModel {Model = task};
+                    sortedList.Add(task.Id, taskViewModel);
+                }
+
+            foreach (var task in model.Tasks)
+                if (!(task.ParentId == Guid.Empty))
+                    sortedList[task.ParentId].SubTasks.Add(sortedList[task.Id]);
+        }
+
+        public void SaveTo(DataModel model)
+        {
+            model.Tasks.Clear();
+            SaveTo(model, RootTask);
+        }
+
+        public void FixTime()
+        {
+            SelectedTreeTask.FixTime();
+        }
+
+        public void Clear()
+        {
+            RootTask.SubTasks.Clear();
+        }
+
+        public void ExtractContext()
+        {
+            ContextList.Clear();
+            RootTask.ExtractContext(ContextList);
+            OnPropertyChanged("ContextList");
+        }
+
+        public void FixContext()
+        {
+            SelectedTreeTask.FixContext();
+        }
+
+        public void FixTitles()
+        {
+            SelectedTreeTask.FixTitles();
+        }
+
+        public void FixTypes()
+        {
+            SelectedTreeTask.FixTypes();
+        }
+
+        public void UpdateSelectDayTaks(IList dates)
+        {
+            SelectedTaskList.Clear();
+            AddToList(SelectedTaskList, RootTask, dates);
+        }
     }
-  }
 }

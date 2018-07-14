@@ -12,11 +12,12 @@ namespace Vibor.Logging
 
         public static ILog GetLogger()
         {
-            return (ILog)LogManager.logger;
+            return logger;
         }
+
         public static ILog GetLogger(string name)
         {
-            return (ILog)LogManager.logger;
+            return logger;
         }
     }
 }

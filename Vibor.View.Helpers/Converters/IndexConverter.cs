@@ -6,26 +6,25 @@
 
 using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace Vibor.View.Helpers.Converters
 {
-  public class IndexConverter : ConverterMarkupExtension<IndexConverter>, IValueConverter
-  {
-    public object Convert(object value, Type TargetType, object parameter, CultureInfo culture)
+    public class IndexConverter : ConverterMarkupExtension<IndexConverter>, IValueConverter
     {
-      ListViewItem listViewItem = (ListViewItem) value;
-      ListView listView = ItemsControl.ItemsControlFromItemContainer((DependencyObject) listViewItem) as ListView;
-      if (listView == null)
-        return (object) -1;
-      return (object) listView.ItemContainerGenerator.IndexFromContainer((DependencyObject) listViewItem).ToString();
-    }
+        public object Convert(object value, Type TargetType, object parameter, CultureInfo culture)
+        {
+            var listViewItem = (ListViewItem) value;
+            var listView = ItemsControl.ItemsControlFromItemContainer(listViewItem) as ListView;
+            if (listView == null)
+                return -1;
+            return listView.ItemContainerGenerator.IndexFromContainer(listViewItem).ToString();
+        }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
-  }
 }

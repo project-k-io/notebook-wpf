@@ -10,73 +10,79 @@
               MinWidth="600" MinHeight="600" WindowStartupLocation="CenterOwner"
               Icon="/Images/apple_time_machine_alt.png" Title="{Binding Path=Title}">
     <FrameworkElement.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-        <helpers:Int32FromGridLengthConverter x:Key="gridLengthConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <helpers:Int32FromGridLengthConverter x:Key="gridLengthConverter" />
     </FrameworkElement.Resources>
     <UIElement.InputBindings>
-        <KeyBinding Command="Help" Key="F1"/>
+        <KeyBinding Command="Help" Key="F1" />
     </UIElement.InputBindings>
     <UIElement.CommandBindings>
-        <CommandBinding CanExecute="CommandBinding_OnCanNewExecute" Executed="CommandBinding_OnNewExecuted" Command="New"/>
+        <CommandBinding CanExecute="CommandBinding_OnCanNewExecute" Executed="CommandBinding_OnNewExecuted"
+                        Command="New" />
         <CommandBinding CanExecute="CommandBinding_OnOpenCanExecute" Executed="CommandBinding_OnOpenExecuted"
-                    Command="Open"/>
+                        Command="Open" />
         <CommandBinding CanExecute="CommandBinding_OnSaveCanExecute" Executed="CommandBinding_OnSaveExecuted"
-                    Command="Save"/>
+                        Command="Save" />
         <CommandBinding CanExecute="CommandBinding_OnSaveAsCanExecute" Executed="CommandBinding_OnSaveAsExecuted"
-                    Command="SaveAs"/>
+                        Command="SaveAs" />
         <CommandBinding CanExecute="CommandBinding_OnCanCloseExecute" Executed="CommandBinding_OnCloseExecuted"
-                    Command="Close"/>
+                        Command="Close" />
         <CommandBinding CanExecute="CommandBinding_OnCanClearExecute" Executed="CommandBinding_OnClearExecuted"
-                    Command="app:Commands.Clear"/>
+                        Command="app:Commands.Clear" />
         <CommandBinding CanExecute="CommandBinding_OnCanEditExecute" Executed="CommandBinding_OnEditExecuted"
-                    Command="app:Commands.Edit"/>
+                        Command="app:Commands.Edit" />
         <CommandBinding CanExecute="CommandBinding_OnCanFixTimeExecute" Executed="CommandBinding_OnFixTimeExecuted"
-                    Command="app:Commands.FixTime"/>
+                        Command="app:Commands.FixTime" />
         <CommandBinding CanExecute="CommandBinding_OnCanExtractContextExecute"
-                    Executed="CommandBinding_OnExtractContextExecuted" Command="app:Commands.ExtractContext"/>
-        <CommandBinding CanExecute="CommandBinding_OnCanFixContextExecute" Executed="CommandBinding_OnFixContextExecuted"
-                    Command="app:Commands.FixContext"/>
+                        Executed="CommandBinding_OnExtractContextExecuted" Command="app:Commands.ExtractContext" />
+        <CommandBinding CanExecute="CommandBinding_OnCanFixContextExecute"
+                        Executed="CommandBinding_OnFixContextExecuted"
+                        Command="app:Commands.FixContext" />
         <CommandBinding CanExecute="CommandBinding_OnCanFixTitlesExecute" Executed="CommandBinding_OnFixTitlesExecuted"
-                    Command="app:Commands.FixTitles"/>
+                        Command="app:Commands.FixTitles" />
         <CommandBinding CanExecute="CommandBinding_OnCanFixTypesExecute" Executed="CommandBinding_OnFixTypesExecuted"
-                    Command="app:Commands.FixTypes"/>
+                        Command="app:Commands.FixTypes" />
         <CommandBinding CanExecute="CommandBinding_OnCanCopyTaskExecute" Executed="CommandBinding_OnCopyTaskExecuted"
-                    Command="app:Commands.CopyTask"/>
+                        Command="app:Commands.CopyTask" />
         <CommandBinding CanExecute="CommandBinding_OnCanContinueTaskExecute"
-                    Executed="CommandBinding_OnContinueTaskExecuted" Command="app:Commands.ContinueTask"/>
+                        Executed="CommandBinding_OnContinueTaskExecuted" Command="app:Commands.ContinueTask" />
     </UIElement.CommandBindings>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Ribbon x:Name="Ribbon" Title="Ribbon Title">
             <Ribbon.HelpPaneContent>
-                <RibbonButton SmallImageSource="Images/apple_time_machine_alt.png"/>
+                <RibbonButton SmallImageSource="Images/apple_time_machine_alt.png" />
             </Ribbon.HelpPaneContent>
             <Ribbon.QuickAccessToolBar>
                 <RibbonQuickAccessToolBar>
-                    <RibbonButton Command="Save" Label="Save" ToolTip="Save" SmallImageSource="Images\SaveAs16.png"/>
+                    <RibbonButton Command="Save" Label="Save" ToolTip="Save" SmallImageSource="Images\SaveAs16.png" />
                 </RibbonQuickAccessToolBar>
             </Ribbon.QuickAccessToolBar>
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu SmallImageSource="Images\FileGroup_10135_32x.png">
-                    <RibbonApplicationMenuItem Header="New" Command="New" ImageSource="Images/New document.png" KeyTip="O"/>
-                    <RibbonApplicationMenuItem Header="Open" Command="Open" ImageSource="Images/Open16.png" KeyTip="O"/>
-                    <RibbonApplicationMenuItem Header="Save" Command="Save" ImageSource="Images/Save16.png" KeyTip="S"/>
-                    <RibbonApplicationMenuItem Header="Save As" Command="SaveAs" ImageSource="Images/SaveAs16.png" KeyTip="R"/>
+                    <RibbonApplicationMenuItem Header="New" Command="New" ImageSource="Images/New document.png"
+                                               KeyTip="O" />
+                    <RibbonApplicationMenuItem Header="Open" Command="Open" ImageSource="Images/Open16.png" KeyTip="O" />
+                    <RibbonApplicationMenuItem Header="Save" Command="Save" ImageSource="Images/Save16.png" KeyTip="S" />
+                    <RibbonApplicationMenuItem Header="Save As" Command="SaveAs" ImageSource="Images/SaveAs16.png"
+                                               KeyTip="R" />
                     <RibbonApplicationMenu.AuxiliaryPaneContent>
                         <RibbonGallery CanUserFilter="false" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                            <RibbonGalleryCategory Header="Recent Documents" Background="Transparent" ItemsSource="{Binding MostRecentFiles}">
+                            <RibbonGalleryCategory Header="Recent Documents" Background="Transparent"
+                                                   ItemsSource="{Binding MostRecentFiles}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type io:FileInfo}">
-                                        <RibbonApplicationMenuItem Command="Open" ImageSource="Images/Open16.png" KeyTip="O" Header="{Binding Name}"
-                                               ToolTip="{Binding FullName}"/>
+                                        <RibbonApplicationMenuItem Command="Open" ImageSource="Images/Open16.png"
+                                                                   KeyTip="O" Header="{Binding Name}"
+                                                                   ToolTip="{Binding FullName}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Vertical" IsItemsHost="true"/>
+                                        <StackPanel Orientation="Vertical" IsItemsHost="true" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </RibbonGalleryCategory>
@@ -86,64 +92,70 @@
             </Ribbon.ApplicationMenu>
             <RibbonTab Header="Edit">
                 <RibbonGroup Header="Edit">
-                    <RibbonButton Command="app:Commands.Edit" Label="Edit" ToolTip="Edit" SmallImageSource="Images\Modify.png"/>
-                    <RibbonButton Command="app:Commands.Clear" Label="Clear" ToolTip="Clear" SmallImageSource="Images\Clear.png"/>
+                    <RibbonButton Command="app:Commands.Edit" Label="Edit" ToolTip="Edit"
+                                  SmallImageSource="Images\Modify.png" />
+                    <RibbonButton Command="app:Commands.Clear" Label="Clear" ToolTip="Clear"
+                                  SmallImageSource="Images\Clear.png" />
                 </RibbonGroup>
                 <RibbonGroup Header="Fix">
                     <RibbonButton Command="app:Commands.FixTime" Label="Fix Time" SmallImageSource="Images\FixTime.png"
-                        ToolTip="Fix Time"/>
-                    <RibbonButton Command="app:Commands.FixTitles" Label="Fix Titles" SmallImageSource="Images\FixTitles.png"
-                        ToolTip="Fix Titles"/>
-                    <RibbonButton Command="app:Commands.FixTypes" Label="Fix Types" SmallImageSource="Images\FixTypes.png"
-                        ToolTip="Fix Types"/>
+                                  ToolTip="Fix Time" />
+                    <RibbonButton Command="app:Commands.FixTitles" Label="Fix Titles"
+                                  SmallImageSource="Images\FixTitles.png"
+                                  ToolTip="Fix Titles" />
+                    <RibbonButton Command="app:Commands.FixTypes" Label="Fix Types"
+                                  SmallImageSource="Images\FixTypes.png"
+                                  ToolTip="Fix Types" />
                 </RibbonGroup>
                 <RibbonGroup Header="Context">
                     <RibbonButton Command="app:Commands.ExtractContext" Label="Extract Context"
-                        SmallImageSource="Images\Download.png" ToolTip="Extract Context"/>
-                    <RibbonButton Command="app:Commands.FixContext" Label="Fix Context" SmallImageSource="Images\Repair.png"
-                        ToolTip="Fix Context"/>
+                                  SmallImageSource="Images\Download.png" ToolTip="Extract Context" />
+                    <RibbonButton Command="app:Commands.FixContext" Label="Fix Context"
+                                  SmallImageSource="Images\Repair.png"
+                                  ToolTip="Fix Context" />
                 </RibbonGroup>
                 <RibbonGroup Header="Action">
                     <RibbonButton Command="app:Commands.CopyTask" Label="Copy" SmallImageSource="Images\Copy_6524.png"
-                        ToolTip="Copy current node. Ctrl+Ins" KeyTip="Ctrl+Ins"/>
+                                  ToolTip="Copy current node. Ctrl+Ins" KeyTip="Ctrl+Ins" />
                     <RibbonButton Command="app:Commands.ContinueTask" Label="Continue"
-                        SmallImageSource="Images\action_create_16xMD.png"
-                        ToolTip="Start next task from current task end date. Shift+Ins"/>
+                                  SmallImageSource="Images\action_create_16xMD.png"
+                                  ToolTip="Start next task from current task end date. Shift+Ins" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
         <Grid Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{Binding Path=Layout.NavigationWidth, Mode=TwoWay, Converter={StaticResource gridLengthConverter}}"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition
+                    Width="{Binding Path=Layout.NavigationWidth, Mode=TwoWay, Converter={StaticResource gridLengthConverter}}" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid Margin="0,3,0,-3">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <TabControl Grid.Row="0">
                     <TabItem Header="Task TreeView">
-                        <my:TasksTreeView x:Name="tasksTreeView"/>
+                        <my:TasksTreeView x:Name="tasksTreeView" />
                     </TabItem>
                     <TabItem Header="Activity View">
-                        <my:ActivitiesView DataContext="{Binding}"/>
+                        <my:ActivitiesView DataContext="{Binding}" />
                     </TabItem>
                 </TabControl>
                 <Expander Grid.Row="1">
-                    <Calendar SelectedDatesChanged="Calendar_OnSelectedDatesChanged" SelectionMode="MultipleRange"/>
+                    <Calendar SelectedDatesChanged="Calendar_OnSelectedDatesChanged" SelectionMode="MultipleRange" />
                 </Expander>
             </Grid>
-            <GridSplitter VerticalAlignment="Stretch" Width="5" Grid.Column="0" HorizontalAlignment="Right"/>
+            <GridSplitter VerticalAlignment="Stretch" Width="5" Grid.Column="0" HorizontalAlignment="Right" />
             <TabControl Grid.Column="1">
                 <TabItem Header="Task TreeView">
-                    <my:TasksListView/>
+                    <my:TasksListView />
                 </TabItem>
                 <TabItem Header="Report View">
-                    <my:ReportView/>
+                    <my:ReportView />
                 </TabItem>
                 <TabItem Header="Excel CSV View">
-                    <my:ExcelCsvView/>
+                    <my:ExcelCsvView />
                 </TabItem>
             </TabControl>
         </Grid>

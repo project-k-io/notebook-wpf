@@ -13,15 +13,15 @@ namespace Projects.Models.Versions.Version2
     [XmlRoot("Config")]
     public class ConfigModel
     {
-        public ConfigModel.AppModel App { get; set; }
-
-        public ConfigModel.LayoutModel Layout { get; set; }
-
         public ConfigModel()
         {
-            App = new ConfigModel.AppModel();
-            Layout = new ConfigModel.LayoutModel();
+            App = new AppModel();
+            Layout = new LayoutModel();
         }
+
+        public AppModel App { get; set; }
+
+        public LayoutModel Layout { get; set; }
 
         public class AppModel
         {
@@ -36,19 +36,15 @@ namespace Projects.Models.Versions.Version2
 
         public class LayoutModel
         {
-            [DefaultValue(100)]
-            public int LayoutNavigatorWidth { get; set; }
+            [DefaultValue(100)] public int LayoutNavigatorWidth { get; set; }
 
             public double MainWindowTop { get; set; }
 
-            [DefaultValue("100")]
-            public double MainWindowLeft { get; set; }
+            [DefaultValue("100")] public double MainWindowLeft { get; set; }
 
-            [DefaultValue("400")]
-            public double MainWindowWidth { get; set; }
+            [DefaultValue("400")] public double MainWindowWidth { get; set; }
 
-            [DefaultValue("300")]
-            public double MainWindowHeight { get; set; }
+            [DefaultValue("300")] public double MainWindowHeight { get; set; }
         }
     }
 }

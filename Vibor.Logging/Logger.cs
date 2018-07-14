@@ -8,86 +8,86 @@ using System;
 
 namespace Vibor.Logging
 {
-  public class Logger : ILog
-  {
-    public event EventHandler<LoggingEventArgs> LoggingEvent = null;
-
-    public void Info(string s)
+    public class Logger : ILog
     {
-      this.Print(Level.Info, s, "");
-    }
+        public event EventHandler<LoggingEventArgs> LoggingEvent;
 
-    public void Info(Exception ex)
-    {
-      this.Info(ex.Message);
-    }
+        public void Info(string s)
+        {
+            Print(Level.Info, s, "");
+        }
 
-    public void InfoFormat(string format, params object[] values)
-    {
-      this.Info(string.Format(format, values));
-    }
+        public void Info(Exception ex)
+        {
+            Info(ex.Message);
+        }
 
-    public void Warn(string s)
-    {
-      this.Print(Level.Warn, s, "");
-    }
+        public void InfoFormat(string format, params object[] values)
+        {
+            Info(string.Format(format, values));
+        }
 
-    public void Warn(Exception ex)
-    {
-      this.Warn(ex.Message);
-    }
+        public void Warn(string s)
+        {
+            Print(Level.Warn, s, "");
+        }
 
-    public void WarnFormat(string format, params object[] values)
-    {
-      this.Warn(string.Format(format, values));
-    }
+        public void Warn(Exception ex)
+        {
+            Warn(ex.Message);
+        }
 
-    public void Error(string s)
-    {
-      this.Print(Level.Error, s, "");
-    }
+        public void WarnFormat(string format, params object[] values)
+        {
+            Warn(string.Format(format, values));
+        }
 
-    public void Error(Exception ex)
-    {
-      this.Error(ex.Message);
-    }
+        public void Error(string s)
+        {
+            Print(Level.Error, s, "");
+        }
 
-    public void ErrorFormat(string format, params object[] values)
-    {
-      this.Error(string.Format(format, values));
-    }
+        public void Error(Exception ex)
+        {
+            Error(ex.Message);
+        }
 
-    public void Debug(string state, string s)
-    {
-      this.Print(Level.Debug, s, state);
-    }
+        public void ErrorFormat(string format, params object[] values)
+        {
+            Error(string.Format(format, values));
+        }
 
-    public void Debug(string s)
-    {
-      this.Print(Level.Debug, s, "");
-    }
+        public void Debug(string state, string s)
+        {
+            Print(Level.Debug, s, state);
+        }
 
-    public void Debug(Exception ex)
-    {
-      this.Debug(ex.Message);
-    }
+        public void Debug(string s)
+        {
+            Print(Level.Debug, s, "");
+        }
 
-    public void DebugFormat(string format, params object[] values)
-    {
-      this.Debug(string.Format(format, values));
-    }
+        public void Debug(Exception ex)
+        {
+            Debug(ex.Message);
+        }
 
-    private void Print(Level level, string message, string state = "")
-    {
-      Console.WriteLine(message);
-      if (this.LoggingEvent == null)
-        return;
-      this.LoggingEvent( this, new LoggingEventArgs()
-      {
-        Level = level,
-        Message = message,
-        State = state
-      });
+        public void DebugFormat(string format, params object[] values)
+        {
+            Debug(string.Format(format, values));
+        }
+
+        private void Print(Level level, string message, string state = "")
+        {
+            Console.WriteLine(message);
+            if (LoggingEvent == null)
+                return;
+            LoggingEvent(this, new LoggingEventArgs
+            {
+                Level = level,
+                Message = message,
+                State = state
+            });
+        }
     }
-  }
 }

@@ -9,33 +9,32 @@ using System.Windows.Threading;
 
 namespace Vibor.View.Helpers.Misc
 {
-  public class Helper
-  {
-    public static void SafePause(DispatcherObject o)
+    public class Helper
     {
-      Helper.SafePause(o, 1.0, false);
-    }
+        public static void SafePause(DispatcherObject o)
+        {
+            SafePause(o, 1.0, false);
+        }
 
-    public static void SafePause(DispatcherObject o, double PauseSeconds)
-    {
-      Helper.SafePause(o, PauseSeconds, false);
-    }
+        public static void SafePause(DispatcherObject o, double PauseSeconds)
+        {
+            SafePause(o, PauseSeconds, false);
+        }
 
-    public static void SafePause(DispatcherObject o, double PauseSeconds, bool myCancel)
-    {
-      DateTime dateTime = DateTime.Now.AddSeconds(PauseSeconds);
-      do
-      {
-        Helper.DoEvents(o);
-      }
-      while (dateTime > DateTime.Now && !myCancel);
-    }
+        public static void SafePause(DispatcherObject o, double PauseSeconds, bool myCancel)
+        {
+            var dateTime = DateTime.Now.AddSeconds(PauseSeconds);
+            do
+            {
+                DoEvents(o);
+            } while (dateTime > DateTime.Now && !myCancel);
+        }
 
-    public static void DoEvents(DispatcherObject o)
-    {
+        public static void DoEvents(DispatcherObject o)
+        {
 #if AK_1
             o.Dispatcher.Invoke(DispatcherPriority.Background, () => {});
 #endif
+        }
     }
-  }
 }

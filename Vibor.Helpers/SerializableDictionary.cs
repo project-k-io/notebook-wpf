@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -19,79 +18,76 @@ namespace Vibor.Helpers
     public class SerializableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IXmlSerializable
     {
         private static readonly ILog Log = LogManager.GetLogger("SerializableDictionary");
+
         public XmlSchema GetSchema()
         {
-            return (XmlSchema)null;
+            return null;
         }
 
         public void ReadXml(XmlReader reader)
         {
             try
             {
-                XmlSerializer fromType1 = XmlSerializer.FromTypes(new Type[1]
+                var fromType1 = XmlSerializer.FromTypes(new Type[1]
                 {
-          typeof (TKey)
+                    typeof(TKey)
                 })[0];
-                XmlSerializer fromType2 = XmlSerializer.FromTypes(new Type[1]
+                var fromType2 = XmlSerializer.FromTypes(new Type[1]
                 {
-          typeof (TValue)
+                    typeof(TValue)
                 })[0];
-                bool isEmptyElement = reader.IsEmptyElement;
+                var isEmptyElement = reader.IsEmptyElement;
                 reader.Read();
-                if (isEmptyElement)
-                {
-                    return;
-                }
+                if (isEmptyElement) return;
 
                 while (reader.NodeType != XmlNodeType.EndElement)
-                {
                     try
                     {
                         reader.ReadStartElement("item");
                         reader.ReadStartElement("key");
-                        TKey key = (TKey)fromType1.Deserialize(reader);
+                        var key = (TKey) fromType1.Deserialize(reader);
                         reader.ReadEndElement();
                         reader.ReadStartElement("value");
-                        TValue obj = (TValue)fromType2.Deserialize(reader);
+                        var obj = (TValue) fromType2.Deserialize(reader);
                         reader.ReadEndElement();
                         TryAdd(key, obj);
                         reader.ReadEndElement();
-                        int content = (int)reader.MoveToContent();
+                        var content = (int) reader.MoveToContent();
                     }
                     catch (Exception ex)
                     {
-                        SerializableDictionary<TKey, TValue>.Log.Error(ex);
+                        Log.Error(ex);
                         break;
                     }
-                }
+
                 reader.ReadEndElement();
             }
             catch (Exception ex)
             {
-                SerializableDictionary<TKey, TValue>.Log.Error(ex);
+                Log.Error(ex);
             }
         }
 
         public void WriteXml(XmlWriter writer)
         {
-            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+            var namespaces = new XmlSerializerNamespaces();
             namespaces.Add("", "");
-            XmlSerializer fromType1 = XmlSerializer.FromTypes(new Type[1]
+            var fromType1 = XmlSerializer.FromTypes(new Type[1]
             {
-        typeof (TKey)
+                typeof(TKey)
             })[0];
-            XmlSerializer fromType2 = XmlSerializer.FromTypes(new Type[1]
+            var fromType2 = XmlSerializer.FromTypes(new Type[1]
             {
-        typeof (TValue)
+                typeof(TValue)
             })[0];
-            foreach (TKey key in (IEnumerable<TKey>)Keys)
+            foreach (var key in Keys)
             {
                 writer.WriteStartElement("item");
                 writer.WriteStartElement("key");
                 fromType1.Serialize(writer, key);
                 writer.WriteEndElement();
                 writer.WriteStartElement("value");
-                TValue obj = this[key];
+                var obj = this[key];
                 fromType2.Serialize(writer, obj, namespaces);
                 writer.WriteEndElement();
                 writer.WriteEndElement();

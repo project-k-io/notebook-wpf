@@ -6,11 +6,11 @@
 
 namespace Vibor.Logging
 {
-  public enum Level
-  {
-    Info,
-    Error,
-    Warn,
-    Debug,
-  }
+    public enum Level
+    {
+        Info,
+        Error,
+        Warn,
+        Debug
+    }
 }

@@ -8,48 +8,49 @@ using System;
 
 namespace Projects.Models
 {
-  public class ExcelCsvRecord
-  {
-    public DateTime Day { get; set; }
-
-    public DateTime Start { get; set; }
-
-    public DateTime End { get; set; }
-
-    public string Type { get; set; }
-
-    public string Type1 { get; set; }
-
-    public string Task { get; set; }
-
-    public string Type2 { get; set; }
-
-    public string SubTask { get; set; }
-
-    public override string ToString()
+    public class ExcelCsvRecord
     {
-      return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}",  this.Day,  this.Start,  this.End,  this.Type,  this.Type1,  this.Task,  this.Type2,  this.SubTask);
-    }
+        public DateTime Day { get; set; }
 
-    public bool TryParse(string line)
-    {
-      string[] strArray = line.Split(',');
-      DateTime result;
-      if (!DateTime.TryParse(strArray[1], out result))
-        return false;
-      this.Day = result;
-      if (!DateTime.TryParse(strArray[2], out result))
-        return false;
-      this.Start = result;
-      if (!DateTime.TryParse(strArray[3], out result))
-        return false;
-      this.End = result;
-      this.Type = strArray[9];
-      this.Type1 = strArray[10];
-      this.Task = strArray[11];
-      this.Type2 = strArray[12];
-      this.SubTask = strArray[13];
-      return true;
+        public DateTime Start { get; set; }
+
+        public DateTime End { get; set; }
+
+        public string Type { get; set; }
+
+        public string Type1 { get; set; }
+
+        public string Task { get; set; }
+
+        public string Type2 { get; set; }
+
+        public string SubTask { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", Day, Start, End, Type, Type1, Task, Type2,
+                SubTask);
+        }
+
+        public bool TryParse(string line)
+        {
+            var strArray = line.Split(',');
+            DateTime result;
+            if (!DateTime.TryParse(strArray[1], out result))
+                return false;
+            Day = result;
+            if (!DateTime.TryParse(strArray[2], out result))
+                return false;
+            Start = result;
+            if (!DateTime.TryParse(strArray[3], out result))
+                return false;
+            End = result;
+            Type = strArray[9];
+            Type1 = strArray[10];
+            Task = strArray[11];
+            Type2 = strArray[12];
+            SubTask = strArray[13];
+            return true;
+        }
     }
-  }
 }

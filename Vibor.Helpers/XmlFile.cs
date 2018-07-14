@@ -19,13 +19,13 @@ namespace Vibor.Helpers
 
         public static void Serialize(string fileName, XmlWriterDeleage action)
         {
-            XmlWriterSettings settings = new XmlWriterSettings();
+            var settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.IndentChars = "    ";
             try
             {
                 XFile.CreateFileDirectory(fileName);
-                using (XmlWriter w = XmlWriter.Create(fileName, settings))
+                using (var w = XmlWriter.Create(fileName, settings))
                 {
                     action(w);
                     w.Flush();
@@ -33,29 +33,23 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                XmlFile.log.Error(ex.Message);
+                log.Error(ex.Message);
             }
         }
 
         public static void Deserialize(string fileName, XmlReadedDeleage action)
         {
-            if (!File.Exists(fileName))
-            {
-                return;
-            }
+            if (!File.Exists(fileName)) return;
 
-            using (XmlReader r = XmlReader.Create(fileName, new XmlReaderSettings() { IgnoreWhitespace = true }))
+            using (var r = XmlReader.Create(fileName, new XmlReaderSettings {IgnoreWhitespace = true}))
             {
                 try
                 {
-                    while (r.Read())
-                    {
-                        action(r);
-                    }
+                    while (r.Read()) action(r);
                 }
                 catch (XmlException ex)
                 {
-                    XmlFile.log.Error((Exception)ex);
+                    log.Error(ex);
                 }
             }
         }
@@ -70,44 +64,42 @@ namespace Vibor.Helpers
         public static void SaveToXmlFile<T>(T t, string filename)
         {
             XFile.CreateFileDirectory(filename);
-            XmlFile.SaveToXmlStream<T>((TextWriter)File.CreateText(filename), t);
+            SaveToXmlStream(File.CreateText(filename), t);
         }
 
         public static string SaveToXmlString<T>(T t)
         {
-            StringBuilder sb = new StringBuilder();
-            XmlFile.SaveToXmlStream<T>((TextWriter)new StringWriter(sb), t);
+            var sb = new StringBuilder();
+            SaveToXmlStream(new StringWriter(sb), t);
             return sb.ToString();
         }
 
         public static T ReadFromXmlFile<T>(string filename) where T : class
         {
-            if (!File.Exists(filename))
-            {
-                return default(T);
-            }
+            if (!File.Exists(filename)) return default(T);
 
-            return XmlFile.ReadFromXmlStream<T>((TextReader)File.OpenText(filename));
+            return ReadFromXmlStream<T>(File.OpenText(filename));
         }
 
         public static T ReadFromXmlString<T>(string xmlText) where T : class
         {
-            return XmlFile.ReadFromXmlStream<T>((TextReader)new StringReader(xmlText));
+            return ReadFromXmlStream<T>(new StringReader(xmlText));
         }
 
         public static T ReadFromXmlStream<T>(TextReader textReader) where T : class
         {
             try
             {
-                XmlTextReader xmlTextReader = new XmlTextReader(textReader);
-                object obj = XmlSerializer.FromTypes(new Type[1] { typeof(T) })[0].Deserialize((XmlReader)xmlTextReader);
+                var xmlTextReader = new XmlTextReader(textReader);
+                var obj = XmlSerializer.FromTypes(new Type[1] {typeof(T)})[0].Deserialize(xmlTextReader);
                 xmlTextReader.Close();
                 return obj as T;
             }
             catch (Exception ex)
             {
-                XmlFile.log.Error(ex);
+                log.Error(ex);
             }
+
             return default(T);
         }
 
@@ -115,46 +107,41 @@ namespace Vibor.Helpers
         {
             try
             {
-                XmlWriter xmlWriter = XmlWriter.Create(textWriter, new XmlWriterSettings() { Indent = true, NewLineHandling = NewLineHandling.None });
+                var xmlWriter = XmlWriter.Create(textWriter,
+                    new XmlWriterSettings {Indent = true, NewLineHandling = NewLineHandling.None});
                 XmlSerializer.FromTypes(new Type[1]
                 {
-          typeof (T)
+                    typeof(T)
                 })[0].Serialize(xmlWriter, model);
                 xmlWriter.Close();
             }
             catch (Exception ex)
             {
-                XmlFile.log.Error(ex);
+                log.Error(ex);
             }
         }
 
         public static string AndNewSuffixAndExt(string fileName, string suffix, string ext)
         {
-            string path = fileName;
-            string withoutExtension = Path.GetFileNameWithoutExtension(path);
-            string directoryName = Path.GetDirectoryName(path);
-            if (string.IsNullOrEmpty(directoryName))
-            {
-                return string.Empty;
-            }
+            var path = fileName;
+            var withoutExtension = Path.GetFileNameWithoutExtension(path);
+            var directoryName = Path.GetDirectoryName(path);
+            if (string.IsNullOrEmpty(directoryName)) return string.Empty;
 
             return Path.Combine(directoryName, withoutExtension + "-" + suffix + "." + ext);
         }
 
         public static string MakeUnique(string path)
         {
-            string directoryName = Path.GetDirectoryName(path);
-            string withoutExtension = Path.GetFileNameWithoutExtension(path);
-            string extension = Path.GetExtension(path);
-            int num = 1;
+            var directoryName = Path.GetDirectoryName(path);
+            var withoutExtension = Path.GetFileNameWithoutExtension(path);
+            var extension = Path.GetExtension(path);
+            var num = 1;
             while (true)
-            {
                 if (File.Exists(path))
                 {
                     if (directoryName != null)
-                    {
                         path = Path.Combine(directoryName, withoutExtension + " " + num + extension);
-                    }
 
                     ++num;
                 }
@@ -162,24 +149,25 @@ namespace Vibor.Helpers
                 {
                     break;
                 }
-            }
+
             return path;
         }
 
         public static bool WriteByteArrayToFile(byte[] buff, string fileName)
         {
-            bool flag = false;
+            var flag = false;
             try
             {
-                BinaryWriter binaryWriter = new BinaryWriter((Stream)new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite));
+                var binaryWriter = new BinaryWriter(new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite));
                 binaryWriter.Write(buff);
                 binaryWriter.Close();
                 flag = true;
             }
             catch (Exception ex)
             {
-                XmlFile.log.Error(ex);
+                log.Error(ex);
             }
+
             return flag;
         }
     }

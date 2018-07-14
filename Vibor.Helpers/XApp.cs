@@ -15,9 +15,9 @@ namespace Vibor.Helpers
         {
             get
             {
-                Assembly entryAssembly = Assembly.GetEntryAssembly();
-                if (entryAssembly == (Assembly) null)
-                    return nameof (AppName);
+                var entryAssembly = Assembly.GetEntryAssembly();
+                if (entryAssembly == null)
+                    return nameof(AppName);
                 return Path.GetFileName(entryAssembly.GetName().CodeBase);
             }
         }

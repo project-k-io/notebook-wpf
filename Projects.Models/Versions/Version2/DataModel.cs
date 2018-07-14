@@ -9,18 +9,18 @@ using System.IO;
 
 namespace Projects.Models.Versions.Version2
 {
-  public class DataModel
-  {
-    public List<TaskModel> Tasks { get; set; }
-
-    public DataModel()
+    public class DataModel
     {
-      this.Tasks = new List<TaskModel>();
-    }
+        public DataModel()
+        {
+            Tasks = new List<TaskModel>();
+        }
 
-    public static string GetTasksFileName(string folderName)
-    {
-      return Directory.Exists(folderName) ? Path.Combine(folderName, "tasks.xml") : "tasks.xml";
+        public List<TaskModel> Tasks { get; set; }
+
+        public static string GetTasksFileName(string folderName)
+        {
+            return Directory.Exists(folderName) ? Path.Combine(folderName, "tasks.xml") : "tasks.xml";
+        }
     }
-  }
 }

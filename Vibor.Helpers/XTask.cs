@@ -13,62 +13,65 @@ using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
-  public class XTask
-  {
-    private static readonly ILog Log = LogManager.GetLogger("XTask");
-
-    public static async void RunAsync<T>(IList<T> files, Action<T> action, Action<int> progress)
+    public class XTask
     {
-      await XTask.RunParallelAsync<T>(files, action, (Action) (() => progress(0)), progress, (Action) (() => progress(0)));
-    }
+        private static readonly ILog Log = LogManager.GetLogger("XTask");
 
-    public static async void RunAsync<T>(IList<T> files, Action<T> action, Action started = null, Action<int> changed = null, Action completed = null)
-    {
-      await XTask.RunParallelAsync<T>(files, action, started, changed, completed);
-    }
-
-    public static Task RunParallelAsync<T>(IList<T> files, Action<T> action, Action started = null, Action<int> changed = null, Action completed = null)
-    {
-      return Task.Run((Action) (() => XTask.RunParallel<T>(files, action, started, changed, completed)));
-    }
-
-    public static void RunParallel<T>(IList<T> files, Action<T> action, Action started = null, Action<int> changed = null, Action completed = null)
-    {
-      if (started != null)
-        started();
-      int ii = 0;
-      int step = files.Count > 100 ? (int) ((double) files.Count / 100.0 + 0.5) : 1;
-      ParallelOptions parallelOptions = new ParallelOptions() { MaxDegreeOfParallelism = -1 };
-      Parallel.ForEach<T>((IEnumerable<T>) files, parallelOptions, (Action<T, ParallelLoopState, long>) ((f, pls, i) =>
-      {
-        try
+        public static async void RunAsync<T>(IList<T> files, Action<T> action, Action<int> progress)
         {
-          action(f);
-          Interlocked.Add(ref ii, 1);
-          if (ii % step != 0 || changed == null)
-            return;
-          changed(ii / step);
+            await RunParallelAsync(files, action, () => progress(0), progress, () => progress(0));
         }
-        catch (Exception ex)
+
+        public static async void RunAsync<T>(IList<T> files, Action<T> action, Action started = null,
+            Action<int> changed = null, Action completed = null)
         {
-          XTask.Log.Error(ex);
+            await RunParallelAsync(files, action, started, changed, completed);
         }
-      }));
-      if (completed == null)
-        return;
-      completed();
-    }
 
-    public static void AddToList<T>(ICollection<T> list, T task) where T : XTask.ITask<T>
-    {
-      list.Add(task);
-      foreach (T subTask in (Collection<T>) task.SubTasks)
-        XTask.AddToList<T>(list, subTask);
-    }
+        public static Task RunParallelAsync<T>(IList<T> files, Action<T> action, Action started = null,
+            Action<int> changed = null, Action completed = null)
+        {
+            return Task.Run(() => RunParallel(files, action, started, changed, completed));
+        }
 
-    public interface ITask<T>
-    {
-      ObservableCollection<T> SubTasks { get; }
+        public static void RunParallel<T>(IList<T> files, Action<T> action, Action started = null,
+            Action<int> changed = null, Action completed = null)
+        {
+            if (started != null)
+                started();
+            var ii = 0;
+            var step = files.Count > 100 ? (int) (files.Count / 100.0 + 0.5) : 1;
+            var parallelOptions = new ParallelOptions {MaxDegreeOfParallelism = -1};
+            Parallel.ForEach(files, parallelOptions, (f, pls, i) =>
+            {
+                try
+                {
+                    action(f);
+                    Interlocked.Add(ref ii, 1);
+                    if (ii % step != 0 || changed == null)
+                        return;
+                    changed(ii / step);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
+            });
+            if (completed == null)
+                return;
+            completed();
+        }
+
+        public static void AddToList<T>(ICollection<T> list, T task) where T : ITask<T>
+        {
+            list.Add(task);
+            foreach (var subTask in task.SubTasks)
+                AddToList(list, subTask);
+        }
+
+        public interface ITask<T>
+        {
+            ObservableCollection<T> SubTasks { get; }
+        }
     }
-  }
 }

@@ -6,11 +6,11 @@
 
 namespace Vibor.Helpers
 {
-  public class TwoLevelVersion : FourLevelVersion
-  {
-    public TwoLevelVersion()
+    public class TwoLevelVersion : FourLevelVersion
     {
-      this.IgnoreProtocolVersion = true;
+        public TwoLevelVersion()
+        {
+            IgnoreProtocolVersion = true;
+        }
     }
-  }
 }

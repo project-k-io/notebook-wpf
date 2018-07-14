@@ -9,96 +9,87 @@ using System.Collections.Generic;
 
 namespace Vibor.Helpers
 {
-  public class WordBuffer
-  {
-    private IList<byte> _bytes;
-    private int _index;
-
-    public WordBuffer()
+    public class WordBuffer
     {
-      this.Bytes = (IList<byte>) new List<byte>();
-    }
+        private IList<byte> _bytes;
+        private int _index;
 
-    public WordBuffer(IList<byte> bytes)
-    {
-      this.Bytes = bytes;
-    }
+        public WordBuffer()
+        {
+            Bytes = new List<byte>();
+        }
 
-    public string Text
-    {
-      get
-      {
-        return BitByteConverter.BytesToSpaceSeparatedTextHexWords(this.Bytes);
-      }
-      set
-      {
-        this.Bytes = (IList<byte>) BitByteConverter.SpaceSeparatedTextHexWordsToBytes(value, false);
-      }
-    }
+        public WordBuffer(IList<byte> bytes)
+        {
+            Bytes = bytes;
+        }
 
-    public IList<byte> Bytes
-    {
-      get
-      {
-        return this._bytes;
-      }
-      set
-      {
-        this._bytes = value;
-        this._index = 0;
-      }
-    }
+        public string Text
+        {
+            get => BitByteConverter.BytesToSpaceSeparatedTextHexWords(Bytes);
+            set => Bytes = BitByteConverter.SpaceSeparatedTextHexWordsToBytes(value, false);
+        }
 
-    public byte[] Read2Bytes()
-    {
-      return new byte[2]{ this.ReadByte(), this.ReadByte() };
-    }
+        public IList<byte> Bytes
+        {
+            get => _bytes;
+            set
+            {
+                _bytes = value;
+                _index = 0;
+            }
+        }
 
-    public void Write2Bytes(byte[] bytes)
-    {
-      byte b1 = bytes[0];
-      byte b2 = bytes[1];
-      this.Write(b1);
-      this.Write(b2);
-    }
+        public byte[] Read2Bytes()
+        {
+            return new byte[2] {ReadByte(), ReadByte()};
+        }
 
-    public short ReadInt16()
-    {
-      short num = BitByteConverter.ReadInt16(this.Bytes, this._index);
-      this._index += 2;
-      return num;
-    }
+        public void Write2Bytes(byte[] bytes)
+        {
+            var b1 = bytes[0];
+            var b2 = bytes[1];
+            Write(b1);
+            Write(b2);
+        }
 
-    public ushort ReadUInt16()
-    {
-      return BitConverter.ToUInt16(this.Read2Bytes(), 0);
-    }
+        public short ReadInt16()
+        {
+            var num = BitByteConverter.ReadInt16(Bytes, _index);
+            _index += 2;
+            return num;
+        }
 
-    public byte ReadByte()
-    {
-      byte num = BitByteConverter.ReadByte(this.Bytes, this._index);
-      ++this._index;
-      return num;
-    }
+        public ushort ReadUInt16()
+        {
+            return BitConverter.ToUInt16(Read2Bytes(), 0);
+        }
 
-    public void Write(short s)
-    {
-      this.Write2Bytes(BitConverter.GetBytes(s));
-    }
+        public byte ReadByte()
+        {
+            var num = BitByteConverter.ReadByte(Bytes, _index);
+            ++_index;
+            return num;
+        }
 
-    public void Write(ushort s)
-    {
-      this.Write2Bytes(BitConverter.GetBytes(s));
-    }
+        public void Write(short s)
+        {
+            Write2Bytes(BitConverter.GetBytes(s));
+        }
 
-    public void Write(byte b)
-    {
-      this.Bytes.Add(b);
-    }
+        public void Write(ushort s)
+        {
+            Write2Bytes(BitConverter.GetBytes(s));
+        }
 
-    public void Write(sbyte b)
-    {
-      this.Bytes.Add((byte) b);
+        public void Write(byte b)
+        {
+            Bytes.Add(b);
+        }
+
+        public void Write(sbyte b)
+        {
+            Bytes.Add((byte) b);
+        }
     }
-  }
 }

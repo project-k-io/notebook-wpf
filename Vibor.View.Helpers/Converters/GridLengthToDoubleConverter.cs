@@ -11,16 +11,16 @@ using System.Windows.Data;
 
 namespace Vibor.View.Helpers.Converters
 {
-  public class GridLengthToDoubleConverter : ConverterMarkupExtension<GridLengthToDoubleConverter>, IValueConverter
-  {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public class GridLengthToDoubleConverter : ConverterMarkupExtension<GridLengthToDoubleConverter>, IValueConverter
     {
-      return (object) new GridLength((double) value, GridUnitType.Pixel);
-    }
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return new GridLength((double) value, GridUnitType.Pixel);
+        }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      return (object) ((GridLength) value).Value;
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return ((GridLength) value).Value;
+        }
     }
-  }
 }

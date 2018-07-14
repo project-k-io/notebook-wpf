@@ -3,16 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
-    <ToolBar Grid.Row="0">
-      <Button x:Name="buttonCopyFromExelCsvFormat" Content="Copy" Command="{Binding CommandCopyExcelCsvText}"/>
-      <Separator/>
-    </ToolBar>
-    <TextBox Grid.Row="1" AcceptsReturn="true" AcceptsTab="true" TextWrapping="WrapWithOverflow"
-             Text="{Binding Path=ExcelCsvText}"/>
-  </Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ToolBar Grid.Row="0">
+            <Button x:Name="buttonCopyFromExelCsvFormat" Content="Copy" Command="{Binding CommandCopyExcelCsvText}" />
+            <Separator />
+        </ToolBar>
+        <TextBox Grid.Row="1" AcceptsReturn="true" AcceptsTab="true" TextWrapping="WrapWithOverflow"
+                 Text="{Binding Path=ExcelCsvText}" />
+    </Grid>
 </UserControl>

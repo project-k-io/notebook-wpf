@@ -8,36 +8,36 @@ using System;
 
 namespace Projects.Models.Versions.Version2
 {
-  public class TaskModel
-  {
-    public Guid Id { get; set; }
-
-    public Guid ParentId { get; set; }
-
-    public int Rating { get; set; }
-
-    public DateTime DateStarted { get; set; }
-
-    public DateTime DateEnded { get; set; }
-
-    public string Type { get; set; }
-
-    public string SubType { get; set; }
-
-    public string Title { get; set; }
-
-    public string Description { get; set; }
-
-    public string Context { get; set; }
-
-    public static TaskModel NetTask()
+    public class TaskModel
     {
-      return new TaskModel() { Id = Guid.NewGuid(), DateStarted = DateTime.Now };
-    }
+        public Guid Id { get; set; }
 
-    public override string ToString()
-    {
-      return string.Format("{0}:{1}:{2}:{3}:{4}",  this.Context,  this.Type,  this.Title,  this.DateStarted,  this.DateEnded);
+        public Guid ParentId { get; set; }
+
+        public int Rating { get; set; }
+
+        public DateTime DateStarted { get; set; }
+
+        public DateTime DateEnded { get; set; }
+
+        public string Type { get; set; }
+
+        public string SubType { get; set; }
+
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
+        public string Context { get; set; }
+
+        public static TaskModel NetTask()
+        {
+            return new TaskModel {Id = Guid.NewGuid(), DateStarted = DateTime.Now};
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}:{1}:{2}:{3}:{4}", Context, Type, Title, DateStarted, DateEnded);
+        }
     }
-  }
 }

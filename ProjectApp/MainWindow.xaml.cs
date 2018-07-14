@@ -4,9 +4,7 @@
 // MVID: A7331AD2-AF8A-4A84-BF9D-60C36001D1E0
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\ProjectApp.exe
 
-using Projects.ViewModels;
 using System;
-using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,29 +15,30 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Threading;
+using Projects.ViewModels;
 using Vibor.View.Helpers.Misc;
 
 namespace ProjectApp
 {
     public partial class MainWindow : RibbonWindow, IComponentConnector
     {
-
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += new RoutedEventHandler(MainView_Loaded);
+            Loaded += MainView_Loaded;
         }
+
+        private bool IsModelNull => Model == null;
+
+        private MainViewModel Model => DataContext as MainViewModel;
 
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
-            MainViewModel dataContext = DataContext as MainViewModel;
-            if (dataContext == null)
-            {
-                return;
-            }
+            var dataContext = DataContext as MainViewModel;
+            if (dataContext == null) return;
 
-            dataContext.Dispatcher = ViewLib.GetAddDelegate((FrameworkElement)this, DispatcherPriority.Background);
-            dataContext.Project.SelectedDaysChanged += new EventHandler(Project_SelectedDaysChanged);
+            dataContext.Dispatcher = ViewLib.GetAddDelegate(this, DispatcherPriority.Background);
+            dataContext.Project.SelectedDaysChanged += Project_SelectedDaysChanged;
         }
 
         private void Project_SelectedDaysChanged(object sender, EventArgs e)
@@ -48,28 +47,9 @@ namespace ProjectApp
 
         private void Edit()
         {
-            if (IsModelNull)
-            {
-                return;
-            }
+            if (IsModelNull) return;
 
             Process.Start("notepad.exe", Model.Folder);
-        }
-
-        private bool IsModelNull
-        {
-            get
-            {
-                return Model == null;
-            }
-        }
-
-        private MainViewModel Model
-        {
-            get
-            {
-                return DataContext as MainViewModel;
-            }
         }
 
         private async void CommandBinding_OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -213,19 +193,13 @@ namespace ProjectApp
 
         private void FileOpenOldFormat()
         {
-            MainViewModel dataContext = DataContext as MainViewModel;
-            if (dataContext == null)
-            {
-                return;
-            }
+            var dataContext = DataContext as MainViewModel;
+            if (dataContext == null) return;
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            var openFileDialog = new OpenFileDialog();
             openFileDialog.InitialDirectory = dataContext.Folder;
             openFileDialog.FileName = dataContext.RecentFile;
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
-            {
-                return;
-            }
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
 
             dataContext.Folder = Path.GetDirectoryName(openFileDialog.FileName);
             dataContext.RecentFile = openFileDialog.FileName;
@@ -234,18 +208,12 @@ namespace ProjectApp
 
         private async Task FileOpenNewFormatAsync()
         {
-            MainViewModel model = DataContext as MainViewModel;
-            if (model == null)
-            {
-                return;
-            }
+            var model = DataContext as MainViewModel;
+            if (model == null) return;
 
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            var dialog = new FolderBrowserDialog();
             dialog.SelectedPath = model.Folder;
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
-            {
-                return;
-            }
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
 
             model.Folder = dialog.SelectedPath;
             await model.FileOpenNewFormatAsync();
@@ -253,36 +221,23 @@ namespace ProjectApp
 
         private async Task FileSaveNewFormatAsync()
         {
-            MainViewModel model = DataContext as MainViewModel;
-            if (model == null)
-            {
-                return;
-            }
+            var model = DataContext as MainViewModel;
+            if (model == null) return;
 
             if (Directory.Exists(Model.Folder))
-            {
                 await model.FileSaveNewFormatAsync();
-            }
             else
-            {
                 await FileSaveAsNewFormatAsync();
-            }
         }
 
         private async Task FileSaveAsNewFormatAsync()
         {
-            MainViewModel model = DataContext as MainViewModel;
-            if (model == null)
-            {
-                return;
-            }
+            var model = DataContext as MainViewModel;
+            if (model == null) return;
 
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            var dialog = new FolderBrowserDialog();
             dialog.SelectedPath = model.Folder;
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
-            {
-                return;
-            }
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
 
             model.Folder = dialog.SelectedPath;
             await model.FileSaveNewFormatAsync();
@@ -290,22 +245,15 @@ namespace ProjectApp
 
         private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            IList addedItems = e.AddedItems;
-            MainViewModel dataContext = DataContext as MainViewModel;
-            if (dataContext == null)
-            {
-                return;
-            }
+            var addedItems = e.AddedItems;
+            var dataContext = DataContext as MainViewModel;
+            if (dataContext == null) return;
 
-            Calendar calendar = sender as Calendar;
-            if (calendar == null)
-            {
-                return;
-            }
+            var calendar = sender as Calendar;
+            if (calendar == null) return;
 
-            dataContext.Project.UpdateSelectDayTaks((IList)calendar.SelectedDates);
+            dataContext.Project.UpdateSelectDayTaks(calendar.SelectedDates);
             dataContext.OnGenerateReportChanged();
         }
-
     }
 }

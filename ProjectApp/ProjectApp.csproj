@@ -97,10 +97,6 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Vibor.Helpers\Vibor.Helpers.csproj">
-      <Project>{cee75388-0852-4fae-bbad-e3d87d16004e}</Project>
-      <Name>Vibor.Helpers</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Vibor.Logging\Vibor.Logging.csproj">
       <Project>{abb2cdd6-7f3f-4540-b3c7-2e502c9575d9}</Project>
       <Name>Vibor.Logging</Name>

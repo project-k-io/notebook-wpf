@@ -4,128 +4,130 @@
 // MVID: BCB19E50-AB69-4CA9-9CF4-1A9C4DEAF8F2
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Projects.Views.dll
 
-using Projects.ViewModels;
-using Projects.Views.Controls.TreeViewList;
 using System;
-using System.CodeDom.Compiler;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Threading;
+using Projects.ViewModels;
+using Projects.Views.Controls.TreeViewList;
 using Vibor.View.Helpers;
 using Vibor.View.Helpers.Misc;
 
 namespace Projects.Views
 {
-  public partial class TasksTreeView : UserControl, IComponentConnector
-  {
-    private MainViewModel _main = new MainViewModel();
-
-    public TasksTreeView()
+    public partial class TasksTreeView : UserControl, IComponentConnector
     {
-      this.InitializeComponent();
-      this.Loaded += new RoutedEventHandler(this.TasksTreeView_Loaded);
-    }
+        private MainViewModel _main = new MainViewModel();
 
-    private void TasksTreeView_Loaded(object sender, RoutedEventArgs e)
-    {
-      MainViewModel dataContext = this.DataContext as MainViewModel;
-      if (dataContext == null)
-        return;
-      dataContext.RootTask.SetParents();
-      this.treeViewTasks.SelectItem( dataContext.Project.SelectedTreeTask);
-      this.treeViewTasks.PreviewKeyDown += new KeyEventHandler(this.TreeViewTasksOnPreviewKeyDown);
-    }
+        public TasksTreeView()
+        {
+            InitializeComponent();
+            Loaded += TasksTreeView_Loaded;
+        }
 
-    private void TreeViewTasksOnPreviewKeyDown(object sender, KeyEventArgs e)
-    {
-      this.OnTreeViewKeyDown(sender, e);
-    }
+        private static TaskViewModel.KeyboardStates KeyboardState
+        {
+            get
+            {
+                var keyboardStates = TaskViewModel.KeyboardStates.None;
+                if (XKeyboard.IsCtrlShiftPressed)
+                    keyboardStates = TaskViewModel.KeyboardStates.IsCtrlShiftPressed;
+                else if (XKeyboard.IsShiftPressed)
+                    keyboardStates = TaskViewModel.KeyboardStates.IsShiftPressed;
+                else if (XKeyboard.IsControlPressed)
+                    keyboardStates = TaskViewModel.KeyboardStates.IsControlPressed;
+                return keyboardStates;
+            }
+        }
 
-    private void treeViewTasks_KeyDown(object sender, KeyEventArgs e)
-    {
-    }
+        private void TasksTreeView_Loaded(object sender, RoutedEventArgs e)
+        {
+            var dataContext = DataContext as MainViewModel;
+            if (dataContext == null)
+                return;
+            dataContext.RootTask.SetParents();
+            treeViewTasks.SelectItem(dataContext.Project.SelectedTreeTask);
+            treeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
+        }
 
-    private void OnTreeViewKeyDown(object sender, KeyEventArgs e)
-    {
-      TaskViewModel.KeyStates keyState = TasksTreeView.GetKeyState(e.Key);
-      Debug.WriteLine("treeViewTasks_KeyDown");
-      TreeListView treeView = sender as TreeListView;
-      if (treeView == null)
-        return;
-      MainViewModel dataContext = treeView.DataContext as MainViewModel;
-      if (dataContext == null)
-        return;
-      TaskViewModel task = treeView.SelectedItem as TaskViewModel;
-      if (task == null)
-        task = dataContext.RootTask;
-      Action<TaskViewModel> expandItem = (Action<TaskViewModel>) (t =>
-      {
-        TreeViewItem treeViewItem = treeView.ItemContainerGenerator.ContainerFromItem( task) as TreeViewItem;
-        if (treeViewItem == null)
-          return;
-        treeViewItem.IsExpanded = true;
-      });
-      Func<bool> deleteMessageBox = (Func<bool>) (() => MessageBox.Show("Are you sure you would like to delete this?", "Delete", MessageBoxButton.OKCancel) == MessageBoxResult.Cancel);
-      Action<Action> addDelegate = ViewLib.GetAddDelegate((FrameworkElement) this, DispatcherPriority.Background);
-      TaskViewModel.OnTreeViewKeyDown(task, keyState, (Func<TaskViewModel.KeyboardStates>) (() => TasksTreeView.KeyboardState), (Action) (() => e.Handled = true), new Action<TaskViewModel>(treeView.SelectItem), expandItem, deleteMessageBox, addDelegate);
-    }
+        private void TreeViewTasksOnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            OnTreeViewKeyDown(sender, e);
+        }
 
-    private static TaskViewModel.KeyboardStates KeyboardState
-    {
-      get
-      {
-        TaskViewModel.KeyboardStates keyboardStates = TaskViewModel.KeyboardStates.None;
-        if (XKeyboard.IsCtrlShiftPressed)
-          keyboardStates = TaskViewModel.KeyboardStates.IsCtrlShiftPressed;
-        else if (XKeyboard.IsShiftPressed)
-          keyboardStates = TaskViewModel.KeyboardStates.IsShiftPressed;
-        else if (XKeyboard.IsControlPressed)
-          keyboardStates = TaskViewModel.KeyboardStates.IsControlPressed;
-        return keyboardStates;
-      }
-    }
+        private void treeViewTasks_KeyDown(object sender, KeyEventArgs e)
+        {
+        }
 
-    private static TaskViewModel.KeyStates GetKeyState(Key key)
-    {
-      TaskViewModel.KeyStates keyStates = TaskViewModel.KeyStates.None;
-      switch (key)
-      {
-        case Key.Left:
-          keyStates = TaskViewModel.KeyStates.Left;
-          break;
-        case Key.Up:
-          keyStates = TaskViewModel.KeyStates.Up;
-          break;
-        case Key.Right:
-          keyStates = TaskViewModel.KeyStates.Right;
-          break;
-        case Key.Down:
-          keyStates = TaskViewModel.KeyStates.Down;
-          break;
-        case Key.Insert:
-          keyStates = TaskViewModel.KeyStates.Insert;
-          break;
-        case Key.Delete:
-          keyStates = TaskViewModel.KeyStates.Delete;
-          break;
-      }
-      return keyStates;
-    }
+        private void OnTreeViewKeyDown(object sender, KeyEventArgs e)
+        {
+            var keyState = GetKeyState(e.Key);
+            Debug.WriteLine("treeViewTasks_KeyDown");
+            var treeView = sender as TreeListView;
+            if (treeView == null)
+                return;
+            var dataContext = treeView.DataContext as MainViewModel;
+            if (dataContext == null)
+                return;
+            var task = treeView.SelectedItem as TaskViewModel;
+            if (task == null)
+                task = dataContext.RootTask;
+            var expandItem = (Action<TaskViewModel>) (t =>
+            {
+                var treeViewItem = treeView.ItemContainerGenerator.ContainerFromItem(task) as TreeViewItem;
+                if (treeViewItem == null)
+                    return;
+                treeViewItem.IsExpanded = true;
+            });
+            var deleteMessageBox = (Func<bool>) (() =>
+                MessageBox.Show("Are you sure you would like to delete this?", "Delete", MessageBoxButton.OKCancel) ==
+                MessageBoxResult.Cancel);
+            var addDelegate = ViewLib.GetAddDelegate(this, DispatcherPriority.Background);
+            TaskViewModel.OnTreeViewKeyDown(task, keyState, () => KeyboardState, () => e.Handled = true,
+                treeView.SelectItem, expandItem, deleteMessageBox, addDelegate);
+        }
 
-    private void treeViewTasks_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-    {
-      TreeListView treeListView = sender as TreeListView;
-      if (treeListView == null)
-        return;
-      MainViewModel dataContext = treeListView.DataContext as MainViewModel;
-      if (dataContext == null)
-        return;
-      TaskViewModel task = treeListView.SelectedItem as TaskViewModel ?? dataContext.RootTask;
-      dataContext.SelectTreeTask(task);
+        private static TaskViewModel.KeyStates GetKeyState(Key key)
+        {
+            var keyStates = TaskViewModel.KeyStates.None;
+            switch (key)
+            {
+                case Key.Left:
+                    keyStates = TaskViewModel.KeyStates.Left;
+                    break;
+                case Key.Up:
+                    keyStates = TaskViewModel.KeyStates.Up;
+                    break;
+                case Key.Right:
+                    keyStates = TaskViewModel.KeyStates.Right;
+                    break;
+                case Key.Down:
+                    keyStates = TaskViewModel.KeyStates.Down;
+                    break;
+                case Key.Insert:
+                    keyStates = TaskViewModel.KeyStates.Insert;
+                    break;
+                case Key.Delete:
+                    keyStates = TaskViewModel.KeyStates.Delete;
+                    break;
+            }
+
+            return keyStates;
+        }
+
+        private void treeViewTasks_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            var treeListView = sender as TreeListView;
+            if (treeListView == null)
+                return;
+            var dataContext = treeListView.DataContext as MainViewModel;
+            if (dataContext == null)
+                return;
+            var task = treeListView.SelectedItem as TaskViewModel ?? dataContext.RootTask;
+            dataContext.SelectTreeTask(task);
+        }
     }
-  }
 }

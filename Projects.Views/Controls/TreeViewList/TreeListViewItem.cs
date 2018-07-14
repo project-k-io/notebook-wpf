@@ -9,31 +9,32 @@ using System.Windows.Controls;
 
 namespace Projects.Views.Controls.TreeViewList
 {
-  public class TreeListViewItem : TreeViewItem
-  {
-    private int _level = -1;
-
-    public int Level
+    public class TreeListViewItem : TreeViewItem
     {
-      get
-      {
-        if (this._level == -1)
+        private int _level = -1;
+
+        public int Level
         {
-          TreeListViewItem treeListViewItem = ItemsControl.ItemsControlFromItemContainer((DependencyObject) this) as TreeListViewItem;
-          this._level = treeListViewItem != null ? treeListViewItem.Level + 1 : 0;
+            get
+            {
+                if (_level == -1)
+                {
+                    var treeListViewItem = ItemsControlFromItemContainer(this) as TreeListViewItem;
+                    _level = treeListViewItem != null ? treeListViewItem.Level + 1 : 0;
+                }
+
+                return _level;
+            }
         }
-        return this._level;
-      }
-    }
 
-    protected override DependencyObject GetContainerForItemOverride()
-    {
-      return (DependencyObject) new TreeListViewItem();
-    }
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            return new TreeListViewItem();
+        }
 
-    protected override bool IsItemItsOwnContainerOverride(object item)
-    {
-      return item is TreeListViewItem;
+        protected override bool IsItemItsOwnContainerOverride(object item)
+        {
+            return item is TreeListViewItem;
+        }
     }
-  }
 }

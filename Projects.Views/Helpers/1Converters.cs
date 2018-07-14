@@ -11,16 +11,16 @@ using System.Windows.Data;
 
 namespace Projects.Views.Helpers
 {
-  public class Int32FromGridLengthConverter : IValueConverter
-  {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public class Int32FromGridLengthConverter : IValueConverter
     {
-      return  new GridLength((double) (int) value);
-    }
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return new GridLength((int) value);
+        }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      return  (int) ((GridLength) value).Value;
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (int) ((GridLength) value).Value;
+        }
     }
-  }
 }

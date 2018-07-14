@@ -10,74 +10,51 @@ using Vibor.Mvvm;
 
 namespace Vibor.Generic.ViewModels
 {
-  public class OutputButtonViewModel : BaseViewModel
-  {
-    private bool _isChecked = true;
-    private bool _isCountVisible = true;
-    private int _count;
-
-    public bool IsChecked
+    public class OutputButtonViewModel : BaseViewModel
     {
-      get
-      {
-        return this._isChecked;
-      }
-      set
-      {
-        if (this._isChecked == value)
-          return;
-        this._isChecked = value;
-        this.OnPropertyChanged(nameof (IsChecked));
-      }
+        private int _count;
+        private bool _isChecked = true;
+
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set
+            {
+                if (_isChecked == value)
+                    return;
+                _isChecked = value;
+                OnPropertyChanged(nameof(IsChecked));
+            }
+        }
+
+        public int Image { get; set; }
+
+        public int Count
+        {
+            get => _count;
+            set
+            {
+                if (_count == value)
+                    return;
+                _count = value;
+                OnPropertyChanged(nameof(Count));
+            }
+        }
+
+        public string Label { get; set; }
+
+        public bool IsCountVisible { get; set; } = true;
+
+        public ICommand ClickedCommand => new RelayCommand(OnClicked, null);
+
+        public event EventHandler Clicked;
+
+        private void OnClicked()
+        {
+            var clicked = Clicked;
+            if (clicked == null)
+                return;
+            clicked(this, EventArgs.Empty);
+        }
     }
-
-    public int Image { get; set; }
-
-    public int Count
-    {
-      get
-      {
-        return this._count;
-      }
-      set
-      {
-        if (this._count == value)
-          return;
-        this._count = value;
-        this.OnPropertyChanged(nameof (Count));
-      }
-    }
-
-    public string Label { get; set; }
-
-    public bool IsCountVisible
-    {
-      get
-      {
-        return this._isCountVisible;
-      }
-      set
-      {
-        this._isCountVisible = value;
-      }
-    }
-
-    public ICommand ClickedCommand
-    {
-      get
-      {
-        return (ICommand) new RelayCommand(new Action(this.OnClicked), (Predicate<object>) null);
-      }
-    }
-
-    public event EventHandler Clicked = null;
-
-    private void OnClicked()
-    {
-      EventHandler clicked = this.Clicked;
-      if (clicked == null)
-        return;
-      clicked( this, EventArgs.Empty);
-    }
-  }
 }

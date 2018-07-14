@@ -13,42 +13,36 @@ using System.Windows;
 
 namespace ProjectApp.Properties
 {
-  [GeneratedCode("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
-  [CompilerGenerated]
-  internal sealed class Settings : ApplicationSettingsBase
-  {
-    private static Settings defaultInstance = (Settings) SettingsBase.Synchronized((SettingsBase) new Settings());
-
-    private void SettingChangingEventHandler(object sender, SettingChangingEventArgs e)
+    [GeneratedCode("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
+    [CompilerGenerated]
+    internal sealed class Settings : ApplicationSettingsBase
     {
-    }
+        private static readonly Settings defaultInstance = (Settings) Synchronized(new Settings());
 
-    private void SettingsSavingEventHandler(object sender, CancelEventArgs e)
-    {
-    }
+        public static Settings Default
+        {
+            get
+            {
+                var defaultInstance = Settings.defaultInstance;
+                return defaultInstance;
+            }
+        }
 
-    public static Settings Default
-    {
-      get
-      {
-        Settings defaultInstance = Settings.defaultInstance;
-        return defaultInstance;
-      }
-    }
+        [DebuggerNonUserCode]
+        [DefaultSettingValue("Normal")]
+        [UserScopedSetting]
+        public WindowState MainWindowState
+        {
+            get => (WindowState) this[nameof(MainWindowState)];
+            set => this[nameof(MainWindowState)] = value;
+        }
 
-    [DebuggerNonUserCode]
-    [DefaultSettingValue("Normal")]
-    [UserScopedSetting]
-    public WindowState MainWindowState
-    {
-      get
-      {
-        return (WindowState) this[nameof (MainWindowState)];
-      }
-      set
-      {
-        this[nameof (MainWindowState)] =  value;
-      }
+        private void SettingChangingEventHandler(object sender, SettingChangingEventArgs e)
+        {
+        }
+
+        private void SettingsSavingEventHandler(object sender, CancelEventArgs e)
+        {
+        }
     }
-  }
 }

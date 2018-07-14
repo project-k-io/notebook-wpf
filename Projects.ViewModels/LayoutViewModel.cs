@@ -8,23 +8,20 @@ using Vibor.Mvvm;
 
 namespace Projects.ViewModels
 {
-  public class LayoutViewModel : BaseViewModel
-  {
-    private int _navigatorWidth;
-
-    public int NavigatorWidth
+    public class LayoutViewModel : BaseViewModel
     {
-      get
-      {
-        return this._navigatorWidth;
-      }
-      set
-      {
-        if (this._navigatorWidth == value)
-          return;
-        this._navigatorWidth = value;
-        this.OnPropertyChanged(nameof (NavigatorWidth));
-      }
+        private int _navigatorWidth;
+
+        public int NavigatorWidth
+        {
+            get => _navigatorWidth;
+            set
+            {
+                if (_navigatorWidth == value)
+                    return;
+                _navigatorWidth = value;
+                OnPropertyChanged(nameof(NavigatorWidth));
+            }
+        }
     }
-  }
 }

@@ -8,20 +8,8 @@ using System;
 
 namespace Vibor.View.Helpers.Misc
 {
-  public class IndexChangedEventArgs : EventArgs
-  {
-    private int _index = -1;
-
-    public int Index
+    public class IndexChangedEventArgs : EventArgs
     {
-      get
-      {
-        return this._index;
-      }
-      set
-      {
-        this._index = value;
-      }
+        public int Index { get; set; } = -1;
     }
-  }
 }

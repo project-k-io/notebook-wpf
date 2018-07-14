@@ -8,25 +8,25 @@ using System;
 
 namespace Projects.Models
 {
-  public class ReportRecord
-  {
-    public int Level { get; set; }
-
-    public string Type { get; set; }
-
-    public string Text { get; set; }
-
-    public TimeSpan Duration { get; set; }
-
-    public ReportRecord()
+    public class ReportRecord
     {
-      this.Level = 1;
-      this.Duration = new TimeSpan();
-    }
+        public ReportRecord()
+        {
+            Level = 1;
+            Duration = new TimeSpan();
+        }
 
-    public override string ToString()
-    {
-      return string.Format("Level={0,2}, Type={1,5}, Duration={2}",  this.Level,  this.Type,  this.Duration);
+        public int Level { get; set; }
+
+        public string Type { get; set; }
+
+        public string Text { get; set; }
+
+        public TimeSpan Duration { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("Level={0,2}, Type={1,5}, Duration={2}", Level, Type, Duration);
+        }
     }
-  }
 }

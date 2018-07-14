@@ -17,10 +17,7 @@ namespace Vibor.Mvvm
 
         public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
-            if (execute == null)
-            {
-                throw new ArgumentNullException(nameof(execute));
-            }
+            if (execute == null) throw new ArgumentNullException(nameof(execute));
 
             _execute = execute;
             _canExecute = canExecute;
@@ -28,12 +25,9 @@ namespace Vibor.Mvvm
 
         public RelayCommand(Action execute, Predicate<object> canExecute = null)
         {
-            if (execute == null)
-            {
-                throw new ArgumentNullException(nameof(execute));
-            }
+            if (execute == null) throw new ArgumentNullException(nameof(execute));
 
-            _execute = (Action<object>)(t => execute());
+            _execute = t => execute();
             _canExecute = canExecute;
         }
 

@@ -4,8 +4,6 @@
 // MVID: AA177939-1C69-401F-8524-6C17EE86E3CA
 // Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Projects.ViewModels.dll
 
-using Projects.Models;
-using Projects.Models.Versions.Version2;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +11,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Projects.Models;
+using Projects.Models.Versions.Version2;
 using Vibor.Helpers;
 using Vibor.Logging;
 using Vibor.Mvvm;
@@ -23,14 +23,20 @@ namespace Projects.ViewModels
     {
         private static readonly ILog Logger = LogManager.GetLogger(nameof(MainViewModel));
 
-        private readonly ProjectViewModel _project = new ProjectViewModel();
-        private readonly LayoutViewModel _layout = new LayoutViewModel();
-        private readonly ObservableCollection<FileInfo> _mostRecentFiles = new ObservableCollection<FileInfo>();
+        private string _excelCsvText;
         private string _folder;
         private string _recentFile;
         private string _report;
-        private string _excelCsvText;
         private bool _useTimeOptimization;
+
+        public MainViewModel()
+        {
+            Assembly = Assembly.GetExecutingAssembly();
+            CanSave = true;
+            TypeList = new ObservableCollection<string>();
+            ContextList = new ObservableCollection<string>();
+            TaskTitleList = new ObservableCollection<string>();
+        }
 
         public ConfigModel Config { get; set; }
 
@@ -38,49 +44,23 @@ namespace Projects.ViewModels
 
         public Guid LastTreeTaskId { get; set; }
 
-        public LayoutViewModel Layout
-        {
-            get
-            {
-                return _layout;
-            }
-        }
+        public LayoutViewModel Layout { get; } = new LayoutViewModel();
 
-        public ProjectViewModel Project
-        {
-            get
-            {
-                return _project;
-            }
-        }
+        public ProjectViewModel Project { get; } = new ProjectViewModel();
 
-        public TaskViewModel RootTask
-        {
-            get
-            {
-                return Project.RootTask;
-            }
-        }
+        public TaskViewModel RootTask => Project.RootTask;
 
-        private Assembly Assembly { get; set; }
+        private Assembly Assembly { get; }
 
-        public string Title
-        {
-            get
-            {
-                return XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + Folder;
-            }
-        }
+        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) +
+                               " - " + Folder;
 
         public string Folder
         {
             get => _folder;
             set
             {
-                if (_folder == value)
-                {
-                    return;
-                }
+                if (_folder == value) return;
 
                 _folder = value;
                 OnPropertyChanged(nameof(Folder));
@@ -93,10 +73,7 @@ namespace Projects.ViewModels
             get => _recentFile;
             set
             {
-                if (_recentFile == value)
-                {
-                    return;
-                }
+                if (_recentFile == value) return;
 
                 _recentFile = value;
                 OnPropertyChanged(nameof(RecentFile));
@@ -111,10 +88,7 @@ namespace Projects.ViewModels
             get => _report;
             set
             {
-                if (_report == value)
-                {
-                    return;
-                }
+                if (_report == value) return;
 
                 _report = value;
                 OnPropertyChanged(nameof(Report));
@@ -123,16 +97,10 @@ namespace Projects.ViewModels
 
         public string ExcelCsvText
         {
-            get
-            {
-                return _excelCsvText;
-            }
+            get => _excelCsvText;
             set
             {
-                if (_excelCsvText == value)
-                {
-                    return;
-                }
+                if (_excelCsvText == value) return;
 
                 _excelCsvText = value;
                 OnPropertyChanged(nameof(ExcelCsvText));
@@ -141,16 +109,10 @@ namespace Projects.ViewModels
 
         public bool UseTimeOptimization
         {
-            get
-            {
-                return _useTimeOptimization;
-            }
+            get => _useTimeOptimization;
             set
             {
-                if (_useTimeOptimization == value)
-                {
-                    return;
-                }
+                if (_useTimeOptimization == value) return;
 
                 _useTimeOptimization = value;
                 OnPropertyChanged(nameof(UseTimeOptimization));
@@ -161,45 +123,30 @@ namespace Projects.ViewModels
         {
             get
             {
-                string assemblyCompany = XAttribute.GetAssemblyCompany(Assembly);
-                string assemblyProduct = XAttribute.GetAssemblyProduct(Assembly);
-                string str = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), assemblyCompany);
-                if (!Directory.Exists(str))
-                {
-                    Directory.CreateDirectory(str);
-                }
+                var assemblyCompany = XAttribute.GetAssemblyCompany(Assembly);
+                var assemblyProduct = XAttribute.GetAssemblyProduct(Assembly);
+                var str = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    assemblyCompany);
+                if (!Directory.Exists(str)) Directory.CreateDirectory(str);
 
-                string path = Path.Combine(str, assemblyProduct);
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
+                var path = Path.Combine(str, assemblyProduct);
+                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
                 return path;
             }
         }
 
-        private string ConfigFile
-        {
-            get
-            {
-                return Path.Combine(ConfigPath, "Config.xml");
-            }
-        }
+        private string ConfigFile => Path.Combine(ConfigPath, "Config.xml");
 
-        public ObservableCollection<FileInfo> MostRecentFiles
-        {
-            get
-            {
-                return _mostRecentFiles;
-            }
-        }
+        public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
 
         public ObservableCollection<string> TypeList { get; set; }
 
         public ObservableCollection<string> ContextList { get; set; }
 
         public ObservableCollection<string> TaskTitleList { get; set; }
+
+        public bool CanSave { get; set; }
 
         public void FileOpenOldFormat()
         {
@@ -213,12 +160,9 @@ namespace Projects.ViewModels
 
         public async Task FileOpenNewFormatAsync()
         {
-            if (!Directory.Exists(Folder))
-            {
-                return;
-            }
+            if (!Directory.Exists(Folder)) return;
 
-            string fileName = DataModel.GetTasksFileName(Folder);
+            var fileName = DataModel.GetTasksFileName(Folder);
             Data = await XFile.ReadFromFileAsync<DataModel>(fileName);
             Project.LoadFrom(Data);
             UseSettings();
@@ -226,24 +170,12 @@ namespace Projects.ViewModels
 
         public async Task FileSaveNewFormatAsync()
         {
-            string fileName = DataModel.GetTasksFileName(Folder);
-            if (Data == null)
-            {
-                Data = new DataModel();
-            }
+            var fileName = DataModel.GetTasksFileName(Folder);
+            if (Data == null) Data = new DataModel();
 
             XFile.SaveOldFile(fileName);
             Project.SaveTo(Data);
             await XFile.SaveToFileAsync(Data, fileName);
-        }
-
-        public MainViewModel()
-        {
-            Assembly = Assembly.GetExecutingAssembly();
-            CanSave = true;
-            TypeList = new ObservableCollection<string>();
-            ContextList = new ObservableCollection<string>();
-            TaskTitleList = new ObservableCollection<string>();
         }
 
         public event EventHandler<EventArgs> GenerateReportChanged;
@@ -252,11 +184,8 @@ namespace Projects.ViewModels
 
         public void OnSelectedTaskChanged(TaskViewModel task)
         {
-            EventHandler<TaskEventArgs> selectedTaskChanged = SelectedTaskChanged;
-            if (selectedTaskChanged == null)
-            {
-                return;
-            }
+            var selectedTaskChanged = SelectedTaskChanged;
+            if (selectedTaskChanged == null) return;
 
             selectedTaskChanged(this, new TaskEventArgs
             {
@@ -266,23 +195,15 @@ namespace Projects.ViewModels
 
         public void OnGenerateReportChanged()
         {
-            EventHandler<EventArgs> generateReportChanged = GenerateReportChanged;
-            if (generateReportChanged == null)
-            {
-                return;
-            }
+            var generateReportChanged = GenerateReportChanged;
+            if (generateReportChanged == null) return;
 
             generateReportChanged(this, EventArgs.Empty);
         }
 
-        public bool CanSave { get; set; }
-
         public async Task SaveDataAsync()
         {
-            if (!CanSave)
-            {
-                return;
-            }
+            if (!CanSave) return;
 
             await SaveConfigurationAsync();
             await FileSaveNewFormatAsync();
@@ -298,78 +219,52 @@ namespace Projects.ViewModels
         {
             await Task.Run(() =>
             {
-                List<TaskViewModel> taskViewModelList = new List<TaskViewModel>();
+                var taskViewModelList = new List<TaskViewModel>();
                 XTask.AddToList(taskViewModelList, RootTask);
-                SortedSet<string> sortedSet1 = new SortedSet<string>();
-                SortedSet<string> sortedSet2 = new SortedSet<string>();
-                SortedSet<string> sortedSet3 = new SortedSet<string>();
-                foreach (TaskViewModel taskViewModel in taskViewModelList)
+                var sortedSet1 = new SortedSet<string>();
+                var sortedSet2 = new SortedSet<string>();
+                var sortedSet3 = new SortedSet<string>();
+                foreach (var taskViewModel in taskViewModelList)
                 {
-                    string type = taskViewModel.Type;
-                    if (!sortedSet1.Contains(type))
-                    {
-                        sortedSet1.Add(type);
-                    }
+                    var type = taskViewModel.Type;
+                    if (!sortedSet1.Contains(type)) sortedSet1.Add(type);
 
-                    string context = taskViewModel.Context;
-                    if (!sortedSet2.Contains(context))
-                    {
-                        sortedSet2.Add(context);
-                    }
+                    var context = taskViewModel.Context;
+                    if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
 
-                    string title = taskViewModel.Title;
-                    if (!sortedSet3.Contains(title))
-                    {
-                        sortedSet3.Add(title);
-                    }
+                    var title = taskViewModel.Title;
+                    if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
                 }
+
                 TypeList.Clear();
-                foreach (string str in sortedSet1)
-                {
-                    TypeList.Add(str);
-                }
+                foreach (var str in sortedSet1) TypeList.Add(str);
 
                 ContextList.Clear();
-                foreach (string str in sortedSet2)
-                {
-                    ContextList.Add(str);
-                }
+                foreach (var str in sortedSet2) ContextList.Add(str);
 
                 TaskTitleList.Clear();
-                foreach (string str in sortedSet3)
-                {
-                    TaskTitleList.Add(str);
-                }
+                foreach (var str in sortedSet3) TaskTitleList.Add(str);
             });
         }
 
         public async Task LoadConfigurationAsync()
         {
             Config = await XFile.ReadFromFileAsync<ConfigModel>(ConfigFile);
-            if (Config == null)
-            {
-                Config = new ConfigModel();
-            }
+            if (Config == null) Config = new ConfigModel();
 
             LastListTaskId = Config.App.LastListTaskId;
             LastTreeTaskId = Config.App.LastTreeTaskId;
             Folder = Config.App.RecentFolder;
             RecentFile = Config.App.RecentFile;
             MostRecentFiles.Clear();
-            if (!Directory.Exists(Folder))
-            {
-                return;
-            }
+            if (!Directory.Exists(Folder)) return;
 
             MostRecentFiles.Add(new FileInfo(Folder));
         }
 
         public async Task SaveConfigurationAsync()
         {
-            if (Config == null)
-            {
-                Config = new ConfigModel();
-            }
+            if (Config == null) Config = new ConfigModel();
 
             Config.App.RecentFolder = Folder;
             Config.App.LastListTaskId = LastListTaskId;
@@ -386,15 +281,9 @@ namespace Projects.ViewModels
 
         public void PrepareSettings()
         {
-            if (Project.SelectedTask != null)
-            {
-                LastListTaskId = Project.SelectedTask.Id;
-            }
+            if (Project.SelectedTask != null) LastListTaskId = Project.SelectedTask.Id;
 
-            if (Project.SelectedTreeTask == null)
-            {
-                return;
-            }
+            if (Project.SelectedTreeTask == null) return;
 
             LastTreeTaskId = Project.SelectedTreeTask.Id;
         }
@@ -410,31 +299,24 @@ namespace Projects.ViewModels
 
         public void CopyExcelCsvText()
         {
-            StringReader stringReader = new StringReader(ExcelCsvText);
-            List<ExcelCsvRecord> excelCsvRecordList = new List<ExcelCsvRecord>();
+            var stringReader = new StringReader(ExcelCsvText);
+            var excelCsvRecordList = new List<ExcelCsvRecord>();
             string line;
             while ((line = stringReader.ReadLine()) != null)
-            {
                 if (!string.IsNullOrEmpty(line))
                 {
-                    ExcelCsvRecord excelCsvRecord = new ExcelCsvRecord();
-                    if (excelCsvRecord.TryParse(line))
-                    {
-                        excelCsvRecordList.Add(excelCsvRecord);
-                    }
+                    var excelCsvRecord = new ExcelCsvRecord();
+                    if (excelCsvRecord.TryParse(line)) excelCsvRecordList.Add(excelCsvRecord);
                 }
-            }
-            TaskViewModel selectedTreeTask = Project.SelectedTreeTask;
-            if (selectedTreeTask.Context != "Week")
-            {
-                return;
-            }
 
-            foreach (ExcelCsvRecord excelCsvRecord in excelCsvRecordList)
+            var selectedTreeTask = Project.SelectedTreeTask;
+            if (selectedTreeTask.Context != "Week") return;
+
+            foreach (var excelCsvRecord in excelCsvRecordList)
             {
-                DateTime dateTime1 = excelCsvRecord.Day;
-                string dayOfTheWeek = dateTime1.DayOfWeek.ToString();
-                TaskViewModel taskViewModel1 = selectedTreeTask.SubTasks.FirstOrDefault(t => t.Title == dayOfTheWeek);
+                var dateTime1 = excelCsvRecord.Day;
+                var dayOfTheWeek = dateTime1.DayOfWeek.ToString();
+                var taskViewModel1 = selectedTreeTask.SubTasks.FirstOrDefault(t => t.Title == dayOfTheWeek);
                 if (taskViewModel1 == null)
                 {
                     taskViewModel1 = new TaskViewModel(dayOfTheWeek, 0);
@@ -442,39 +324,41 @@ namespace Projects.ViewModels
                     taskViewModel1.DateEnded = excelCsvRecord.Day;
                     selectedTreeTask.SubTasks.Add(taskViewModel1);
                 }
-                TaskViewModel taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0);
+
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0);
                 taskViewModel2.Context = "Task";
-                TaskViewModel taskViewModel3 = taskViewModel2;
+                var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
-                int year1 = dateTime1.Year;
+                var year1 = dateTime1.Year;
                 dateTime1 = excelCsvRecord.Day;
-                int month1 = dateTime1.Month;
+                var month1 = dateTime1.Month;
                 dateTime1 = excelCsvRecord.Day;
-                int day1 = dateTime1.Day;
+                var day1 = dateTime1.Day;
                 dateTime1 = excelCsvRecord.Start;
-                int hour1 = dateTime1.Hour;
+                var hour1 = dateTime1.Hour;
                 dateTime1 = excelCsvRecord.Start;
-                int minute1 = dateTime1.Minute;
+                var minute1 = dateTime1.Minute;
                 dateTime1 = excelCsvRecord.Start;
-                int second1 = dateTime1.Second;
-                DateTime dateTime2 = new DateTime(year1, month1, day1, hour1, minute1, second1);
+                var second1 = dateTime1.Second;
+                var dateTime2 = new DateTime(year1, month1, day1, hour1, minute1, second1);
                 taskViewModel3.DateStarted = dateTime2;
-                TaskViewModel taskViewModel4 = taskViewModel2;
+                var taskViewModel4 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
-                int year2 = dateTime1.Year;
+                var year2 = dateTime1.Year;
                 dateTime1 = excelCsvRecord.Day;
-                int month2 = dateTime1.Month;
+                var month2 = dateTime1.Month;
                 dateTime1 = excelCsvRecord.Day;
-                int day2 = dateTime1.Day;
+                var day2 = dateTime1.Day;
                 dateTime1 = excelCsvRecord.End;
-                int hour2 = dateTime1.Hour;
+                var hour2 = dateTime1.Hour;
                 dateTime1 = excelCsvRecord.End;
-                int minute2 = dateTime1.Minute;
+                var minute2 = dateTime1.Minute;
                 dateTime1 = excelCsvRecord.End;
-                int second2 = dateTime1.Second;
-                DateTime dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
+                var second2 = dateTime1.Second;
+                var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
                 taskViewModel4.DateEnded = dateTime3;
-                taskViewModel2.Description = string.Format("{0}:{1}:{2}", excelCsvRecord.Type1, excelCsvRecord.Type2, excelCsvRecord.SubTask);
+                taskViewModel2.Description = string.Format("{0}:{1}:{2}", excelCsvRecord.Type1, excelCsvRecord.Type2,
+                    excelCsvRecord.SubTask);
                 taskViewModel1.SubTasks.Add(taskViewModel2);
             }
         }
@@ -496,13 +380,13 @@ namespace Projects.ViewModels
         public void OnTreeViewKeyDown(TaskViewModel.KeyStates keyState, TaskViewModel.KeyboardStates keyboardState)
         {
             TaskViewModel.OnTreeViewKeyDown(
-                Project.SelectedTask, 
-                keyState, 
-                () => keyboardState, 
+                Project.SelectedTask,
+                keyState,
+                () => keyboardState,
                 () => { }, t => t.IsSelected = true,
-                t => t.IsExpanded = true, 
-                () => true, 
-                new Action<Action>(this.OnDispatcher));
+                t => t.IsExpanded = true,
+                () => true,
+                OnDispatcher);
         }
 
         public void CopyTask()

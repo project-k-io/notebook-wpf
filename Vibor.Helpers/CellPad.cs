@@ -6,74 +6,68 @@
 
 namespace Vibor.Helpers
 {
-  public class CellPad
-  {
-    public static string FormatV = "{0,5:C}, {1,8:C}, {2,5}";
-    public static string FormatH = "{0}-A, {0}-T, {0}-C";
-
-    public CellPad()
+    public class CellPad
     {
-      this.Reset();
+        public static string FormatV = "{0,5:C}, {1,8:C}, {2,5}";
+        public static string FormatH = "{0}-A, {0}-T, {0}-C";
+
+        public CellPad()
+        {
+            Reset();
+        }
+
+        public double Average => Count > 0 ? Total / Count : 0.0;
+
+        public int Count { get; private set; }
+
+        public double Total { get; private set; }
+
+        public void Reset()
+        {
+            Total = 0.0;
+            Count = 0;
+        }
+
+        public void Add(double a)
+        {
+            Total += a;
+            ++Count;
+        }
+
+        public void Add(CellPad a)
+        {
+            Total += a.Total;
+            Count += a.Count;
+        }
+
+        public void Add(double total, int count)
+        {
+            Total += total;
+            Count += count;
+        }
+
+        public void Set(CellPad a)
+        {
+            Total = a.Total;
+            Count = a.Count;
+        }
+
+        public void Subtract(double a)
+        {
+            if (Count <= 0)
+                return;
+            Total -= a;
+            --Count;
+        }
+
+        public static string GetHeader(string s)
+        {
+            return string.Format(FormatH, s);
+        }
+
+        public override string ToString()
+        {
+            return string.Format(FormatV, Average, Total, Count);
+        }
     }
-
-    public double Average
-    {
-      get
-      {
-        return this.Count > 0 ? this.Total / (double) this.Count : 0.0;
-      }
-    }
-
-    public int Count { get; private set; }
-
-    public double Total { get; private set; }
-
-    public void Reset()
-    {
-      this.Total = 0.0;
-      this.Count = 0;
-    }
-
-    public void Add(double a)
-    {
-      this.Total += a;
-      ++this.Count;
-    }
-
-    public void Add(CellPad a)
-    {
-      this.Total += a.Total;
-      this.Count += a.Count;
-    }
-
-    public void Add(double total, int count)
-    {
-      this.Total += total;
-      this.Count += count;
-    }
-
-    public void Set(CellPad a)
-    {
-      this.Total = a.Total;
-      this.Count = a.Count;
-    }
-
-    public void Subtract(double a)
-    {
-      if (this.Count <= 0)
-        return;
-      this.Total -= a;
-      --this.Count;
-    }
-
-    public static string GetHeader(string s)
-    {
-      return string.Format(CellPad.FormatH,  s);
-    }
-
-    public override string ToString()
-    {
-      return string.Format(CellPad.FormatV,  this.Average,  this.Total,  this.Count);
-    }
-  }
 }

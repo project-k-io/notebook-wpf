@@ -9,33 +9,25 @@ using System.Windows.Controls;
 
 namespace Vibor.View.Helpers.Misc
 {
-  public class SortableGridViewColumn : GridViewColumn
-  {
-    public static readonly DependencyProperty FieldNameProperty = DependencyProperty.Register(nameof (FieldName), typeof (string), typeof (SortableGridViewColumn), (PropertyMetadata) new UIPropertyMetadata((object) ""));
-    public static readonly DependencyProperty IsDefaultSortColumnProperty = DependencyProperty.Register(nameof (IsDefaultSortColumn), typeof (bool), typeof (SortableGridViewColumn), (PropertyMetadata) new UIPropertyMetadata((object) false));
-
-    public string FieldName
+    public class SortableGridViewColumn : GridViewColumn
     {
-      get
-      {
-        return (string) this.GetValue(SortableGridViewColumn.FieldNameProperty);
-      }
-      set
-      {
-        this.SetValue(SortableGridViewColumn.FieldNameProperty, (object) value);
-      }
-    }
+        public static readonly DependencyProperty FieldNameProperty = DependencyProperty.Register(nameof(FieldName),
+            typeof(string), typeof(SortableGridViewColumn), new UIPropertyMetadata(""));
 
-    public bool IsDefaultSortColumn
-    {
-      get
-      {
-        return (bool) this.GetValue(SortableGridViewColumn.IsDefaultSortColumnProperty);
-      }
-      set
-      {
-        this.SetValue(SortableGridViewColumn.IsDefaultSortColumnProperty, (object) value);
-      }
+        public static readonly DependencyProperty IsDefaultSortColumnProperty =
+            DependencyProperty.Register(nameof(IsDefaultSortColumn), typeof(bool), typeof(SortableGridViewColumn),
+                new UIPropertyMetadata(false));
+
+        public string FieldName
+        {
+            get => (string) GetValue(FieldNameProperty);
+            set => SetValue(FieldNameProperty, value);
+        }
+
+        public bool IsDefaultSortColumn
+        {
+            get => (bool) GetValue(IsDefaultSortColumnProperty);
+            set => SetValue(IsDefaultSortColumnProperty, value);
+        }
     }
-  }
 }

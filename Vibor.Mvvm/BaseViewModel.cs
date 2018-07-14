@@ -9,25 +9,24 @@ using System.ComponentModel;
 
 namespace Vibor.Mvvm
 {
-  public class BaseViewModel : INotifyPropertyChanged
-  {
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    public Action<Action> Dispatcher { get; set; }
-
-    protected void OnDispatcher(Action a)
+    public class BaseViewModel : INotifyPropertyChanged
     {
-      Action<Action> dispatcher = this.Dispatcher;
-      if (dispatcher == null)
-        return;
-      dispatcher(a);
-    }
+        public Action<Action> Dispatcher { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-    protected virtual void OnPropertyChanged(string propertyName)
-    {
-      if (this.PropertyChanged == null)
-        return;
-      this.PropertyChanged( this, new PropertyChangedEventArgs(propertyName));
+        protected void OnDispatcher(Action a)
+        {
+            var dispatcher = Dispatcher;
+            if (dispatcher == null)
+                return;
+            dispatcher(a);
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged == null)
+                return;
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
-  }
 }

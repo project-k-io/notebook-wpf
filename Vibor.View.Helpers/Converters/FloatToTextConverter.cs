@@ -10,37 +10,37 @@ using System.Windows.Data;
 
 namespace Vibor.View.Helpers.Converters
 {
-  [ValueConversion(typeof (double), typeof (string))]
-  public class FloatToTextConverter : ConverterMarkupExtension<FloatToTextConverter>, IValueConverter
-  {
-    public const double Thousand = 1000.0;
-    public const double Million = 1000000.0;
-    public const double Billion = 1000000000.0;
-
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    [ValueConversion(typeof(double), typeof(string))]
+    public class FloatToTextConverter : ConverterMarkupExtension<FloatToTextConverter>, IValueConverter
     {
-      try
-      {
-        double num = System.Convert.ToDouble(value, (IFormatProvider) culture);
-        string format = parameter as string;
-        if (string.IsNullOrEmpty(format))
-          format = "N0";
-        if (format == "MC")
-          return (object) string.Format("{0:N2}", (object) (num / 1000000000.0));
-        return (object) num.ToString(format, (IFormatProvider) culture);
-      }
-      catch
-      {
-        return value;
-      }
-    }
+        public const double Thousand = 1000.0;
+        public const double Million = 1000000.0;
+        public const double Billion = 1000000000.0;
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      float result = 0.0f;
-      if (!float.TryParse((string) value, out result))
-        return (object) null;
-      return (object) result;
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                var num = System.Convert.ToDouble(value, culture);
+                var format = parameter as string;
+                if (string.IsNullOrEmpty(format))
+                    format = "N0";
+                if (format == "MC")
+                    return string.Format("{0:N2}", num / 1000000000.0);
+                return num.ToString(format, culture);
+            }
+            catch
+            {
+                return value;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var result = 0.0f;
+            if (!float.TryParse((string) value, out result))
+                return null;
+            return result;
+        }
     }
-  }
 }

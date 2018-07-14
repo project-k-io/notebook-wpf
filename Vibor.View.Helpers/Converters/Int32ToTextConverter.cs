@@ -11,23 +11,23 @@ using System.Windows.Data;
 
 namespace Vibor.View.Helpers.Converters
 {
-  public class Int32ToTextConverter : ConverterMarkupExtension<Int32ToTextConverter>, IValueConverter
-  {
-    private readonly Int32Converter _converter;
-
-    public Int32ToTextConverter()
+    public class Int32ToTextConverter : ConverterMarkupExtension<Int32ToTextConverter>, IValueConverter
     {
-      this._converter = new Int32Converter();
-    }
+        private readonly Int32Converter _converter;
 
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      return (object) this._converter.ConvertToString(value);
-    }
+        public Int32ToTextConverter()
+        {
+            _converter = new Int32Converter();
+        }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      return this._converter.ConvertFromString((string) value);
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return _converter.ConvertToString(value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return _converter.ConvertFromString((string) value);
+        }
     }
-  }
 }
