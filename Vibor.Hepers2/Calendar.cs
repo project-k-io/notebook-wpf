@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Vibor.Helpers
 {
-    public class Calendar
+    class Calendar
     {
         public static Calendar Instance = new Calendar();
 

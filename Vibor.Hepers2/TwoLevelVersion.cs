@@ -1,6 +1,6 @@
 ﻿namespace Vibor.Helpers
 {
-    public class TwoLevelVersion : FourLevelVersion
+    class TwoLevelVersion : FourLevelVersion
     {
         public TwoLevelVersion()
         {

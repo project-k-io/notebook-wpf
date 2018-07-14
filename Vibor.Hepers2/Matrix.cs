@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Vibor.Helpers
 {
-    public class Matrix<T>
+    class Matrix<T>
     {
         public Matrix()
         {

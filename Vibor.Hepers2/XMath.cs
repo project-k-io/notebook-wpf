@@ -1,6 +1,6 @@
 ﻿namespace Vibor.Helpers
 {
-    public class XMath
+    class XMath
     {
         public static double Percentage(double oldValue, double newValue)
         {

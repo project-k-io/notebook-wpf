@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Vibor.Helpers
 {
-    public class OutputTraceListener : TraceListener
+    class OutputTraceListener : TraceListener
     {
         public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id,
             object data)

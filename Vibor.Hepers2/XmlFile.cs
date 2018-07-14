@@ -7,7 +7,7 @@ using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
-    public class XmlFile
+    class XmlFile
     {
         private static readonly ILog log = LogManager.GetLogger("XmlFile");
 

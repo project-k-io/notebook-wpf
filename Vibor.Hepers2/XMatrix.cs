@@ -7,7 +7,7 @@ using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
-    public class XMatrix
+    class XMatrix
     {
         private static readonly ILog Logger = LogManager.GetLogger("StartUpFlowViewModel");
 

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Vibor.Helpers
 {
-    public class XList2
+    class XList2
     {
         public static bool IsValidIndex2(IList a, int ii)
         {

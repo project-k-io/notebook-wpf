@@ -1,4 +1,4 @@
-﻿public class Target
+﻿class Target
 {
     public string Name { get; set; }
 

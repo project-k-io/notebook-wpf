@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Vibor.Helpers
 {
-    public class ComparisonComparer<T> : IComparer<T>
+    class ComparisonComparer<T> : IComparer<T>
     {
         private readonly Comparison<T> _comparison;
 

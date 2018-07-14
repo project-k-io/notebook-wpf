@@ -1,6 +1,6 @@
 ﻿namespace Vibor.Helpers
 {
-    public class XConverter
+    class XConverter
     {
         public static int ConvertToInt(string s)
         {

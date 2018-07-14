@@ -7,7 +7,7 @@ using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
-    public class BitByteConverter
+    class BitByteConverter
     {
         private static readonly ILog Logger = LogManager.GetLogger();
 

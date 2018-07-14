@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Vibor.Helpers
 {
-    public class WordBuffer
+    class WordBuffer
     {
         private IList<byte> _bytes;
         private int _index;
