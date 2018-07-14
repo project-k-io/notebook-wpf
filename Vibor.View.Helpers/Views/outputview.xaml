@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Vibor.Generic.ViewModels;assembly=Vibor.Generic.ViewModels"
-             xmlns:viewModels="clr-namespace:Vibor.Generic.ViewModels">
+             xmlns:viewModels1="clr-namespace:Vibor.View.Helpers.ViewModels">
     <FrameworkElement.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
-        <DataTemplate x:Key="OutputButtonDataTemplate" DataType="{x:Type viewModels:OutputButtonViewModel}">
+        <DataTemplate x:Key="OutputButtonDataTemplate" DataType="{x:Type viewModels1:OutputButtonViewModel}">
             <ToggleButton IsChecked="{Binding IsChecked}" Command="{Binding Path=ClickedCommand}">
                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4">
                     <Image />
@@ -17,7 +17,7 @@
                 </StackPanel>
             </ToggleButton>
         </DataTemplate>
-        <DataTemplate x:Key="CCC" DataType="{x:Type viewModels:OutputButtonViewModel}">
+        <DataTemplate x:Key="CCC" DataType="{x:Type viewModels1:OutputButtonViewModel}">
             <Button Command="{Binding Path=ClickedCommand}">
                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4" VerticalAlignment="Center">
                     <Image />

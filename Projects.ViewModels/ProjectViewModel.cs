@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Projects.ViewModels.ProjectViewModel
-// Assembly: Projects.ViewModels, Version=1.1.8.29121, Culture=neutral, PublicKeyToken=null
-// MVID: AA177939-1C69-401F-8524-6C17EE86E3CA
-// Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Projects.ViewModels.dll
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

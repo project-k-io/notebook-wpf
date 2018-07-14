@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Vibor.Generic.ViewModels.RelayCommand
-// Assembly: Vibor.Generic.ViewModels, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 18134161-73B0-45D8-9612-67C25563536B
-// Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Generic.ViewModels.dll
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Windows.Input;
 
@@ -18,7 +12,6 @@ namespace Vibor.Mvvm
         public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
             if (execute == null) throw new ArgumentNullException(nameof(execute));
-
             _execute = execute;
             _canExecute = canExecute;
         }

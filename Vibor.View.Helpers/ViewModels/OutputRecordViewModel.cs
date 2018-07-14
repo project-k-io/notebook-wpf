@@ -1,13 +1,7 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Vibor.Generic.ViewModels.OutputRecordViewModel
-// Assembly: Vibor.Generic.ViewModels, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null
-// MVID: 18134161-73B0-45D8-9612-67C25563536B
-// Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Generic.ViewModels.dll
-
-using System;
+﻿using System;
 using Vibor.Logging;
 
-namespace Vibor.Generic.ViewModels
+namespace Vibor.View.Helpers.ViewModels
 {
     public class OutputRecordViewModel
     {
