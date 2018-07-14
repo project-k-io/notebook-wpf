@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.View.Helpers.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{428C518F-862A-42B6-A1E4-00732AD23561}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Vibor.View.Helpers</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <ApplicationVersion>1.0.1.0</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>Vibor.View.Helpers</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Xaml" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Vibor.Helpers">
+      <HintPath>lib\Vibor.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="Vibor.Generic.ViewModels">
+      <HintPath>lib\Vibor.Generic.ViewModels.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="OutputView.xaml.cs">
+      <DependentUpon>outputview.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Converters\ConverterMarkupExtension.cs" />
+    <Compile Include="Converters\BackgroundConvertor.cs" />
+    <Compile Include="Converters\DebuggingConverter.cs" />
+    <Compile Include="Converters\DoubleToTextConverter.cs" />
+    <Compile Include="Converters\FloatToTextConverter.cs" />
+    <Compile Include="Converters\GridLengthToDoubleConverter.cs" />
+    <Compile Include="Converters\IndexConverter.cs" />
+    <Compile Include="Converters\Int32ToTextConverter.cs" />
+    <Compile Include="Converters\TextToDoubleConverter.cs" />
+    <Compile Include="Misc\Helper.cs" />
+    <Compile Include="Misc\IndexChangedEventArgs.cs" />
+    <Compile Include="Misc\ListViewSorterHelper.cs" />
+    <Compile Include="Misc\SortableGridViewColumn.cs" />
+    <Compile Include="Misc\ViewLib.cs" />
+    <Compile Include="Misc\XListBox.cs" />
+    <Compile Include="Misc\XListView.cs" />
+    <Compile Include="Misc\XMath.cs" />
+    <Compile Include="Misc\PredicateDelegate.cs" />
+    <Compile Include="Misc\DateIntervals.cs" />
+    <Compile Include="Misc\ListViewGridViewColumnPair.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="outputview.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="resources\vibordictionary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

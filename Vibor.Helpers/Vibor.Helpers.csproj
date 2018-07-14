@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Helpers.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1B944C01-2F75-4A4C-9B87-02CB1C862EEE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Vibor.Helpers</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <ApplicationVersion>1.0.1.0</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>Vibor</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Xml" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="XApp.cs" />
+    <Compile Include="1XApp.cs" />
+    <Compile Include="BitByteConverter.cs" />
+    <Compile Include="Crc16.cs" />
+    <Compile Include="Matrix.cs" />
+    <Compile Include="FourLevelVersion.cs" />
+    <Compile Include="TwoLevelVersion.cs" />
+    <Compile Include="WordBuffer.cs" />
+    <Compile Include="XConverter.cs" />
+    <Compile Include="XFile2.cs" />
+    <Compile Include="XList2.cs" />
+    <Compile Include="XMath2.cs" />
+    <Compile Include="XMatrix.cs" />
+    <Compile Include="Calendar.cs" />
+    <Compile Include="CellPad.cs" />
+    <Compile Include="SerializableDictionary.cs" />
+    <Compile Include="2XApp.cs" />
+    <Compile Include="OutputTraceListener.cs" />
+    <Compile Include="XConvert.cs" />
+    <Compile Include="XFile.cs" />
+    <Compile Include="XList.cs" />
+    <Compile Include="XLogger.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="XMath.cs" />
+    <Compile Include="XmlFile.cs" />
+    <Compile Include="XTask.cs" />
+    <Compile Include="WebHelper.cs" />
+    <Compile Include="XAttribute.cs" />
+    <Compile Include="GetNameByIndexDelegate.cs" />
+    <Compile Include="BinaryReaderDelegate.cs" />
+    <Compile Include="BinaryWriterDelegate.cs" />
+    <Compile Include="LinesReaderDelegate.cs" />
+    <Compile Include="LinesWriterDelegate.cs" />
+    <Compile Include="Level.cs" />
+    <Compile Include="LoggingEventArgs.cs" />
+    <Compile Include="ILog.cs" />
+    <Compile Include="XmlWriterDeleage.cs" />
+    <Compile Include="XmlReadedDeleage.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

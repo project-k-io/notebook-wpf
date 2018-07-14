@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Projects.ViewModels.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E08CDB9A-82BE-4E61-BE6B-DFE06C53198E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Projects.ViewModels</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <ApplicationVersion>1.1.8.29121</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>Projects.ViewModels</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Vibor.Generic.ViewModels">
+      <HintPath>lib\Vibor.Generic.ViewModels.dll</HintPath>
+    </Reference>
+    <Reference Include="Vibor.Helpers">
+      <HintPath>lib\Vibor.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Projects.Models">
+      <HintPath>lib\Projects.Models.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="LayoutViewModel.cs" />
+    <Compile Include="MainViewModel.cs" />
+    <Compile Include="ProjectViewModel.cs" />
+    <Compile Include="TaskViewModel.cs" />
+    <Compile Include="XFile.cs" />
+    <Compile Include="ActivityViewModel.cs" />
+    <Compile Include="TaskEventArgs.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
