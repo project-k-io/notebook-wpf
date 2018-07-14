@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: ProjectApp.App
-// Assembly: ProjectApp, Version=1.1.8.29131, Culture=neutral, PublicKeyToken=null
-// MVID: A7331AD2-AF8A-4A84-BF9D-60C36001D1E0
-// Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\ProjectApp.exe
-
-using System;
+﻿using System;
 using System.CodeDom.Compiler;
 using System.Diagnostics;
 using System.Threading;

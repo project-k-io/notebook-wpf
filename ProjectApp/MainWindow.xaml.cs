@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: ProjectApp.MainWindow
-// Assembly: ProjectApp, Version=1.1.8.29131, Culture=neutral, PublicKeyToken=null
-// MVID: A7331AD2-AF8A-4A84-BF9D-60C36001D1E0
-// Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\ProjectApp.exe
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -28,6 +22,8 @@ namespace ProjectApp
             Loaded += MainView_Loaded;
         }
 
+        public CommandBindingCollection CommandBindings2 { get; set; }
+
         private bool IsModelNull => Model == null;
 
         private MainViewModel Model => DataContext as MainViewModel;
@@ -39,10 +35,32 @@ namespace ProjectApp
 
             dataContext.Dispatcher = ViewLib.GetAddDelegate(this, DispatcherPriority.Background);
             dataContext.Project.SelectedDaysChanged += Project_SelectedDaysChanged;
+            CommandBindings.AddRange(CreateCommands());
         }
 
         private void Project_SelectedDaysChanged(object sender, EventArgs e)
         {
+        }
+
+        private CommandBindingCollection CreateCommands()
+        {
+            var commandBindings = new CommandBindingCollection
+            {
+                new CommandBinding(ApplicationCommands.New, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await FileOpenNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Save, async (s, e) => await FileSaveNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await FileSaveAsNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.Clear, (s, e) => Model.Project.Clear(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.Edit, (s, e) => Edit(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.FixTime, (s, e) => Model.Project.FixTime(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.ExtractContext, (s, e) => Model.Project.FixContext(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.FixTitles, (s, e) => Model.Project.FixTitles(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.FixTypes, (s, e) => Model.Project.FixTypes(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.CopyTask, (s, e) => Model.CopyTask(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.ContinueTask, (s, e) => Model.ContinueTask(), (s, e) => e.CanExecute = !IsModelNull)
+            };
+            return commandBindings;
         }
 
         private void Edit()
@@ -52,144 +70,6 @@ namespace ProjectApp
             Process.Start("notepad.exe", Model.Folder);
         }
 
-        private async void CommandBinding_OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            await FileOpenNewFormatAsync();
-        }
-
-        private void CommandBinding_OnOpenCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private async void CommandBinding_OnSaveExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            await FileSaveNewFormatAsync();
-        }
-
-        private void CommandBinding_OnSaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private async void CommandBinding_OnSaveAsExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            await FileSaveAsNewFormatAsync();
-        }
-
-        private void CommandBinding_OnSaveAsCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnCloseExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-        }
-
-        private void CommandBinding_OnCanCloseExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnClearExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Model.Project.Clear();
-        }
-
-        private void CommandBinding_OnCanClearExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnEditExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Edit();
-        }
-
-        private void CommandBinding_OnCanEditExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnFixTimeExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Model.Project.FixTime();
-        }
-
-        private void CommandBinding_OnCanFixTimeExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnExtractContextExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Model.Project.ExtractContext();
-        }
-
-        private void CommandBinding_OnCanExtractContextExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnFixContextExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Model.Project.FixContext();
-        }
-
-        private void CommandBinding_OnCanFixContextExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnFixTitlesExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Model.Project.FixTitles();
-        }
-
-        private void CommandBinding_OnCanFixTitlesExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnFixTypesExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Model.Project.FixTypes();
-        }
-
-        private void CommandBinding_OnCanFixTypesExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnCanNewExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private async void CommandBinding_OnNewExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            await Model.NewProjectAsync();
-        }
-
-        private void CommandBinding_OnCanCopyTaskExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnCopyTaskExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Model.CopyTask();
-        }
-
-        private void CommandBinding_OnCanContinueTaskExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !IsModelNull;
-        }
-
-        private void CommandBinding_OnContinueTaskExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            Model.ContinueTask();
-        }
 
         private void FileOpenOldFormat()
         {
