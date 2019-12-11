@@ -39,7 +39,7 @@ namespace Vibor.View.Helpers.ViewModels
 
         public bool IsCountVisible { get; set; } = true;
 
-        public ICommand ClickedCommand => new RelayCommand(OnClicked, null);
+        public ICommand ClickedCommand => new RelayCommand(OnClicked);
 
         public event EventHandler Clicked;
 

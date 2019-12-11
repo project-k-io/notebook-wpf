@@ -1,6 +1,6 @@
 ﻿namespace Vibor.Helpers
 {
-    class CellPad
+    internal class CellPad
     {
         public static string FormatV = "{0,5:C}, {1,8:C}, {2,5}";
         public static string FormatH = "{0}-A, {0}-T, {0}-C";

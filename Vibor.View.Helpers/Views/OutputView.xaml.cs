@@ -27,35 +27,27 @@ namespace Vibor.View.Helpers.Views
             ListViewMessages.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, CopyCmdExecuted,
                 CopyCmdCanExecute));
             _model.Init();
-            Log.LoggingEvent +=(s, e) => Dispatcher.BeginInvoke(
+            Log.LoggingEvent += (s, e) => Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal,
-                (Action)(() => ListViewMessages.ScrollIntoView((object)_model.AddNewRecord(e))));
+                (Action) (() => ListViewMessages.ScrollIntoView(_model.AddNewRecord(e))));
         }
 
         private static void CopyCmdExecuted(object target, ExecutedRoutedEventArgs e)
         {
-            ListView originalSource = e.OriginalSource as ListView;
-            if (originalSource == null)
-            {
-                return;
-            }
+            var originalSource = e.OriginalSource as ListView;
+            if (originalSource == null) return;
 
-            StringBuilder stringBuilder = new StringBuilder();
-            foreach (object selectedItem in originalSource.SelectedItems)
-            {
+            var stringBuilder = new StringBuilder();
+            foreach (var selectedItem in originalSource.SelectedItems)
                 stringBuilder.AppendLine(selectedItem.ToString());
-            }
 
             Clipboard.SetText(stringBuilder.ToString());
         }
 
         private static void CopyCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            ListView originalSource = e.OriginalSource as ListView;
-            if (originalSource == null)
-            {
-                return;
-            }
+            var originalSource = e.OriginalSource as ListView;
+            if (originalSource == null) return;
 
             e.CanExecute = originalSource.SelectedItems.Count > 0;
         }

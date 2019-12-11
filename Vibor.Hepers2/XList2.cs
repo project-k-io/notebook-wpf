@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Vibor.Helpers
 {
-    class XList2
+    internal class XList2
     {
         public static bool IsValidIndex2(IList a, int ii)
         {
@@ -70,7 +70,7 @@ namespace Vibor.Helpers
         public static string GetCommaSepartedString(List<string> r)
         {
             var sb = new StringBuilder();
-            AddCommaSeparatedText(sb, r, ",");
+            AddCommaSeparatedText(sb, r);
             return sb.ToString();
         }
 
@@ -102,7 +102,7 @@ namespace Vibor.Helpers
         public static bool FindInRangeKey<TKey, TVal>(Dictionary<TKey, TVal> aveageValues, TVal minValue, TVal maxValue,
             Func<TVal, TVal, bool> less, ref TKey key)
         {
-            key = default(TKey);
+            key = default;
             foreach (var aveageValue in aveageValues)
             {
                 var val = aveageValue.Value;

@@ -1,9 +1,8 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Vibor.Helpers
 {
-    class OutputTraceListener : TraceListener
+    internal class OutputTraceListener : TraceListener
     {
         public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id,
             object data)

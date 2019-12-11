@@ -3,7 +3,7 @@ using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
-    class FourLevelVersion
+    internal class FourLevelVersion
     {
         private readonly ILog _logger = LogManager.GetLogger(nameof(FourLevelVersion));
 

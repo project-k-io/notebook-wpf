@@ -7,18 +7,18 @@ using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
-    class XMatrix
+    internal class XMatrix
     {
         private static readonly ILog Logger = LogManager.GetLogger("StartUpFlowViewModel");
 
-        public static void CheckSize<T>(List<List<T>> m, int colCount, int rowCount, T zero = default(T))
+        public static void CheckSize<T>(List<List<T>> m, int colCount, int rowCount, T zero = default)
         {
             if (IsSameDimensions(m, colCount, rowCount))
                 return;
-            Resize(m, colCount, rowCount, default(T));
+            Resize(m, colCount, rowCount);
         }
 
-        public static void Resize<T>(List<List<T>> m, int colCount, int rowCount, T zero = default(T))
+        public static void Resize<T>(List<List<T>> m, int colCount, int rowCount, T zero = default)
         {
             Clear(m);
             for (var index1 = 0; index1 < rowCount; ++index1)
@@ -30,7 +30,7 @@ namespace Vibor.Helpers
             }
         }
 
-        public static void Init<T>(List<List<T>> matrixA, List<List<T>> matrixB, T zero = default(T))
+        public static void Init<T>(List<List<T>> matrixA, List<List<T>> matrixB, T zero = default)
         {
             matrixA.AddRange(matrixB.Select(rowB => rowB.Select(value => zero).ToList()));
         }
@@ -38,7 +38,7 @@ namespace Vibor.Helpers
         public static List<List<T>> CopyZero<T>(List<List<T>> a)
         {
             var matrixA = new List<List<T>>();
-            Init(matrixA, a, default(T));
+            Init(matrixA, a);
             return matrixA;
         }
 
@@ -158,7 +158,7 @@ namespace Vibor.Helpers
 
         public static bool IsEqual<T>(List<List<T>> matrxiA, List<List<T>> matrixB) where T : IComparable
         {
-            return IsEqual(matrxiA, matrixB, default(T), (a, b, d) => a.Equals(b));
+            return IsEqual(matrxiA, matrixB, default, (a, b, d) => a.Equals(b));
         }
 
         public static bool IsEqual(List<List<double>> matrixA, List<List<double>> matrixB, double delta)
@@ -195,7 +195,7 @@ namespace Vibor.Helpers
 
         public static string GetText<T>(List<List<T>> m, string formatGood, string formatBad, Func<T, bool> isGood)
         {
-            return GetText(m, a => isGood(a) ? formatGood : formatBad, ',', true);
+            return GetText(m, a => isGood(a) ? formatGood : formatBad);
         }
 
         public static string GetText<T>(List<List<T>> m, string format = "{0,5}", char separator = ',',
@@ -271,7 +271,7 @@ namespace Vibor.Helpers
 
                 return num;
             });
-            return GetMatrix(text, convert, ',');
+            return GetMatrix(text, convert);
         }
 
         public static void AddMatrix<T>(List<List<T>> a, List<List<T>> b, Func<T, T, T> add)
@@ -313,16 +313,16 @@ namespace Vibor.Helpers
 
         public static void Avearge(List<List<double>> averageMatrix, ICollection<List<List<short>>> matrixSamples)
         {
-            Avearge(averageMatrix, matrixSamples, (a, b) => a + (double) b, (a, b) => a / (double) b, 0.0);
+            Avearge(averageMatrix, matrixSamples, (a, b) => a + (double) b, (a, b) => a / (double) b);
         }
 
         public static void Avearge(List<List<int>> averageMatrix, ICollection<List<List<short>>> matrixSamples)
         {
-            Avearge(averageMatrix, matrixSamples, (a, b) => a + (int) b, (a, b) => a / b, 0);
+            Avearge(averageMatrix, matrixSamples, (a, b) => a + (int) b, (a, b) => a / b);
         }
 
         public static void Avearge<T1, T2>(List<List<T1>> averageMatrix, ICollection<List<List<T2>>> matrixSamples,
-            Func<T1, T2, T1> add, Func<T1, int, T1> divide, T1 zero = default(T1))
+            Func<T1, T2, T1> add, Func<T1, int, T1> divide, T1 zero = default)
         {
             Reset(averageMatrix, zero);
             foreach (var matrixSample in matrixSamples)
@@ -407,7 +407,7 @@ namespace Vibor.Helpers
             var count1 = data[0].Count;
             var count2 = data.Count;
             var m = new List<List<short>>();
-            CheckSize(m, count1, count2, (short) 0);
+            CheckSize(m, count1, count2);
             var num1 = count1 / 2;
             var num2 = count1 - num1;
             var fromReversedMatrix = GetShortArrayFromReversedMatrix(data);

@@ -14,6 +14,7 @@ namespace Projects.Models.Versions.Version2
         public string Title { get; set; }
         public string Description { get; set; }
         public string Context { get; set; }
+
         public static TaskModel NetTask()
         {
             return new TaskModel {Id = Guid.NewGuid(), DateStarted = DateTime.Now};

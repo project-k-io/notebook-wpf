@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Xml;
 using System.Xml.Schema;
@@ -10,7 +9,7 @@ namespace Vibor.Helpers
 {
     [XmlRoot("Dictionary")]
     [Serializable]
-    class SerializableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IXmlSerializable
+    internal class SerializableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IXmlSerializable
     {
         private static readonly ILog Log = LogManager.GetLogger("SerializableDictionary");
 

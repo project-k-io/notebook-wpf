@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Vibor.Helpers
 {
-    class XMath2
+    internal class XMath2
     {
         public static double GetPercentage(int a, int b)
         {

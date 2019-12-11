@@ -8,7 +8,7 @@ namespace Vibor.Logging
 
         public void Info(string s)
         {
-            Print(Level.Info, s, "");
+            Print(Level.Info, s);
         }
 
         public void Info(Exception ex)
@@ -23,7 +23,7 @@ namespace Vibor.Logging
 
         public void Warn(string s)
         {
-            Print(Level.Warn, s, "");
+            Print(Level.Warn, s);
         }
 
         public void Warn(Exception ex)
@@ -38,7 +38,7 @@ namespace Vibor.Logging
 
         public void Error(string s)
         {
-            Print(Level.Error, s, "");
+            Print(Level.Error, s);
         }
 
         public void Error(Exception ex)
@@ -58,7 +58,7 @@ namespace Vibor.Logging
 
         public void Debug(string s)
         {
-            Print(Level.Debug, s, "");
+            Print(Level.Debug, s);
         }
 
         public void Debug(Exception ex)

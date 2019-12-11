@@ -56,7 +56,7 @@ namespace Vibor.Helpers
                 Logger.Error(ex);
             }
 
-            return default(T);
+            return default;
         }
 
         public static void SaveToXmlStream<T>(TextWriter textWriter, T model)
@@ -101,7 +101,7 @@ namespace Vibor.Helpers
 
         public static string AndSuffix(string fileName, string suffix)
         {
-            return AndSuffixOrPrefixAndExt(fileName, suffix, Path.GetExtension(fileName), true);
+            return AndSuffixOrPrefixAndExt(fileName, suffix, Path.GetExtension(fileName));
         }
 
         public static string AndPrefix(string fileName, string prefix)

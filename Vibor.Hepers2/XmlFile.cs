@@ -7,7 +7,7 @@ using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
-    class XmlFile
+    internal class XmlFile
     {
         private static readonly ILog log = LogManager.GetLogger("XmlFile");
 
@@ -70,7 +70,7 @@ namespace Vibor.Helpers
 
         public static T ReadFromXmlFile<T>(string filename) where T : class
         {
-            if (!File.Exists(filename)) return default(T);
+            if (!File.Exists(filename)) return default;
 
             return ReadFromXmlStream<T>(File.OpenText(filename));
         }
@@ -94,7 +94,7 @@ namespace Vibor.Helpers
                 log.Error(ex);
             }
 
-            return default(T);
+            return default;
         }
 
         public static void SaveToXmlStream<T>(TextWriter textWriter, T model)

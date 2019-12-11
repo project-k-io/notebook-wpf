@@ -7,7 +7,7 @@ using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
-    class BitByteConverter
+    internal class BitByteConverter
     {
         private static readonly ILog Logger = LogManager.GetLogger();
 
@@ -218,7 +218,7 @@ namespace Vibor.Helpers
 
         public static List<byte> ConvertSpaceSeperatedSignedCharToBytes(string numericalsText)
         {
-            return ConvertCharSeparatedTextHexBytesToBytes(numericalsText, ' ');
+            return ConvertCharSeparatedTextHexBytesToBytes(numericalsText);
         }
 
         public static List<byte> ConvertCharSeparatedTextHexBytesToBytes(string numericalsText, char separator = ' ')

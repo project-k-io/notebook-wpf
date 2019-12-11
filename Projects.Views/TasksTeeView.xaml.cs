@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
-using System.Windows.Threading;
 using Projects.ViewModels;
 using Projects.Views.Controls.TreeViewList;
 using Vibor.View.Helpers;
@@ -79,7 +78,7 @@ namespace Projects.Views
             var deleteMessageBox = (Func<bool>) (() =>
                 MessageBox.Show("Are you sure you would like to delete this?", "Delete", MessageBoxButton.OKCancel) ==
                 MessageBoxResult.Cancel);
-            var addDelegate = ViewLib.GetAddDelegate(this, DispatcherPriority.Background);
+            var addDelegate = ViewLib.GetAddDelegate(this);
             TaskViewModel.OnTreeViewKeyDown(task, keyState, () => KeyboardState, () => e.Handled = true,
                 treeView.SelectItem, expandItem, deleteMessageBox, addDelegate);
         }
