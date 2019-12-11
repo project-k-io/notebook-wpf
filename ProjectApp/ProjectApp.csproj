@@ -1,110 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--Project was exported from assembly: C:\Users\alan\Downloads\Ver 1.1.8\Debug\ProjectApp.exe-->
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{17594366-CB83-4DFA-8D4F-9932DE22FD1C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AssemblyName>ProjectApp</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <ApplicationVersion>1.1.8.29131</ApplicationVersion>
-    <FileAlignment>512</FileAlignment>
-    <RootNamespace>ProjectApp</RootNamespace>
-    <TargetFrameworkProfile />
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Windows.Controls.Ribbon" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="Projects.ViewModels">
-      <HintPath>..\Projects.ViewModels\bin\Debug\netstandard2.0\Projects.ViewModels.dll</HintPath>
-    </Reference>
-    <Reference Include="Projects.Models">
-      <HintPath>..\Projects.Models\bin\Debug\netstandard2.0\Projects.Models.dll</HintPath>
-    </Reference>
-    <Reference Include="Projects.Views">
-      <HintPath>..\Projects.Views\bin\Debug\Projects.Views.dll</HintPath>
-    </Reference>
-    <Reference Include="Vibor.View.Helpers">
-      <HintPath>..\Vibor.View.Helpers\bin\Debug\Vibor.View.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="System.Windows.Forms" />
+    <ProjectReference Include="..\Projects.Views\Projects.Views.csproj" />
+    <ProjectReference Include="..\Vibor.View.Helpers\Vibor.View.Helpers.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Commands.cs" />
-    <Compile Include="App.xaml.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Settings.cs" />
-    <Compile Include="Properties\Resources.Designer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\action_create_16xmd.png" />
-    <Resource Include="images\apple_time_machine_alt.png" />
-    <Resource Include="images\clear.png" />
-    <Resource Include="images\copy_6524.png" />
-    <Resource Include="images\download.png" />
-    <Resource Include="images\filegroup_10135_32x.png" />
-    <Resource Include="images\fixtime.png" />
-    <Resource Include="images\fixtitles.png" />
-    <Resource Include="images\fixtypes.png" />
-    <Resource Include="images\icn_edit.png" />
-    <Resource Include="images\largeicon.png" />
-    <Resource Include="images\modify.png" />
-    <Resource Include="images\new_document.png" />
-    <Resource Include="images\open16.png" />
-    <Resource Include="images\project.jpg" />
-    <Resource Include="images\repair.png" />
-    <Resource Include="images\save16.png" />
-    <Resource Include="images\saveas16.png" />
-    <Resource Include="images\smallicon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Vibor.Logging\Vibor.Logging.csproj">
-      <Project>{abb2cdd6-7f3f-4540-b3c7-2e502c9575d9}</Project>
-      <Name>Vibor.Logging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Vibor.Mvvm\Vibor.Mvvm.csproj">
-      <Project>{9ba725f2-d6eb-4f90-bc14-562f42d497b3}</Project>
-      <Name>Vibor.Mvvm</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Threading;
+using Microsoft.Win32;
 using Projects.ViewModels;
 using Vibor.View.Helpers.Misc;
 
 namespace ProjectApp
 {
-    public partial class MainWindow : RibbonWindow, IComponentConnector
+    public partial class MainWindow : RibbonWindow
     {
         public MainWindow()
         {
@@ -79,7 +79,8 @@ namespace ProjectApp
             var openFileDialog = new OpenFileDialog();
             openFileDialog.InitialDirectory = dataContext.Folder;
             openFileDialog.FileName = dataContext.RecentFile;
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
+            var result =  openFileDialog.ShowDialog();
+            if (result == false) return;
 
             dataContext.Folder = Path.GetDirectoryName(openFileDialog.FileName);
             dataContext.RecentFile = openFileDialog.FileName;
@@ -90,13 +91,14 @@ namespace ProjectApp
         {
             var model = DataContext as MainViewModel;
             if (model == null) return;
-
+#if AK
             var dialog = new FolderBrowserDialog();
             dialog.SelectedPath = model.Folder;
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
-
             model.Folder = dialog.SelectedPath;
             await model.FileOpenNewFormatAsync();
+#endif
+
         }
 
         private async Task FileSaveNewFormatAsync()
@@ -114,13 +116,14 @@ namespace ProjectApp
         {
             var model = DataContext as MainViewModel;
             if (model == null) return;
-
+#if AK
             var dialog = new FolderBrowserDialog();
             dialog.SelectedPath = model.Folder;
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
 
             model.Folder = dialog.SelectedPath;
             await model.FileSaveNewFormatAsync();
+#endif
         }
 
         private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
