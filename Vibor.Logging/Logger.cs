@@ -74,9 +74,7 @@ namespace Vibor.Logging
         private void Print(Level level, string message, string state = "")
         {
             Console.WriteLine(message);
-            if (LoggingEvent == null)
-                return;
-            LoggingEvent(this, new LoggingEventArgs
+            LoggingEvent?.Invoke(this, new LoggingEventArgs
             {
                 Level = level,
                 Message = message,
