@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Projects.Models.Versions.Version2;
 using Vibor.Helpers;
-using Vibor.Mvvm;
+using GalaSoft.MvvmLight;
 
 namespace Projects.ViewModels
 {
-    public class ProjectViewModel : BaseViewModel
+    public class ProjectViewModel : ViewModelBase
     {
         private TaskViewModel _selectedTask;
         private TaskViewModel _selectedTreeTask;
@@ -26,7 +26,7 @@ namespace Projects.ViewModels
                 if (_selectedTreeTask == value)
                     return;
                 _selectedTreeTask = value;
-                OnPropertyChanged(nameof(SelectedTreeTask));
+                RaisePropertyChanged(nameof(SelectedTreeTask));
             }
         }
 
@@ -38,7 +38,7 @@ namespace Projects.ViewModels
                 if (_selectedTask == value)
                     return;
                 _selectedTask = value;
-                OnPropertyChanged(nameof(SelectedTask));
+                RaisePropertyChanged(nameof(SelectedTask));
             }
         }
 
@@ -77,7 +77,7 @@ namespace Projects.ViewModels
             XTask.AddToList(SelectedTaskList, task);
             OnSelectedDaysChanged();
             SelectedTask = !XList.IsNullOrEmpty(SelectedTaskList) ? SelectedTaskList[0] : task;
-            OnPropertyChanged("SelectedTaskList");
+            RaisePropertyChanged("SelectedTaskList");
         }
 
         public void SelectTreeTask(Guid id)
@@ -90,7 +90,7 @@ namespace Projects.ViewModels
             if (task == null)
                 return;
             SelectedTask = task;
-            OnPropertyChanged("SelectedTaskList");
+            RaisePropertyChanged("SelectedTaskList");
         }
 
         public void SelectTask(Guid id)
@@ -180,7 +180,7 @@ namespace Projects.ViewModels
         {
             ContextList.Clear();
             RootTask.ExtractContext(ContextList);
-            OnPropertyChanged("ContextList");
+            RaisePropertyChanged("ContextList");
         }
 
         public void FixContext()
