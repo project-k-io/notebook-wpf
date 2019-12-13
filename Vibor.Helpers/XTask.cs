@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Vibor.Helpers
 {
     public class XTask
     {
-        private static readonly ILog Log = LogManager.GetLogger("XTask");
+        private static readonly ILogger Logger = LogManager.GetLogger<XTask>();
 
         public static async void RunAsync<T>(IList<T> files, Action<T> action, Action<int> progress)
         {
@@ -48,7 +48,7 @@ namespace Vibor.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex);
+                    Logger.LogError(ex);
                 }
             });
             if (completed == null)

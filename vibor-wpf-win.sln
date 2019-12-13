@@ -6,8 +6,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vibor.View.Helpers", "Vibor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vibor.Helpers", "Vibor.Helpers\Vibor.Helpers.csproj", "{CEE75388-0852-4FAE-BBAD-E3D87D16004E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vibor.Logging", "Vibor.Logging\Vibor.Logging.csproj", "{ABB2CDD6-7F3F-4540-B3C7-2E502C9575D9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projects.Models", "Projects.Models\Projects.Models.csproj", "{19E5B0D3-2A87-481A-B706-8DC91192A76F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projects.ViewModels", "Projects.ViewModels\Projects.ViewModels.csproj", "{21FFC4BC-C6C4-4E9F-9765-46D24DB752FF}"
@@ -32,10 +30,6 @@ Global
 		{CEE75388-0852-4FAE-BBAD-E3D87D16004E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEE75388-0852-4FAE-BBAD-E3D87D16004E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEE75388-0852-4FAE-BBAD-E3D87D16004E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABB2CDD6-7F3F-4540-B3C7-2E502C9575D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABB2CDD6-7F3F-4540-B3C7-2E502C9575D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABB2CDD6-7F3F-4540-B3C7-2E502C9575D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABB2CDD6-7F3F-4540-B3C7-2E502C9575D9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{19E5B0D3-2A87-481A-B706-8DC91192A76F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19E5B0D3-2A87-481A-B706-8DC91192A76F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19E5B0D3-2A87-481A-B706-8DC91192A76F}.Release|Any CPU.ActiveCfg = Release|Any CPU

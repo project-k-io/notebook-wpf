@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Vibor.Helpers
 {
@@ -11,7 +11,7 @@ namespace Vibor.Helpers
     [Serializable]
     internal class SerializableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IXmlSerializable
     {
-        private static readonly ILog Log = LogManager.GetLogger("SerializableDictionary");
+        private static readonly ILogger Log = LogManager.GetLogger<SerializableDictionary<TKey, TValue>>();
 
         public XmlSchema GetSchema()
         {
@@ -50,7 +50,7 @@ namespace Vibor.Helpers
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex);
+                        Log.LogError(ex);
                         break;
                     }
 
@@ -58,7 +58,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex);
             }
         }
 

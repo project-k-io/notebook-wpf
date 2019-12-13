@@ -9,13 +9,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Vibor.Helpers;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Vibor.View.Helpers.Misc
 {
     public class ViewLib
     {
-        private static readonly ILog Log = LogManager.GetLogger();
+        private static readonly ILogger Log = LogManager.GetLogger<ViewLib>();
 
         public static bool IsInDesignMode => (bool) DesignerProperties.IsInDesignModeProperty
             .GetMetadata(typeof(DependencyObject)).DefaultValue;
@@ -68,7 +68,7 @@ namespace Vibor.View.Helpers.Misc
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex);
+                    Log.LogError(ex);
                 }
                 finally
                 {

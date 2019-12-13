@@ -1,5 +1,5 @@
 ﻿using System;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Vibor.View.Helpers.ViewModels
 {
@@ -9,7 +9,7 @@ namespace Vibor.View.Helpers.ViewModels
 
         public int ID { get; set; }
 
-        public Level Type { get; set; }
+        public LogLevel Type { get; set; }
 
         public DateTime Date { get; set; }
 
