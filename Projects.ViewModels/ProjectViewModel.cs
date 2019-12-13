@@ -21,25 +21,13 @@ namespace Projects.ViewModels
         public TaskViewModel SelectedTreeTask
         {
             get => _selectedTreeTask;
-            set
-            {
-                if (_selectedTreeTask == value)
-                    return;
-                _selectedTreeTask = value;
-                RaisePropertyChanged();
-            }
+            set => Set(ref _selectedTreeTask, value);
         }
 
         public TaskViewModel SelectedTask
         {
             get => _selectedTask;
-            set
-            {
-                if (_selectedTask == value)
-                    return;
-                _selectedTask = value;
-                RaisePropertyChanged();
-            }
+            set => Set(ref _selectedTask, value);
         }
 
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();

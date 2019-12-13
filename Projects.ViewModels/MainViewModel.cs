@@ -54,10 +54,7 @@ namespace Projects.ViewModels
             get => _folder;
             set
             {
-                if (_folder == value) return;
-
-                _folder = value;
-                RaisePropertyChanged();
+                if (!Set(ref _folder, value)) return;
                 RaisePropertyChanged($"Title");
             }
         }
@@ -67,10 +64,7 @@ namespace Projects.ViewModels
             get => _recentFile;
             set
             {
-                if (_recentFile == value) return;
-
-                _recentFile = value;
-                RaisePropertyChanged();
+                if (!Set(ref _recentFile, value)) return;
                 RaisePropertyChanged($"Title");
             }
         }
@@ -80,37 +74,19 @@ namespace Projects.ViewModels
         public string Report
         {
             get => _report;
-            set
-            {
-                if (_report == value) return;
-
-                _report = value;
-                RaisePropertyChanged(Report);
-            }
+            set => Set(ref _report, value);
         }
 
         public string ExcelCsvText
         {
             get => _excelCsvText;
-            set
-            {
-                if (_excelCsvText == value) return;
-
-                _excelCsvText = value;
-                RaisePropertyChanged(ExcelCsvText);
-            }
+            set => Set(ref _excelCsvText, value);
         }
 
         public bool UseTimeOptimization
         {
             get => _useTimeOptimization;
-            set
-            {
-                if (_useTimeOptimization == value) return;
-
-                _useTimeOptimization = value;
-                RaisePropertyChanged();
-            }
+            set => Set(ref _useTimeOptimization, value);
         }
 
         private string ConfigPath

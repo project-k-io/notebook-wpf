@@ -9,13 +9,7 @@ namespace Projects.ViewModels
         public int NavigatorWidth
         {
             get => _navigatorWidth;
-            set
-            {
-                if (_navigatorWidth == value)
-                    return;
-                _navigatorWidth = value;
-                RaisePropertyChanged();
-            }
+            set => Set(ref _navigatorWidth, value);
         }
     }
 }
