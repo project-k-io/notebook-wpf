@@ -26,7 +26,7 @@ namespace Projects.ViewModels
                 if (_selectedTreeTask == value)
                     return;
                 _selectedTreeTask = value;
-                RaisePropertyChanged(nameof(SelectedTreeTask));
+                RaisePropertyChanged();
             }
         }
 
@@ -38,7 +38,7 @@ namespace Projects.ViewModels
                 if (_selectedTask == value)
                     return;
                 _selectedTask = value;
-                RaisePropertyChanged(nameof(SelectedTask));
+                RaisePropertyChanged();
             }
         }
 
@@ -77,7 +77,7 @@ namespace Projects.ViewModels
             XTask.AddToList(SelectedTaskList, task);
             OnSelectedDaysChanged();
             SelectedTask = !XList.IsNullOrEmpty(SelectedTaskList) ? SelectedTaskList[0] : task;
-            RaisePropertyChanged("SelectedTaskList");
+            RaisePropertyChanged($"SelectedTaskList");
         }
 
         public void SelectTreeTask(Guid id)
@@ -90,7 +90,7 @@ namespace Projects.ViewModels
             if (task == null)
                 return;
             SelectedTask = task;
-            RaisePropertyChanged("SelectedTaskList");
+            RaisePropertyChanged($"SelectedTaskList");
         }
 
         public void SelectTask(Guid id)
@@ -180,7 +180,7 @@ namespace Projects.ViewModels
         {
             ContextList.Clear();
             RootTask.ExtractContext(ContextList);
-            RaisePropertyChanged("ContextList");
+            RaisePropertyChanged($"ContextList");
         }
 
         public void FixContext()

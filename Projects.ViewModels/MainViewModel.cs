@@ -57,8 +57,8 @@ namespace Projects.ViewModels
                 if (_folder == value) return;
 
                 _folder = value;
-                RaisePropertyChanged(nameof(Folder));
-                RaisePropertyChanged("Title");
+                RaisePropertyChanged();
+                RaisePropertyChanged($"Title");
             }
         }
 
@@ -70,8 +70,8 @@ namespace Projects.ViewModels
                 if (_recentFile == value) return;
 
                 _recentFile = value;
-                RaisePropertyChanged(nameof(RecentFile));
-                RaisePropertyChanged("Title");
+                RaisePropertyChanged();
+                RaisePropertyChanged($"Title");
             }
         }
 
@@ -85,7 +85,7 @@ namespace Projects.ViewModels
                 if (_report == value) return;
 
                 _report = value;
-                RaisePropertyChanged(nameof(Report));
+                RaisePropertyChanged(Report);
             }
         }
 
@@ -97,7 +97,7 @@ namespace Projects.ViewModels
                 if (_excelCsvText == value) return;
 
                 _excelCsvText = value;
-                RaisePropertyChanged(nameof(ExcelCsvText));
+                RaisePropertyChanged(ExcelCsvText);
             }
         }
 
@@ -109,7 +109,7 @@ namespace Projects.ViewModels
                 if (_useTimeOptimization == value) return;
 
                 _useTimeOptimization = value;
-                RaisePropertyChanged(nameof(UseTimeOptimization));
+                RaisePropertyChanged();
             }
         }
 

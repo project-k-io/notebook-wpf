@@ -32,7 +32,7 @@ namespace Vibor.View.Helpers.ViewModels
                 if (_count == value)
                     return;
                 _count = value;
-                RaisePropertyChanged(nameof(Count));
+                RaisePropertyChanged();
             }
         }
 

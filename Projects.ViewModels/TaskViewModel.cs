@@ -65,7 +65,7 @@ namespace Projects.ViewModels
                 if (Model.Context == value)
                     return;
                 Model.Context = value;
-                RaisePropertyChanged(nameof(Context));
+                RaisePropertyChanged();
             }
         }
 
@@ -77,7 +77,7 @@ namespace Projects.ViewModels
                 if (Model.Rating == value)
                     return;
                 Model.Rating = value;
-                RaisePropertyChanged(nameof(Rating));
+                RaisePropertyChanged();
             }
         }
 
@@ -93,7 +93,7 @@ namespace Projects.ViewModels
                 if (_isSelected == value)
                     return;
                 _isSelected = value;
-                RaisePropertyChanged(nameof(IsSelected));
+                RaisePropertyChanged();
             }
         }
 
@@ -105,7 +105,7 @@ namespace Projects.ViewModels
                 if (_isExpanded == value)
                     return;
                 _isExpanded = value;
-                RaisePropertyChanged("IsExpnaded");
+                RaisePropertyChanged();
             }
         }
 
@@ -117,7 +117,7 @@ namespace Projects.ViewModels
                 if (Model.Description == value)
                     return;
                 Model.Description = value;
-                RaisePropertyChanged(nameof(Description));
+                RaisePropertyChanged();
             }
         }
 
@@ -129,7 +129,7 @@ namespace Projects.ViewModels
                 if (Model.Type == value)
                     return;
                 Model.Type = value;
-                RaisePropertyChanged(nameof(Type));
+                RaisePropertyChanged();
             }
         }
 
@@ -141,7 +141,7 @@ namespace Projects.ViewModels
                 if (Model.SubType == value)
                     return;
                 Model.SubType = value;
-                RaisePropertyChanged(nameof(SubType));
+                RaisePropertyChanged();
             }
         }
 
@@ -184,9 +184,9 @@ namespace Projects.ViewModels
                 if (Model.DateStarted == value)
                     return;
                 Model.DateStarted = value;
-                RaisePropertyChanged(nameof(DateStarted));
-                RaisePropertyChanged("TimeStarted");
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged();
+                RaisePropertyChanged($"TimeStarted");
+                RaisePropertyChanged($"Duration");
             }
         }
 
@@ -198,9 +198,9 @@ namespace Projects.ViewModels
                 if (Model.DateEnded == value)
                     return;
                 Model.DateEnded = value;
-                RaisePropertyChanged(nameof(DateEnded));
-                RaisePropertyChanged("TimeEnded");
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged();
+                RaisePropertyChanged($"TimeEnded");
+                RaisePropertyChanged($"Duration");
             }
         }
 
@@ -212,7 +212,7 @@ namespace Projects.ViewModels
                 if (Model.Title == value)
                     return;
                 Model.Title = value;
-                RaisePropertyChanged(nameof(Title));
+                RaisePropertyChanged();
             }
         }
 
@@ -225,9 +225,9 @@ namespace Projects.ViewModels
                 var dateTime = value;
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
-                RaisePropertyChanged(nameof(TimeStarted));
-                RaisePropertyChanged("DateStarted");
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged();
+                RaisePropertyChanged($"DateStarted");
+                RaisePropertyChanged($"Duration");
             }
         }
 
@@ -240,9 +240,9 @@ namespace Projects.ViewModels
                 var dateTime = value;
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
-                RaisePropertyChanged(nameof(TimeEnded));
-                RaisePropertyChanged("DateEnded");
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged();
+                RaisePropertyChanged($"DateEnded");
+                RaisePropertyChanged($"Duration");
             }
         }
 
@@ -254,7 +254,7 @@ namespace Projects.ViewModels
                 if (_total == value)
                     return;
                 _total = value;
-                RaisePropertyChanged(nameof(Total));
+                RaisePropertyChanged();
             }
         }
 

@@ -14,7 +14,7 @@ namespace Projects.ViewModels
                 if (_navigatorWidth == value)
                     return;
                 _navigatorWidth = value;
-                RaisePropertyChanged(nameof(NavigatorWidth));
+                RaisePropertyChanged();
             }
         }
     }
