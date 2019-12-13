@@ -3,13 +3,13 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Vibor.Helpers
 {
     internal class XmlFile
     {
-        private static readonly ILog log = LogManager.GetLogger("XmlFile");
+        private static readonly ILogger Log = LogManager.GetLogger("XmlFile");
 
         public static void Serialize(string fileName, XmlWriterDeleage action)
         {
@@ -27,7 +27,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                log.Error(ex.Message);
+                Log.LogError(ex.Message);
             }
         }
 
@@ -43,7 +43,7 @@ namespace Vibor.Helpers
                 }
                 catch (XmlException ex)
                 {
-                    log.Error(ex);
+                    Log.LogError(ex);
                 }
             }
         }
@@ -91,7 +91,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                Log.LogError(ex);
             }
 
             return default;
@@ -111,7 +111,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                Log.LogError(ex);
             }
         }
 
@@ -159,7 +159,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                Log.LogError(ex);
             }
 
             return flag;

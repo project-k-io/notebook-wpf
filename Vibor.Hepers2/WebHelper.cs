@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Vibor.Helpers
 {
     internal class WebHelper
     {
-        private static readonly ILog Log = LogManager.GetLogger("WebHelper");
+        private static readonly ILogger Log = LogManager.GetLogger("WebHelper");
 
         public static string[] GetLines(string urlString)
         {
@@ -27,7 +27,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message + " : " + urlString);
+                Log.LogError(ex.Message + " : " + urlString);
             }
 
             return stringList.ToArray();

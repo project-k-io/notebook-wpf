@@ -5,13 +5,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Vibor.Helpers
 {
     public class XFile2
     {
-        private static readonly ILog Logger = LogManager.GetLogger("CommandsViewModel");
+        private static readonly ILogger Logger = LogManager.GetLogger("CommandsViewModel");
 
         public static void SaveToXmlFile<T>(T t, string filename)
         {
@@ -53,7 +53,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex);
             }
 
             return default;
@@ -77,7 +77,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex);
             }
 
             return flag;
@@ -174,7 +174,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex);
                 return false;
             }
         }
@@ -211,7 +211,7 @@ namespace Vibor.Helpers
             return stringList;
         }
 
-        public static IList<string> OpenCsvText(string text, ILog logger)
+        public static IList<string> OpenCsvText(string text, ILogger logger)
         {
             if (string.IsNullOrEmpty(text))
                 return null;
@@ -221,7 +221,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.LogError(ex);
                 return null;
             }
         }

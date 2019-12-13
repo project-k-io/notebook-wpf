@@ -29,11 +29,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.0" />
     <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Projects.Views\Projects.Views.csproj" />
+    <ProjectReference Include="..\Vibor.Helpers\Vibor.Helpers.csproj" />
     <ProjectReference Include="..\Vibor.View.Helpers\Vibor.View.Helpers.csproj" />
   </ItemGroup>
 

@@ -7,13 +7,14 @@ using System.Windows;
 using ProjectApp.Properties;
 using Projects.Models.Versions.Version2;
 using Projects.ViewModels;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
+using Vibor.Helpers;
 
 namespace ProjectApp
 {
     public class App : Application
     {
-        private static readonly ILog Logger = LogManager.GetLogger("Converter");
+        private static readonly ILogger Logger = LogManager.GetLogger("Converter");
         private readonly MainViewModel _mainModel = new MainViewModel();
         private readonly MainWindow _mainWindow = new MainWindow();
         private bool _canSave;
@@ -69,7 +70,7 @@ namespace ProjectApp
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex);
             }
 
             _mainModel.Layout.NavigatorWidth = s1.LayoutNavigatorWidth;
@@ -96,7 +97,7 @@ namespace ProjectApp
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex);
             }
         }
 

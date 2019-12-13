@@ -5,14 +5,15 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Threading;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
+using Vibor.Helpers;
 using Vibor.View.Helpers.ViewModels;
 
 namespace Vibor.View.Helpers.Views
 {
     public partial class OutputView : UserControl, IComponentConnector
     {
-        private static readonly ILog Log = LogManager.GetLogger();
+        private static readonly ILogger Log = LogManager.GetLogger();
         private readonly OutputViewModel _model = new OutputViewModel();
 
         public OutputView()
@@ -27,9 +28,11 @@ namespace Vibor.View.Helpers.Views
             ListViewMessages.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, CopyCmdExecuted,
                 CopyCmdCanExecute));
             _model.Init();
+#if AK_2
             Log.LoggingEvent += (s, e) => Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal,
                 (Action) (() => ListViewMessages.ScrollIntoView(_model.AddNewRecord(e))));
+#endif
         }
 
         private static void CopyCmdExecuted(object target, ExecutedRoutedEventArgs e)

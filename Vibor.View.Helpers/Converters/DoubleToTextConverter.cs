@@ -2,14 +2,15 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
+using Vibor.Helpers;
 
 namespace Vibor.View.Helpers.Converters
 {
     [ValueConversion(typeof(double), typeof(string))]
     public class DoubleToTextConverter : ConverterMarkupExtension<DoubleToTextConverter>, IValueConverter
     {
-        private static readonly ILog Log = LogManager.GetLogger();
+        private static readonly ILogger Log = LogManager.GetLogger();
         private readonly DoubleConverter _converter;
 
         public DoubleToTextConverter()

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Vibor.Helpers
 {
     internal class XMatrix
     {
-        private static readonly ILog Logger = LogManager.GetLogger("StartUpFlowViewModel");
+        private static readonly ILogger Logger = LogManager.GetLogger("StartUpFlowViewModel");
 
         public static void CheckSize<T>(List<List<T>> m, int colCount, int rowCount, T zero = default)
         {
@@ -284,14 +284,14 @@ namespace Vibor.Helpers
             try
             {
                 if (a.Count != b.Count)
-                    Logger.Warn("Row Counts are not equal");
+                    Logger.LogWarning("Row Counts are not equal");
                 var num1 = Math.Min(a.Count, b.Count);
                 for (var index1 = 0; index1 < num1; ++index1)
                 {
                     var objList1 = a[index1];
                     var objList2 = b[index1];
                     if (objList1.Count != objList2.Count)
-                        Logger.Warn("Column Counts are not equal");
+                        Logger.LogWarning("Column Counts are not equal");
                     var num2 = Math.Min(objList1.Count, objList2.Count);
                     for (var index2 = 0; index2 < num2; ++index2)
                         objList1[index2] = add(objList1[index2], objList2[index2]);
@@ -299,7 +299,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex);
                 throw;
             }
         }
@@ -767,7 +767,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex);
             }
         }
 

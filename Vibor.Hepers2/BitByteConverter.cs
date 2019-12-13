@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Vibor.Helpers
 {
     internal class BitByteConverter
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
+        private static readonly ILogger Logger = LogManager.GetLogger();
 
         public static List<byte> SpaceSeparatedTextHexWordsToBytes(string text, bool reverse = false)
         {
@@ -24,7 +24,7 @@ namespace Vibor.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex);
+                    Logger.LogError(ex);
                 }
 
             return bytes;
@@ -268,8 +268,8 @@ namespace Vibor.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(string.Format("Invalid format for {0}: {1}", typeof(T), str2));
-                    Logger.Error(ex);
+                    Logger.LogError(string.Format("Invalid format for {0}: {1}", typeof(T), str2));
+                    Logger.LogError(ex);
                     return null;
                 }
 
@@ -299,7 +299,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex);
             }
         }
 

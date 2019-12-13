@@ -5,8 +5,9 @@ using System.Diagnostics;
 using System.Windows.Data;
 using Microsoft.Win32;
 using Vibor.Helpers;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 using GalaSoft.MvvmLight;
+using Vibor.Logging;
 
 namespace Vibor.View.Helpers.ViewModels
 {
@@ -63,13 +64,13 @@ namespace Vibor.View.Helpers.ViewModels
                 var outputRecordViewModel = o as OutputRecordViewModel;
                 if (outputRecordViewModel != null)
                 {
-                    if (outputRecordViewModel.Type == Level.Error)
+                    if (outputRecordViewModel.Type == LogLevel.Error)
                         return _outputButtonErrors.IsChecked;
-                    if (outputRecordViewModel.Type == Level.Info)
+                    if (outputRecordViewModel.Type == LogLevel.Information)
                         return _outputButtonMessages.IsChecked;
-                    if (outputRecordViewModel.Type == Level.Warn)
+                    if (outputRecordViewModel.Type == LogLevel.Warning)
                         return _outputButtonWarnings.IsChecked;
-                    if (outputRecordViewModel.Type == Level.Debug)
+                    if (outputRecordViewModel.Type == LogLevel.Debug)
                         return _outputButtonDebug.IsChecked;
                 }
 
@@ -85,13 +86,13 @@ namespace Vibor.View.Helpers.ViewModels
 
         public OutputRecordViewModel AddNewRecord(LoggingEventArgs e)
         {
-            if (e.Level == Level.Info)
+            if (e.Level == LogLevel.Information)
                 ++_outputButtonMessages.Count;
-            else if (e.Level == Level.Error)
+            else if (e.Level == LogLevel.Error)
                 ++_outputButtonErrors.Count;
-            else if (e.Level == Level.Warn)
+            else if (e.Level == LogLevel.Warning)
                 ++_outputButtonWarnings.Count;
-            else if (e.Level == Level.Debug)
+            else if (e.Level == LogLevel.Debug)
                 ++_outputButtonDebug.Count;
             var outputRecordViewModel = new OutputRecordViewModel
             {

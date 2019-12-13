@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Vibor.Helpers\Vibor.Helpers.csproj" />
-    <ProjectReference Include="..\Vibor.Logging\Vibor.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

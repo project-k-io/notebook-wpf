@@ -8,13 +8,14 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using Projects.Models;
 using Projects.ViewModels;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
+using Vibor.Helpers;
 
 namespace Projects.Views
 {
     public partial class ReportView : UserControl, IComponentConnector
     {
-        private static readonly ILog Logger = LogManager.GetLogger("Converter");
+        private static readonly ILogger Logger = LogManager.GetLogger("Converter");
 
         public ReportView()
         {
@@ -63,7 +64,7 @@ namespace Projects.Views
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex);
             }
         }
 

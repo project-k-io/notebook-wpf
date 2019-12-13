@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 using Projects.Models;
 using Projects.Models.Versions.Version2;
 using Vibor.Helpers;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 using GalaSoft.MvvmLight;
 
 namespace Projects.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private static readonly ILog Logger = LogManager.GetLogger(nameof(MainViewModel));
+        private static readonly ILogger Logger = LogManager.GetLogger(nameof(MainViewModel));
 
         private string _excelCsvText;
         private string _folder;

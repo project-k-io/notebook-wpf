@@ -1,11 +1,11 @@
 ﻿using System;
-using Vibor.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Vibor.Helpers
 {
     internal class FourLevelVersion
     {
-        private readonly ILog _logger = LogManager.GetLogger(nameof(FourLevelVersion));
+        private readonly ILogger _logger = LogManager.GetLogger(nameof(FourLevelVersion));
 
         public bool IgnoreProtocolVersion { get; set; }
 
@@ -97,7 +97,7 @@ namespace Vibor.Helpers
             }
             catch (Exception ex)
             {
-                _logger.Error(ex);
+                _logger.LogError(ex);
             }
         }
     }
