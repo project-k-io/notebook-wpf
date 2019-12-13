@@ -31,8 +31,7 @@ namespace Vibor.Helpers
         public static void RunParallel<T>(IList<T> files, Action<T> action, Action started = null,
             Action<int> changed = null, Action completed = null)
         {
-            if (started != null)
-                started();
+            started?.Invoke();
             var ii = 0;
             var step = files.Count > 100 ? (int) (files.Count / 100.0 + 0.5) : 1;
             var parallelOptions = new ParallelOptions {MaxDegreeOfParallelism = -1};
@@ -51,9 +50,7 @@ namespace Vibor.Helpers
                     Logger.LogError(ex);
                 }
             });
-            if (completed == null)
-                return;
-            completed();
+            completed?.Invoke();
         }
 
         public static void AddToList<T>(ICollection<T> list, T task) where T : ITask<T>

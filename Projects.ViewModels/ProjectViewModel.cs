@@ -36,30 +36,23 @@ namespace Projects.ViewModels
         {
             var dateTimeList = new List<DateTime>();
             foreach (var selectedTask in SelectedTaskList)
-                if (!(selectedTask.Context != "Day"))
+                if (selectedTask.Context == "Day")
                     dateTimeList.Add(selectedTask.DateStarted);
+
             return dateTimeList;
         }
 
         public event EventHandler SelectedDaysChanged;
 
-        public void OnSelectedDaysChanged()
-        {
-            var selectedDaysChanged = SelectedDaysChanged;
-            if (selectedDaysChanged == null)
-                return;
-            selectedDaysChanged(this, EventArgs.Empty);
-        }
+        public void OnSelectedDaysChanged() => SelectedDaysChanged?.Invoke(this, EventArgs.Empty);
 
-        public TaskViewModel FindTask(Guid id)
-        {
-            return RootTask.FindTask(id);
-        }
+        public TaskViewModel FindTask(Guid id) => RootTask.FindTask(id);
 
         public void SelectTreeTask(TaskViewModel task)
         {
             if (task == null)
                 return;
+
             SelectedTreeTask = task;
             SelectedTaskList.Clear();
             XTask.AddToList(SelectedTaskList, task);
@@ -89,9 +82,8 @@ namespace Projects.ViewModels
         public static bool ContainDate(IList dates, DateTime a)
         {
             foreach (var date in dates)
-                if (date is DateTime)
+                if (date is DateTime dateTime)
                 {
-                    var dateTime = (DateTime) date;
                     if (a.Day == dateTime.Day && a.Month == dateTime.Month && a.Year == dateTime.Year)
                         return true;
                 }
@@ -139,7 +131,7 @@ namespace Projects.ViewModels
                 }
                 else if (!sortedList.ContainsKey(task.Id))
                 {
-                    var taskViewModel = new TaskViewModel {Model = task};
+                    var taskViewModel = new TaskViewModel { Model = task };
                     sortedList.Add(task.Id, taskViewModel);
                 }
 
@@ -186,7 +178,7 @@ namespace Projects.ViewModels
             SelectedTreeTask.FixTypes();
         }
 
-        public void UpdateSelectDayTaks(IList dates)
+        public void UpdateSelectDayTasks(IList dates)
         {
             SelectedTaskList.Clear();
             AddToList(SelectedTaskList, RootTask, dates);

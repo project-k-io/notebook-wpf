@@ -137,20 +137,9 @@ namespace Vibor.Helpers
             return path;
         }
 
-        public static string GetFileNameFromDateAndTime(DateTime d)
-        {
-            return string.Format("{0:yyyy-MM-dd_hh-mm-ss-tt}", d);
-        }
-
-        public static string GetFileNameFromTime(DateTime d)
-        {
-            return string.Format("{0:hh-mm-ss-tt}", d);
-        }
-
-        public static string GetFileNameFromDate(DateTime d)
-        {
-            return string.Format("{0:yyyy-MM-dd}", d);
-        }
+        public static string GetFileNameFromDateAndTime(DateTime d) => $"{d:yyyy-MM-dd_hh-mm-ss-tt}";
+        public static string GetFileNameFromTime(DateTime d) => $"{d:hh-mm-ss-tt}";
+        public static string GetFileNameFromDate(DateTime d) => $"{d:yyyy-MM-dd}";
 
         public static string GetDirectoryName(string path)
         {
@@ -179,10 +168,7 @@ namespace Vibor.Helpers
             }
         }
 
-        public static string GetDateTimeSubFolder(string path, string folder)
-        {
-            return GetDateTimeSubFolder(DateTime.Now, path, folder);
-        }
+        public static string GetDateTimeSubFolder(string path, string folder) => GetDateTimeSubFolder(DateTime.Now, path, folder);
 
         public static string GetDateTimeSubFolder(DateTime date, string path, string folder)
         {

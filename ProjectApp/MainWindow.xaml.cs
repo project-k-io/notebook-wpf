@@ -144,7 +144,7 @@ namespace ProjectApp
             var calendar = sender as Calendar;
             if (calendar == null) return;
 
-            dataContext.Project.UpdateSelectDayTaks(calendar.SelectedDates);
+            dataContext.Project.UpdateSelectDayTasks(calendar.SelectedDates);
             dataContext.OnGenerateReportChanged();
         }
     }

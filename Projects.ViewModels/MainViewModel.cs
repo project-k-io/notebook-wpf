@@ -46,8 +46,7 @@ namespace Projects.ViewModels
 
         private Assembly Assembly { get; }
 
-        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) +
-                               " - " + Folder;
+        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + Folder;
 
         public string Folder
         {
@@ -124,10 +123,7 @@ namespace Projects.ViewModels
             Project.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(RecentFile));
         }
 
-        public async Task FileSaveOldFormatAsync()
-        {
-            await XFile.SaveToFileAsync(Project, RecentFile);
-        }
+        public async Task FileSaveOldFormatAsync() => await XFile.SaveToFileAsync(Project, RecentFile);
 
         public async Task FileOpenNewFormatAsync()
         {
@@ -155,22 +151,13 @@ namespace Projects.ViewModels
 
         public void OnSelectedTaskChanged(TaskViewModel task)
         {
-            var selectedTaskChanged = SelectedTaskChanged;
-            if (selectedTaskChanged == null) return;
-
-            selectedTaskChanged(this, new TaskEventArgs
+            SelectedTaskChanged?.Invoke(this, new TaskEventArgs
             {
                 Task = task
             });
         }
 
-        public void OnGenerateReportChanged()
-        {
-            var generateReportChanged = GenerateReportChanged;
-            if (generateReportChanged == null) return;
-
-            generateReportChanged(this, EventArgs.Empty);
-        }
+        public void OnGenerateReportChanged() => GenerateReportChanged?.Invoke(this, EventArgs.Empty);
 
         public async Task SaveDataAsync()
         {
@@ -220,8 +207,7 @@ namespace Projects.ViewModels
 
         public async Task LoadConfigurationAsync()
         {
-            Config = await XFile.ReadFromFileAsync<ConfigModel>(ConfigFile);
-            if (Config == null) Config = new ConfigModel();
+            Config = await XFile.ReadFromFileAsync<ConfigModel>(ConfigFile) ?? new ConfigModel();
 
             LastListTaskId = Config.App.LastListTaskId;
             LastTreeTaskId = Config.App.LastTreeTaskId;
@@ -290,14 +276,15 @@ namespace Projects.ViewModels
                 var taskViewModel1 = selectedTreeTask.SubTasks.FirstOrDefault(t => t.Title == dayOfTheWeek);
                 if (taskViewModel1 == null)
                 {
-                    taskViewModel1 = new TaskViewModel(dayOfTheWeek, 0);
-                    taskViewModel1.DateStarted = excelCsvRecord.Day;
-                    taskViewModel1.DateEnded = excelCsvRecord.Day;
+                    taskViewModel1 = new TaskViewModel(dayOfTheWeek, 0)
+                    {
+                        DateStarted = excelCsvRecord.Day, 
+                        DateEnded = excelCsvRecord.Day
+                    };
                     selectedTreeTask.SubTasks.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0);
-                taskViewModel2.Context = "Task";
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0) {Context = "Task"};
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;
@@ -328,8 +315,7 @@ namespace Projects.ViewModels
                 var second2 = dateTime1.Second;
                 var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
                 taskViewModel4.DateEnded = dateTime3;
-                taskViewModel2.Description = string.Format("{0}:{1}:{2}", excelCsvRecord.Type1, excelCsvRecord.Type2,
-                    excelCsvRecord.SubTask);
+                taskViewModel2.Description = $"{excelCsvRecord.Type1}:{excelCsvRecord.Type2}:{excelCsvRecord.SubTask}";
                 taskViewModel1.SubTasks.Add(taskViewModel2);
             }
         }
