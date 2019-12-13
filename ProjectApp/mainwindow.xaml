@@ -7,7 +7,7 @@
               xmlns:my="clr-namespace:Projects.Views;assembly=Projects.Views"
               xmlns:helpers="clr-namespace:Projects.Views.Helpers;assembly=Projects.Views"
               xmlns:app="clr-namespace:ProjectApp"
-              xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
+              xmlns:io="clr-namespace:System.IO;assembly=System.IO.FileSystem"
               MinWidth="600" MinHeight="600" WindowStartupLocation="CenterOwner"
               Icon="/Images/apple_time_machine_alt.png" Title="{Binding Path=Title}">
     <FrameworkElement.Resources>
