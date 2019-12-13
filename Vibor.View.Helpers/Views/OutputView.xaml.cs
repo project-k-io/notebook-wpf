@@ -25,8 +25,7 @@ namespace Vibor.View.Helpers.Views
         private void Init()
         {
             DataContext = _model;
-            ListViewMessages.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, CopyCmdExecuted,
-                CopyCmdCanExecute));
+            ListViewMessages.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, CopyCmdExecuted, CopyCmdCanExecute));
             _model.Init();
 #if AK_2
             Log.LoggingEvent += (s, e) => Dispatcher.BeginInvoke(
