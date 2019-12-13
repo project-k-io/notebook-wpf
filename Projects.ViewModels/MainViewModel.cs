@@ -32,6 +32,7 @@ namespace Projects.ViewModels
             TaskTitleList = new ObservableCollection<string>();
         }
 
+        #region Properties
         public ConfigModel Config { get; set; }
 
         public Guid LastListTaskId { get; set; }
@@ -117,6 +118,8 @@ namespace Projects.ViewModels
 
         public bool CanSave { get; set; }
         public Action<Action> OnDispatcher { get; set; }
+
+        #endregion
 
         public void FileOpenOldFormat()
         {
@@ -278,13 +281,13 @@ namespace Projects.ViewModels
                 {
                     taskViewModel1 = new TaskViewModel(dayOfTheWeek, 0)
                     {
-                        DateStarted = excelCsvRecord.Day, 
+                        DateStarted = excelCsvRecord.Day,
                         DateEnded = excelCsvRecord.Day
                     };
                     selectedTreeTask.SubTasks.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0) {Context = "Task"};
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0) { Context = "Task" };
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;
