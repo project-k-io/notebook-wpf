@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Windows.Input;
-using Vibor.Mvvm;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
 namespace Vibor.View.Helpers.ViewModels
 {
-    public class OutputButtonViewModel : BaseViewModel
+    public class OutputButtonViewModel : ViewModelBase
     {
         private int _count;
         private bool _isChecked = true;
@@ -17,7 +18,7 @@ namespace Vibor.View.Helpers.ViewModels
                 if (_isChecked == value)
                     return;
                 _isChecked = value;
-                OnPropertyChanged(nameof(IsChecked));
+                RaisePropertyChanged(nameof(IsChecked));
             }
         }
 
@@ -31,7 +32,7 @@ namespace Vibor.View.Helpers.ViewModels
                 if (_count == value)
                     return;
                 _count = value;
-                OnPropertyChanged(nameof(Count));
+                RaisePropertyChanged(nameof(Count));
             }
         }
 

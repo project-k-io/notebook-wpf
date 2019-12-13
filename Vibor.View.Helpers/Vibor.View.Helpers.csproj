@@ -8,11 +8,14 @@
   <ItemGroup>
     <ProjectReference Include="..\Vibor.Helpers\Vibor.Helpers.csproj" />
     <ProjectReference Include="..\Vibor.Logging\Vibor.Logging.csproj" />
-    <ProjectReference Include="..\Vibor.Mvvm\Vibor.Mvvm.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
   </ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              mc:Ignorable="d"
               xmlns:my="clr-namespace:Projects.Views;assembly=Projects.Views"
               xmlns:helpers="clr-namespace:Projects.Views.Helpers;assembly=Projects.Views"
               xmlns:app="clr-namespace:ProjectApp"

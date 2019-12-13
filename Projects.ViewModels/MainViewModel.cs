@@ -9,11 +9,11 @@ using Projects.Models;
 using Projects.Models.Versions.Version2;
 using Vibor.Helpers;
 using Vibor.Logging;
-using Vibor.Mvvm;
+using GalaSoft.MvvmLight;
 
 namespace Projects.ViewModels
 {
-    public class MainViewModel : BaseViewModel
+    public class MainViewModel : ViewModelBase
     {
         private static readonly ILog Logger = LogManager.GetLogger(nameof(MainViewModel));
 
@@ -57,8 +57,8 @@ namespace Projects.ViewModels
                 if (_folder == value) return;
 
                 _folder = value;
-                OnPropertyChanged(nameof(Folder));
-                OnPropertyChanged("Title");
+                RaisePropertyChanged(nameof(Folder));
+                RaisePropertyChanged("Title");
             }
         }
 
@@ -70,8 +70,8 @@ namespace Projects.ViewModels
                 if (_recentFile == value) return;
 
                 _recentFile = value;
-                OnPropertyChanged(nameof(RecentFile));
-                OnPropertyChanged("Title");
+                RaisePropertyChanged(nameof(RecentFile));
+                RaisePropertyChanged("Title");
             }
         }
 
@@ -85,7 +85,7 @@ namespace Projects.ViewModels
                 if (_report == value) return;
 
                 _report = value;
-                OnPropertyChanged(nameof(Report));
+                RaisePropertyChanged(nameof(Report));
             }
         }
 
@@ -97,7 +97,7 @@ namespace Projects.ViewModels
                 if (_excelCsvText == value) return;
 
                 _excelCsvText = value;
-                OnPropertyChanged(nameof(ExcelCsvText));
+                RaisePropertyChanged(nameof(ExcelCsvText));
             }
         }
 
@@ -109,7 +109,7 @@ namespace Projects.ViewModels
                 if (_useTimeOptimization == value) return;
 
                 _useTimeOptimization = value;
-                OnPropertyChanged(nameof(UseTimeOptimization));
+                RaisePropertyChanged(nameof(UseTimeOptimization));
             }
         }
 
@@ -141,6 +141,7 @@ namespace Projects.ViewModels
         public ObservableCollection<string> TaskTitleList { get; set; }
 
         public bool CanSave { get; set; }
+        public Action<Action> OnDispatcher { get; set; }
 
         public void FileOpenOldFormat()
         {

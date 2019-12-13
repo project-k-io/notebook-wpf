@@ -31,7 +31,7 @@ namespace ProjectApp
             var dataContext = DataContext as MainViewModel;
             if (dataContext == null) return;
 
-            dataContext.Dispatcher = ViewLib.GetAddDelegate(this);
+            dataContext.OnDispatcher = ViewLib.GetAddDelegate(this);
             dataContext.Project.SelectedDaysChanged += Project_SelectedDaysChanged;
             CommandBindings.AddRange(CreateCommands());
         }

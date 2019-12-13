@@ -1,8 +1,8 @@
-﻿using Vibor.Mvvm;
+﻿using GalaSoft.MvvmLight;
 
 namespace Projects.ViewModels
 {
-    public class LayoutViewModel : BaseViewModel
+    public class LayoutViewModel : ViewModelBase
     {
         private int _navigatorWidth;
 
@@ -14,7 +14,7 @@ namespace Projects.ViewModels
                 if (_navigatorWidth == value)
                     return;
                 _navigatorWidth = value;
-                OnPropertyChanged(nameof(NavigatorWidth));
+                RaisePropertyChanged(nameof(NavigatorWidth));
             }
         }
     }

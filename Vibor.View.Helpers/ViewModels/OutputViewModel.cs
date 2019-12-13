@@ -6,11 +6,11 @@ using System.Windows.Data;
 using Microsoft.Win32;
 using Vibor.Helpers;
 using Vibor.Logging;
-using Vibor.Mvvm;
+using GalaSoft.MvvmLight;
 
 namespace Vibor.View.Helpers.ViewModels
 {
-    public class OutputViewModel : BaseViewModel
+    public class OutputViewModel : ViewModelBase
     {
         private readonly OutputButtonViewModel _outputButtonClear;
         private readonly OutputButtonViewModel _outputButtonDebug;
@@ -28,10 +28,10 @@ namespace Vibor.View.Helpers.ViewModels
             _outputButtonClear.Clicked += OutputButtonClearOnClicked;
             CommandButtons.Clear();
             CommandButtons.Add(_outputButtonClear);
-            _outputButtonMessages.PropertyChanged += OutputButtonPropertyChanged;
-            _outputButtonWarnings.PropertyChanged += OutputButtonPropertyChanged;
-            _outputButtonDebug.PropertyChanged += OutputButtonPropertyChanged;
-            _outputButtonErrors.PropertyChanged += OutputButtonPropertyChanged;
+            _outputButtonMessages.PropertyChanged += OutputButtRaisePropertyChanged;
+            _outputButtonWarnings.PropertyChanged += OutputButtRaisePropertyChanged;
+            _outputButtonDebug.PropertyChanged += OutputButtRaisePropertyChanged;
+            _outputButtonErrors.PropertyChanged += OutputButtRaisePropertyChanged;
         }
 
         public string RegistryPath => XApp.AppName + "\\Output";
@@ -48,7 +48,7 @@ namespace Vibor.View.Helpers.ViewModels
             SaveSettings();
         }
 
-        private void OutputButtonPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OutputButtRaisePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!(e.PropertyName == "IsChecked"))
                 return;
