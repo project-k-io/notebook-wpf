@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Vibor.Helpers
 {
-    class XConvert
+    internal class XConvert
     {
         public const string DateFormat2 = "yyyy-MM-dd";
         public const string DateFormat3 = "dd-MM-yyyy";

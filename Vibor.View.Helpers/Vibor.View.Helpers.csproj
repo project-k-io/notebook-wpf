@@ -1,96 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2B30CCDC-EB42-4CF4-9E36-65E6B476061D}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vibor.View.Helpers</RootNamespace>
-    <AssemblyName>Vibor.View.Helpers</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
+    <ProjectReference Include="..\Vibor.Helpers\Vibor.Helpers.csproj" />
+    <ProjectReference Include="..\Vibor.Logging\Vibor.Logging.csproj" />
+    <ProjectReference Include="..\Vibor.Mvvm\Vibor.Mvvm.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Converters\BackgroundConvertor.cs" />
-    <Compile Include="Converters\ConverterMarkupExtension.cs" />
-    <Compile Include="Converters\DebuggingConverter.cs" />
-    <Compile Include="Converters\DoubleToTextConverter.cs" />
-    <Compile Include="Converters\FloatToTextConverter.cs" />
-    <Compile Include="Converters\GridLengthToDoubleConverter.cs" />
-    <Compile Include="Converters\IndexConverter.cs" />
-    <Compile Include="Converters\Int32ToTextConverter.cs" />
-    <Compile Include="Converters\TextToDoubleConverter.cs" />
-    <Compile Include="Misc\DateIntervals.cs" />
-    <Compile Include="Misc\Helper.cs" />
-    <Compile Include="Misc\IndexChangedEventArgs.cs" />
-    <Compile Include="Misc\ListViewGridViewColumnPair.cs" />
-    <Compile Include="Misc\ListViewSorterHelper.cs" />
-    <Compile Include="Misc\PredicateDelegate.cs" />
-    <Compile Include="Misc\SortableGridViewColumn.cs" />
-    <Compile Include="Misc\ViewLib.cs" />
-    <Compile Include="Misc\XListBox.cs" />
-    <Compile Include="Misc\XListView.cs" />
-    <Compile Include="Misc\XMath.cs" />
-    <Compile Include="ViewModels\OutputButtonViewModel.cs" />
-    <Compile Include="ViewModels\OutputRecordViewModel.cs" />
-    <Compile Include="Views\OutputView.xaml.cs">
-      <DependentUpon>OutputView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\OutputViewModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="XKeyboard.cs" />
+    <Folder Include="Properties\" />
   </ItemGroup>
-  <ItemGroup>
-    <Page Include="Views\OutputView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Vibor.Helpers\Vibor.Helpers.csproj">
-      <Project>{cee75388-0852-4fae-bbad-e3d87d16004e}</Project>
-      <Name>Vibor.Helpers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Vibor.Logging\Vibor.Logging.csproj">
-      <Project>{abb2cdd6-7f3f-4540-b3c7-2e502c9575d9}</Project>
-      <Name>Vibor.Logging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Vibor.Mvvm\Vibor.Mvvm.csproj">
-      <Project>{9ba725f2-d6eb-4f90-bc14-562f42d497b3}</Project>
-      <Name>Vibor.Mvvm</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

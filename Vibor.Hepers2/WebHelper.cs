@@ -6,7 +6,7 @@ using Vibor.Logging;
 
 namespace Vibor.Helpers
 {
-    class WebHelper
+    internal class WebHelper
     {
         private static readonly ILog Log = LogManager.GetLogger("WebHelper");
 

@@ -5,16 +5,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Threading;
+using Microsoft.Win32;
 using Projects.ViewModels;
 using Vibor.View.Helpers.Misc;
 
 namespace ProjectApp
 {
-    public partial class MainWindow : RibbonWindow, IComponentConnector
+    public partial class MainWindow : RibbonWindow
     {
         public MainWindow()
         {
@@ -33,7 +31,7 @@ namespace ProjectApp
             var dataContext = DataContext as MainViewModel;
             if (dataContext == null) return;
 
-            dataContext.Dispatcher = ViewLib.GetAddDelegate(this, DispatcherPriority.Background);
+            dataContext.Dispatcher = ViewLib.GetAddDelegate(this);
             dataContext.Project.SelectedDaysChanged += Project_SelectedDaysChanged;
             CommandBindings.AddRange(CreateCommands());
         }
@@ -46,19 +44,31 @@ namespace ProjectApp
         {
             var commandBindings = new CommandBindingCollection
             {
-                new CommandBinding(ApplicationCommands.New, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Open, async (s, e) => await FileOpenNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Save, async (s, e) => await FileSaveNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await FileSaveAsNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.Clear, (s, e) => Model.Project.Clear(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.New, async (s, e) => await Model.NewProjectAsync(),
+                    (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await FileOpenNewFormatAsync(),
+                    (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Save, async (s, e) => await FileSaveNewFormatAsync(),
+                    (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await FileSaveAsNewFormatAsync(),
+                    (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(),
+                    (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.Clear, (s, e) => Model.Project.Clear(),
+                    (s, e) => e.CanExecute = !IsModelNull),
                 new CommandBinding(Commands.Edit, (s, e) => Edit(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.FixTime, (s, e) => Model.Project.FixTime(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.ExtractContext, (s, e) => Model.Project.FixContext(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.FixTitles, (s, e) => Model.Project.FixTitles(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.FixTypes, (s, e) => Model.Project.FixTypes(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.CopyTask, (s, e) => Model.CopyTask(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.ContinueTask, (s, e) => Model.ContinueTask(), (s, e) => e.CanExecute = !IsModelNull)
+                new CommandBinding(Commands.FixTime, (s, e) => Model.Project.FixTime(),
+                    (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.ExtractContext, (s, e) => Model.Project.FixContext(),
+                    (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.FixTitles, (s, e) => Model.Project.FixTitles(),
+                    (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.FixTypes, (s, e) => Model.Project.FixTypes(),
+                    (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.CopyTask, (s, e) => Model.CopyTask(),
+                    (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(Commands.ContinueTask, (s, e) => Model.ContinueTask(),
+                    (s, e) => e.CanExecute = !IsModelNull)
             };
             return commandBindings;
         }
@@ -79,7 +89,8 @@ namespace ProjectApp
             var openFileDialog = new OpenFileDialog();
             openFileDialog.InitialDirectory = dataContext.Folder;
             openFileDialog.FileName = dataContext.RecentFile;
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
+            var result = openFileDialog.ShowDialog();
+            if (result == false) return;
 
             dataContext.Folder = Path.GetDirectoryName(openFileDialog.FileName);
             dataContext.RecentFile = openFileDialog.FileName;
@@ -90,13 +101,13 @@ namespace ProjectApp
         {
             var model = DataContext as MainViewModel;
             if (model == null) return;
-
+#if AK
             var dialog = new FolderBrowserDialog();
             dialog.SelectedPath = model.Folder;
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
-
             model.Folder = dialog.SelectedPath;
             await model.FileOpenNewFormatAsync();
+#endif
         }
 
         private async Task FileSaveNewFormatAsync()
@@ -114,13 +125,14 @@ namespace ProjectApp
         {
             var model = DataContext as MainViewModel;
             if (model == null) return;
-
+#if AK
             var dialog = new FolderBrowserDialog();
             dialog.SelectedPath = model.Folder;
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
 
             model.Folder = dialog.SelectedPath;
             await model.FileSaveNewFormatAsync();
+#endif
         }
 
         private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)

@@ -29,11 +29,10 @@ namespace Projects.Models.Versions.Version2
         {
             [DefaultValue(100)] public int LayoutNavigatorWidth { get; set; }
             public double MainWindowTop { get; set; }
-            [DefaultValue("100")]
-            public double MainWindowLeft { get; set; }
 
-            [DefaultValue("400")]
-            public double MainWindowWidth { get; set; }
+            [DefaultValue("100")] public double MainWindowLeft { get; set; }
+
+            [DefaultValue("400")] public double MainWindowWidth { get; set; }
 
             [DefaultValue("300")] public double MainWindowHeight { get; set; }
         }

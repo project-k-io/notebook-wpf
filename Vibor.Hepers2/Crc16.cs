@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Vibor.Helpers
 {
-    class Crc16
+    internal class Crc16
     {
         private const ushort P16 = 40961;
         private readonly ushort[] _table = new ushort[256];

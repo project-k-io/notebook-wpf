@@ -1,10 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Vibor.Helpers
 {
-    class Calendar
+    internal class Calendar
     {
         public static Calendar Instance = new Calendar();
 

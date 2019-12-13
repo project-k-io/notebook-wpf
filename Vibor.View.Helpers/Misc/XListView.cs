@@ -31,9 +31,9 @@ namespace Vibor.View.Helpers.Misc
             if (originalSource == null || originalSource.Role == GridViewColumnHeaderRole.Padding)
                 return;
             var direction = originalSource.Column == lastColumnClicked
-                ? (lastDirection == ListSortDirection.Ascending
+                ? lastDirection == ListSortDirection.Ascending
                     ? ListSortDirection.Descending
-                    : ListSortDirection.Ascending)
+                    : ListSortDirection.Ascending
                 : ListSortDirection.Ascending;
             var column = originalSource.Column as SortableGridViewColumn;
             if (column == null)

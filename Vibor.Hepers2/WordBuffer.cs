@@ -1,10 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Vibor.Helpers
 {
-    class WordBuffer
+    internal class WordBuffer
     {
         private IList<byte> _bytes;
         private int _index;
@@ -22,7 +21,7 @@ namespace Vibor.Helpers
         public string Text
         {
             get => BitByteConverter.BytesToSpaceSeparatedTextHexWords(Bytes);
-            set => Bytes = BitByteConverter.SpaceSeparatedTextHexWordsToBytes(value, false);
+            set => Bytes = BitByteConverter.SpaceSeparatedTextHexWordsToBytes(value);
         }
 
         public IList<byte> Bytes

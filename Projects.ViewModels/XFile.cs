@@ -63,7 +63,7 @@ namespace Projects.ViewModels
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex);
-                    return default(T);
+                    return default;
                 }
             });
         }

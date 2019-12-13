@@ -259,9 +259,9 @@ namespace Projects.ViewModels
 
         public TaskViewModel LastSubTask => SubTasks.LastOrDefault();
 
-        public ICommand CommandSetStartedTime => new RelayCommand(SetStartedTime, null);
+        public ICommand CommandSetStartedTime => new RelayCommand(SetStartedTime);
 
-        public ICommand CommandSetEndedTime => new RelayCommand(SetEndedTime, null);
+        public ICommand CommandSetEndedTime => new RelayCommand(SetEndedTime);
 
         public ObservableCollection<TaskViewModel> SubTasks { get; set; } = new ObservableCollection<TaskViewModel>();
 

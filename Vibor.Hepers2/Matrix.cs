@@ -1,10 +1,9 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Vibor.Helpers
 {
-    class Matrix<T>
+    internal class Matrix<T>
     {
         public Matrix()
         {

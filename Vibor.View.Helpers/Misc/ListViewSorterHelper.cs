@@ -20,9 +20,9 @@ namespace Vibor.View.Helpers.Misc
             if (originalSource == null || originalSource.Role == GridViewColumnHeaderRole.Padding)
                 return;
             var direction = originalSource == _lastHeaderClicked
-                ? (_lastDirection != ListSortDirection.Ascending
+                ? _lastDirection != ListSortDirection.Ascending
                     ? ListSortDirection.Ascending
-                    : ListSortDirection.Descending)
+                    : ListSortDirection.Descending
                 : ListSortDirection.Ascending;
             var header = originalSource.Column.Header as string;
             Sort(lv, header, direction);

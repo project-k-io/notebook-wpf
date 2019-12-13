@@ -17,7 +17,7 @@ namespace Vibor.View.Helpers.Misc
 
         public static void SafePause(DispatcherObject o, double PauseSeconds, bool myCancel)
         {
-            DateTime dateTime = DateTime.Now.AddSeconds(PauseSeconds);
+            var dateTime = DateTime.Now.AddSeconds(PauseSeconds);
             do
             {
                 DoEvents(o);
@@ -26,7 +26,7 @@ namespace Vibor.View.Helpers.Misc
 
         public static void DoEvents(DispatcherObject o)
         {
-            o.Dispatcher.Invoke(DispatcherPriority.Background, (Action)(() => { }));
+            o.Dispatcher.Invoke(DispatcherPriority.Background, (Action) (() => { }));
         }
     }
 }
