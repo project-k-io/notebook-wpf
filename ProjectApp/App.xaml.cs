@@ -13,7 +13,7 @@ using Vibor.Helpers;
 
 namespace ProjectApp
 {
-    public class App : Application
+    public partial class App : Application
     {
         private static readonly ILogger Logger = LogManager.GetLogger<App>();
         private readonly MainViewModel _mainModel = new MainViewModel();
