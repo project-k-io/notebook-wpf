@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using ProjectApp.Properties;
 using Projects.Models.Versions.Version2;
 using Projects.ViewModels;
@@ -14,7 +15,7 @@ namespace ProjectApp
 {
     public class App : Application
     {
-        private static readonly ILogger Logger = LogManager.GetLogger("Converter");
+        private static readonly ILogger Logger = LogManager.GetLogger<App>();
         private readonly MainViewModel _mainModel = new MainViewModel();
         private readonly MainWindow _mainWindow = new MainWindow();
         private bool _canSave;
@@ -22,12 +23,22 @@ namespace ProjectApp
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            AddLogging();
             await _mainModel.LoadDataAsync();
             await _mainModel.UpdateTypeListAsync();
             LoadSettings(_mainModel.Config.Layout);
             _mainWindow.DataContext = _mainModel;
             _mainWindow.Show();
             await StartSavingAsync();
+        }
+
+        void AddLogging()
+        {
+            var serviceProvider = new ServiceCollection().
+                AddLogging(cfg => cfg.AddConsole()).
+                BuildServiceProvider();
+
+            LogManager.Provider = serviceProvider;
         }
 
         protected override async void OnExit(ExitEventArgs e)

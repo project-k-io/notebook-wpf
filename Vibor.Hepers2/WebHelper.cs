@@ -8,7 +8,7 @@ namespace Vibor.Helpers
 {
     internal class WebHelper
     {
-        private static readonly ILogger Log = LogManager.GetLogger("WebHelper");
+        private static readonly ILogger Log = LogManager.GetLogger<WebHelper>();
 
         public static string[] GetLines(string urlString)
         {

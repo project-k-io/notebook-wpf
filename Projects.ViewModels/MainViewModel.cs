@@ -15,7 +15,7 @@ namespace Projects.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private static readonly ILogger Logger = LogManager.GetLogger(nameof(MainViewModel));
+        private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
 
         private string _excelCsvText;
         private string _folder;

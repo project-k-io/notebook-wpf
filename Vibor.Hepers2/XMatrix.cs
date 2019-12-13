@@ -9,7 +9,7 @@ namespace Vibor.Helpers
 {
     internal class XMatrix
     {
-        private static readonly ILogger Logger = LogManager.GetLogger("StartUpFlowViewModel");
+        private static readonly ILogger Logger = LogManager.GetLogger<XMatrix>();
 
         public static void CheckSize<T>(List<List<T>> m, int colCount, int rowCount, T zero = default)
         {

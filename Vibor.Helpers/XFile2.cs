@@ -11,7 +11,7 @@ namespace Vibor.Helpers
 {
     public class XFile2
     {
-        private static readonly ILogger Logger = LogManager.GetLogger("CommandsViewModel");
+        private static readonly ILogger Logger = LogManager.GetLogger<XFile2>();
 
         public static void SaveToXmlFile<T>(T t, string filename)
         {

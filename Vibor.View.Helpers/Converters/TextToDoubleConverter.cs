@@ -10,7 +10,7 @@ namespace Vibor.View.Helpers.Converters
     [ValueConversion(typeof(string), typeof(double))]
     public class TextToDoubleConverter : ConverterMarkupExtension<TextToDoubleConverter>, IValueConverter
     {
-        private static readonly ILogger Log = LogManager.GetLogger();
+        private static readonly ILogger Log = LogManager.GetLogger<TextToDoubleConverter>();
         private readonly DoubleConverter _converter;
 
         public TextToDoubleConverter()

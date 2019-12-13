@@ -9,7 +9,7 @@ namespace Vibor.Helpers
 {
     public class XTask
     {
-        private static readonly ILogger Logger = LogManager.GetLogger("XTask");
+        private static readonly ILogger Logger = LogManager.GetLogger<XTask>();
 
         public static async void RunAsync<T>(IList<T> files, Action<T> action, Action<int> progress)
         {

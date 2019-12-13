@@ -9,7 +9,7 @@ namespace Vibor.Helpers
 {
     internal class BitByteConverter
     {
-        private static readonly ILogger Logger = LogManager.GetLogger();
+        private static readonly ILogger Logger = LogManager.GetLogger<BitByteConverter>();
 
         public static List<byte> SpaceSeparatedTextHexWordsToBytes(string text, bool reverse = false)
         {

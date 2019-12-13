@@ -9,7 +9,7 @@ namespace Vibor.Helpers
 {
     internal class XmlFile
     {
-        private static readonly ILogger Log = LogManager.GetLogger("XmlFile");
+        private static readonly ILogger Log = LogManager.GetLogger<XmlFile>();
 
         public static void Serialize(string fileName, XmlWriterDeleage action)
         {

@@ -15,7 +15,7 @@ namespace Vibor.View.Helpers.Misc
 {
     public class ViewLib
     {
-        private static readonly ILogger Log = LogManager.GetLogger();
+        private static readonly ILogger Log = LogManager.GetLogger<ViewLib>();
 
         public static bool IsInDesignMode => (bool) DesignerProperties.IsInDesignModeProperty
             .GetMetadata(typeof(DependencyObject)).DefaultValue;

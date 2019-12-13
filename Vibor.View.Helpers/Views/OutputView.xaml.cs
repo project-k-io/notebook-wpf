@@ -13,7 +13,7 @@ namespace Vibor.View.Helpers.Views
 {
     public partial class OutputView : UserControl, IComponentConnector
     {
-        private static readonly ILogger Log = LogManager.GetLogger();
+        private static readonly ILogger Log = LogManager.GetLogger<OutputView>();
         private readonly OutputViewModel _model = new OutputViewModel();
 
         public OutputView()

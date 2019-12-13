@@ -5,7 +5,7 @@ namespace Vibor.Helpers
 {
     internal class FourLevelVersion
     {
-        private readonly ILogger _logger = LogManager.GetLogger(nameof(FourLevelVersion));
+        private readonly ILogger _logger = LogManager.GetLogger<FourLevelVersion>();
 
         public bool IgnoreProtocolVersion { get; set; }
 

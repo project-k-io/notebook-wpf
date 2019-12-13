@@ -11,7 +11,7 @@ namespace Vibor.Helpers
     [Serializable]
     internal class SerializableDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>, IXmlSerializable
     {
-        private static readonly ILogger Log = LogManager.GetLogger("SerializableDictionary");
+        private static readonly ILogger Log = LogManager.GetLogger<SerializableDictionary<TKey, TValue>>();
 
         public XmlSchema GetSchema()
         {

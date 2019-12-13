@@ -15,7 +15,7 @@ namespace Projects.Views
 {
     public partial class ReportView : UserControl, IComponentConnector
     {
-        private static readonly ILogger Logger = LogManager.GetLogger("Converter");
+        private static readonly ILogger Logger = LogManager.GetLogger<ReportView>();
 
         public ReportView()
         {
