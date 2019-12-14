@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Projects.Models;
 using Projects.Models.Versions.Version2;
 using Vibor.Helpers;
 using Microsoft.Extensions.Logging;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
 namespace Projects.ViewModels
 {
@@ -17,11 +20,28 @@ namespace Projects.ViewModels
     {
         private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
 
+
         private string _excelCsvText;
         private string _folder;
         private string _recentFile;
         private string _report;
         private bool _useTimeOptimization;
+
+        #region Commands
+        public ICommand ClearCommand { get; private set; }
+        public ICommand EditCommand { get; private set; }
+        public ICommand FixTimeCommand { get; private set; }
+        public ICommand ExtractContextCommand { get; private set; }
+        public ICommand FixContextCommand { get; private set; }
+        public ICommand FixTitlesCommand { get; private set; }
+        public ICommand FixTypesCommand { get; private set; }
+        public ICommand CopyTaskCommand { get; private set; }
+        public ICommand ContinueTaskCommand { get; private set; }
+
+
+        #endregion
+
+
 
         public MainViewModel()
         {
@@ -30,6 +50,15 @@ namespace Projects.ViewModels
             TypeList = new ObservableCollection<string>();
             ContextList = new ObservableCollection<string>();
             TaskTitleList = new ObservableCollection<string>();
+
+            ClearCommand = new RelayCommand(Project.Clear);
+            EditCommand = new RelayCommand(() => Process.Start("notepad.exe", Folder));
+            FixTimeCommand = new RelayCommand(Project.FixTime);
+            ExtractContextCommand = new RelayCommand(Project.FixContext);
+            FixTitlesCommand = new RelayCommand(Project.FixTitles);
+            FixTypesCommand = new RelayCommand(Project.FixTypes);
+            CopyTaskCommand = new RelayCommand(CopyTask);
+            ContinueTaskCommand = new RelayCommand(ContinueTask);
         }
 
         #region Properties
@@ -121,13 +150,12 @@ namespace Projects.ViewModels
 
         #endregion
 
+
         public void FileOpenOldFormat()
         {
             Project.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(RecentFile));
         }
-
         public async Task FileSaveOldFormatAsync() => await XFile.SaveToFileAsync(Project, RecentFile);
-
         public async Task FileOpenNewFormatAsync()
         {
             if (!Directory.Exists(Folder)) return;
@@ -137,7 +165,6 @@ namespace Projects.ViewModels
             Project.LoadFrom(Data);
             UseSettings();
         }
-
         public async Task FileSaveNewFormatAsync()
         {
             var fileName = DataModel.GetTasksFileName(Folder);
@@ -147,11 +174,8 @@ namespace Projects.ViewModels
             Project.SaveTo(Data);
             await XFile.SaveToFileAsync(Data, fileName);
         }
-
         public event EventHandler<EventArgs> GenerateReportChanged;
-
         public event EventHandler<TaskEventArgs> SelectedTaskChanged;
-
         public void OnSelectedTaskChanged(TaskViewModel task)
         {
             SelectedTaskChanged?.Invoke(this, new TaskEventArgs
@@ -159,9 +183,7 @@ namespace Projects.ViewModels
                 Task = task
             });
         }
-
         public void OnGenerateReportChanged() => GenerateReportChanged?.Invoke(this, EventArgs.Empty);
-
         public async Task SaveDataAsync()
         {
             if (!CanSave) return;
@@ -169,13 +191,11 @@ namespace Projects.ViewModels
             await SaveConfigurationAsync();
             await FileSaveNewFormatAsync();
         }
-
         public async Task LoadDataAsync()
         {
             await LoadConfigurationAsync();
             await FileOpenNewFormatAsync();
         }
-
         public async Task UpdateTypeListAsync()
         {
             await Task.Run(() =>
@@ -207,7 +227,6 @@ namespace Projects.ViewModels
                 foreach (var str in sortedSet3) TaskTitleList.Add(str);
             });
         }
-
         public async Task LoadConfigurationAsync()
         {
             Config = await XFile.ReadFromFileAsync<ConfigModel>(ConfigFile) ?? new ConfigModel();
@@ -221,7 +240,6 @@ namespace Projects.ViewModels
 
             MostRecentFiles.Add(new FileInfo(Folder));
         }
-
         public async Task SaveConfigurationAsync()
         {
             if (Config == null) Config = new ConfigModel();
@@ -232,13 +250,11 @@ namespace Projects.ViewModels
             Config.App.RecentFile = RecentFile;
             await XFile.SaveToFileAsync(Config, ConfigFile);
         }
-
         public void UseSettings()
         {
             Project.SelectTreeTask(LastListTaskId);
             Project.SelectTask(LastTreeTaskId);
         }
-
         public void PrepareSettings()
         {
             if (Project.SelectedTask != null) LastListTaskId = Project.SelectedTask.Id;
@@ -247,7 +263,6 @@ namespace Projects.ViewModels
 
             LastTreeTaskId = Project.SelectedTreeTask.Id;
         }
-
         public void SelectTreeTask(TaskViewModel task)
         {
             task.TypeList = TypeList;
@@ -256,7 +271,6 @@ namespace Projects.ViewModels
             Project.SelectTreeTask(task);
             OnGenerateReportChanged();
         }
-
         public void CopyExcelCsvText()
         {
             var stringReader = new StringReader(ExcelCsvText);
@@ -322,7 +336,6 @@ namespace Projects.ViewModels
                 taskViewModel1.SubTasks.Add(taskViewModel2);
             }
         }
-
         public async Task NewProjectAsync()
         {
             await SaveDataAsync();
@@ -336,7 +349,6 @@ namespace Projects.ViewModels
             Folder = string.Empty;
             CanSave = true;
         }
-
         public void OnTreeViewKeyDown(TaskViewModel.KeyStates keyState, TaskViewModel.KeyboardStates keyboardState)
         {
             TaskViewModel.OnTreeViewKeyDown(
@@ -348,12 +360,10 @@ namespace Projects.ViewModels
                 () => true,
                 OnDispatcher);
         }
-
         public void CopyTask()
         {
             OnTreeViewKeyDown(TaskViewModel.KeyStates.Insert, TaskViewModel.KeyboardStates.IsControlPressed);
         }
-
         public void ContinueTask()
         {
             OnTreeViewKeyDown(TaskViewModel.KeyStates.Insert, TaskViewModel.KeyboardStates.IsShiftPressed);

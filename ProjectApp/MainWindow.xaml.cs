@@ -33,53 +33,25 @@ namespace ProjectApp
 
             dataContext.OnDispatcher = ViewLib.GetAddDelegate(this);
             dataContext.Project.SelectedDaysChanged += Project_SelectedDaysChanged;
-            CommandBindings.AddRange(CreateCommands());
+            InitCommandBindings();
         }
 
         private void Project_SelectedDaysChanged(object sender, EventArgs e)
         {
         }
 
-        private CommandBindingCollection CreateCommands()
+        private void InitCommandBindings()
         {
             var commandBindings = new CommandBindingCollection
             {
-                new CommandBinding(ApplicationCommands.New, async (s, e) => await Model.NewProjectAsync(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Open, async (s, e) => await FileOpenNewFormatAsync(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Save, async (s, e) => await FileSaveNewFormatAsync(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await FileSaveAsNewFormatAsync(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.Clear, (s, e) => Model.Project.Clear(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.Edit, (s, e) => Edit(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.FixTime, (s, e) => Model.Project.FixTime(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.ExtractContext, (s, e) => Model.Project.FixContext(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.FixTitles, (s, e) => Model.Project.FixTitles(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.FixTypes, (s, e) => Model.Project.FixTypes(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.CopyTask, (s, e) => Model.CopyTask(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.ContinueTask, (s, e) => Model.ContinueTask(),
-                    (s, e) => e.CanExecute = !IsModelNull)
+                new CommandBinding(ApplicationCommands.New, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await FileOpenNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Save, async (s, e) => await FileSaveNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await FileSaveAsNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
             };
-            return commandBindings;
+            CommandBindings.AddRange(commandBindings);
         }
-
-        private void Edit()
-        {
-            if (IsModelNull) return;
-
-            Process.Start("notepad.exe", Model.Folder);
-        }
-
 
         private void FileOpenOldFormat()
         {

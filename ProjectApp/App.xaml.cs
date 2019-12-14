@@ -111,13 +111,5 @@ namespace ProjectApp
                 Logger.LogError(ex);
             }
         }
-
-        [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-        [DebuggerNonUserCode]
-        [STAThread]
-        public static void Main()
-        {
-            new App().Run();
-        }
     }
 }
