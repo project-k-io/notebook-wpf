@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using ProjectApp.Properties;
 using Projects.Models.Versions.Version2;
 using Projects.ViewModels;
 using Microsoft.Extensions.Logging;
