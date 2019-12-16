@@ -15,31 +15,54 @@ namespace ProjectApp
 {
     public partial class App : Application
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<App>();
-        private readonly MainViewModel _mainModel = new MainViewModel();
-        private readonly MainWindow _mainWindow = new MainWindow();
+        private static ILogger _logger;
+        private MainViewModel _mainModel;
+        private MainWindow _mainWindow;
         private bool _canSave;
+
+        public App()
+        {
+            // AddLogging();
+        }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
             AddLogging();
+            // MainModel
+            _mainModel = new MainViewModel();
+            // MainWindow
+            _mainWindow = new MainWindow();
+            _mainWindow.DataContext = _mainModel;
+            // Show MainWindow
+            LoadSettings();
+            _mainWindow.Show();
+            // Load Data
             await _mainModel.LoadDataAsync();
             await _mainModel.UpdateTypeListAsync();
-            LoadSettings();
-            _mainWindow.DataContext = _mainModel;
-            _mainWindow.Show();
             await StartSavingAsync();
         }
 
         void AddLogging()
         {
-            var serviceProvider = new ServiceCollection().
-                AddLogging(cfg => cfg.AddConsole()).
-                BuildServiceProvider();
+            try
+            {
+                var serviceProvider = new ServiceCollection()
+                    .AddLogging(cfg => cfg.AddConsole())
+                    .AddLogging(cfg => cfg.AddDebug())
+                    .Configure<LoggerFilterOptions>(o => o.MinLevel = LogLevel.Debug)
+                    .BuildServiceProvider();
 
-            LogManager.Provider = serviceProvider;
+                LogManager.Provider = serviceProvider;
+                _logger = LogManager.GetLogger<App>();
+                _logger.LogDebug("Logger Installed");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
+
 
         protected override async void OnExit(ExitEventArgs e)
         {
@@ -86,12 +109,13 @@ namespace ProjectApp
                 _mainModel.Folder = settings.RecentFolder;
                 _mainModel.RecentFile = settings.RecentFile;
                 _mainModel.MostRecentFiles.Clear();
+
                 if (Directory.Exists(_mainModel.Folder))
                     _mainModel.MostRecentFiles.Add(new FileInfo(_mainModel.Folder));
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                _logger.LogError(ex);
             }
 
         }
@@ -122,7 +146,7 @@ namespace ProjectApp
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                _logger.LogError(ex);
             }
         }
     }

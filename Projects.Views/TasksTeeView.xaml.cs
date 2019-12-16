@@ -13,8 +13,6 @@ namespace Projects.Views
 {
     public partial class TasksTreeView : UserControl, IComponentConnector
     {
-        private MainViewModel _main = new MainViewModel();
-
         public TasksTreeView()
         {
             InitializeComponent();

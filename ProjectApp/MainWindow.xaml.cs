@@ -6,14 +6,18 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using Projects.ViewModels;
+using Vibor.Helpers;
 using Vibor.View.Helpers.Misc;
 
 namespace ProjectApp
 {
     public partial class MainWindow : RibbonWindow
     {
+        private readonly ILogger _logger = LogManager.GetLogger<MainWindow>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,6 +32,7 @@ namespace ProjectApp
 
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
+            _logger.LogDebug("MainWindow Loaded()");
             var dataContext = DataContext as MainViewModel;
             if (dataContext == null) return;
 
