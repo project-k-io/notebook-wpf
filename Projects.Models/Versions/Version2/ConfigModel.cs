@@ -10,12 +10,10 @@ namespace Projects.Models.Versions.Version2
         public ConfigModel()
         {
             App = new AppModel();
-            Layout = new LayoutModel();
         }
 
         public AppModel App { get; set; }
 
-        public LayoutModel Layout { get; set; }
 
         public class AppModel
         {
@@ -25,16 +23,5 @@ namespace Projects.Models.Versions.Version2
             public Guid LastListTaskId { get; set; }
         }
 
-        public class LayoutModel
-        {
-            [DefaultValue(100)] public int LayoutNavigatorWidth { get; set; }
-            public double MainWindowTop { get; set; }
-
-            [DefaultValue("100")] public double MainWindowLeft { get; set; }
-
-            [DefaultValue("400")] public double MainWindowWidth { get; set; }
-
-            [DefaultValue("300")] public double MainWindowHeight { get; set; }
-        }
     }
 }

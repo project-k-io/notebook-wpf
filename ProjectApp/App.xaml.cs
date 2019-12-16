@@ -25,7 +25,7 @@ namespace ProjectApp
             AddLogging();
             await _mainModel.LoadDataAsync();
             await _mainModel.UpdateTypeListAsync();
-            LoadSettings(_mainModel.Config.Layout);
+            LoadSettings();
             _mainWindow.DataContext = _mainModel;
             _mainWindow.Show();
             await StartSavingAsync();
@@ -43,7 +43,7 @@ namespace ProjectApp
         protected override async void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-            SaveSettings(_mainModel.Config.Layout);
+            SaveSettings();
             StopSaving();
             await _mainModel.SaveDataAsync();
             _mainWindow.Close();
@@ -55,7 +55,7 @@ namespace ProjectApp
             _canSave = true;
             while (_canSave)
             {
-                SaveSettings(_mainModel.Config.Layout);
+                SaveSettings();
                 await _mainModel.SaveDataAsync();
                 await Task.Run(() => Thread.Sleep(5000));
             }
@@ -66,40 +66,41 @@ namespace ProjectApp
             _canSave = false;
         }
 
-        private void LoadSettings(ConfigModel.LayoutModel s1)
+        private void LoadSettings()
         {
             // ISSUE: variable of a compiler-generated type
             var settings = Settings.Default;
             try
             {
                 _mainWindow.WindowState = settings.MainWindowState;
-                _mainWindow.Top = s1.MainWindowTop;
-                _mainWindow.Left = s1.MainWindowLeft;
-                _mainWindow.Width = s1.MainWindowWidth;
-                _mainWindow.Height = s1.MainWindowHeight;
+                _mainWindow.Top = settings.MainWindowTop;
+                _mainWindow.Left = settings.MainWindowLeft;
+                _mainWindow.Width = settings.MainWindowWidth;
+                _mainWindow.Height = settings.MainWindowHeight;
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
 
-            _mainModel.Layout.NavigatorWidth = s1.LayoutNavigatorWidth;
+            _mainModel.Layout.NavigatorWidth = settings.LayoutNavigatorWidth;
         }
 
-        private void SaveSettings(ConfigModel.LayoutModel s1)
+        private void SaveSettings()
         {
             try
             {
                 _mainModel.PrepareSettings();
-                // ISSUE: variable of a compiler-generated type
                 var settings = Settings.Default;
+
+                // ISSUE: variable of a compiler-generated type
                 if (_mainWindow.WindowState != WindowState.Minimized)
                 {
-                    s1.MainWindowTop = _mainWindow.Top;
-                    s1.MainWindowLeft = _mainWindow.Left;
-                    s1.MainWindowWidth = _mainWindow.Width;
-                    s1.MainWindowHeight = _mainWindow.Height;
-                    s1.LayoutNavigatorWidth = _mainModel.Layout.NavigatorWidth;
+                    settings.MainWindowTop = _mainWindow.Top;
+                    settings.MainWindowLeft = _mainWindow.Left;
+                    settings.MainWindowWidth = _mainWindow.Width;
+                    settings.MainWindowHeight = _mainWindow.Height;
+                    settings.LayoutNavigatorWidth = _mainModel.Layout.NavigatorWidth;
                 }
 
                 settings.MainWindowState = _mainWindow.WindowState;
