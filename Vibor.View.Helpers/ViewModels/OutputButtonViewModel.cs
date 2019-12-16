@@ -27,13 +27,7 @@ namespace Vibor.View.Helpers.ViewModels
         public int Count
         {
             get => _count;
-            set
-            {
-                if (_count == value)
-                    return;
-                _count = value;
-                RaisePropertyChanged(nameof(Count));
-            }
+            set => Set(ref _count, value);
         }
 
         public string Label { get; set; }

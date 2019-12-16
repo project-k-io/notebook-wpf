@@ -57,28 +57,18 @@ namespace Projects.ViewModels
 
         public ObservableCollection<string> TaskTitleList { get; set; }
 
+
+
         public string Context
         {
             get => Model.Context;
-            set
-            {
-                if (Model.Context == value)
-                    return;
-                Model.Context = value;
-                RaisePropertyChanged(nameof(Context));
-            }
+            set => this.Set(Context, v => Model.Context = v, value);
         }
 
         public int Rating
         {
             get => Model.Rating;
-            set
-            {
-                if (Model.Rating == value)
-                    return;
-                Model.Rating = value;
-                RaisePropertyChanged(nameof(Rating));
-            }
+            set => this.Set(Rating, v => Model.Rating = v, value);
         }
 
         public TaskViewModel Parent { get; set; }
@@ -88,61 +78,31 @@ namespace Projects.ViewModels
         public bool IsSelected
         {
             get => _isSelected;
-            set
-            {
-                if (_isSelected == value)
-                    return;
-                _isSelected = value;
-                RaisePropertyChanged(nameof(IsSelected));
-            }
+            set => Set(ref _isSelected, value);
         }
 
         public bool IsExpanded
         {
             get => _isExpanded;
-            set
-            {
-                if (_isExpanded == value)
-                    return;
-                _isExpanded = value;
-                RaisePropertyChanged("IsExpnaded");
-            }
+            set => Set(ref _isExpanded, value);
         }
 
         public string Description
         {
             get => Model.Description;
-            set
-            {
-                if (Model.Description == value)
-                    return;
-                Model.Description = value;
-                RaisePropertyChanged(nameof(Description));
-            }
+            set => this.Set(Description, v => Model.Description = v, value);
         }
 
         public string Type
         {
             get => Model.Type;
-            set
-            {
-                if (Model.Type == value)
-                    return;
-                Model.Type = value;
-                RaisePropertyChanged(nameof(Type));
-            }
+            set => this.Set(Type, v => Model.Type = v, value);
         }
 
         public string SubType
         {
             get => Model.SubType;
-            set
-            {
-                if (Model.SubType == value)
-                    return;
-                Model.SubType = value;
-                RaisePropertyChanged(nameof(SubType));
-            }
+            set => this.Set(SubType, v => Model.SubType = v, value);
         }
 
         public bool IsPersonalType
@@ -181,12 +141,9 @@ namespace Projects.ViewModels
             get => Model.DateStarted;
             set
             {
-                if (Model.DateStarted == value)
-                    return;
-                Model.DateStarted = value;
-                RaisePropertyChanged(nameof(DateStarted));
-                RaisePropertyChanged("TimeStarted");
-                RaisePropertyChanged("Duration");
+                if(!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
+                RaisePropertyChanged($"TimeStarted");
+                RaisePropertyChanged($"Duration");
             }
         }
 
@@ -195,25 +152,16 @@ namespace Projects.ViewModels
             get => Model.DateEnded;
             set
             {
-                if (Model.DateEnded == value)
-                    return;
-                Model.DateEnded = value;
-                RaisePropertyChanged(nameof(DateEnded));
-                RaisePropertyChanged("TimeEnded");
-                RaisePropertyChanged("Duration");
+                if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
+                RaisePropertyChanged($"TimeEnded");
+                RaisePropertyChanged($"Duration");
             }
         }
 
         public string Title
         {
             get => Model.Title;
-            set
-            {
-                if (Model.Title == value)
-                    return;
-                Model.Title = value;
-                RaisePropertyChanged(nameof(Title));
-            }
+            set => this.Set(Title, v => Title = v, value);
         }
 
         public DateTime TimeStarted
@@ -225,9 +173,9 @@ namespace Projects.ViewModels
                 var dateTime = value;
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
-                RaisePropertyChanged(nameof(TimeStarted));
-                RaisePropertyChanged("DateStarted");
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged(); // MC
+                RaisePropertyChanged($"DateStarted");
+                RaisePropertyChanged($"Duration");
             }
         }
 
@@ -240,22 +188,16 @@ namespace Projects.ViewModels
                 var dateTime = value;
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
-                RaisePropertyChanged(nameof(TimeEnded));
-                RaisePropertyChanged("DateEnded");
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged(); //MC
+                RaisePropertyChanged($"DateEnded");
+                RaisePropertyChanged($"Duration");
             }
         }
 
         public TimeSpan Total
         {
             get => _total;
-            set
-            {
-                if (_total == value)
-                    return;
-                _total = value;
-                RaisePropertyChanged(nameof(Total));
-            }
+            set => Set(ref _total, value);
         }
 
         public TaskViewModel LastSubTask => SubTasks.LastOrDefault();
@@ -296,7 +238,7 @@ namespace Projects.ViewModels
 
         public TaskViewModel AddNewTask()
         {
-            var subTask = new TaskViewModel {Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now};
+            var subTask = new TaskViewModel { Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
             Add(subTask);
             var ii = SubTasks.IndexOf(subTask);
             FixContext(subTask);
@@ -412,10 +354,10 @@ namespace Projects.ViewModels
 
         public void FixTitles(TaskViewModel subTask, int ii)
         {
-            var getTitle1 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("yyyy"));
-            var getTitle2 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("MMMM"));
-            var getTitle3 = (Func<int, TaskViewModel, string>) ((i, t) => "Week" + (i + 1).ToString());
-            var getTitle4 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.DayOfWeek.ToString());
+            var getTitle1 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("yyyy"));
+            var getTitle2 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("MMMM"));
+            var getTitle3 = (Func<int, TaskViewModel, string>)((i, t) => "Week" + (i + 1).ToString());
+            var getTitle4 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.DayOfWeek.ToString());
             FixTitles("Time Tracker", getTitle1, subTask, ii);
             FixTitles("Year", getTitle2, subTask, ii);
             FixTitles("Month", getTitle3, subTask, ii);

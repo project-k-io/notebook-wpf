@@ -11,7 +11,7 @@ namespace Vibor.View.Helpers.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var listViewItem = (ListViewItem) value;
-            if ((ItemsControl.ItemsControlFromItemContainer(listViewItem) as ListView).ItemContainerGenerator
+            if (((ListView) ItemsControl.ItemsControlFromItemContainer(listViewItem)).ItemContainerGenerator
                 .IndexFromContainer(listViewItem) % 2 == 0)
                 return Brushes.LightBlue;
             return Brushes.White;

@@ -6,14 +6,18 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using Projects.ViewModels;
+using Vibor.Helpers;
 using Vibor.View.Helpers.Misc;
 
 namespace ProjectApp
 {
     public partial class MainWindow : RibbonWindow
     {
+        private readonly ILogger _logger = LogManager.GetLogger<MainWindow>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -28,58 +32,31 @@ namespace ProjectApp
 
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
+            _logger.LogDebug("MainWindow Loaded()");
             var dataContext = DataContext as MainViewModel;
             if (dataContext == null) return;
 
             dataContext.OnDispatcher = ViewLib.GetAddDelegate(this);
             dataContext.Project.SelectedDaysChanged += Project_SelectedDaysChanged;
-            CommandBindings.AddRange(CreateCommands());
+            InitCommandBindings();
         }
 
         private void Project_SelectedDaysChanged(object sender, EventArgs e)
         {
         }
 
-        private CommandBindingCollection CreateCommands()
+        private void InitCommandBindings()
         {
             var commandBindings = new CommandBindingCollection
             {
-                new CommandBinding(ApplicationCommands.New, async (s, e) => await Model.NewProjectAsync(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Open, async (s, e) => await FileOpenNewFormatAsync(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Save, async (s, e) => await FileSaveNewFormatAsync(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await FileSaveAsNewFormatAsync(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.Clear, (s, e) => Model.Project.Clear(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.Edit, (s, e) => Edit(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.FixTime, (s, e) => Model.Project.FixTime(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.ExtractContext, (s, e) => Model.Project.FixContext(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.FixTitles, (s, e) => Model.Project.FixTitles(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.FixTypes, (s, e) => Model.Project.FixTypes(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.CopyTask, (s, e) => Model.CopyTask(),
-                    (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(Commands.ContinueTask, (s, e) => Model.ContinueTask(),
-                    (s, e) => e.CanExecute = !IsModelNull)
+                new CommandBinding(ApplicationCommands.New, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await FileOpenNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Save, async (s, e) => await FileSaveNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await FileSaveAsNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
             };
-            return commandBindings;
+            CommandBindings.AddRange(commandBindings);
         }
-
-        private void Edit()
-        {
-            if (IsModelNull) return;
-
-            Process.Start("notepad.exe", Model.Folder);
-        }
-
 
         private void FileOpenOldFormat()
         {
@@ -144,7 +121,7 @@ namespace ProjectApp
             var calendar = sender as Calendar;
             if (calendar == null) return;
 
-            dataContext.Project.UpdateSelectDayTaks(calendar.SelectedDates);
+            dataContext.Project.UpdateSelectDayTasks(calendar.SelectedDates);
             dataContext.OnGenerateReportChanged();
         }
     }

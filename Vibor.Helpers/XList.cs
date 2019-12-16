@@ -23,7 +23,7 @@ namespace Vibor.Helpers
             return new DateTime(ts.Ticks).ToString("HH:mm:ss");
         }
 
-        public static void SortedListInterator<TKey, TValue>(SortedList<TKey, TValue> sortedList,
+        public static void SortedListIterator<TKey, TValue>(SortedList<TKey, TValue> sortedList,
             Action<TKey, TValue> action)
         {
             foreach (var sorted in sortedList)

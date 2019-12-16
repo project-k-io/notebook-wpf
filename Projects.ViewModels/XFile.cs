@@ -21,7 +21,7 @@ namespace Projects.ViewModels
                 var str2 = directoryName == null ? "Logs" : Path.Combine(directoryName, "Logs");
                 if (!Directory.Exists(str2))
                     Directory.CreateDirectory(str2);
-                var path2 = string.Format("{0}{1}", string.Format("{0}_{1}", withoutExtension, str1), extension);
+                var path2 = $"{string.Format("{0}_{1}", withoutExtension, str1)}{extension}";
                 var destFileName = Path.Combine(str2, path2);
                 File.Copy(path, destFileName);
             }

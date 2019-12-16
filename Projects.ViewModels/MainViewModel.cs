@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Projects.Models;
 using Projects.Models.Versions.Version2;
 using Vibor.Helpers;
 using Microsoft.Extensions.Logging;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
 namespace Projects.ViewModels
 {
@@ -17,11 +20,28 @@ namespace Projects.ViewModels
     {
         private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
 
+
         private string _excelCsvText;
         private string _folder;
         private string _recentFile;
         private string _report;
         private bool _useTimeOptimization;
+
+        #region Commands
+        public ICommand ClearCommand { get; private set; }
+        public ICommand EditCommand { get; private set; }
+        public ICommand FixTimeCommand { get; private set; }
+        public ICommand ExtractContextCommand { get; private set; }
+        public ICommand FixContextCommand { get; private set; }
+        public ICommand FixTitlesCommand { get; private set; }
+        public ICommand FixTypesCommand { get; private set; }
+        public ICommand CopyTaskCommand { get; private set; }
+        public ICommand ContinueTaskCommand { get; private set; }
+
+
+        #endregion
+
+
 
         public MainViewModel()
         {
@@ -30,9 +50,18 @@ namespace Projects.ViewModels
             TypeList = new ObservableCollection<string>();
             ContextList = new ObservableCollection<string>();
             TaskTitleList = new ObservableCollection<string>();
+
+            ClearCommand = new RelayCommand(Project.Clear);
+            EditCommand = new RelayCommand(() => Process.Start("notepad.exe", Folder));
+            FixTimeCommand = new RelayCommand(Project.FixTime);
+            ExtractContextCommand = new RelayCommand(Project.FixContext);
+            FixTitlesCommand = new RelayCommand(Project.FixTitles);
+            FixTypesCommand = new RelayCommand(Project.FixTypes);
+            CopyTaskCommand = new RelayCommand(CopyTask);
+            ContinueTaskCommand = new RelayCommand(ContinueTask);
         }
 
-        public ConfigModel Config { get; set; }
+        #region Properties
 
         public Guid LastListTaskId { get; set; }
 
@@ -46,19 +75,15 @@ namespace Projects.ViewModels
 
         private Assembly Assembly { get; }
 
-        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) +
-                               " - " + Folder;
+        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + Folder;
 
         public string Folder
         {
             get => _folder;
             set
             {
-                if (_folder == value) return;
-
-                _folder = value;
-                RaisePropertyChanged(nameof(Folder));
-                RaisePropertyChanged("Title");
+                if (!Set(ref _folder, value)) return;
+                RaisePropertyChanged($"Title");
             }
         }
 
@@ -67,11 +92,8 @@ namespace Projects.ViewModels
             get => _recentFile;
             set
             {
-                if (_recentFile == value) return;
-
-                _recentFile = value;
-                RaisePropertyChanged(nameof(RecentFile));
-                RaisePropertyChanged("Title");
+                if (!Set(ref _recentFile, value)) return;
+                RaisePropertyChanged($"Title");
             }
         }
 
@@ -80,37 +102,19 @@ namespace Projects.ViewModels
         public string Report
         {
             get => _report;
-            set
-            {
-                if (_report == value) return;
-
-                _report = value;
-                RaisePropertyChanged(nameof(Report));
-            }
+            set => Set(ref _report, value);
         }
 
         public string ExcelCsvText
         {
             get => _excelCsvText;
-            set
-            {
-                if (_excelCsvText == value) return;
-
-                _excelCsvText = value;
-                RaisePropertyChanged(nameof(ExcelCsvText));
-            }
+            set => Set(ref _excelCsvText, value);
         }
 
         public bool UseTimeOptimization
         {
             get => _useTimeOptimization;
-            set
-            {
-                if (_useTimeOptimization == value) return;
-
-                _useTimeOptimization = value;
-                RaisePropertyChanged(nameof(UseTimeOptimization));
-            }
+            set => Set(ref _useTimeOptimization, value);
         }
 
         private string ConfigPath
@@ -143,16 +147,14 @@ namespace Projects.ViewModels
         public bool CanSave { get; set; }
         public Action<Action> OnDispatcher { get; set; }
 
+        #endregion
+
+
         public void FileOpenOldFormat()
         {
             Project.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(RecentFile));
         }
-
-        public async Task FileSaveOldFormatAsync()
-        {
-            await XFile.SaveToFileAsync(Project, RecentFile);
-        }
-
+        public async Task FileSaveOldFormatAsync() => await XFile.SaveToFileAsync(Project, RecentFile);
         public async Task FileOpenNewFormatAsync()
         {
             if (!Directory.Exists(Folder)) return;
@@ -162,7 +164,6 @@ namespace Projects.ViewModels
             Project.LoadFrom(Data);
             UseSettings();
         }
-
         public async Task FileSaveNewFormatAsync()
         {
             var fileName = DataModel.GetTasksFileName(Folder);
@@ -172,44 +173,25 @@ namespace Projects.ViewModels
             Project.SaveTo(Data);
             await XFile.SaveToFileAsync(Data, fileName);
         }
-
         public event EventHandler<EventArgs> GenerateReportChanged;
-
         public event EventHandler<TaskEventArgs> SelectedTaskChanged;
-
         public void OnSelectedTaskChanged(TaskViewModel task)
         {
-            var selectedTaskChanged = SelectedTaskChanged;
-            if (selectedTaskChanged == null) return;
-
-            selectedTaskChanged(this, new TaskEventArgs
+            SelectedTaskChanged?.Invoke(this, new TaskEventArgs
             {
                 Task = task
             });
         }
-
-        public void OnGenerateReportChanged()
-        {
-            var generateReportChanged = GenerateReportChanged;
-            if (generateReportChanged == null) return;
-
-            generateReportChanged(this, EventArgs.Empty);
-        }
-
+        public void OnGenerateReportChanged() => GenerateReportChanged?.Invoke(this, EventArgs.Empty);
         public async Task SaveDataAsync()
         {
             if (!CanSave) return;
-
-            await SaveConfigurationAsync();
             await FileSaveNewFormatAsync();
         }
-
         public async Task LoadDataAsync()
         {
-            await LoadConfigurationAsync();
             await FileOpenNewFormatAsync();
         }
-
         public async Task UpdateTypeListAsync()
         {
             await Task.Run(() =>
@@ -241,39 +223,11 @@ namespace Projects.ViewModels
                 foreach (var str in sortedSet3) TaskTitleList.Add(str);
             });
         }
-
-        public async Task LoadConfigurationAsync()
-        {
-            Config = await XFile.ReadFromFileAsync<ConfigModel>(ConfigFile);
-            if (Config == null) Config = new ConfigModel();
-
-            LastListTaskId = Config.App.LastListTaskId;
-            LastTreeTaskId = Config.App.LastTreeTaskId;
-            Folder = Config.App.RecentFolder;
-            RecentFile = Config.App.RecentFile;
-            MostRecentFiles.Clear();
-            if (!Directory.Exists(Folder)) return;
-
-            MostRecentFiles.Add(new FileInfo(Folder));
-        }
-
-        public async Task SaveConfigurationAsync()
-        {
-            if (Config == null) Config = new ConfigModel();
-
-            Config.App.RecentFolder = Folder;
-            Config.App.LastListTaskId = LastListTaskId;
-            Config.App.LastTreeTaskId = LastTreeTaskId;
-            Config.App.RecentFile = RecentFile;
-            await XFile.SaveToFileAsync(Config, ConfigFile);
-        }
-
         public void UseSettings()
         {
             Project.SelectTreeTask(LastListTaskId);
             Project.SelectTask(LastTreeTaskId);
         }
-
         public void PrepareSettings()
         {
             if (Project.SelectedTask != null) LastListTaskId = Project.SelectedTask.Id;
@@ -282,7 +236,6 @@ namespace Projects.ViewModels
 
             LastTreeTaskId = Project.SelectedTreeTask.Id;
         }
-
         public void SelectTreeTask(TaskViewModel task)
         {
             task.TypeList = TypeList;
@@ -291,7 +244,6 @@ namespace Projects.ViewModels
             Project.SelectTreeTask(task);
             OnGenerateReportChanged();
         }
-
         public void CopyExcelCsvText()
         {
             var stringReader = new StringReader(ExcelCsvText);
@@ -314,14 +266,15 @@ namespace Projects.ViewModels
                 var taskViewModel1 = selectedTreeTask.SubTasks.FirstOrDefault(t => t.Title == dayOfTheWeek);
                 if (taskViewModel1 == null)
                 {
-                    taskViewModel1 = new TaskViewModel(dayOfTheWeek, 0);
-                    taskViewModel1.DateStarted = excelCsvRecord.Day;
-                    taskViewModel1.DateEnded = excelCsvRecord.Day;
+                    taskViewModel1 = new TaskViewModel(dayOfTheWeek, 0)
+                    {
+                        DateStarted = excelCsvRecord.Day,
+                        DateEnded = excelCsvRecord.Day
+                    };
                     selectedTreeTask.SubTasks.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0);
-                taskViewModel2.Context = "Task";
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0) { Context = "Task" };
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;
@@ -352,12 +305,10 @@ namespace Projects.ViewModels
                 var second2 = dateTime1.Second;
                 var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
                 taskViewModel4.DateEnded = dateTime3;
-                taskViewModel2.Description = string.Format("{0}:{1}:{2}", excelCsvRecord.Type1, excelCsvRecord.Type2,
-                    excelCsvRecord.SubTask);
+                taskViewModel2.Description = $"{excelCsvRecord.Type1}:{excelCsvRecord.Type2}:{excelCsvRecord.SubTask}";
                 taskViewModel1.SubTasks.Add(taskViewModel2);
             }
         }
-
         public async Task NewProjectAsync()
         {
             await SaveDataAsync();
@@ -371,7 +322,6 @@ namespace Projects.ViewModels
             Folder = string.Empty;
             CanSave = true;
         }
-
         public void OnTreeViewKeyDown(TaskViewModel.KeyStates keyState, TaskViewModel.KeyboardStates keyboardState)
         {
             TaskViewModel.OnTreeViewKeyDown(
@@ -383,12 +333,10 @@ namespace Projects.ViewModels
                 () => true,
                 OnDispatcher);
         }
-
         public void CopyTask()
         {
             OnTreeViewKeyDown(TaskViewModel.KeyStates.Insert, TaskViewModel.KeyboardStates.IsControlPressed);
         }
-
         public void ContinueTask()
         {
             OnTreeViewKeyDown(TaskViewModel.KeyStates.Insert, TaskViewModel.KeyboardStates.IsShiftPressed);

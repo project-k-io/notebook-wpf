@@ -21,8 +21,7 @@ namespace Projects.Models
         public bool TryParse(string line)
         {
             var strArray = line.Split(',');
-            DateTime result;
-            if (!DateTime.TryParse(strArray[1], out result))
+            if (!DateTime.TryParse(strArray[1], out var result))
                 return false;
             Day = result;
             if (!DateTime.TryParse(strArray[2], out result))

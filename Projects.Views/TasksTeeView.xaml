@@ -7,7 +7,8 @@
              xmlns:v="clr-namespace:Projects.ViewModels;assembly=Projects.ViewModels"
              xmlns:TreeViewList="clr-namespace:Projects.Views.Controls.TreeViewList"
              xmlns:Views="clr-namespace:Projects.Views"
-             xmlns:Helpers="clr-namespace:Projects.Views.Helpers">
+             xmlns:Helpers="clr-namespace:Projects.Views.Helpers"
+             >
     <FrameworkElement.Resources>
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="UIElement.Focusable" Value="false" />

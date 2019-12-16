@@ -17,7 +17,7 @@ namespace Projects.Models
 
         public override string ToString()
         {
-            return string.Format("Level={0,2}, Type={1,5}, Duration={2}", Level, Type, Duration);
+            return $"Level={Level,2}, Type={Type,5}, Duration={Duration}";
         }
     }
 }
