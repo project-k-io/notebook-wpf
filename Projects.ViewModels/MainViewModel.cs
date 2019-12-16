@@ -62,7 +62,6 @@ namespace Projects.ViewModels
         }
 
         #region Properties
-        public ConfigModel Config { get; set; }
 
         public Guid LastListTaskId { get; set; }
 
@@ -187,13 +186,10 @@ namespace Projects.ViewModels
         public async Task SaveDataAsync()
         {
             if (!CanSave) return;
-
-            await SaveConfigurationAsync();
             await FileSaveNewFormatAsync();
         }
         public async Task LoadDataAsync()
         {
-            await LoadConfigurationAsync();
             await FileOpenNewFormatAsync();
         }
         public async Task UpdateTypeListAsync()
@@ -226,29 +222,6 @@ namespace Projects.ViewModels
                 TaskTitleList.Clear();
                 foreach (var str in sortedSet3) TaskTitleList.Add(str);
             });
-        }
-        public async Task LoadConfigurationAsync()
-        {
-            Config = await XFile.ReadFromFileAsync<ConfigModel>(ConfigFile) ?? new ConfigModel();
-
-            LastListTaskId = Config.App.LastListTaskId;
-            LastTreeTaskId = Config.App.LastTreeTaskId;
-            Folder = Config.App.RecentFolder;
-            RecentFile = Config.App.RecentFile;
-            MostRecentFiles.Clear();
-            if (!Directory.Exists(Folder)) return;
-
-            MostRecentFiles.Add(new FileInfo(Folder));
-        }
-        public async Task SaveConfigurationAsync()
-        {
-            if (Config == null) Config = new ConfigModel();
-
-            Config.App.RecentFolder = Folder;
-            Config.App.LastListTaskId = LastListTaskId;
-            Config.App.LastTreeTaskId = LastTreeTaskId;
-            Config.App.RecentFile = RecentFile;
-            await XFile.SaveToFileAsync(Config, ConfigFile);
         }
         public void UseSettings()
         {

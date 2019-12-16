@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -72,18 +73,27 @@ namespace ProjectApp
             var settings = Settings.Default;
             try
             {
+                // window settings
                 _mainWindow.WindowState = settings.MainWindowState;
                 _mainWindow.Top = settings.MainWindowTop;
                 _mainWindow.Left = settings.MainWindowLeft;
                 _mainWindow.Width = settings.MainWindowWidth;
                 _mainWindow.Height = settings.MainWindowHeight;
+                // model settings
+                _mainModel.Layout.NavigatorWidth = settings.LayoutNavigatorWidth;
+                _mainModel.LastListTaskId = settings.LastListTaskId;
+                _mainModel.LastTreeTaskId = settings.LastTreeTaskId;
+                _mainModel.Folder = settings.RecentFolder;
+                _mainModel.RecentFile = settings.RecentFile;
+                _mainModel.MostRecentFiles.Clear();
+                if (Directory.Exists(_mainModel.Folder))
+                    _mainModel.MostRecentFiles.Add(new FileInfo(_mainModel.Folder));
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
 
-            _mainModel.Layout.NavigatorWidth = settings.LayoutNavigatorWidth;
         }
 
         private void SaveSettings()
@@ -101,6 +111,10 @@ namespace ProjectApp
                     settings.MainWindowWidth = _mainWindow.Width;
                     settings.MainWindowHeight = _mainWindow.Height;
                     settings.LayoutNavigatorWidth = _mainModel.Layout.NavigatorWidth;
+                    settings.RecentFolder = _mainModel.Folder;
+                    settings.RecentFile = _mainModel.RecentFile;
+                    settings.LastListTaskId = _mainModel.LastListTaskId;
+                    settings.LastTreeTaskId = _mainModel.LastTreeTaskId;
                 }
 
                 settings.MainWindowState = _mainWindow.WindowState;
