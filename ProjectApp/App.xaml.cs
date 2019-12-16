@@ -79,7 +79,6 @@ namespace ProjectApp
             _canSave = true;
             while (_canSave)
             {
-                SaveSettings();
                 await _mainModel.SaveDataAsync();
                 await Task.Run(() => Thread.Sleep(5000));
             }
@@ -96,6 +95,8 @@ namespace ProjectApp
             var settings = Settings.Default;
             try
             {
+                _logger.LogDebug("LoadSettings()");
+
                 // window settings
                 _mainWindow.WindowState = settings.MainWindowState;
                 _mainWindow.Top = settings.MainWindowTop;
@@ -124,6 +125,8 @@ namespace ProjectApp
         {
             try
             {
+                _logger.LogDebug("SaveSettings()");
+
                 _mainModel.PrepareSettings();
                 var settings = Settings.Default;
 
