@@ -82,7 +82,7 @@
         </Ribbon>
         <Grid Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{Binding Path=Layout.NavigationWidth, Mode=TwoWay, Converter={StaticResource GridLengthConverter}}" />
+                <ColumnDefinition Width="{Binding Path=Layout.NavigatorWidth, Mode=TwoWay, Converter={StaticResource GridLengthConverter}}" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid Margin="0,3,0,-3">
