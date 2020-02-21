@@ -25,7 +25,8 @@
                 <ColumnDefinition Width="80" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="buttonOk" Content="OK" Grid.Row="1" Grid.Column="1" />
+            <Button x:Name="buttonOk" 
+                    Content="OK" Grid.Row="1" Grid.Column="1" />
             <Button x:Name="buttonCancel" Content="Cancel" Grid.Row="1" Grid.Column="3" />
         </Grid>
     </Grid>

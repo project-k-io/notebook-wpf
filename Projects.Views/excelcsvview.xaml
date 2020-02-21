@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-
              >
     <Grid>
         <Grid.RowDefinitions>
@@ -15,7 +14,6 @@
             <Button x:Name="buttonCopyFromExelCsvFormat" Content="Copy" Command="{Binding CommandCopyExcelCsvText}" />
             <Separator />
         </ToolBar>
-        <TextBox Grid.Row="1" AcceptsReturn="true" AcceptsTab="true" TextWrapping="WrapWithOverflow"
-                 Text="{Binding Path=ExcelCsvText}" />
+        <TextBox Grid.Row="1" AcceptsReturn="true" AcceptsTab="true" TextWrapping="WrapWithOverflow" Text="{Binding Path=ExcelCsvText}" />
     </Grid>
 </UserControl>
