@@ -12,8 +12,7 @@
                 <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Employee Information">
                     <GridViewColumn Header="First Name" Width="100" DisplayMemberBinding="{Binding Path=FirstName}" />
                     <GridViewColumn Width="100" DisplayMemberBinding="{Binding Path=LastName}" />
-                    <GridViewColumn Header="Employee No." Width="100"
-                                    DisplayMemberBinding="{Binding Path=EmployeeNumber}" />
+                    <GridViewColumn Header="Employee No." Width="100" DisplayMemberBinding="{Binding Path=EmployeeNumber}" />
                 </GridView>
             </ListView.View>
         </ListView>

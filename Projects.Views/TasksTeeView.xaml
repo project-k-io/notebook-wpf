@@ -86,8 +86,7 @@
                                     BorderBrush="{TemplateBinding Control.BorderBrush}"
                                     BorderThickness="{TemplateBinding Control.BorderThickness}"
                                     Padding="{TemplateBinding Control.Padding}">
-                                <GridViewRowPresenter x:Name="PART_Header"
-                                                      Content="{TemplateBinding HeaderedItemsControl.Header}"
+                                <GridViewRowPresenter x:Name="PART_Header" Content="{TemplateBinding HeaderedItemsControl.Header}"
                                                       Columns="{StaticResource gvcc}" />
                             </Border>
                             <ItemsPresenter x:Name="ItemsHost" />
