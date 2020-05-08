@@ -1,14 +1,11 @@
 ﻿using System;
-using System.CodeDom.Compiler;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using Projects.Models.Versions.Version2;
-using Projects.ViewModels;
 using Microsoft.Extensions.Logging;
+using Projects.ViewModels;
 using Vibor.Helpers;
 
 namespace ProjectApp
@@ -16,14 +13,9 @@ namespace ProjectApp
     public partial class App : Application
     {
         private static ILogger _logger;
+        private bool _canSave;
         private MainViewModel _mainModel;
         private MainWindow _mainWindow;
-        private bool _canSave;
-
-        public App()
-        {
-            // AddLogging();
-        }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
@@ -43,7 +35,7 @@ namespace ProjectApp
             await StartSavingAsync();
         }
 
-        void AddLogging()
+        private void AddLogging()
         {
             try
             {
@@ -118,7 +110,6 @@ namespace ProjectApp
             {
                 _logger.LogError(ex);
             }
-
         }
 
         private void SaveSettings()

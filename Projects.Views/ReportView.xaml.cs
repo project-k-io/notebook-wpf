@@ -6,9 +6,9 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using Microsoft.Extensions.Logging;
 using Projects.Models;
 using Projects.ViewModels;
-using Microsoft.Extensions.Logging;
 using Vibor.Helpers;
 
 namespace Projects.Views

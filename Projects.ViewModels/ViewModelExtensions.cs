@@ -14,9 +14,8 @@ namespace Projects.ViewModels
 
             setValue(newValue);
 
-            m.RaisePropertyChanged<T>(propertyName, oldValue, newValue, broadcast);
+            m.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
             return true;
         }
-
     }
 }

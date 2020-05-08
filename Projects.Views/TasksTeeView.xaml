@@ -7,8 +7,7 @@
              xmlns:v="clr-namespace:Projects.ViewModels;assembly=Projects.ViewModels"
              xmlns:TreeViewList="clr-namespace:Projects.Views.Controls.TreeViewList"
              xmlns:Views="clr-namespace:Projects.Views"
-             xmlns:Helpers="clr-namespace:Projects.Views.Helpers"
-             >
+             xmlns:Helpers="clr-namespace:Projects.Views.Helpers">
     <FrameworkElement.Resources>
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="UIElement.Focusable" Value="false" />
@@ -86,7 +85,8 @@
                                     BorderBrush="{TemplateBinding Control.BorderBrush}"
                                     BorderThickness="{TemplateBinding Control.BorderThickness}"
                                     Padding="{TemplateBinding Control.Padding}">
-                                <GridViewRowPresenter x:Name="PART_Header" Content="{TemplateBinding HeaderedItemsControl.Header}"
+                                <GridViewRowPresenter x:Name="PART_Header"
+                                                      Content="{TemplateBinding HeaderedItemsControl.Header}"
                                                       Columns="{StaticResource gvcc}" />
                             </Border>
                             <ItemsPresenter x:Name="ItemsHost" />

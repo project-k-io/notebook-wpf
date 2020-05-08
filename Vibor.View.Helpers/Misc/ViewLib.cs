@@ -8,8 +8,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Vibor.Helpers;
 using Microsoft.Extensions.Logging;
+using Vibor.Helpers;
 
 namespace Vibor.View.Helpers.Misc
 {
