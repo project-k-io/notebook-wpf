@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using Projects.Views.Helpers;
+using System.Windows;
 using System.Windows.Controls;
-using Projects.Views.Helpers;
 
 namespace Projects.Views.Controls.TreeViewList
 {

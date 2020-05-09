@@ -1,9 +1,9 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using Projects.Models.Versions.Version2;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using GalaSoft.MvvmLight;
-using Projects.Models.Versions.Version2;
 using Vibor.Helpers;
 
 namespace Projects.ViewModels
@@ -135,7 +135,7 @@ namespace Projects.ViewModels
                 }
                 else if (!sortedList.ContainsKey(task.Id))
                 {
-                    var taskViewModel = new TaskViewModel {Model = task};
+                    var taskViewModel = new TaskViewModel { Model = task };
                     sortedList.Add(task.Id, taskViewModel);
                 }
 

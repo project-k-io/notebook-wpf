@@ -32,7 +32,7 @@ namespace Projects.Models
             Start = result;
             if (!DateTime.TryParse(strArray[3], out result))
                 return false;
-            
+
             End = result;
             Type = strArray[9];
             Type1 = strArray[10];

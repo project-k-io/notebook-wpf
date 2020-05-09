@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
-using Microsoft.Extensions.Logging;
 using Vibor.Helpers;
 
 namespace Vibor.View.Helpers.Converters
@@ -21,7 +21,7 @@ namespace Vibor.View.Helpers.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var result = 0.0;
-            if (!double.TryParse((string) value, out result))
+            if (!double.TryParse((string)value, out result))
                 return result;
             return result;
         }

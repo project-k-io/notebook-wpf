@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows;
@@ -8,7 +9,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Microsoft.Extensions.Logging;
 using Vibor.Helpers;
 
 namespace Vibor.View.Helpers.Misc
@@ -17,7 +17,7 @@ namespace Vibor.View.Helpers.Misc
     {
         private static readonly ILogger Log = LogManager.GetLogger<ViewLib>();
 
-        public static bool IsInDesignMode => (bool) DesignerProperties.IsInDesignModeProperty
+        public static bool IsInDesignMode => (bool)DesignerProperties.IsInDesignModeProperty
             .GetMetadata(typeof(DependencyObject)).DefaultValue;
 
         public static int WaitCursorCount
@@ -26,7 +26,7 @@ namespace Vibor.View.Helpers.Misc
             {
                 if (!Application.Current.Properties.Contains("CN")) Application.Current.Properties.Add("CN", 0);
 
-                return (int) Application.Current.Properties["CN"];
+                return (int)Application.Current.Properties["CN"];
             }
             set
             {
@@ -53,34 +53,34 @@ namespace Vibor.View.Helpers.Misc
         public static void AddColumnWithBinding(GridView gv, string path, string header, double width)
         {
             var gridViewColumn =
-                new GridViewColumn {DisplayMemberBinding = new Binding(path), Header = header, Width = width};
+                new GridViewColumn { DisplayMemberBinding = new Binding(path), Header = header, Width = width };
             gv.Columns.Add(gridViewColumn);
         }
 
         public static void BeginInvokeSimple(FrameworkElement frameworkElement, Action del, DispatcherPriority priority)
         {
-            var action = (Action) (() =>
-            {
-                try
-                {
-                    ++WaitCursorCount;
-                    del();
-                }
-                catch (Exception ex)
-                {
-                    Log.LogError(ex);
-                }
-                finally
-                {
-                    --WaitCursorCount;
-                }
-            });
+            var action = (Action)(() =>
+           {
+               try
+               {
+                   ++WaitCursorCount;
+                   del();
+               }
+               catch (Exception ex)
+               {
+                   Log.LogError(ex);
+               }
+               finally
+               {
+                   --WaitCursorCount;
+               }
+           });
             frameworkElement.Dispatcher.BeginInvoke(priority, action);
         }
 
         public static void BeginInvoke(FrameworkElement frameworkElement, Action del1, DispatcherPriority priority)
         {
-            ((Action) (() => BeginInvokeSimple(frameworkElement, del1, priority))).BeginInvoke(null, null);
+            ((Action)(() => BeginInvokeSimple(frameworkElement, del1, priority))).BeginInvoke(null, null);
         }
 
         public static void DisconnectFromParent(FrameworkElement player)
@@ -153,11 +153,11 @@ namespace Vibor.View.Helpers.Misc
 
         public static Action<Action> GetAddAndShowDelegate(ListView lv)
         {
-            return a => lv.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action) (() =>
-            {
-                a();
-                ScrollToEnd(lv);
-            }));
+            return a => lv.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action)(() =>
+           {
+               a();
+               ScrollToEnd(lv);
+           }));
         }
 
         public static void ScrollToEnd(ListView lv)

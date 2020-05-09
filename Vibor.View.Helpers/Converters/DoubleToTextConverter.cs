@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
-using Microsoft.Extensions.Logging;
 using Vibor.Helpers;
 
 namespace Vibor.View.Helpers.Converters
@@ -27,7 +27,7 @@ namespace Vibor.View.Helpers.Converters
         {
             if (!_converter.IsValid(value))
                 return null;
-            return _converter.ConvertFromString((string) value);
+            return _converter.ConvertFromString((string)value);
         }
     }
 }

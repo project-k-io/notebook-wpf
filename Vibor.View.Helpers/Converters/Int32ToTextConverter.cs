@@ -21,7 +21,7 @@ namespace Vibor.View.Helpers.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return _converter.ConvertFromString((string) value);
+            return _converter.ConvertFromString((string)value);
         }
     }
 }

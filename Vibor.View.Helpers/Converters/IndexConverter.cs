@@ -9,7 +9,7 @@ namespace Vibor.View.Helpers.Converters
     {
         public object Convert(object value, Type TargetType, object parameter, CultureInfo culture)
         {
-            var listViewItem = (ListViewItem) value;
+            var listViewItem = (ListViewItem)value;
             var listView = ItemsControl.ItemsControlFromItemContainer(listViewItem) as ListView;
             if (listView == null)
                 return -1;

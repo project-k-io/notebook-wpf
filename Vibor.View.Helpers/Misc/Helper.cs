@@ -26,7 +26,7 @@ namespace Vibor.View.Helpers.Misc
 
         public static void DoEvents(DispatcherObject o)
         {
-            o.Dispatcher.Invoke(DispatcherPriority.Background, (Action) (() => { }));
+            o.Dispatcher.Invoke(DispatcherPriority.Background, (Action)(() => { }));
         }
     }
 }

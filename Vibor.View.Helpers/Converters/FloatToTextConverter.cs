@@ -32,7 +32,7 @@ namespace Vibor.View.Helpers.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var result = 0.0f;
-            if (!float.TryParse((string) value, out result))
+            if (!float.TryParse((string)value, out result))
                 return null;
             return result;
         }

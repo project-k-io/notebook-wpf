@@ -1,7 +1,7 @@
-﻿using System.Windows;
+﻿using Projects.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
-using Projects.ViewModels;
 using Vibor.View.Helpers.Misc;
 
 namespace Projects.Views

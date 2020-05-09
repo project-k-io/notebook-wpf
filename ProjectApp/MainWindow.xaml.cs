@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
+using Projects.ViewModels;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
-using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
-using Projects.ViewModels;
 using Vibor.Helpers;
 using Vibor.View.Helpers.Misc;
 

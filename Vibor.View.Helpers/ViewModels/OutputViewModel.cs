@@ -1,11 +1,11 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Data;
-using GalaSoft.MvvmLight;
-using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 using Vibor.Helpers;
 using Vibor.Logging;
 

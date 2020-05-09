@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Projects.ViewModels;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Projects.ViewModels;
 using Vibor.Helpers;
 
 namespace ProjectApp

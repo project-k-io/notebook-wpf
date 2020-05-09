@@ -9,12 +9,12 @@ namespace Vibor.View.Helpers.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return new GridLength((double) value, GridUnitType.Pixel);
+            return new GridLength((double)value, GridUnitType.Pixel);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((GridLength) value).Value;
+            return ((GridLength)value).Value;
         }
     }
 }

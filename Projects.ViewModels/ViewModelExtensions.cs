@@ -1,7 +1,7 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using GalaSoft.MvvmLight;
 
 namespace Projects.ViewModels
 {
