@@ -1,12 +1,11 @@
-﻿using Projects.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
+using Projects.ViewModels;
 using Vibor.View.Helpers.Misc;
 
 namespace Projects.Views
 {
-    public partial class TasksListView : UserControl, IComponentConnector
+    public partial class TasksListView : UserControl
     {
         private readonly ListViewSorterHelper _helper = new ListViewSorterHelper();
 

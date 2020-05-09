@@ -1,19 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
-using Projects.Models;
-using Projects.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
+using Microsoft.Extensions.Logging;
+using Projects.Models;
+using Projects.ViewModels;
 using Vibor.Helpers;
 
 namespace Projects.Views
 {
-    public partial class ReportView : UserControl, IComponentConnector
+    public partial class ReportView : UserControl
     {
         private static readonly ILogger Logger = LogManager.GetLogger<ReportView>();
 
@@ -107,7 +106,7 @@ namespace Projects.Views
             foreach (var keyValuePair1 in sortedList1)
             {
                 var key1 = keyValuePair1.Key;
-                var reportRecord1 = new ReportRecord { Type = key1, Text = key1 };
+                var reportRecord1 = new ReportRecord {Type = key1, Text = key1};
                 reportModule.Records.Add(reportRecord1);
                 foreach (var keyValuePair2 in keyValuePair1.Value)
                 {
@@ -116,7 +115,7 @@ namespace Projects.Views
                     var timeSpan = new TimeSpan();
                     foreach (var taskViewModel in taskViewModelList)
                         timeSpan += taskViewModel.Duration;
-                    var reportRecord2 = new ReportRecord { Level = 2, Text = key2, Duration = timeSpan };
+                    var reportRecord2 = new ReportRecord {Level = 2, Text = key2, Duration = timeSpan};
                     reportRecord2.Type = key1;
                     reportRecord1.Duration += reportRecord2.Duration;
                     reportModule.Records.Add(reportRecord2);

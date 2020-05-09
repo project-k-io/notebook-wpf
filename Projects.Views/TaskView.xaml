@@ -30,11 +30,9 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Label Content="Context" Grid.Row="1" Grid.Column="1" />
-        <ComboBox Grid.Row="1" Grid.Column="3" IsEditable="true" IsReadOnly="true"
-                  ItemsSource="{Binding ContextList}" Text="{Binding Context}" />
+        <ComboBox Grid.Row="1" Grid.Column="3" IsEditable="true" IsReadOnly="true" ItemsSource="{Binding ContextList}" Text="{Binding Context}" />
         <Label Content="Title" Grid.Row="2" Grid.Column="1" />
-        <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TaskTitleList}"
-                  Text="{Binding Title}" />
+        <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TaskTitleList}" Text="{Binding Title}" />
         <Label Content="Week" Grid.Row="3" Grid.Column="1" />
         <TextBox Grid.Row="3" Grid.Column="3" Text="{Binding Week}" />
         <Label Content="Day" Grid.Row="4" Grid.Column="1" />

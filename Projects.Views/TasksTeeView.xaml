@@ -5,15 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              xmlns:v="clr-namespace:Projects.ViewModels;assembly=Projects.ViewModels"
-             xmlns:TreeViewList="clr-namespace:Projects.Views.Controls.TreeViewList"
-             xmlns:Views="clr-namespace:Projects.Views"
-             xmlns:Helpers="clr-namespace:Projects.Views.Helpers">
+             xmlns:treeViewList="clr-namespace:Projects.Views.Controls.TreeViewList"
+             xmlns:helpers="clr-namespace:Projects.Views.Helpers">
     <FrameworkElement.Resources>
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
-            <Setter Property="UIElement.Focusable" Value="false" />
-            <Setter Property="FrameworkElement.Width" Value="19" />
-            <Setter Property="FrameworkElement.Height" Value="13" />
-            <Setter Property="Control.Template">
+            <Setter Property="Focusable" Value="false" />
+            <Setter Property="Width" Value="19" />
+            <Setter Property="Height" Value="13" />
+            <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                         <Border Width="19" Height="13" Background="Transparent">
@@ -40,17 +39,17 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Helpers:LevelToIndentConverter x:Key="LevelIndentConverter" />
+        <helpers:LevelToIndentConverter x:Key="LevelIndentConverter" />
         <DataTemplate x:Key="CellTemplate_Name">
             <DockPanel>
                 <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press"
-                              Margin="{Binding Level, Converter={StaticResource LevelIndentConverter}, RelativeSource={RelativeSource AncestorType={x:Type TreeViewList:TreeListViewItem}}}"
-                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type TreeViewList:TreeListViewItem}}}" />
+                              Margin="{Binding Level, Converter={StaticResource LevelIndentConverter}, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}"
+                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}" />
                 <TextBlock Text="{Binding Title}" />
             </DockPanel>
             <DataTemplate.Triggers>
                 <DataTrigger Value="False"
-                             Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type TreeViewList:TreeListViewItem}}}">
+                             Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}">
                     <Setter TargetName="Expander" Property="UIElement.Visibility" Value="Hidden" />
                 </DataTrigger>
             </DataTemplate.Triggers>
@@ -74,12 +73,12 @@
                 </GridViewColumn.CellTemplate>
             </GridViewColumn>
         </GridViewColumnCollection>
-        <Style x:Key="treeListViewItem" TargetType="{x:Type TreeViewList:TreeListViewItem}">
+        <Style x:Key="treeListViewItem" TargetType="{x:Type treeViewList:TreeListViewItem}">
             <Setter Property="TreeViewItem.IsSelected" Value="{Binding Path=IsSelected}" />
             <Setter Property="TreeViewItem.IsExpanded" Value="{Binding Path=IsExpanded}" />
             <Setter Property="Control.Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TreeViewList:TreeListViewItem}">
+                    <ControlTemplate TargetType="{x:Type treeViewList:TreeListViewItem}">
                         <StackPanel>
                             <Border Name="Bd" Background="{TemplateBinding Control.Background}"
                                     BorderBrush="{TemplateBinding Control.BorderBrush}"
@@ -136,10 +135,10 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="treeListView" TargetType="{x:Type TreeViewList:TreeListView}">
+        <Style x:Key="treeListView" TargetType="{x:Type treeViewList:TreeListView}">
             <Setter Property="Control.Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TreeViewList:TreeListView}">
+                    <ControlTemplate TargetType="{x:Type treeViewList:TreeListView}">
                         <Border BorderBrush="{TemplateBinding Control.BorderBrush}"
                                 BorderThickness="{TemplateBinding Control.BorderThickness}">
                             <DockPanel>
@@ -159,7 +158,7 @@
                                       ItemsSource="{Binding Path=SubTasks}" />
         </FrameworkElement.Resources>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <TreeViewList:TreeListView x:Name="treeViewTasks" KeyDown="treeViewTasks_KeyDown"
+            <treeViewList:TreeListView x:Name="treeViewTasks" KeyDown="treeViewTasks_KeyDown"
                                        SelectedItemChanged="treeViewTasks_SelectedItemChanged"
                                        ItemContainerStyle="{StaticResource treeListViewItem}"
                                        Style="{StaticResource treeListView}"

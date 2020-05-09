@@ -1,9 +1,8 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Markup;
 
 namespace Projects.Views
 {
-    public partial class TaskView : UserControl, IComponentConnector
+    public partial class TaskView : UserControl
     {
         public TaskView()
         {

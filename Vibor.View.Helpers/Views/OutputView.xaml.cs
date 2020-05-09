@@ -9,7 +9,7 @@ using Vibor.View.Helpers.ViewModels;
 
 namespace Vibor.View.Helpers.Views
 {
-    public partial class OutputView : UserControl, IComponentConnector
+    public partial class OutputView : UserControl
     {
         private static readonly ILogger Log = LogManager.GetLogger<OutputView>();
         private readonly OutputViewModel _model = new OutputViewModel();
