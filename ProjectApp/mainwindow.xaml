@@ -7,6 +7,7 @@
               xmlns:io="clr-namespace:System.IO;assembly=System.IO.FileSystem"
               xmlns:helpers1="clr-namespace:ProjectK.Notebook.Views.Helpers;assembly=ProjectK.Notebook.Views"
               xmlns:views="clr-namespace:ProjectK.Notebook.Views;assembly=ProjectK.Notebook.Views"
+              xmlns:views1="clr-namespace:ProjectK.View.Helpers.Views;assembly=ProjectK.View.Helpers"
               MinWidth="800" MinHeight="600" WindowStartupLocation="CenterOwner"
               Icon="/Images/apple_time_machine_alt.png"
               Title="{Binding Path=Title}" d:DesignWidth="1200" d:DesignHeight="800">
@@ -23,7 +24,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
 
         <Ribbon x:Name="Ribbon" Title="Ribbon Title">
@@ -131,5 +133,8 @@
                 </TabItem>
             </TabControl>
         </Grid>
+        <views1:OutputView Grid.Row="2" DataContext="{Binding Output}">
+
+        </views1:OutputView>
     </Grid>
 </RibbonWindow>

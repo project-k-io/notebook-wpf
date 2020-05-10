@@ -13,7 +13,6 @@ namespace ProjectK.View.Helpers.Views
     public partial class OutputView : UserControl
     {
         private static readonly ILogger Log = LogManager.GetLogger<OutputView>();
-        private readonly OutputViewModel _model = new OutputViewModel();
 
         public OutputView()
         {
@@ -23,9 +22,7 @@ namespace ProjectK.View.Helpers.Views
 
         private void Init()
         {
-            DataContext = _model;
             ListViewMessages.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, CopyCmdExecuted, CopyCmdCanExecute));
-            _model.Init();
 #if AK_2
             Log.LoggingEvent += (s, e) => Dispatcher.BeginInvoke(
                 DispatcherPriority.Normal,

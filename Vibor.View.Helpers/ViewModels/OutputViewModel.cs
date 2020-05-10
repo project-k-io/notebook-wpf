@@ -111,6 +111,7 @@ namespace ProjectK.View.Helpers.ViewModels
                 var subKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
                 if (subKey == null)
                     return false;
+
                 _outputButtonErrors.IsChecked = Convert.ToBoolean(subKey.GetValue("Error", "True"));
                 _outputButtonDebug.IsChecked = Convert.ToBoolean(subKey.GetValue("Debug", "True"));
                 _outputButtonMessages.IsChecked = Convert.ToBoolean(subKey.GetValue("Info", "True"));
@@ -132,6 +133,7 @@ namespace ProjectK.View.Helpers.ViewModels
                 var subKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
                 if (subKey == null)
                     return false;
+
                 subKey.SetValue("Error", _outputButtonErrors.IsChecked);
                 subKey.SetValue("Debug", _outputButtonDebug.IsChecked);
                 subKey.SetValue("Info", _outputButtonMessages.IsChecked);

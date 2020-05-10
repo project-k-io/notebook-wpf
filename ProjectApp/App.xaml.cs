@@ -23,6 +23,8 @@ namespace ProjectK.Notebook
             AddLogging();
             // MainModel
             _mainModel = new MainViewModel();
+            _mainModel.Output.Init();
+
             // MainWindow
             _mainWindow = new MainWindow();
             _mainWindow.DataContext = _mainModel;
@@ -40,8 +42,8 @@ namespace ProjectK.Notebook
             try
             {
                 var serviceProvider = new ServiceCollection()
-                    .AddLogging(cfg => cfg.AddConsole())
-                    .AddLogging(cfg => cfg.AddDebug())
+                    .AddLogging(logging => logging .AddConsole())
+                    .AddLogging(logging => logging .AddDebug())
                     .Configure<LoggerFilterOptions>(o => o.MinLevel = LogLevel.Debug)
                     .BuildServiceProvider();
 
