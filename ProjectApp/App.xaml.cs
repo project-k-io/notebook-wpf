@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
+using ProjectK.Logging.ColoredConsole;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils;
 
@@ -42,8 +44,19 @@ namespace ProjectK.Notebook
             try
             {
                 var serviceProvider = new ServiceCollection()
-                    .AddLogging(logging => logging .AddConsole())
-                    .AddLogging(logging => logging .AddDebug())
+                    .AddLogging(logging => logging.AddConsole())
+                    .AddLogging(logging => logging.AddDebug())
+                    .AddLogging(logging => logging.AddProvider(new ColoredConsoleLoggerProvider(new ColoredConsoleLoggerConfiguration
+                    {
+                        LogLevel = LogLevel.Information,
+                        Color = ConsoleColor.Blue
+                    })))
+                    .AddLogging(logging => logging.AddProvider(new ColoredConsoleLoggerProvider(new ColoredConsoleLoggerConfiguration
+                    {
+                        LogLevel = LogLevel.Debug,
+                        Color = ConsoleColor.Gray
+                    })))
+
                     .Configure<LoggerFilterOptions>(o => o.MinLevel = LogLevel.Debug)
                     .BuildServiceProvider();
 

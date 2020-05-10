@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 using ProjectK.Utils;
 
 namespace ProjectK.View.Helpers.Misc

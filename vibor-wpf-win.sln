@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook.Views", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook", "ProjectApp\ProjectK.Notebook.csproj", "{17594366-CB83-4DFA-8D4F-9932DE22FD1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectK.Logging", "ProjectK.Logging\ProjectK.Logging.csproj", "{F588F675-77F9-4974-B0F6-49CA3E6357F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{17594366-CB83-4DFA-8D4F-9932DE22FD1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17594366-CB83-4DFA-8D4F-9932DE22FD1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17594366-CB83-4DFA-8D4F-9932DE22FD1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F588F675-77F9-4974-B0F6-49CA3E6357F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F588F675-77F9-4974-B0F6-49CA3E6357F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F588F675-77F9-4974-B0F6-49CA3E6357F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F588F675-77F9-4974-B0F6-49CA3E6357F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

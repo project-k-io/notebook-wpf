@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ProjectK.Logging\ProjectK.Logging.csproj" />
     <ProjectReference Include="..\Vibor.Helpers\ProjectK.Utils.csproj" />
   </ItemGroup>
 

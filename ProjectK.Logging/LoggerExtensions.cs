@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 
-namespace ProjectK.Utils
+namespace ProjectK.Logging
 {
     public static class LoggerExtensions
     {

@@ -3,20 +3,29 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
+using ProjectK.Logging;
 using ProjectK.Utils;
 
 namespace ProjectK.View.Helpers.ViewModels
 {
     public class OutputViewModel : ViewModelBase
     {
-        private readonly OutputButtonViewModel _outputButtonClear;
-        private readonly OutputButtonViewModel _outputButtonDebug;
-        private readonly OutputButtonViewModel _outputButtonErrors;
-        private readonly OutputButtonViewModel _outputButtonMessages;
-        private readonly OutputButtonViewModel _outputButtonWarnings;
+        private readonly OutputButtonViewModel _outputButtonClear = new OutputButtonViewModel();
+        private readonly OutputButtonViewModel _outputButtonDebug = new OutputButtonViewModel();
+        private readonly OutputButtonViewModel _outputButtonErrors = new OutputButtonViewModel();
+        private readonly OutputButtonViewModel _outputButtonMessages = new OutputButtonViewModel();
+        private readonly OutputButtonViewModel _outputButtonWarnings = new OutputButtonViewModel();
+
+        public string RegistryPath => XApp.AppName + "\\Output";
+
+        public ObservableCollection<OutputButtonViewModel> FilterButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
+        public ObservableCollection<OutputButtonViewModel> CommandButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
+        public ObservableCollection<OutputRecordViewModel> Records { get; } = new ObservableCollection<OutputRecordViewModel>();
+
 
         public OutputViewModel()
         {
@@ -33,14 +42,6 @@ namespace ProjectK.View.Helpers.ViewModels
             _outputButtonDebug.PropertyChanged += OutputButtRaisePropertyChanged;
             _outputButtonErrors.PropertyChanged += OutputButtRaisePropertyChanged;
         }
-
-        public string RegistryPath => XApp.AppName + "\\Output";
-
-        public ObservableCollection<OutputButtonViewModel> FilterButtons { get; }
-
-        public ObservableCollection<OutputButtonViewModel> CommandButtons { get; }
-
-        public ObservableCollection<OutputRecordViewModel> Records { get; }
 
         private void OutputButtonClearOnClicked(object sender, EventArgs eventArgs)
         {

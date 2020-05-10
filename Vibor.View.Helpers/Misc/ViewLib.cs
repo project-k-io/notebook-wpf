@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 using ProjectK.Utils;
 
 namespace ProjectK.View.Helpers.Misc

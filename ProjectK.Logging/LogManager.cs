@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace ProjectK.Utils
+namespace ProjectK.Logging
 {
     public class LogManager
     {

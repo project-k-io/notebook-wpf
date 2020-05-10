@@ -7,6 +7,7 @@ using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
+using ProjectK.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.Misc;

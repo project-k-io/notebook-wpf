@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils;

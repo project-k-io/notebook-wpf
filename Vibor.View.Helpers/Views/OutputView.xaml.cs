@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.ViewModels;
 
