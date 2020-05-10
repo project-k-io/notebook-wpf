@@ -25,8 +25,10 @@ namespace ProjectK.Notebook.ViewModels
         #region Fields
 
         private string _excelCsvText;
-        private string _folder;
-        private string _recentFile;
+        
+        private string _dataFolder = "";
+        private string _dataFileName = "";
+
         private string _report;
         private bool _useTimeOptimization;
 
@@ -61,25 +63,30 @@ namespace ProjectK.Notebook.ViewModels
         public ProjectViewModel Project { get; } = new ProjectViewModel();
         public TaskViewModel RootTask => Project.RootTask;
         private Assembly Assembly { get; }
-        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + Folder;
-        public string Folder
+        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + DataFileName;
+
+        public string DataFile => Path.Combine(DataFolder, DataFileName);
+
+        public string DataFolder
         {
-            get => _folder;
+            get => _dataFolder;
             set
             {
-                if (!Set(ref _folder, value)) return;
+                if (!Set(ref _dataFolder, value)) return;
                 RaisePropertyChanged("Title");
             }
         }
-        public string RecentFile
+        
+        public string DataFileName
         {
-            get => _recentFile;
+            get => _dataFileName;
             set
             {
-                if (!Set(ref _recentFile, value)) return;
+                if (!Set(ref _dataFileName, value)) return;
                 RaisePropertyChanged("Title");
             }
         }
+
         public DataModel Data { get; set; }
         public string Report
         {
@@ -117,7 +124,7 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
         public ObservableCollection<string> TaskTitleList { get; set; }
-        public bool CanSave { get; set; }
+        public bool CanSave { get; set; } = false;
         public Action<Action> OnDispatcher { get; set; }
         public OutputViewModel Output { get; set; } = new OutputViewModel();
 
@@ -133,7 +140,7 @@ namespace ProjectK.Notebook.ViewModels
             TaskTitleList = new ObservableCollection<string>();
 
             ClearCommand = new RelayCommand(Project.Clear);
-            EditCommand = new RelayCommand(() => Process.Start("notepad.exe", Folder));
+            EditCommand = new RelayCommand(() => Process.Start("notepad.exe", DataFile));
             FixTimeCommand = new RelayCommand(Project.FixTime);
             ExtractContextCommand = new RelayCommand(Project.FixContext);
             FixTitlesCommand = new RelayCommand(Project.FixTitles);
@@ -145,38 +152,46 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FileOpenOldFormat()
         {
-            Project.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(RecentFile));
+            Project.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
         }
         public async Task FileSaveOldFormatAsync()
         {
-            await XFile.SaveToFileAsync(Project, RecentFile);
+            await XFile.SaveToFileAsync(Project, DataFile);
         }
-        public async Task FileOpenNewFormatAsync()
-        {
-            if (!Directory.Exists(Folder)) return;
 
-            var fileName = DataModel.GetTasksFileName(Folder);
-            Data = await XFile.ReadFromFileAsync<DataModel>(fileName);
+        public async Task OpenFileNewFormatAsync()
+        {
+            Logger.LogDebug("OpenFileNewFormatAsync");
+            var path = DataFile;
+            if (!File.Exists(path)) return;
+            Data = await XFile.ReadFromFileAsync<DataModel>(path);
             Project.LoadFrom(Data);
             UseSettings();
         }
+
         public async Task FileSaveNewFormatAsync()
         {
-            var fileName = DataModel.GetTasksFileName(Folder);
-            if (Data == null) Data = new DataModel();
+            if (Data == null) 
+                Data = new DataModel();
 
-            XFile.SaveOldFile(fileName);
+            var path = DataFile;
+            XFile.SaveOldFile(path);
             Project.SaveTo(Data);
-            await XFile.SaveToFileAsync(Data, fileName);
+
+            await XFile.SaveToFileAsync(Data, path);
         }
         public async Task SaveDataAsync()
         {
+            // Todo" AK !!! Temp
+            return;
+
+            Logger.LogDebug("SaveDataAsync");
             if (!CanSave) return;
             await FileSaveNewFormatAsync();
         }
         public async Task LoadDataAsync()
         {
-            await FileOpenNewFormatAsync();
+            await OpenFileNewFormatAsync();
         }
         public async Task UpdateTypeListAsync()
         {
@@ -211,6 +226,7 @@ namespace ProjectK.Notebook.ViewModels
         }
         public async Task NewProjectAsync()
         {
+            Logger.LogDebug("NewProjectAsync");
             await SaveDataAsync();
             CanSave = false;
             Project.Clear();
@@ -218,8 +234,14 @@ namespace ProjectK.Notebook.ViewModels
             {
                 Context = "Time Tracker"
             });
+
             Data = new DataModel();
-            Folder = string.Empty;
+
+            DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            DataFileName = "UserData.json";
+            var path = XFile2.MakeUnique(DataFile);
+            var name = Path.GetFileName(path);
+            DataFileName = name;
             CanSave = true;
         }
 

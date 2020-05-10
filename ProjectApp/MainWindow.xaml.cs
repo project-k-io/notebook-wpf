@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
@@ -49,7 +50,7 @@ namespace ProjectK.Notebook
             var commandBindings = new CommandBindingCollection
             {
                 new CommandBinding(ApplicationCommands.New, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Open, async (s, e) => await FileOpenNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await OpenFile(), (s, e) => e.CanExecute = !IsModelNull),
                 new CommandBinding(ApplicationCommands.Save, async (s, e) => await FileSaveNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
                 new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await FileSaveAsNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
                 new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull)
@@ -57,40 +58,59 @@ namespace ProjectK.Notebook
             CommandBindings.AddRange(commandBindings);
         }
 
-        private void FileOpenOldFormat()
+        public static (string directoryName, string fileName, bool ok) OpenFileGeneric(string initialDirectory)
         {
-            if (!(DataContext is MainViewModel dataContext)) return;
+            var dialog = new OpenFileDialog { InitialDirectory = initialDirectory };
+            dialog.DefaultExt = ".json";
+            dialog.Filter = "Json documents (.json)|*.json" + 
+                            "|XML documents(.xml) | *.xml"; 
 
-            var openFileDialog = new OpenFileDialog
-            {
-                InitialDirectory = dataContext.Folder,
-                FileName = dataContext.RecentFile
-            };
-            var result = openFileDialog.ShowDialog();
-            if (result == false) return;
 
-            dataContext.Folder = Path.GetDirectoryName(openFileDialog.FileName);
-            dataContext.RecentFile = openFileDialog.FileName;
-            dataContext.FileOpenOldFormat();
+            var result = dialog.ShowDialog();
+            if (result != true)
+                return ("", "", false);
+
+            var path = dialog.FileName;
+            var directoryName = Path.GetDirectoryName(path);
+            var fileName = Path.GetFileName(path);
+            return (directoryName, fileName, true);
         }
 
-        private async Task FileOpenNewFormatAsync()
+
+        private void FileOpenOldFormat()
         {
+            _logger.LogDebug("OpenFile()");
             if (!(DataContext is MainViewModel model)) return;
-#if AK
-            var dialog = new FolderBrowserDialog();
-            dialog.SelectedPath = model.Folder;
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
-            model.Folder = dialog.SelectedPath;
-            await model.FileOpenNewFormatAsync();
-#endif
+            var r = OpenFileGeneric(model.DataFolder);
+            if (!r.ok)
+                return;
+
+            model.DataFolder = r.directoryName;
+            model.DataFileName = r.fileName;
+
+            model.FileOpenOldFormat();
+        }
+
+
+        private async Task OpenFile()
+        {
+            _logger.LogDebug("OpenFile()");
+            if (!(DataContext is MainViewModel model)) return;
+            var r = OpenFileGeneric(model.DataFolder);
+            if (!r.ok)
+                return;
+
+            model.DataFolder = r.directoryName;
+            model.DataFileName = r.fileName;
+
+            await model.OpenFileNewFormatAsync();
         }
 
         private async Task FileSaveNewFormatAsync()
         {
             if (!(DataContext is MainViewModel model)) return;
 
-            if (Directory.Exists(Model.Folder))
+            if (File.Exists(Model.DataFile))
                 await model.FileSaveNewFormatAsync();
             else
                 await FileSaveAsNewFormatAsync();
