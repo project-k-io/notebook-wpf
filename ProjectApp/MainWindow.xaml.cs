@@ -58,22 +58,24 @@ namespace ProjectK.Notebook
             CommandBindings.AddRange(commandBindings);
         }
 
-        public static (string directoryName, string fileName, bool ok) OpenFileGeneric(string initialDirectory)
+        public static (string fileName, bool ok) OpenFileGeneric(string path)
         {
-            var dialog = new OpenFileDialog { InitialDirectory = initialDirectory };
+            var dialog = new OpenFileDialog();
+            var directoryName = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
+            {
+                dialog.InitialDirectory = directoryName;
+            }
+
             dialog.DefaultExt = ".json";
             dialog.Filter = "Json documents (.json)|*.json" + 
                             "|XML documents(.xml) | *.xml"; 
 
-
             var result = dialog.ShowDialog();
             if (result != true)
-                return ("", "", false);
+                return ("", false);
 
-            var path = dialog.FileName;
-            var directoryName = Path.GetDirectoryName(path);
-            var fileName = Path.GetFileName(path);
-            return (directoryName, fileName, true);
+            return (dialog.FileName, true);
         }
 
 
@@ -81,12 +83,11 @@ namespace ProjectK.Notebook
         {
             _logger.LogDebug("OpenFile()");
             if (!(DataContext is MainViewModel model)) return;
-            var r = OpenFileGeneric(model.DataFolder);
+            var r = OpenFileGeneric(model.DataFile);
             if (!r.ok)
                 return;
-
-            model.DataFolder = r.directoryName;
-            model.DataFileName = r.fileName;
+            
+            model.DataFile = r.fileName;
 
             model.FileOpenOldFormat();
         }
@@ -96,13 +97,11 @@ namespace ProjectK.Notebook
         {
             _logger.LogDebug("OpenFile()");
             if (!(DataContext is MainViewModel model)) return;
-            var r = OpenFileGeneric(model.DataFolder);
+            var r = OpenFileGeneric(model.DataFile);
             if (!r.ok)
                 return;
 
-            model.DataFolder = r.directoryName;
-            model.DataFileName = r.fileName;
-
+            model.DataFile = r.fileName;
             await model.OpenFileNewFormatAsync();
         }
 

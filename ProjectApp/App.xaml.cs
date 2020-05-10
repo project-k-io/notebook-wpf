@@ -115,8 +115,7 @@ namespace ProjectK.Notebook
                 _mainModel.Layout.NavigatorWidth = settings.LayoutNavigatorWidth;
                 _mainModel.LastListTaskId = settings.LastListTaskId;
                 _mainModel.LastTreeTaskId = settings.LastTreeTaskId;
-                _mainModel.DataFileName = settings.RecentFolder;
-                _mainModel.DataFileName = settings.RecentFile;
+                _mainModel.DataFile = settings.RecentFile;
                 _mainModel.MostRecentFiles.Clear();
 
                 if(File.Exists(_mainModel.DataFile))
@@ -145,8 +144,7 @@ namespace ProjectK.Notebook
                     settings.MainWindowWidth = _mainWindow.Width;
                     settings.MainWindowHeight = _mainWindow.Height;
                     settings.LayoutNavigatorWidth = _mainModel.Layout.NavigatorWidth;
-                    settings.RecentFolder = _mainModel.DataFolder;
-                    settings.RecentFile = _mainModel.DataFileName;
+                    settings.RecentFile = _mainModel.DataFile;
                     settings.LastListTaskId = _mainModel.LastListTaskId;
                     settings.LastTreeTaskId = _mainModel.LastTreeTaskId;
                 }

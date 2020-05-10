@@ -27,7 +27,7 @@ namespace ProjectK.Notebook.ViewModels
         private string _excelCsvText;
         
         private string _dataFolder = "";
-        private string _dataFileName = "";
+        private string _dataFile = "";
 
         private string _report;
         private bool _useTimeOptimization;
@@ -63,26 +63,14 @@ namespace ProjectK.Notebook.ViewModels
         public ProjectViewModel Project { get; } = new ProjectViewModel();
         public TaskViewModel RootTask => Project.RootTask;
         private Assembly Assembly { get; }
-        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + DataFileName;
+        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + DataFile;
 
-        public string DataFile => Path.Combine(DataFolder, DataFileName);
-
-        public string DataFolder
+        public string DataFile
         {
-            get => _dataFolder;
+            get => _dataFile;
             set
             {
-                if (!Set(ref _dataFolder, value)) return;
-                RaisePropertyChanged("Title");
-            }
-        }
-        
-        public string DataFileName
-        {
-            get => _dataFileName;
-            set
-            {
-                if (!Set(ref _dataFileName, value)) return;
+                if (!Set(ref _dataFile, value)) return;
                 RaisePropertyChanged("Title");
             }
         }
@@ -236,12 +224,9 @@ namespace ProjectK.Notebook.ViewModels
             });
 
             Data = new DataModel();
-
-            DataFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            DataFileName = "UserData.json";
             var path = XFile2.MakeUnique(DataFile);
             var name = Path.GetFileName(path);
-            DataFileName = name;
+            DataFile = name;
             CanSave = true;
         }
 

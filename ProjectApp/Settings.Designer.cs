@@ -122,18 +122,6 @@ namespace ProjectK.Notebook {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string RecentFolder {
-            get {
-                return ((string)(this["RecentFolder"]));
-            }
-            set {
-                this["RecentFolder"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string RecentFile {
             get {
                 return ((string)(this["RecentFile"]));
