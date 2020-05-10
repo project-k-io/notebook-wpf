@@ -27,16 +27,14 @@ namespace ProjectK.View.Helpers.Misc
             ref GridViewColumn lastColumnClicked, ref ListSortDirection lastDirection)
         {
             var listView = sender as ListView;
-            var originalSource = e.OriginalSource as GridViewColumnHeader;
-            if (originalSource == null || originalSource.Role == GridViewColumnHeaderRole.Padding)
+            if (!(e.OriginalSource is GridViewColumnHeader originalSource) || originalSource.Role == GridViewColumnHeaderRole.Padding)
                 return;
             var direction = originalSource.Column == lastColumnClicked
                 ? lastDirection == ListSortDirection.Ascending
                     ? ListSortDirection.Descending
                     : ListSortDirection.Ascending
                 : ListSortDirection.Ascending;
-            var column = originalSource.Column as SortableGridViewColumn;
-            if (column == null)
+            if (!(originalSource.Column is SortableGridViewColumn column))
                 return;
             var fieldName = column.FieldName;
             if (string.IsNullOrEmpty(fieldName))
@@ -49,20 +47,20 @@ namespace ProjectK.View.Helpers.Misc
 
         public static void ListViewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var listView = sender as ListView;
-            if (listView == null)
+            if (!(sender is ListView listView))
                 return;
-            var view = listView.View as GridView;
-            if (view == null)
+            if (!(listView.View is GridView view))
                 return;
             var contextMenu = new ContextMenu();
             foreach (var column in view.Columns)
             {
                 var gridViewColumnPair = new ListViewGridViewColumnPair {ListView = listView, Column = column};
-                var checkBox1 = new CheckBox();
-                checkBox1.Content = column.Header;
-                checkBox1.Tag = gridViewColumnPair;
-                checkBox1.IsChecked = column.Width != 0.0;
+                var checkBox1 = new CheckBox
+                {
+                    Content = column.Header,
+                    Tag = gridViewColumnPair,
+                    IsChecked = column.Width != 0.0
+                };
                 var checkBox2 = checkBox1;
                 contextMenu.Items.Add(checkBox2);
                 checkBox2.Checked += CheckBoxChecked;
@@ -82,16 +80,14 @@ namespace ProjectK.View.Helpers.Misc
             var subKey = Registry.CurrentUser.CreateSubKey(name);
             if (subKey == null)
                 return;
-            var view = lv.View as GridView;
-            if (view == null)
+            if (!(lv.View is GridView view))
                 return;
             var num = 0.0;
             foreach (var column in view.Columns)
             {
                 var header = column.Header as string;
                 var s = subKey.GetValue(header, 48) as string;
-                var result = 0;
-                if (int.TryParse(s, out result))
+                if (int.TryParse(s, out var result))
                     column.Width = result;
                 num += column.Width;
             }
@@ -107,8 +103,7 @@ namespace ProjectK.View.Helpers.Misc
             var subKey = Registry.CurrentUser.CreateSubKey(name);
             if (subKey == null)
                 return;
-            var view = lv.View as GridView;
-            if (view == null)
+            if (!(lv.View is GridView view))
                 return;
             foreach (var column in view.Columns)
             {
@@ -119,22 +114,18 @@ namespace ProjectK.View.Helpers.Misc
 
         private static void CheckBoxUnchecked(object sender, RoutedEventArgs e)
         {
-            var checkBox = sender as CheckBox;
-            if (checkBox == null)
+            if (!(sender is CheckBox checkBox))
                 return;
-            var tag = checkBox.Tag as GridViewColumn;
-            if (tag == null)
+            if (!(checkBox.Tag is GridViewColumn tag))
                 return;
             tag.Width = 0.0;
         }
 
         private static void CheckBoxChecked(object sender, RoutedEventArgs e)
         {
-            var checkBox1 = sender as CheckBox;
-            if (checkBox1 == null)
+            if (!(sender is CheckBox checkBox1))
                 return;
-            var tag = checkBox1.Tag as ListViewGridViewColumnPair;
-            if (tag == null)
+            if (!(checkBox1.Tag is ListViewGridViewColumnPair tag))
                 return;
             var listView = tag.ListView;
             if (listView == null)
@@ -145,8 +136,7 @@ namespace ProjectK.View.Helpers.Misc
             var num1 = 0;
             foreach (var obj in contextMenu.Items)
             {
-                var checkBox2 = obj as CheckBox;
-                if (checkBox2 == null)
+                if (!(obj is CheckBox checkBox2))
                     return;
                 if (checkBox2.IsChecked.GetValueOrDefault())
                     ++num1;
@@ -158,8 +148,7 @@ namespace ProjectK.View.Helpers.Misc
             if (column1 == null)
                 return;
             column1.Width = column1.Width != 0.0 ? 0.0 : double.NaN;
-            var view = listView.View as GridView;
-            if (view == null)
+            if (!(listView.View is GridView view))
                 return;
             var num2 = 0.0;
             foreach (var column2 in view.Columns)
@@ -182,10 +171,6 @@ namespace ProjectK.View.Helpers.Misc
 
             listView.Width = num2 + 48.0;
             SaveColumnSettings(listView);
-        }
-
-        private void RefreshSort()
-        {
         }
 
         public static void Refresh(ListView listView)

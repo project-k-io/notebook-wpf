@@ -10,7 +10,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListView SelectionChanged="listViewTasks_SelectionChanged" ButtonBase.Click="ListViewTasks_OnClick"
+        <ListView SelectionChanged="ListViewTasks_SelectionChanged" ButtonBase.Click="ListViewTasks_OnClick"
                   x:Name="listViewTasks" Margin="4,-5,-4,5" SelectionMode="Extended"
                   ItemsSource="{Binding Path=Project.SelectedTaskList}"
                   SelectedItem="{Binding Project.SelectedTask, IsAsync=true}">
@@ -73,7 +73,7 @@
                     <RowDefinition Height="282" />
                 </Grid.RowDefinitions>
                 <ComboBox Grid.Row="0" IsEditable="true" ItemsSource="{Binding Project.ContextList}" />
-                <Button Click="buttonTest_Click" x:Name="buttonTest" Grid.Row="1" />
+                <Button Click="ButtonTest_Click" x:Name="buttonTest" Grid.Row="1" />
             </Grid>
         </Grid>
     </Grid>

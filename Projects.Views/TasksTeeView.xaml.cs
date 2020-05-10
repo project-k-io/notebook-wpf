@@ -35,12 +35,11 @@ namespace ProjectK.Notebook.Views
 
         private void TasksTreeView_Loaded(object sender, RoutedEventArgs e)
         {
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null)
+            if (!(DataContext is MainViewModel dataContext))
                 return;
             dataContext.RootTask.SetParents();
-            treeViewTasks.SelectItem(dataContext.Project.SelectedTreeTask);
-            treeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
+            TreeViewTasks.SelectItem(dataContext.Project.SelectedTreeTask);
+            TreeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
         }
 
         private void TreeViewTasksOnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -48,36 +47,34 @@ namespace ProjectK.Notebook.Views
             OnTreeViewKeyDown(sender, e);
         }
 
-        private void treeViewTasks_KeyDown(object sender, KeyEventArgs e)
-        {
-        }
-
         private void OnTreeViewKeyDown(object sender, KeyEventArgs e)
         {
             var keyState = GetKeyState(e.Key);
             Debug.WriteLine("treeViewTasks_KeyDown");
-            var treeView = sender as TreeListView;
-            if (treeView == null)
+            if (!(sender is TreeListView treeView))
                 return;
-            var dataContext = treeView.DataContext as MainViewModel;
-            if (dataContext == null)
+            if (!(treeView.DataContext is MainViewModel dataContext))
                 return;
-            var task = treeView.SelectedItem as TaskViewModel;
-            if (task == null)
+            if (!(treeView.SelectedItem is TaskViewModel task))
                 task = dataContext.RootTask;
-            var expandItem = (Action<TaskViewModel>) (t =>
+
+            void ExpandItem(TaskViewModel t)
             {
-                var treeViewItem = treeView.ItemContainerGenerator.ContainerFromItem(task) as TreeViewItem;
-                if (treeViewItem == null)
+                if (!(treeView.ItemContainerGenerator.ContainerFromItem(task) is TreeViewItem treeViewItem))
                     return;
+
                 treeViewItem.IsExpanded = true;
-            });
-            var deleteMessageBox = (Func<bool>) (() =>
-                MessageBox.Show("Are you sure you would like to delete this?", "Delete", MessageBoxButton.OKCancel) ==
-                MessageBoxResult.Cancel);
+            }
+
+            static bool DeleteMessageBox()
+            {
+                return MessageBox.Show("Are you sure you would like to delete this?", "Delete", MessageBoxButton.OKCancel) ==
+                       MessageBoxResult.Cancel;
+            }
+
             var addDelegate = ViewLib.GetAddDelegate(this);
             TaskViewModel.OnTreeViewKeyDown(task, keyState, () => KeyboardState, () => e.Handled = true,
-                treeView.SelectItem, expandItem, deleteMessageBox, addDelegate);
+                treeView.SelectItem, ExpandItem, DeleteMessageBox, addDelegate);
         }
 
         private static TaskViewModel.KeyStates GetKeyState(Key key)
@@ -108,13 +105,11 @@ namespace ProjectK.Notebook.Views
             return keyStates;
         }
 
-        private void treeViewTasks_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void TreeViewTasks_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var treeListView = sender as TreeListView;
-            if (treeListView == null)
+            if (!(sender is TreeListView treeListView))
                 return;
-            var dataContext = treeListView.DataContext as MainViewModel;
-            if (dataContext == null)
+            if (!(treeListView.DataContext is MainViewModel dataContext))
                 return;
             var task = treeListView.SelectedItem as TaskViewModel ?? dataContext.RootTask;
             dataContext.SelectTreeTask(task);

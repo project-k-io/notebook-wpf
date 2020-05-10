@@ -1,7 +1,9 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.ViewModels;
@@ -33,8 +35,7 @@ namespace ProjectK.View.Helpers.Views
 
         private static void CopyCmdExecuted(object target, ExecutedRoutedEventArgs e)
         {
-            var originalSource = e.OriginalSource as ListView;
-            if (originalSource == null) return;
+            if (!(e.OriginalSource is ListView originalSource)) return;
 
             var stringBuilder = new StringBuilder();
             foreach (var selectedItem in originalSource.SelectedItems)
@@ -45,8 +46,7 @@ namespace ProjectK.View.Helpers.Views
 
         private static void CopyCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            var originalSource = e.OriginalSource as ListView;
-            if (originalSource == null) return;
+            if (!(e.OriginalSource is ListView originalSource)) return;
 
             e.CanExecute = originalSource.SelectedItems.Count > 0;
         }

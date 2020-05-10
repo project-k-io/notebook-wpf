@@ -158,8 +158,8 @@
                                       ItemsSource="{Binding Path=SubTasks}" />
         </FrameworkElement.Resources>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <treeViewList:TreeListView x:Name="treeViewTasks" KeyDown="treeViewTasks_KeyDown"
-                                       SelectedItemChanged="treeViewTasks_SelectedItemChanged"
+            <treeViewList:TreeListView x:Name="TreeViewTasks" 
+                                       SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
                                        ItemContainerStyle="{StaticResource treeListViewItem}"
                                        Style="{StaticResource TreeListView}"
                                        ItemsSource="{Binding Path=RootTask.SubTasks}" />

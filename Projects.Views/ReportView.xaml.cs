@@ -24,13 +24,12 @@ namespace ProjectK.Notebook.Views
 
         private void ReportView_Loaded(object sender, RoutedEventArgs e)
         {
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null)
+            if (!(DataContext is MainViewModel dataContext))
                 return;
-            dataContext.GenerateReportChanged += viewModel_GenerateReportChanged;
+            dataContext.GenerateReportChanged += ViewModel_GenerateReportChanged;
         }
 
-        private void viewModel_GenerateReportChanged(object sender, EventArgs e)
+        private void ViewModel_GenerateReportChanged(object sender, EventArgs e)
         {
             GenerateReportA();
         }
@@ -39,8 +38,7 @@ namespace ProjectK.Notebook.Views
         {
             try
             {
-                var dataContext = DataContext as MainViewModel;
-                if (dataContext == null)
+                if (!(DataContext is MainViewModel dataContext))
                     return;
                 var project = dataContext.Project;
                 var maxDelta = 40.0 / 5.0 * project.GetSelectedDays().Count;

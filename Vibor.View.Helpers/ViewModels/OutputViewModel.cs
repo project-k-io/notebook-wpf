@@ -60,8 +60,7 @@ namespace ProjectK.View.Helpers.ViewModels
         {
             CollectionViewSource.GetDefaultView(Records).Filter = o =>
             {
-                var outputRecordViewModel = o as OutputRecordViewModel;
-                if (outputRecordViewModel != null)
+                if (o is OutputRecordViewModel outputRecordViewModel)
                 {
                     if (outputRecordViewModel.Type == LogLevel.Error)
                         return _outputButtonErrors.IsChecked;

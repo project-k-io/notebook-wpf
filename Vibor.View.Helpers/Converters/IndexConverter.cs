@@ -10,8 +10,7 @@ namespace ProjectK.View.Helpers.Converters
         public object Convert(object value, Type TargetType, object parameter, CultureInfo culture)
         {
             var listViewItem = (ListViewItem) value;
-            var listView = ItemsControl.ItemsControlFromItemContainer(listViewItem) as ListView;
-            if (listView == null)
+            if (!(ItemsControl.ItemsControlFromItemContainer(listViewItem) is ListView listView))
                 return -1;
             return listView.ItemContainerGenerator.IndexFromContainer(listViewItem).ToString();
         }

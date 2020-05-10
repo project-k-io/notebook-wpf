@@ -17,17 +17,16 @@ namespace ProjectK.Notebook.Views
 
         private void TasksListView_Loaded(object sender, RoutedEventArgs e)
         {
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null)
+            if (!(DataContext is MainViewModel dataContext))
                 return;
             listViewTasks.SelectedItem = dataContext.Project.SelectedTask;
         }
 
-        private void buttonTest_Click(object sender, RoutedEventArgs e)
+        private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
         }
 
-        private void listViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ListViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
         }
 

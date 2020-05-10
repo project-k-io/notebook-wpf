@@ -32,8 +32,7 @@ namespace ProjectK.Notebook
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
             _logger.LogDebug("MainWindow Loaded()");
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null) return;
+            if (!(DataContext is MainViewModel dataContext)) return;
 
             dataContext.OnDispatcher = ViewLib.GetAddDelegate(this);
             dataContext.Project.SelectedDaysChanged += Project_SelectedDaysChanged;
@@ -59,12 +58,13 @@ namespace ProjectK.Notebook
 
         private void FileOpenOldFormat()
         {
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null) return;
+            if (!(DataContext is MainViewModel dataContext)) return;
 
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = dataContext.Folder;
-            openFileDialog.FileName = dataContext.RecentFile;
+            var openFileDialog = new OpenFileDialog
+            {
+                InitialDirectory = dataContext.Folder,
+                FileName = dataContext.RecentFile
+            };
             var result = openFileDialog.ShowDialog();
             if (result == false) return;
 
@@ -75,8 +75,7 @@ namespace ProjectK.Notebook
 
         private async Task FileOpenNewFormatAsync()
         {
-            var model = DataContext as MainViewModel;
-            if (model == null) return;
+            if (!(DataContext is MainViewModel model)) return;
 #if AK
             var dialog = new FolderBrowserDialog();
             dialog.SelectedPath = model.Folder;
@@ -88,8 +87,7 @@ namespace ProjectK.Notebook
 
         private async Task FileSaveNewFormatAsync()
         {
-            var model = DataContext as MainViewModel;
-            if (model == null) return;
+            if (!(DataContext is MainViewModel model)) return;
 
             if (Directory.Exists(Model.Folder))
                 await model.FileSaveNewFormatAsync();
@@ -99,8 +97,7 @@ namespace ProjectK.Notebook
 
         private async Task FileSaveAsNewFormatAsync()
         {
-            var model = DataContext as MainViewModel;
-            if (model == null) return;
+            if (!(DataContext is MainViewModel model)) return;
 #if AK
             var dialog = new FolderBrowserDialog();
             dialog.SelectedPath = model.Folder;
@@ -113,12 +110,9 @@ namespace ProjectK.Notebook
 
         private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            var addedItems = e.AddedItems;
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null) return;
+            if (!(DataContext is MainViewModel dataContext)) return;
 
-            var calendar = sender as Calendar;
-            if (calendar == null) return;
+            if (!(sender is Calendar calendar)) return;
 
             dataContext.Project.UpdateSelectDayTasks(calendar.SelectedDates);
             dataContext.OnGenerateReportChanged();

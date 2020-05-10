@@ -15,8 +15,7 @@ namespace ProjectK.Notebook.Views.Helpers
         {
             foreach (var obj in parentContainer.Items)
             {
-                var currentContainer = parentContainer.ItemContainerGenerator.ContainerFromItem(obj) as TreeViewItem;
-                if (currentContainer != null && currentContainer.Items.Count > 0)
+                if (parentContainer.ItemContainerGenerator.ContainerFromItem(obj) is TreeViewItem currentContainer && currentContainer.Items.Count > 0)
                 {
                     currentContainer.IsExpanded = true;
                     if (currentContainer.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
@@ -48,8 +47,7 @@ namespace ProjectK.Notebook.Views.Helpers
         {
             foreach (var obj in parentContainer.Items)
             {
-                var treeViewItem = parentContainer.ItemContainerGenerator.ContainerFromItem(obj) as TreeViewItem;
-                if (obj == itemToSelect && treeViewItem != null)
+                if (obj == itemToSelect && parentContainer.ItemContainerGenerator.ContainerFromItem(obj) is TreeViewItem treeViewItem)
                 {
                     treeViewItem.IsSelected = true;
                     treeViewItem.BringIntoView();
@@ -60,8 +58,7 @@ namespace ProjectK.Notebook.Views.Helpers
 
             foreach (var obj in parentContainer.Items)
             {
-                var currentContainer = parentContainer.ItemContainerGenerator.ContainerFromItem(obj) as TreeViewItem;
-                if (currentContainer != null && currentContainer.Items.Count > 0)
+                if (parentContainer.ItemContainerGenerator.ContainerFromItem(obj) is TreeViewItem currentContainer && currentContainer.Items.Count > 0)
                 {
                     var isExpanded = currentContainer.IsExpanded;
                     currentContainer.IsExpanded = true;
