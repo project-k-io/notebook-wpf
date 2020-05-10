@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Vibor.View.Helpers.Converters
+namespace ProjectK.View.Helpers.Converters
 {
     public class DebuggingConverter : ConverterMarkupExtension<DebuggingConverter>, IValueConverter
     {

@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
-namespace Vibor.View.Helpers.Misc
+namespace ProjectK.View.Helpers.Misc
 {
     internal class XListBox
     {

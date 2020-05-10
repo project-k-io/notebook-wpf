@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Projects.ViewModels
+namespace ProjectK.Notebook.ViewModels
 {
     public class XFile
     {

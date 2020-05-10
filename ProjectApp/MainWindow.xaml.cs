@@ -1,17 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
-using Projects.ViewModels;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
-using Vibor.Helpers;
-using Vibor.View.Helpers.Misc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.Utils;
+using ProjectK.View.Helpers.Misc;
 
-namespace ProjectApp
+namespace ProjectK.Notebook
 {
     public partial class MainWindow : RibbonWindow
     {

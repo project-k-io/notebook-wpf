@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
-using Vibor.Helpers;
+using Microsoft.Extensions.Logging;
+using ProjectK.Utils;
 
-namespace Vibor.View.Helpers.Converters
+namespace ProjectK.View.Helpers.Converters
 {
     [ValueConversion(typeof(string), typeof(double))]
     public class TextToDoubleConverter : ConverterMarkupExtension<TextToDoubleConverter>, IValueConverter
@@ -21,7 +21,7 @@ namespace Vibor.View.Helpers.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var result = 0.0;
-            if (!double.TryParse((string)value, out result))
+            if (!double.TryParse((string) value, out result))
                 return result;
             return result;
         }

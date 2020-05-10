@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Projects.Models.Versions.Version2
+namespace ProjectK.Notebook.Models.Versions.Version2
 {
     public class TaskModel
     {
@@ -17,7 +17,7 @@ namespace Projects.Models.Versions.Version2
 
         public static TaskModel NetTask()
         {
-            return new TaskModel { Id = Guid.NewGuid(), DateStarted = DateTime.Now };
+            return new TaskModel {Id = Guid.NewGuid(), DateStarted = DateTime.Now};
         }
 
         public override string ToString()

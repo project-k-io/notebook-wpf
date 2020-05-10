@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Projects.Views
+namespace ProjectK.Notebook.Views
 {
     public partial class ExcelCsvView : UserControl
     {

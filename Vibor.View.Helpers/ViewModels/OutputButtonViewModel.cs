@@ -1,9 +1,9 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using System;
+﻿using System;
 using System.Windows.Input;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 
-namespace Vibor.View.Helpers.ViewModels
+namespace ProjectK.View.Helpers.ViewModels
 {
     public class OutputButtonViewModel : ViewModelBase
     {

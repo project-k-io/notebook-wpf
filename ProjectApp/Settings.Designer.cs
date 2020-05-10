@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProjectApp {
+namespace ProjectK.Notebook {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

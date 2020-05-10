@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vibor.Helpers
+namespace ProjectK.Utils
 {
     public class XList
     {

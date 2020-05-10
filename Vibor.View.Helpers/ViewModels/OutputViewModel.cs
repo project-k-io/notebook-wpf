@@ -1,15 +1,14 @@
-﻿using GalaSoft.MvvmLight;
-using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Data;
-using Vibor.Helpers;
-using Vibor.Logging;
+using GalaSoft.MvvmLight;
+using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
+using ProjectK.Utils;
 
-namespace Vibor.View.Helpers.ViewModels
+namespace ProjectK.View.Helpers.ViewModels
 {
     public class OutputViewModel : ViewModelBase
     {

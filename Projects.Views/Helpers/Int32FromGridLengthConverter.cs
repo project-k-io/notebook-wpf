@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Projects.Views.Helpers
+namespace ProjectK.Notebook.Views.Helpers
 {
     public class Int32FromGridLengthConverter : IValueConverter
     {

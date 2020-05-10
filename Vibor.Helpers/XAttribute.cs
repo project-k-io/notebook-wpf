@@ -4,7 +4,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Vibor.Helpers
+namespace ProjectK.Utils
 {
     public static class XAttribute
     {
@@ -39,27 +39,27 @@ namespace Vibor.Helpers
         public static string GetAssemblyDescription(Assembly assembly)
         {
             return assembly
-                .GetFirstAttributeValue((Expression<Func<AssemblyDescriptionAttribute, object>>)(x => x.Description))
+                .GetFirstAttributeValue((Expression<Func<AssemblyDescriptionAttribute, object>>) (x => x.Description))
                 .ToString();
         }
 
         public static string GetAssemblyTitle(Assembly assembly)
         {
-            return assembly.GetFirstAttributeValue((Expression<Func<AssemblyTitleAttribute, object>>)(x => x.Title))
+            return assembly.GetFirstAttributeValue((Expression<Func<AssemblyTitleAttribute, object>>) (x => x.Title))
                 .ToString();
         }
 
         public static string GetAssemblyCompany(Assembly assembly)
         {
             return assembly
-                .GetFirstAttributeValue((Expression<Func<AssemblyCompanyAttribute, object>>)(x => x.Company))
+                .GetFirstAttributeValue((Expression<Func<AssemblyCompanyAttribute, object>>) (x => x.Company))
                 .ToString();
         }
 
         public static string GetAssemblyProduct(Assembly assembly)
         {
             return assembly
-                .GetFirstAttributeValue((Expression<Func<AssemblyProductAttribute, object>>)(x => x.Product))
+                .GetFirstAttributeValue((Expression<Func<AssemblyProductAttribute, object>>) (x => x.Product))
                 .ToString();
         }
 

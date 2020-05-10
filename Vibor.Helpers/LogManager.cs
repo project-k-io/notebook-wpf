@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Vibor.Helpers
+namespace ProjectK.Utils
 {
     public class LogManager
     {

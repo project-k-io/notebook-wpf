@@ -1,7 +1,7 @@
 ﻿using System.Xml.Serialization;
-using Vibor.Helpers;
+using ProjectK.Utils;
 
-namespace Projects.Models.Versions.Version1
+namespace ProjectK.Notebook.Models.Versions.Version1
 {
     [XmlRoot("ProjectViewModel")]
     public class DataModel

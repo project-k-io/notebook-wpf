@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
-namespace Vibor.Helpers
+namespace ProjectK.Utils
 {
     public class XTask
     {
@@ -33,8 +33,8 @@ namespace Vibor.Helpers
         {
             started?.Invoke();
             var ii = 0;
-            var step = files.Count > 100 ? (int)(files.Count / 100.0 + 0.5) : 1;
-            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = -1 };
+            var step = files.Count > 100 ? (int) (files.Count / 100.0 + 0.5) : 1;
+            var parallelOptions = new ParallelOptions {MaxDegreeOfParallelism = -1};
             Parallel.ForEach(files, parallelOptions, (f, pls, i) =>
             {
                 try

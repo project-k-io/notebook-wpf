@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
-using Vibor.Helpers;
+using Microsoft.Extensions.Logging;
+using ProjectK.Utils;
 
-namespace Vibor.View.Helpers.Converters
+namespace ProjectK.View.Helpers.Converters
 {
     [ValueConversion(typeof(double), typeof(string))]
     public class DoubleToTextConverter : ConverterMarkupExtension<DoubleToTextConverter>, IValueConverter
@@ -27,7 +27,7 @@ namespace Vibor.View.Helpers.Converters
         {
             if (!_converter.IsValid(value))
                 return null;
-            return _converter.ConvertFromString((string)value);
+            return _converter.ConvertFromString((string) value);
         }
     }
 }

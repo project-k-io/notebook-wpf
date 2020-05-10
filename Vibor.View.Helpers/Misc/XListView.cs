@@ -1,12 +1,12 @@
-﻿using Microsoft.Win32;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Microsoft.Win32;
 
-namespace Vibor.View.Helpers.Misc
+namespace ProjectK.View.Helpers.Misc
 {
     public class XListView
     {
@@ -58,7 +58,7 @@ namespace Vibor.View.Helpers.Misc
             var contextMenu = new ContextMenu();
             foreach (var column in view.Columns)
             {
-                var gridViewColumnPair = new ListViewGridViewColumnPair { ListView = listView, Column = column };
+                var gridViewColumnPair = new ListViewGridViewColumnPair {ListView = listView, Column = column};
                 var checkBox1 = new CheckBox();
                 checkBox1.Content = column.Header;
                 checkBox1.Tag = gridViewColumnPair;

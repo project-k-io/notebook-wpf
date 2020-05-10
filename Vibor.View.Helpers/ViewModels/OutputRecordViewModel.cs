@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
+using Microsoft.Extensions.Logging;
 
-namespace Vibor.View.Helpers.ViewModels
+namespace ProjectK.View.Helpers.ViewModels
 {
     public class OutputRecordViewModel
     {

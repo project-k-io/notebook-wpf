@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace Projects.Models.Versions.Version2
+namespace ProjectK.Notebook.Models.Versions.Version2
 {
     public class DataModel
     {

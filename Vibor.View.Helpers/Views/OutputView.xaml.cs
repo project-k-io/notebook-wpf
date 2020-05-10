@@ -1,13 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Text;
+﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Markup;
-using Vibor.Helpers;
-using Vibor.View.Helpers.ViewModels;
+using Microsoft.Extensions.Logging;
+using ProjectK.Utils;
+using ProjectK.View.Helpers.ViewModels;
 
-namespace Vibor.View.Helpers.Views
+namespace ProjectK.View.Helpers.Views
 {
     public partial class OutputView : UserControl
     {

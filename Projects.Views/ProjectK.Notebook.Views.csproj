@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Projects.Models\ProjectK.Notebook.Models.csproj" />
+		<ProjectReference Include="..\Projects.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
+		<ProjectReference Include="..\Vibor.View.Helpers\ProjectK.View.Helpers.csproj" />
+	</ItemGroup>
+
+</Project>

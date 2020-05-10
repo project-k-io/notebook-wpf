@@ -2,17 +2,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29521.150
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vibor.View.Helpers", "Vibor.View.Helpers\Vibor.View.Helpers.csproj", "{2B30CCDC-EB42-4CF4-9E36-65E6B476061D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.View.Helpers", "Vibor.View.Helpers\ProjectK.View.Helpers.csproj", "{2B30CCDC-EB42-4CF4-9E36-65E6B476061D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vibor.Helpers", "Vibor.Helpers\Vibor.Helpers.csproj", "{CEE75388-0852-4FAE-BBAD-E3D87D16004E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Utils", "Vibor.Helpers\ProjectK.Utils.csproj", "{CEE75388-0852-4FAE-BBAD-E3D87D16004E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projects.Models", "Projects.Models\Projects.Models.csproj", "{19E5B0D3-2A87-481A-B706-8DC91192A76F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook.Models", "Projects.Models\ProjectK.Notebook.Models.csproj", "{19E5B0D3-2A87-481A-B706-8DC91192A76F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projects.ViewModels", "Projects.ViewModels\Projects.ViewModels.csproj", "{21FFC4BC-C6C4-4E9F-9765-46D24DB752FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook.ViewModels", "Projects.ViewModels\ProjectK.Notebook.ViewModels.csproj", "{21FFC4BC-C6C4-4E9F-9765-46D24DB752FF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projects.Views", "Projects.Views\Projects.Views.csproj", "{DA1C1E1D-BED3-49A4-AA75-43647B766E56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook.Views", "Projects.Views\ProjectK.Notebook.Views.csproj", "{DA1C1E1D-BED3-49A4-AA75-43647B766E56}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectApp", "ProjectApp\ProjectApp.csproj", "{17594366-CB83-4DFA-8D4F-9932DE22FD1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook", "ProjectApp\ProjectK.Notebook.csproj", "{17594366-CB83-4DFA-8D4F-9932DE22FD1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

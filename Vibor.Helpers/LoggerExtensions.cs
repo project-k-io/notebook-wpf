@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
+using Microsoft.Extensions.Logging;
 
-namespace Vibor.Helpers
+namespace ProjectK.Utils
 {
     public static class LoggerExtensions
     {

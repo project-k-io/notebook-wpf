@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Vibor.View.Helpers.Misc
+namespace ProjectK.View.Helpers.Misc
 {
     public class SortableGridViewColumn : GridViewColumn
     {
@@ -14,13 +14,13 @@ namespace Vibor.View.Helpers.Misc
 
         public string FieldName
         {
-            get => (string)GetValue(FieldNameProperty);
+            get => (string) GetValue(FieldNameProperty);
             set => SetValue(FieldNameProperty, value);
         }
 
         public bool IsDefaultSortColumn
         {
-            get => (bool)GetValue(IsDefaultSortColumnProperty);
+            get => (bool) GetValue(IsDefaultSortColumnProperty);
             set => SetValue(IsDefaultSortColumnProperty, value);
         }
     }

@@ -42,9 +42,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Projects.Views\Projects.Views.csproj" />
-    <ProjectReference Include="..\Vibor.Helpers\Vibor.Helpers.csproj" />
-    <ProjectReference Include="..\Vibor.View.Helpers\Vibor.View.Helpers.csproj" />
+    <ProjectReference Include="..\Projects.Views\ProjectK.Notebook.Views.csproj" />
+    <ProjectReference Include="..\Vibor.Helpers\ProjectK.Utils.csproj" />
+    <ProjectReference Include="..\Vibor.View.Helpers\ProjectK.View.Helpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

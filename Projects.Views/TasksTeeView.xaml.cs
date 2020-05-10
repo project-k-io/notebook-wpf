@@ -3,12 +3,12 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Projects.ViewModels;
-using Projects.Views.Controls.TreeViewList;
-using Vibor.View.Helpers;
-using Vibor.View.Helpers.Misc;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.Notebook.Views.Controls.TreeViewList;
+using ProjectK.View.Helpers;
+using ProjectK.View.Helpers.Misc;
 
-namespace Projects.Views
+namespace ProjectK.Notebook.Views
 {
     public partial class TasksTreeView : UserControl
     {

@@ -1,7 +1,7 @@
-<UserControl x:Class="Vibor.View.Helpers.Views.OutputView"
+<UserControl x:Class="ProjectK.View.Helpers.Views.OutputView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:viewModels1="clr-namespace:Vibor.View.Helpers.ViewModels">
+             xmlns:viewModels1="clr-namespace:ProjectK.View.Helpers.ViewModels">
     <FrameworkElement.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
         <DataTemplate x:Key="OutputButtonDataTemplate" DataType="{x:Type viewModels1:OutputButtonViewModel}">

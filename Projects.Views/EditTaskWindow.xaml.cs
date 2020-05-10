@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Projects.Views
+namespace ProjectK.Notebook.Views
 {
     public partial class EditTaskWindow : Window
     {

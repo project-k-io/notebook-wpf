@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Vibor.View.Helpers.Converters
+namespace ProjectK.View.Helpers.Converters
 {
     public class Int32ToTextConverter : ConverterMarkupExtension<Int32ToTextConverter>, IValueConverter
     {
@@ -21,7 +21,7 @@ namespace Vibor.View.Helpers.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return _converter.ConvertFromString((string)value);
+            return _converter.ConvertFromString((string) value);
         }
     }
 }

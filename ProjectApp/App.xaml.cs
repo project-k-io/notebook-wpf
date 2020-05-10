@@ -1,14 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Projects.ViewModels;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using Vibor.Helpers;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.Utils;
 
-namespace ProjectApp
+namespace ProjectK.Notebook
 {
     public partial class App : Application
     {

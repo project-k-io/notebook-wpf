@@ -10,8 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Projects.Models\Projects.Models.csproj" />
-    <ProjectReference Include="..\Vibor.Helpers\Vibor.Helpers.csproj" />
+    <ProjectReference Include="..\Projects.Models\ProjectK.Notebook.Models.csproj" />
+    <ProjectReference Include="..\Vibor.Helpers\ProjectK.Utils.csproj" />
   </ItemGroup>
 
 </Project>

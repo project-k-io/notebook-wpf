@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Projects.ViewModels;
-using Vibor.View.Helpers.Misc;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.View.Helpers.Misc;
 
-namespace Projects.Views
+namespace ProjectK.Notebook.Views
 {
     public partial class TasksListView : UserControl
     {

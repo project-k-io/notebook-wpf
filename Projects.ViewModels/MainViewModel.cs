@@ -1,9 +1,4 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using Microsoft.Extensions.Logging;
-using Projects.Models;
-using Projects.Models.Versions.Version2;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -12,9 +7,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Vibor.Helpers;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using Microsoft.Extensions.Logging;
+using ProjectK.Notebook.Models;
+using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Utils;
 
-namespace Projects.ViewModels
+namespace ProjectK.Notebook.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
@@ -190,7 +190,7 @@ namespace Projects.ViewModels
                     selectedTreeTask.SubTasks.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0) { Context = "Task" };
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0) {Context = "Task"};
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;
