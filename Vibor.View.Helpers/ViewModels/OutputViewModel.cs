@@ -157,5 +157,10 @@ namespace ProjectK.View.Helpers.ViewModels
             _outputButtonMessages.Count = 0;
             _outputButtonWarnings.Count = 0;
         }
+
+        public void LogEvent(LogLevel logLevel, EventId eventId, string message)
+        {
+            AddNewRecord(new LoggingEventArgs {Level = logLevel, Message = message});
+        }
     }
 }

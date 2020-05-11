@@ -6,7 +6,6 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Logging.ColoredConsole;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils;
 
@@ -16,7 +15,7 @@ namespace ProjectK.Notebook
     {
         private static ILogger _logger;
         private bool _canSave;
-        private MainViewModel _mainModel;
+        private MainViewModel _mainModel = new MainViewModel();
         private MainWindow _mainWindow;
 
         protected override async void OnStartup(StartupEventArgs e)
@@ -25,7 +24,6 @@ namespace ProjectK.Notebook
             AddLogging();
 
             // MainModel
-            _mainModel = new MainViewModel();
             _mainModel.Output.Init();
 
             // MainWindow
@@ -47,17 +45,7 @@ namespace ProjectK.Notebook
                 var serviceProvider = new ServiceCollection()
                     .AddLogging(logging => logging.AddConsole())
                     .AddLogging(logging => logging.AddDebug())
-                    .AddLogging(logging => logging.AddProvider(new ColoredConsoleLoggerProvider(new ColoredConsoleLoggerConfiguration
-                    {
-                        LogLevel = LogLevel.Information,
-                        Color = ConsoleColor.Blue
-                    })))
-                    .AddLogging(logging => logging.AddProvider(new ColoredConsoleLoggerProvider(new ColoredConsoleLoggerConfiguration
-                    {
-                        LogLevel = LogLevel.Debug,
-                        Color = ConsoleColor.Gray
-                    })))
-
+                    .AddLogging(logging => logging.AddProvider(new OutputLoggerProvider(_mainModel.Output.LogEvent)))
                     .Configure<LoggerFilterOptions>(o => o.MinLevel = LogLevel.Debug)
                     .BuildServiceProvider();
 
