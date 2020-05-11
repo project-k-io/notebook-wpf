@@ -18,9 +18,8 @@ namespace ProjectK.ViewModels
 
         public Action<string, bool> SetValue { get; set; }
         public Func<string, string, bool> GetValue { get; set; }
-        
+        public Action UpdateFilter { get; set; }
 
-        //AK public string RegistryPath => XApp.AppName + "\\Output";
 
         public ObservableCollection<OutputButtonViewModel> FilterButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
         public ObservableCollection<OutputButtonViewModel> CommandButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
@@ -54,31 +53,24 @@ namespace ProjectK.ViewModels
             if (!(e.PropertyName == "IsChecked"))
                 return;
 
-            UpdateFilter();
+            UpdateFilter?.Invoke();
             SaveSettings();
         }
 
-        private void UpdateFilter()
+        public bool Filter(object o)
         {
-#if AK
-            CollectionViewSource.GetDefaultView(Records).Filter = o =>
+            if (o is OutputRecordViewModel outputRecordViewModel)
             {
-                if (o is OutputRecordViewModel outputRecordViewModel)
-                {
-                    if (outputRecordViewModel.Type == LogLevel.Error)
-                        return _outputButtonErrors.IsChecked;
-                    if (outputRecordViewModel.Type == LogLevel.Information)
-                        return _outputButtonMessages.IsChecked;
-                    if (outputRecordViewModel.Type == LogLevel.Warning)
-                        return _outputButtonWarnings.IsChecked;
-                    if (outputRecordViewModel.Type == LogLevel.Debug)
-                        return _outputButtonDebug.IsChecked;
-                }
-
-                return false;
-            };
-#endif
-            SaveSettings();
+                if (outputRecordViewModel.Type == LogLevel.Error)
+                    return _outputButtonErrors.IsChecked;
+                if (outputRecordViewModel.Type == LogLevel.Information)
+                    return _outputButtonMessages.IsChecked;
+                if (outputRecordViewModel.Type == LogLevel.Warning)
+                    return _outputButtonWarnings.IsChecked;
+                if (outputRecordViewModel.Type == LogLevel.Debug)
+                    return _outputButtonDebug.IsChecked;
+            }
+            return false;
         }
 
         public void Init()
@@ -112,14 +104,6 @@ namespace ProjectK.ViewModels
         {
             try
             {
-#if AK
-                var subKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
-                if (subKey == null)
-                    return false;
-
-                    subKey.GetValue("Error", "True"));
-                Convert.ToBoolean((object?)   GetValue("Error", "True"))
-#endif
                 _outputButtonErrors.IsChecked = Convert.ToBoolean((object?)   GetValue?.Invoke("Error", "True"));
                 _outputButtonDebug.IsChecked = Convert.ToBoolean((object?)    GetValue?.Invoke("Debug", "True"));
                 _outputButtonMessages.IsChecked = Convert.ToBoolean((object?) GetValue?.Invoke("Info", "True"));
@@ -138,11 +122,6 @@ namespace ProjectK.ViewModels
         {
             try
             {
-#if AK
-                var subKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
-                if (subKey == null)
-                    return false;
-#endif
 
                 SetValue?.Invoke("Error", _outputButtonErrors.IsChecked);
                 SetValue?.Invoke("Debug", _outputButtonDebug.IsChecked);

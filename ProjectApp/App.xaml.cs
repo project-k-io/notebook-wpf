@@ -3,8 +3,10 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils;
@@ -25,10 +27,16 @@ namespace ProjectK.Notebook
 
             // MainModel
             _mainModel.Output.Init();
+            var registryPath  = XApp.AppName + "\\Output";
+            var subKey = Registry.CurrentUser.CreateSubKey(registryPath);
+            _mainModel.Output.SetValue = (key, value) => subKey.SetValue(key, value);
+            _mainModel.Output.GetValue = (key, value) => Convert.ToBoolean(subKey.GetValue(key, value));
+            _mainModel.Output.UpdateFilter = () =>  CollectionViewSource.GetDefaultView(_mainModel.Output.Records).Filter = o => _mainModel.Output.Filter(o);
 
             // MainWindow
             _mainWindow = new MainWindow();
             _mainWindow.DataContext = _mainModel;
+
             // Show MainWindow
             LoadSettings();
             _mainWindow.Show();
