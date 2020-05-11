@@ -26,12 +26,12 @@ namespace ProjectK.Notebook
             AddLogging();
 
             // MainModel
-            _mainModel.Output.Init();
             var registryPath  = XApp.AppName + "\\Output";
             var subKey = Registry.CurrentUser.CreateSubKey(registryPath);
             _mainModel.Output.SetValue = (key, value) => subKey.SetValue(key, value);
-            _mainModel.Output.GetValue = (key, value) => Convert.ToBoolean(subKey.GetValue(key, value));
+            _mainModel.Output.GetValue = (key, value) => subKey.GetValue(key, value);
             _mainModel.Output.UpdateFilter = () =>  CollectionViewSource.GetDefaultView(_mainModel.Output.Records).Filter = o => _mainModel.Output.Filter(o);
+            _mainModel.Output.ReadSettings();
 
             // MainWindow
             _mainWindow = new MainWindow();

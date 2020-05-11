@@ -16,8 +16,8 @@ namespace ProjectK.ViewModels
         private readonly OutputButtonViewModel _outputButtonMessages = new OutputButtonViewModel();
         private readonly OutputButtonViewModel _outputButtonWarnings = new OutputButtonViewModel();
 
-        public Action<string, bool> SetValue { get; set; }
-        public Func<string, string, bool> GetValue { get; set; }
+        public Action<string, object> SetValue { get; set; }
+        public Func<string, string, object> GetValue { get; set; }
         public Action UpdateFilter { get; set; }
 
 
@@ -50,7 +50,7 @@ namespace ProjectK.ViewModels
 
         private void OutputButtRaisePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (!(e.PropertyName == "IsChecked"))
+            if (e.PropertyName != "IsChecked")
                 return;
 
             UpdateFilter?.Invoke();
@@ -73,11 +73,6 @@ namespace ProjectK.ViewModels
             return false;
         }
 
-        public void Init()
-        {
-            ReadSettings();
-        }
-
         public OutputRecordViewModel AddNewRecord(LoggingEventArgs e)
         {
             if (e.Level == LogLevel.Information)
@@ -90,7 +85,7 @@ namespace ProjectK.ViewModels
                 ++_outputButtonDebug.Count;
             var outputRecordViewModel = new OutputRecordViewModel
             {
-                ID = Records.Count,
+                Id = Records.Count,
                 Type = e.Level,
                 Date = DateTime.Now,
                 State = e.State,
@@ -104,10 +99,13 @@ namespace ProjectK.ViewModels
         {
             try
             {
-                _outputButtonErrors.IsChecked = Convert.ToBoolean((object?)   GetValue?.Invoke("Error", "True"));
-                _outputButtonDebug.IsChecked = Convert.ToBoolean((object?)    GetValue?.Invoke("Debug", "True"));
-                _outputButtonMessages.IsChecked = Convert.ToBoolean((object?) GetValue?.Invoke("Info", "True"));
-                _outputButtonWarnings.IsChecked = Convert.ToBoolean((object?) GetValue?.Invoke("Warning", "True"));
+                if (GetValue != null)
+                {
+                    _outputButtonErrors.IsChecked = Convert.ToBoolean(GetValue.Invoke("Error", "True"));
+                    _outputButtonDebug.IsChecked = Convert.ToBoolean(GetValue("Debug", "True"));
+                    _outputButtonMessages.IsChecked = Convert.ToBoolean(GetValue("Info", "True"));
+                    _outputButtonWarnings.IsChecked = Convert.ToBoolean(GetValue("Warning", "True"));
+                }
             }
             catch (Exception ex)
             {
@@ -148,7 +146,7 @@ namespace ProjectK.ViewModels
 
         public void LogEvent(LogLevel logLevel, EventId eventId, string message)
         {
-            AddNewRecord(new LoggingEventArgs {Level = logLevel, Message = message});
+            AddNewRecord(new LoggingEventArgs { Level = logLevel, Message = message });
         }
     }
 }
