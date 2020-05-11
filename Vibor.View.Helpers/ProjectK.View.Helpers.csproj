@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectK.Logging\ProjectK.Logging.csproj" />
+    <ProjectReference Include="..\ProjectK.ViewModels\ProjectK.ViewModels.csproj" />
     <ProjectReference Include="..\Vibor.Helpers\ProjectK.Utils.csproj" />
   </ItemGroup>
 

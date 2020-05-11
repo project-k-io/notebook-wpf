@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 
-namespace ProjectK.View.Helpers.ViewModels
+namespace ProjectK.ViewModels
 {
     public class OutputRecordViewModel
     {

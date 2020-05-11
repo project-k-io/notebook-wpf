@@ -15,7 +15,7 @@ namespace ProjectK.Notebook
     {
         private static ILogger _logger;
         private bool _canSave;
-        private MainViewModel _mainModel = new MainViewModel();
+        private readonly MainViewModel _mainModel = new MainViewModel();
         private MainWindow _mainWindow;
 
         protected override async void OnStartup(StartupEventArgs e)

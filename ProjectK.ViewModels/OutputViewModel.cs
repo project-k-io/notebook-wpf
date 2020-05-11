@@ -2,15 +2,11 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Windows.Data;
-using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 using ProjectK.Logging;
-using ProjectK.Utils;
 
-namespace ProjectK.View.Helpers.ViewModels
+namespace ProjectK.ViewModels
 {
     public class OutputViewModel : ViewModelBase
     {
@@ -20,7 +16,11 @@ namespace ProjectK.View.Helpers.ViewModels
         private readonly OutputButtonViewModel _outputButtonMessages = new OutputButtonViewModel();
         private readonly OutputButtonViewModel _outputButtonWarnings = new OutputButtonViewModel();
 
-        public string RegistryPath => XApp.AppName + "\\Output";
+        public Action<string, bool> SetValue { get; set; }
+        public Func<string, string, bool> GetValue { get; set; }
+        
+
+        //AK public string RegistryPath => XApp.AppName + "\\Output";
 
         public ObservableCollection<OutputButtonViewModel> FilterButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
         public ObservableCollection<OutputButtonViewModel> CommandButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
@@ -53,12 +53,14 @@ namespace ProjectK.View.Helpers.ViewModels
         {
             if (!(e.PropertyName == "IsChecked"))
                 return;
+
             UpdateFilter();
             SaveSettings();
         }
 
         private void UpdateFilter()
         {
+#if AK
             CollectionViewSource.GetDefaultView(Records).Filter = o =>
             {
                 if (o is OutputRecordViewModel outputRecordViewModel)
@@ -75,6 +77,7 @@ namespace ProjectK.View.Helpers.ViewModels
 
                 return false;
             };
+#endif
             SaveSettings();
         }
 
@@ -109,14 +112,18 @@ namespace ProjectK.View.Helpers.ViewModels
         {
             try
             {
+#if AK
                 var subKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
                 if (subKey == null)
                     return false;
 
-                _outputButtonErrors.IsChecked = Convert.ToBoolean(subKey.GetValue("Error", "True"));
-                _outputButtonDebug.IsChecked = Convert.ToBoolean(subKey.GetValue("Debug", "True"));
-                _outputButtonMessages.IsChecked = Convert.ToBoolean(subKey.GetValue("Info", "True"));
-                _outputButtonWarnings.IsChecked = Convert.ToBoolean(subKey.GetValue("Warning", "True"));
+                    subKey.GetValue("Error", "True"));
+                Convert.ToBoolean((object?)   GetValue("Error", "True"))
+#endif
+                _outputButtonErrors.IsChecked = Convert.ToBoolean((object?)   GetValue?.Invoke("Error", "True"));
+                _outputButtonDebug.IsChecked = Convert.ToBoolean((object?)    GetValue?.Invoke("Debug", "True"));
+                _outputButtonMessages.IsChecked = Convert.ToBoolean((object?) GetValue?.Invoke("Info", "True"));
+                _outputButtonWarnings.IsChecked = Convert.ToBoolean((object?) GetValue?.Invoke("Warning", "True"));
             }
             catch (Exception ex)
             {
@@ -131,14 +138,16 @@ namespace ProjectK.View.Helpers.ViewModels
         {
             try
             {
+#if AK
                 var subKey = Registry.CurrentUser.CreateSubKey(RegistryPath);
                 if (subKey == null)
                     return false;
+#endif
 
-                subKey.SetValue("Error", _outputButtonErrors.IsChecked);
-                subKey.SetValue("Debug", _outputButtonDebug.IsChecked);
-                subKey.SetValue("Info", _outputButtonMessages.IsChecked);
-                subKey.SetValue("Warning", _outputButtonWarnings.IsChecked);
+                SetValue?.Invoke("Error", _outputButtonErrors.IsChecked);
+                SetValue?.Invoke("Debug", _outputButtonDebug.IsChecked);
+                SetValue?.Invoke("Info", _outputButtonMessages.IsChecked);
+                SetValue?.Invoke("Warning", _outputButtonWarnings.IsChecked);
             }
             catch (Exception ex)
             {

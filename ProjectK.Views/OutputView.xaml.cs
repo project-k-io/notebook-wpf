@@ -1,15 +1,11 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Utils;
-using ProjectK.View.Helpers.ViewModels;
 
-namespace ProjectK.View.Helpers.Views
+namespace ProjectK.Views
 {
     public partial class OutputView : UserControl
     {

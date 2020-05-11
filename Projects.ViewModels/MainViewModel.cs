@@ -14,7 +14,7 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Utils;
-using ProjectK.View.Helpers.ViewModels;
+using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.ViewModels
 {

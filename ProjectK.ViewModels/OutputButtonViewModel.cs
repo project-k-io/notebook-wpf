@@ -3,7 +3,7 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
-namespace ProjectK.View.Helpers.ViewModels
+namespace ProjectK.ViewModels
 {
     public class OutputButtonViewModel : ViewModelBase
     {
