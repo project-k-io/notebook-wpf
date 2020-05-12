@@ -6,6 +6,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\vld_s_completeandok.png" />
+    <None Remove="Images\vld_s_error.png" />
+    <None Remove="Images\vld_s_information.png" />
+    <None Remove="Images\vld_s_warning.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\vld_s_completeandok.png" />
+    <Resource Include="Images\vld_s_error.png" />
+    <Resource Include="Images\vld_s_information.png" />
+    <Resource Include="Images\vld_s_warning.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ProjectK.ViewModels\ProjectK.ViewModels.csproj" />
   </ItemGroup>
 

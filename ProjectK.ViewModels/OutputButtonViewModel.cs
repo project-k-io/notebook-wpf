@@ -22,7 +22,6 @@ namespace ProjectK.ViewModels
             }
         }
 
-        public int Image { get; set; }
 
         public int Count
         {
@@ -45,5 +44,10 @@ namespace ProjectK.ViewModels
                 return;
             clicked(this, EventArgs.Empty);
         }
+
+
+        public string Image { get; set; }
+
     }
+
 }
