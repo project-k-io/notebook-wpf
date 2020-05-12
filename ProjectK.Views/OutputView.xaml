@@ -13,27 +13,31 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+        <Style x:Key="ImageStyle" >
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Image}" Value="Clear">
+                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_c_cancel.png"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Image}" Value="Warning">
+                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_warning.png"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Image}" Value="Message">
+                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_information.png"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Image}" Value="Error">
+                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_error.png"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Image}" Value="Debug">
+                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_completeandok.png"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <DataTemplate x:Key="OutputButtonDataTemplate" DataType="{x:Type viewModels:OutputButtonViewModel}">
-            <ToggleButton IsChecked="{Binding IsChecked}" Command="{Binding ClickedCommand}">
+            <ToggleButton  IsChecked="{Binding IsChecked}" Command="{Binding ClickedCommand}">
                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4">
                     <Image Width="16" Height="16">
                         <Image.Style>
-                            <Style>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Image}" Value="Warning">
-                                        <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_warning.png"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Image}" Value="Message">
-                                        <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_information.png"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Image}" Value="Error">
-                                        <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_error.png"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Image}" Value="Debug">
-                                        <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_completeandok.png"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
+                            <StaticResource ResourceKey="ImageStyle"/>
                         </Image.Style>
                     </Image>
                     <!--<Image Source="{StaticResource Error }" Width="16" Height="16" />-->
@@ -46,7 +50,11 @@
         <DataTemplate x:Key="CCC" DataType="{x:Type vm1:OutputButtonViewModel}">
             <Button Command="{Binding ClickedCommand}">
                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4" VerticalAlignment="Center">
-                    <Image />
+                    <Image Width="16" Height="16">
+                        <Image.Style>
+                            <StaticResource ResourceKey="ImageStyle"/>
+                        </Image.Style>
+                    </Image>
                     <Label FontSize="10" Content="{Binding Label}" />
                 </StackPanel>
             </Button>

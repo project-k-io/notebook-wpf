@@ -10,7 +10,9 @@
               xmlns:views2="clr-namespace:ProjectK.Views;assembly=ProjectK.Views"
               MinWidth="800" MinHeight="600" WindowStartupLocation="CenterOwner"
               Icon="/Images/apple_time_machine_alt.png"
-              Title="{Binding Path=Title}" d:DesignWidth="1200" d:DesignHeight="800">
+              Title="{Binding Path=Title}" 
+              d:DesignWidth="1200" d:DesignHeight="800"
+              >
 
     <FrameworkElement.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />

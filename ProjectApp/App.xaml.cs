@@ -10,7 +10,7 @@ using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils;
-
+using Microsoft.Windows.Themes;
 namespace ProjectK.Notebook
 {
     public partial class App : Application
@@ -19,7 +19,6 @@ namespace ProjectK.Notebook
         private bool _canSave;
         private readonly MainViewModel _mainModel = new MainViewModel();
         private MainWindow _mainWindow;
-
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);

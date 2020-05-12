@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\vld_c_cancel.png" />
     <None Remove="Images\vld_s_completeandok.png" />
     <None Remove="Images\vld_s_error.png" />
     <None Remove="Images\vld_s_information.png" />
@@ -13,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\vld_c_cancel.png" />
     <Resource Include="Images\vld_s_completeandok.png" />
     <Resource Include="Images\vld_s_error.png" />
     <Resource Include="Images\vld_s_information.png" />

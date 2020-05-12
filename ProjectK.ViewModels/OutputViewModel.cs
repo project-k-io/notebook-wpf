@@ -10,11 +10,11 @@ namespace ProjectK.ViewModels
 {
     public class OutputViewModel : ViewModelBase
     {
-        private readonly OutputButtonViewModel _outputButtonClear = new OutputButtonViewModel { Image = "Clear" };
-        private readonly OutputButtonViewModel _outputButtonDebug = new OutputButtonViewModel { Image = "Debug" };
-        private readonly OutputButtonViewModel _outputButtonErrors = new OutputButtonViewModel{Image = "Error"};
-        private readonly OutputButtonViewModel _outputButtonMessages = new OutputButtonViewModel { Image = "Message" };
-        private readonly OutputButtonViewModel _outputButtonWarnings = new OutputButtonViewModel { Image = "Warning" };
+        private readonly OutputButtonViewModel _outputButtonClear = new OutputButtonViewModel { Image = "Clear", Label = "Clear" };
+        private readonly OutputButtonViewModel _outputButtonDebug = new OutputButtonViewModel { Image = "Debug", Label = "Logs", IsChecked = true};
+        private readonly OutputButtonViewModel _outputButtonErrors = new OutputButtonViewModel{Image = "Error", Label = "Errors", IsChecked = false};
+        private readonly OutputButtonViewModel _outputButtonMessages = new OutputButtonViewModel { Image = "Message", Label = "Messages", IsChecked = false};
+        private readonly OutputButtonViewModel _outputButtonWarnings = new OutputButtonViewModel { Image = "Warning", Label = "Warnings", IsChecked = false};
 
         public Action<string, object> SetValue { get; set; }
         public Func<string, string, object> GetValue { get; set; }

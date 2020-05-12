@@ -3,29 +3,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ProjectK.Views"
+             xmlns:viewModels="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             >
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+        <viewModels:OutputButtonViewModel x:Key="Warning" Image="Warning" Label="Warning" Count="100"/>
     </UserControl.Resources>
-
-    <ToggleButton IsChecked="{Binding IsChecked}" Command="{Binding ClickedCommand}">
+    <ToggleButton  IsChecked="{Binding IsChecked}" Command="{Binding ClickedCommand}" d:DataContext="{StaticResource Warning }">
         <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4">
-            <Image Source="/ProjectK.Views;component/Images/vld_s_error.png" />
             <Image Width="16" Height="16">
                 <Image.Style>
                     <Style>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Image}" Value="Warring">
+                            <DataTrigger Binding="{Binding Image}" Value="Warning">
                                 <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_warning.png"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Image}" Value="Message">
+                                <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_information.png"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Image}" Value="Error">
+                                <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_error.png"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Image}" Value="Debug">
+                                <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_completeandok.png"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Image.Style>
             </Image>
-            <Label FontSize="10" VerticalAlignment="Top" Content="{Binding Count}" Visibility="{Binding IsCountVisible, Converter={StaticResource BooleanToVisibility}}" />
+            <!--<Image Source="{StaticResource Error }" Width="16" Height="16" />-->
+            <Label FontSize="10" VerticalAlignment="Top" Content="{Binding Count}"
+                           Visibility="{Binding IsCountVisible, Converter={StaticResource BooleanToVisibility}}" />
             <Label FontSize="10" Content="{Binding Label}" />
         </StackPanel>
     </ToggleButton>
+
 </UserControl>
