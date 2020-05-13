@@ -1,7 +1,10 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Specialized;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.ViewModels;
@@ -15,17 +18,29 @@ namespace ProjectK.Views
         public OutputView()
         {
             InitializeComponent();
-            Init();
+            this.Loaded += OnLoaded;
+
         }
 
-        private void Init()
+        private void OnLoaded(object sender, RoutedEventArgs e)
         {
             ListViewMessages.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, CopyCmdExecuted, CopyCmdCanExecute));
-#if AK_2
-            Log.LoggingEvent += (s, e) => Dispatcher.BeginInvoke(
-                DispatcherPriority.Normal,
-                (Action) (() => ListViewMessages.ScrollIntoView(_model.AddNewRecord(e))));
-#endif
+            if (!(ListViewMessages.Items is INotifyCollectionChanged collectionChanged))
+                return;
+
+            collectionChanged.CollectionChanged += (o, args) =>
+            {
+                if (args.Action == NotifyCollectionChangedAction.Add)
+                {
+                    if (args.NewItems == null || args.NewItems.Count <= 0) return;
+
+                    var item = args.NewItems[0];
+                    if(item == null)
+                        return;
+
+                    this.ListViewMessages.ScrollIntoView(item);
+                }
+            };
         }
 
         private static void CopyCmdExecuted(object target, ExecutedRoutedEventArgs e)

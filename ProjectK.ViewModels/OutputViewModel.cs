@@ -20,7 +20,6 @@ namespace ProjectK.ViewModels
         public Func<string, string, object> GetValue { get; set; }
         public Action UpdateFilter { get; set; }
 
-
         public ObservableCollection<OutputButtonViewModel> FilterButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
         public ObservableCollection<OutputButtonViewModel> CommandButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
         public ObservableCollection<OutputRecordViewModel> Records { get; } = new ObservableCollection<OutputRecordViewModel>();
@@ -146,7 +145,7 @@ namespace ProjectK.ViewModels
 
         public void LogEvent(LogLevel logLevel, EventId eventId, string message)
         {
-            AddNewRecord(new LoggingEventArgs { Level = logLevel, Message = message });
+            var record =  AddNewRecord(new LoggingEventArgs { Level = logLevel, Message = message });
         }
     }
 }
