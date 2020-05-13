@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
@@ -19,6 +20,17 @@ namespace ProjectK.Notebook
         private bool _canSave;
         private readonly MainViewModel _mainModel = new MainViewModel();
         private MainWindow _mainWindow;
+
+        public App()
+        {
+            this.DispatcherUnhandledException += OnDispatcherUnhandledException; 
+        }
+
+        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            _logger.LogError(e.ToString());
+        }
+
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -44,6 +56,7 @@ namespace ProjectK.Notebook
             await _mainModel.UpdateTypeListAsync();
             await StartSavingAsync();
         }
+
 
         private void AddLogging()
         {
@@ -98,7 +111,7 @@ namespace ProjectK.Notebook
             var settings = Settings.Default;
             try
             {
-                _logger.LogDebug("LoadSettings()");
+                _logger.LogDebug("LoadSettings");
 
                 // window settings
                 _mainWindow.WindowState = settings.MainWindowState;

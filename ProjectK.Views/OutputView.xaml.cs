@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.ViewModels;
 
 namespace ProjectK.Views
 {
@@ -29,13 +30,22 @@ namespace ProjectK.Views
 
         private static void CopyCmdExecuted(object target, ExecutedRoutedEventArgs e)
         {
-            if (!(e.OriginalSource is ListView originalSource)) return;
+            if(!(target is ListView listView))    
+                return;
 
             var stringBuilder = new StringBuilder();
-            foreach (var selectedItem in originalSource.SelectedItems)
-                stringBuilder.AppendLine(selectedItem.ToString());
 
-            Clipboard.SetText(stringBuilder.ToString());
+            foreach (var selectedItem in listView.SelectedItems)
+            {
+                if (!(selectedItem is OutputRecordViewModel record))
+                    continue;
+
+                stringBuilder.AppendLine(record.Message);
+            }
+
+            var text = stringBuilder.ToString();
+            Log.LogDebug($"[Clipboard] {text}");
+            Clipboard.SetText(text);
         }
 
         private static void CopyCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)

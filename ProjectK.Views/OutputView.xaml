@@ -32,7 +32,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <DataTemplate x:Key="OutputButtonDataTemplate" DataType="{x:Type viewModels:OutputButtonViewModel}">
+        <DataTemplate x:Key="ToggleButtonDataTemplate" DataType="{x:Type viewModels:OutputButtonViewModel}">
             <ToggleButton  IsChecked="{Binding IsChecked}" Command="{Binding ClickedCommand}">
                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4">
                     <Image Width="16" Height="16">
@@ -40,14 +40,13 @@
                             <StaticResource ResourceKey="ImageStyle"/>
                         </Image.Style>
                     </Image>
-                    <!--<Image Source="{StaticResource Error }" Width="16" Height="16" />-->
                     <Label FontSize="10" VerticalAlignment="Top" Content="{Binding Count}"
                            Visibility="{Binding IsCountVisible, Converter={StaticResource BooleanToVisibility}}" />
                     <Label FontSize="10" Content="{Binding Label}" />
                 </StackPanel>
             </ToggleButton>
         </DataTemplate>
-        <DataTemplate x:Key="CCC" DataType="{x:Type vm1:OutputButtonViewModel}">
+        <DataTemplate x:Key="ButtonDataTemplate" DataType="{x:Type vm1:OutputButtonViewModel}">
             <Button Command="{Binding ClickedCommand}">
                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4" VerticalAlignment="Center">
                     <Image Width="16" Height="16">
@@ -66,8 +65,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ToolBarTray>
-            <ToolBar Background="#FFC5CDE5" ItemTemplate="{StaticResource OutputButtonDataTemplate}" ItemsSource="{Binding FilterButtons}" />
-            <ToolBar Background="#FFC5CDE5" ItemTemplate="{StaticResource CCC}" ItemsSource="{Binding CommandButtons}" />
+            <ToolBar Background="#FFC5CDE5" ItemTemplate="{StaticResource ToggleButtonDataTemplate}" ItemsSource="{Binding FilterButtons}" />
+            <ToolBar Background="#FFC5CDE5" ItemTemplate="{StaticResource ButtonDataTemplate}" ItemsSource="{Binding CommandButtons}" />
         </ToolBarTray>
         <ListView x:Name="ListViewMessages" Grid.Row="1" ItemsSource="{Binding Records}">
             <ListView.View>

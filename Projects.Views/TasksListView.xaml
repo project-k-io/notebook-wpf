@@ -34,20 +34,17 @@
             </FrameworkElement.Resources>
             <ListView.View>
                 <GridView>
+
                     <GridViewColumn Header="Context" Width="100" DisplayMemberBinding="{Binding Context}" />
                     <GridViewColumn Header="Type" Width="100" DisplayMemberBinding="{Binding Type}" />
                     <GridViewColumn Header="Title" Width="300" DisplayMemberBinding="{Binding Title}" />
                     <GridViewColumn Header="Description" Width="200" DisplayMemberBinding="{Binding Description}" />
-                    <GridViewColumn Header="DateStarted" Width="100"
-                                    DisplayMemberBinding="{Binding DateStarted, StringFormat=d}" />
-                    <GridViewColumn Header="DateEnded" Width="100"
-                                    DisplayMemberBinding="{Binding DateEnded, StringFormat=d}" />
-                    <GridViewColumn Header="TimeStarted" Width="100"
-                                    DisplayMemberBinding="{Binding DateStarted, StringFormat=t}" />
-                    <GridViewColumn Header="TimeEnded" Width="100"
-                                    DisplayMemberBinding="{Binding DateEnded, StringFormat=t}" />
-                    <GridViewColumn Header="Duration" Width="100"
-                                    DisplayMemberBinding="{Binding Duration, StringFormat=d\:hh\:mm}" />
+                    <GridViewColumn Header="DateStarted" Width="100" DisplayMemberBinding="{Binding DateStarted, StringFormat=d}" />
+                    <GridViewColumn Header="DateEnded" Width="100" DisplayMemberBinding="{Binding DateEnded, StringFormat=d}" />
+                    <GridViewColumn Header="TimeStarted" Width="100" DisplayMemberBinding="{Binding DateStarted, StringFormat=t}" />
+                    <GridViewColumn Header="TimeEnded" Width="100" DisplayMemberBinding="{Binding DateEnded, StringFormat=t}" />
+                    <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration, StringFormat=d\:hh\:mm}" />
+
                     <!--!AK_1
           <GridViewColumn Header="Total" Width="100">
             <GridViewColumn.DisplayMemberBinding>

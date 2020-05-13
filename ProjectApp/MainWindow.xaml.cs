@@ -33,7 +33,7 @@ namespace ProjectK.Notebook
 
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
-            _logger.LogDebug("MainWindow Loaded()");
+            _logger.LogDebug("Loaded()");
             if (!(DataContext is MainViewModel dataContext)) return;
 
             dataContext.OnDispatcher = ViewLib.GetAddDelegate(this);
