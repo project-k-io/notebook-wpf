@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Vibor.View.Helpers.Converters
+namespace ProjectK.View.Helpers.Converters
 {
     public sealed class BackgroundConvertor : ConverterMarkupExtension<BackgroundConvertor>, IValueConverter
     {

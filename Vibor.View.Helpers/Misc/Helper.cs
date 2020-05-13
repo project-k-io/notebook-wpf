@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Threading;
 
-namespace Vibor.View.Helpers.Misc
+namespace ProjectK.View.Helpers.Misc
 {
     public class Helper
     {

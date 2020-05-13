@@ -7,116 +7,90 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Projects.Models;
-using Projects.Models.Versions.Version2;
-using Vibor.Helpers;
-using Microsoft.Extensions.Logging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
+using ProjectK.Notebook.Models;
+using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Utils;
+using ProjectK.ViewModels;
 
-namespace Projects.ViewModels
+namespace ProjectK.Notebook.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
         private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
 
+        #region Fields
 
         private string _excelCsvText;
-        private string _folder;
-        private string _recentFile;
+        
+        private string _dataFolder = "";
+        private string _dataFile = "";
+
         private string _report;
         private bool _useTimeOptimization;
 
-        #region Commands
-        public ICommand ClearCommand { get; private set; }
-        public ICommand EditCommand { get; private set; }
-        public ICommand FixTimeCommand { get; private set; }
-        public ICommand ExtractContextCommand { get; private set; }
-        public ICommand FixContextCommand { get; private set; }
-        public ICommand FixTitlesCommand { get; private set; }
-        public ICommand FixTypesCommand { get; private set; }
-        public ICommand CopyTaskCommand { get; private set; }
-        public ICommand ContinueTaskCommand { get; private set; }
+        #endregion
 
+        #region Events
+
+        public event EventHandler<EventArgs> GenerateReportChanged;
+        public event EventHandler<TaskEventArgs> SelectedTaskChanged;
 
         #endregion
 
+        #region Commands
 
+        public ICommand ClearCommand { get; }
+        public ICommand EditCommand { get; }
+        public ICommand FixTimeCommand { get; }
+        public ICommand ExtractContextCommand { get; }
+        public ICommand FixContextCommand { get; private set; }
+        public ICommand FixTitlesCommand { get; }
+        public ICommand FixTypesCommand { get; }
+        public ICommand CopyTaskCommand { get; }
+        public ICommand ContinueTaskCommand { get; }
 
-        public MainViewModel()
-        {
-            Assembly = Assembly.GetExecutingAssembly();
-            CanSave = true;
-            TypeList = new ObservableCollection<string>();
-            ContextList = new ObservableCollection<string>();
-            TaskTitleList = new ObservableCollection<string>();
-
-            ClearCommand = new RelayCommand(Project.Clear);
-            EditCommand = new RelayCommand(() => Process.Start("notepad.exe", Folder));
-            FixTimeCommand = new RelayCommand(Project.FixTime);
-            ExtractContextCommand = new RelayCommand(Project.FixContext);
-            FixTitlesCommand = new RelayCommand(Project.FixTitles);
-            FixTypesCommand = new RelayCommand(Project.FixTypes);
-            CopyTaskCommand = new RelayCommand(CopyTask);
-            ContinueTaskCommand = new RelayCommand(ContinueTask);
-        }
+        #endregion
 
         #region Properties
 
         public Guid LastListTaskId { get; set; }
-
         public Guid LastTreeTaskId { get; set; }
-
         public LayoutViewModel Layout { get; } = new LayoutViewModel();
-
         public ProjectViewModel Project { get; } = new ProjectViewModel();
-
         public TaskViewModel RootTask => Project.RootTask;
-
         private Assembly Assembly { get; }
+        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + DataFile;
 
-        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + Folder;
-
-        public string Folder
+        public string DataFile
         {
-            get => _folder;
+            get => _dataFile;
             set
             {
-                if (!Set(ref _folder, value)) return;
-                RaisePropertyChanged($"Title");
-            }
-        }
-
-        public string RecentFile
-        {
-            get => _recentFile;
-            set
-            {
-                if (!Set(ref _recentFile, value)) return;
-                RaisePropertyChanged($"Title");
+                if (!Set(ref _dataFile, value)) return;
+                RaisePropertyChanged("Title");
             }
         }
 
         public DataModel Data { get; set; }
-
         public string Report
         {
             get => _report;
             set => Set(ref _report, value);
         }
-
         public string ExcelCsvText
         {
             get => _excelCsvText;
             set => Set(ref _excelCsvText, value);
         }
-
         public bool UseTimeOptimization
         {
             get => _useTimeOptimization;
             set => Set(ref _useTimeOptimization, value);
         }
-
         private string ConfigPath
         {
             get
@@ -133,64 +107,79 @@ namespace Projects.ViewModels
                 return path;
             }
         }
-
         private string ConfigFile => Path.Combine(ConfigPath, "Config.xml");
-
         public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
-
         public ObservableCollection<string> TypeList { get; set; }
-
         public ObservableCollection<string> ContextList { get; set; }
-
         public ObservableCollection<string> TaskTitleList { get; set; }
-
-        public bool CanSave { get; set; }
+        public bool CanSave { get; set; } = false;
         public Action<Action> OnDispatcher { get; set; }
+        public OutputViewModel Output { get; set; } = new OutputViewModel();
 
         #endregion
 
 
+        public MainViewModel()
+        {
+            Assembly = Assembly.GetExecutingAssembly();
+            CanSave = true;
+            TypeList = new ObservableCollection<string>();
+            ContextList = new ObservableCollection<string>();
+            TaskTitleList = new ObservableCollection<string>();
+
+            ClearCommand = new RelayCommand(Project.Clear);
+            EditCommand = new RelayCommand(() => Process.Start("notepad.exe", DataFile));
+            FixTimeCommand = new RelayCommand(Project.FixTime);
+            ExtractContextCommand = new RelayCommand(Project.FixContext);
+            FixTitlesCommand = new RelayCommand(Project.FixTitles);
+            FixTypesCommand = new RelayCommand(Project.FixTypes);
+            CopyTaskCommand = new RelayCommand(CopyTask);
+            ContinueTaskCommand = new RelayCommand(ContinueTask);
+        }
+
+
         public void FileOpenOldFormat()
         {
-            Project.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(RecentFile));
+            Project.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
         }
-        public async Task FileSaveOldFormatAsync() => await XFile.SaveToFileAsync(Project, RecentFile);
-        public async Task FileOpenNewFormatAsync()
+        public async Task FileSaveOldFormatAsync()
         {
-            if (!Directory.Exists(Folder)) return;
+            await XFile.SaveToFileAsync(Project, DataFile);
+        }
 
-            var fileName = DataModel.GetTasksFileName(Folder);
-            Data = await XFile.ReadFromFileAsync<DataModel>(fileName);
+        public async Task OpenFileNewFormatAsync()
+        {
+            Logger.LogDebug("OpenFileNewFormatAsync");
+            var path = DataFile;
+            if (!File.Exists(path)) return;
+            Data = await XFile.ReadFromFileAsync<DataModel>(path);
             Project.LoadFrom(Data);
             UseSettings();
         }
+
         public async Task FileSaveNewFormatAsync()
         {
-            var fileName = DataModel.GetTasksFileName(Folder);
-            if (Data == null) Data = new DataModel();
+            if (Data == null) 
+                Data = new DataModel();
 
-            XFile.SaveOldFile(fileName);
+            var path = DataFile;
+            XFile.SaveOldFile(path);
             Project.SaveTo(Data);
-            await XFile.SaveToFileAsync(Data, fileName);
+
+            await XFile.SaveToFileAsync(Data, path);
         }
-        public event EventHandler<EventArgs> GenerateReportChanged;
-        public event EventHandler<TaskEventArgs> SelectedTaskChanged;
-        public void OnSelectedTaskChanged(TaskViewModel task)
-        {
-            SelectedTaskChanged?.Invoke(this, new TaskEventArgs
-            {
-                Task = task
-            });
-        }
-        public void OnGenerateReportChanged() => GenerateReportChanged?.Invoke(this, EventArgs.Empty);
         public async Task SaveDataAsync()
         {
+            // Todo" AK !!! Temp
+            return;
+
+            Logger.LogDebug("SaveDataAsync");
             if (!CanSave) return;
             await FileSaveNewFormatAsync();
         }
         public async Task LoadDataAsync()
         {
-            await FileOpenNewFormatAsync();
+            await OpenFileNewFormatAsync();
         }
         public async Task UpdateTypeListAsync()
         {
@@ -222,6 +211,35 @@ namespace Projects.ViewModels
                 TaskTitleList.Clear();
                 foreach (var str in sortedSet3) TaskTitleList.Add(str);
             });
+        }
+        public async Task NewProjectAsync()
+        {
+            Logger.LogDebug("NewProjectAsync");
+            await SaveDataAsync();
+            CanSave = false;
+            Project.Clear();
+            Project.RootTask.Add(new TaskViewModel("Time Tracker", 1)
+            {
+                Context = "Time Tracker"
+            });
+
+            Data = new DataModel();
+            var path = XFile2.MakeUnique(DataFile);
+            var name = Path.GetFileName(path);
+            DataFile = name;
+            CanSave = true;
+        }
+
+        public void OnSelectedTaskChanged(TaskViewModel task)
+        {
+            SelectedTaskChanged?.Invoke(this, new TaskEventArgs
+            {
+                Task = task
+            });
+        }
+        public void OnGenerateReportChanged()
+        {
+            GenerateReportChanged?.Invoke(this, EventArgs.Empty);
         }
         public void UseSettings()
         {
@@ -309,19 +327,6 @@ namespace Projects.ViewModels
                 taskViewModel1.SubTasks.Add(taskViewModel2);
             }
         }
-        public async Task NewProjectAsync()
-        {
-            await SaveDataAsync();
-            CanSave = false;
-            Project.Clear();
-            Project.RootTask.Add(new TaskViewModel("Time Tracker", 1)
-            {
-                Context = "Time Tracker"
-            });
-            Data = new DataModel();
-            Folder = string.Empty;
-            CanSave = true;
-        }
         public void OnTreeViewKeyDown(TaskViewModel.KeyStates keyState, TaskViewModel.KeyboardStates keyboardState)
         {
             TaskViewModel.OnTreeViewKeyDown(
@@ -341,5 +346,6 @@ namespace Projects.ViewModels
         {
             OnTreeViewKeyDown(TaskViewModel.KeyStates.Insert, TaskViewModel.KeyboardStates.IsShiftPressed);
         }
+
     }
 }

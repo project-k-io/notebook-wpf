@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace Vibor.View.Helpers
+namespace ProjectK.View.Helpers
 {
     public class XKeyboard
     {

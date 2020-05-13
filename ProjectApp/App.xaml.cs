@@ -1,39 +1,41 @@
 ﻿using System;
-using System.CodeDom.Compiler;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using Microsoft.Extensions.DependencyInjection;
-using Projects.Models.Versions.Version2;
-using Projects.ViewModels;
 using Microsoft.Extensions.Logging;
-using Vibor.Helpers;
-
-namespace ProjectApp
+using Microsoft.Win32;
+using ProjectK.Logging;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.Utils;
+using Microsoft.Windows.Themes;
+namespace ProjectK.Notebook
 {
     public partial class App : Application
     {
         private static ILogger _logger;
-        private MainViewModel _mainModel;
-        private MainWindow _mainWindow;
         private bool _canSave;
-
-        public App()
-        {
-            // AddLogging();
-        }
-
+        private readonly MainViewModel _mainModel = new MainViewModel();
+        private MainWindow _mainWindow;
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
             AddLogging();
+
             // MainModel
-            _mainModel = new MainViewModel();
+            var registryPath  = XApp.AppName + "\\Output";
+            var subKey = Registry.CurrentUser.CreateSubKey(registryPath);
+            _mainModel.Output.SetValue = (key, value) => subKey.SetValue(key, value);
+            _mainModel.Output.GetValue = (key, value) => subKey.GetValue(key, value);
+            _mainModel.Output.UpdateFilter = () =>  CollectionViewSource.GetDefaultView(_mainModel.Output.Records).Filter = o => _mainModel.Output.Filter(o);
+            _mainModel.Output.ReadSettings();
+
             // MainWindow
             _mainWindow = new MainWindow();
             _mainWindow.DataContext = _mainModel;
+
             // Show MainWindow
             LoadSettings();
             _mainWindow.Show();
@@ -43,13 +45,14 @@ namespace ProjectApp
             await StartSavingAsync();
         }
 
-        void AddLogging()
+        private void AddLogging()
         {
             try
             {
                 var serviceProvider = new ServiceCollection()
-                    .AddLogging(cfg => cfg.AddConsole())
-                    .AddLogging(cfg => cfg.AddDebug())
+                    .AddLogging(logging => logging.AddConsole())
+                    .AddLogging(logging => logging.AddDebug())
+                    .AddLogging(logging => logging.AddProvider(new OutputLoggerProvider(_mainModel.Output.LogEvent)))
                     .Configure<LoggerFilterOptions>(o => o.MinLevel = LogLevel.Debug)
                     .BuildServiceProvider();
 
@@ -107,18 +110,16 @@ namespace ProjectApp
                 _mainModel.Layout.NavigatorWidth = settings.LayoutNavigatorWidth;
                 _mainModel.LastListTaskId = settings.LastListTaskId;
                 _mainModel.LastTreeTaskId = settings.LastTreeTaskId;
-                _mainModel.Folder = settings.RecentFolder;
-                _mainModel.RecentFile = settings.RecentFile;
+                _mainModel.DataFile = settings.RecentFile;
                 _mainModel.MostRecentFiles.Clear();
 
-                if (Directory.Exists(_mainModel.Folder))
-                    _mainModel.MostRecentFiles.Add(new FileInfo(_mainModel.Folder));
+                if(File.Exists(_mainModel.DataFile))
+                    _mainModel.MostRecentFiles.Add(new FileInfo(_mainModel.DataFile));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex);
             }
-
         }
 
         private void SaveSettings()
@@ -138,8 +139,7 @@ namespace ProjectApp
                     settings.MainWindowWidth = _mainWindow.Width;
                     settings.MainWindowHeight = _mainWindow.Height;
                     settings.LayoutNavigatorWidth = _mainModel.Layout.NavigatorWidth;
-                    settings.RecentFolder = _mainModel.Folder;
-                    settings.RecentFile = _mainModel.RecentFile;
+                    settings.RecentFile = _mainModel.DataFile;
                     settings.LastListTaskId = _mainModel.LastListTaskId;
                     settings.LastTreeTaskId = _mainModel.LastTreeTaskId;
                 }

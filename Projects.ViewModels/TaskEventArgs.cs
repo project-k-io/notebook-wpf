@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Projects.ViewModels
+namespace ProjectK.Notebook.ViewModels
 {
     public class TaskEventArgs : EventArgs
     {

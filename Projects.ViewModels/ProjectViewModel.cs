@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Projects.Models.Versions.Version2;
-using Vibor.Helpers;
 using GalaSoft.MvvmLight;
+using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Utils;
 
-namespace Projects.ViewModels
+namespace ProjectK.Notebook.ViewModels
 {
     public class ProjectViewModel : ViewModelBase
     {
@@ -44,9 +44,15 @@ namespace Projects.ViewModels
 
         public event EventHandler SelectedDaysChanged;
 
-        public void OnSelectedDaysChanged() => SelectedDaysChanged?.Invoke(this, EventArgs.Empty);
+        public void OnSelectedDaysChanged()
+        {
+            SelectedDaysChanged?.Invoke(this, EventArgs.Empty);
+        }
 
-        public TaskViewModel FindTask(Guid id) => RootTask.FindTask(id);
+        public TaskViewModel FindTask(Guid id)
+        {
+            return RootTask.FindTask(id);
+        }
 
         public void SelectTreeTask(TaskViewModel task)
         {
@@ -58,7 +64,7 @@ namespace Projects.ViewModels
             XTask.AddToList(SelectedTaskList, task);
             OnSelectedDaysChanged();
             SelectedTask = !XList.IsNullOrEmpty(SelectedTaskList) ? SelectedTaskList[0] : task;
-            RaisePropertyChanged($"SelectedTaskList");
+            RaisePropertyChanged("SelectedTaskList");
         }
 
         public void SelectTreeTask(Guid id)
@@ -71,7 +77,7 @@ namespace Projects.ViewModels
             if (task == null)
                 return;
             SelectedTask = task;
-            RaisePropertyChanged($"SelectedTaskList");
+            RaisePropertyChanged("SelectedTaskList");
         }
 
         public void SelectTask(Guid id)
@@ -83,10 +89,8 @@ namespace Projects.ViewModels
         {
             foreach (var date in dates)
                 if (date is DateTime dateTime)
-                {
                     if (a.Day == dateTime.Day && a.Month == dateTime.Month && a.Year == dateTime.Year)
                         return true;
-                }
 
             return false;
         }
@@ -131,7 +135,7 @@ namespace Projects.ViewModels
                 }
                 else if (!sortedList.ContainsKey(task.Id))
                 {
-                    var taskViewModel = new TaskViewModel { Model = task };
+                    var taskViewModel = new TaskViewModel {Model = task};
                     sortedList.Add(task.Id, taskViewModel);
                 }
 
@@ -160,7 +164,7 @@ namespace Projects.ViewModels
         {
             ContextList.Clear();
             RootTask.ExtractContext(ContextList);
-            RaisePropertyChanged($"ContextList");
+            RaisePropertyChanged("ContextList");
         }
 
         public void FixContext()

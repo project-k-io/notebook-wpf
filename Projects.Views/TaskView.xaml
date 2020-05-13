@@ -1,11 +1,10 @@
-<UserControl x:Class="Projects.Views.TaskView"
+<UserControl x:Class="ProjectK.Notebook.Views.TaskView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             Height="Auto" Width="400"
-             >
+             Height="Auto" Width="400">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10" />
@@ -31,8 +30,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Label Content="Context" Grid.Row="1" Grid.Column="1" />
-        <ComboBox Grid.Row="1" Grid.Column="3" IsEditable="true" IsReadOnly="true"
-                  ItemsSource="{Binding ContextList}" Text="{Binding Context}" />
+        <ComboBox Grid.Row="1" Grid.Column="3" IsEditable="true" IsReadOnly="true" ItemsSource="{Binding ContextList}"
+                  Text="{Binding Context}" />
         <Label Content="Title" Grid.Row="2" Grid.Column="1" />
         <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TaskTitleList}"
                   Text="{Binding Title}" />

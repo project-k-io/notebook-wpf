@@ -3,11 +3,11 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Projects.Views.Helpers
+namespace ProjectK.Notebook.Views.Helpers
 {
     public class LevelToIndentConverter : IValueConverter
     {
-        private const double c_IndentSize = 19.0;
+        private const double IndentSize = 19.0;
 
         public object Convert(object o, Type type, object parameter, CultureInfo culture)
         {

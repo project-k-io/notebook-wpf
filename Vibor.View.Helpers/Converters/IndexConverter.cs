@@ -3,15 +3,14 @@ using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace Vibor.View.Helpers.Converters
+namespace ProjectK.View.Helpers.Converters
 {
     public class IndexConverter : ConverterMarkupExtension<IndexConverter>, IValueConverter
     {
         public object Convert(object value, Type TargetType, object parameter, CultureInfo culture)
         {
             var listViewItem = (ListViewItem) value;
-            var listView = ItemsControl.ItemsControlFromItemContainer(listViewItem) as ListView;
-            if (listView == null)
+            if (!(ItemsControl.ItemsControlFromItemContainer(listViewItem) is ListView listView))
                 return -1;
             return listView.ItemContainerGenerator.IndexFromContainer(listViewItem).ToString();
         }

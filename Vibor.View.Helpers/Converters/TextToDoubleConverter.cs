@@ -3,9 +3,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Data;
 using Microsoft.Extensions.Logging;
-using Vibor.Helpers;
+using ProjectK.Logging;
+using ProjectK.Utils;
 
-namespace Vibor.View.Helpers.Converters
+namespace ProjectK.View.Helpers.Converters
 {
     [ValueConversion(typeof(string), typeof(double))]
     public class TextToDoubleConverter : ConverterMarkupExtension<TextToDoubleConverter>, IValueConverter

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace Vibor.Helpers
+namespace ProjectK.Utils
 {
     public class XApp
     {

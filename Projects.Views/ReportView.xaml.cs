@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
-using Projects.Models;
-using Projects.ViewModels;
 using Microsoft.Extensions.Logging;
-using Vibor.Helpers;
+using ProjectK.Logging;
+using ProjectK.Notebook.Models;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.Utils;
 
-namespace Projects.Views
+namespace ProjectK.Notebook.Views
 {
-    public partial class ReportView : UserControl, IComponentConnector
+    public partial class ReportView : UserControl
     {
         private static readonly ILogger Logger = LogManager.GetLogger<ReportView>();
 
@@ -25,13 +25,12 @@ namespace Projects.Views
 
         private void ReportView_Loaded(object sender, RoutedEventArgs e)
         {
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null)
+            if (!(DataContext is MainViewModel dataContext))
                 return;
-            dataContext.GenerateReportChanged += viewModel_GenerateReportChanged;
+            dataContext.GenerateReportChanged += ViewModel_GenerateReportChanged;
         }
 
-        private void viewModel_GenerateReportChanged(object sender, EventArgs e)
+        private void ViewModel_GenerateReportChanged(object sender, EventArgs e)
         {
             GenerateReportA();
         }
@@ -40,8 +39,7 @@ namespace Projects.Views
         {
             try
             {
-                var dataContext = DataContext as MainViewModel;
-                if (dataContext == null)
+                if (!(DataContext is MainViewModel dataContext))
                     return;
                 var project = dataContext.Project;
                 var maxDelta = 40.0 / 5.0 * project.GetSelectedDays().Count;

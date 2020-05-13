@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Projects.Views.Controls.TreeViewList
+namespace ProjectK.Notebook.Views.Controls.TreeViewList
 {
     public class TreeListViewItem : TreeViewItem
     {
@@ -11,11 +11,7 @@ namespace Projects.Views.Controls.TreeViewList
         {
             get
             {
-                if (_level == -1)
-                {
-                    var treeListViewItem = ItemsControlFromItemContainer(this) as TreeListViewItem;
-                    _level = treeListViewItem != null ? treeListViewItem.Level + 1 : 0;
-                }
+                if (_level == -1) _level = ItemsControlFromItemContainer(this) is TreeListViewItem treeListViewItem ? treeListViewItem.Level + 1 : 0;
 
                 return _level;
             }

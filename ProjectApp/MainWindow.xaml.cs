@@ -1,18 +1,19 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
-using Projects.ViewModels;
-using Vibor.Helpers;
-using Vibor.View.Helpers.Misc;
+using ProjectK.Logging;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.Utils;
+using ProjectK.View.Helpers.Misc;
 
-namespace ProjectApp
+namespace ProjectK.Notebook
 {
     public partial class MainWindow : RibbonWindow
     {
@@ -33,8 +34,7 @@ namespace ProjectApp
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
             _logger.LogDebug("MainWindow Loaded()");
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null) return;
+            if (!(DataContext is MainViewModel dataContext)) return;
 
             dataContext.OnDispatcher = ViewLib.GetAddDelegate(this);
             dataContext.Project.SelectedDaysChanged += Project_SelectedDaysChanged;
@@ -50,49 +50,66 @@ namespace ProjectApp
             var commandBindings = new CommandBindingCollection
             {
                 new CommandBinding(ApplicationCommands.New, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Open, async (s, e) => await FileOpenNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await OpenFile(), (s, e) => e.CanExecute = !IsModelNull),
                 new CommandBinding(ApplicationCommands.Save, async (s, e) => await FileSaveNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
                 new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await FileSaveAsNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull)
             };
             CommandBindings.AddRange(commandBindings);
         }
 
-        private void FileOpenOldFormat()
+        public static (string fileName, bool ok) OpenFileGeneric(string path)
         {
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null) return;
+            var dialog = new OpenFileDialog();
+            var directoryName = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
+            {
+                dialog.InitialDirectory = directoryName;
+            }
 
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = dataContext.Folder;
-            openFileDialog.FileName = dataContext.RecentFile;
-            var result = openFileDialog.ShowDialog();
-            if (result == false) return;
+            dialog.DefaultExt = ".json";
+            dialog.Filter = "Json documents (.json)|*.json" + 
+                            "|XML documents(.xml) | *.xml"; 
 
-            dataContext.Folder = Path.GetDirectoryName(openFileDialog.FileName);
-            dataContext.RecentFile = openFileDialog.FileName;
-            dataContext.FileOpenOldFormat();
+            var result = dialog.ShowDialog();
+            if (result != true)
+                return ("", false);
+
+            return (dialog.FileName, true);
         }
 
-        private async Task FileOpenNewFormatAsync()
+
+        private void FileOpenOldFormat()
         {
-            var model = DataContext as MainViewModel;
-            if (model == null) return;
-#if AK
-            var dialog = new FolderBrowserDialog();
-            dialog.SelectedPath = model.Folder;
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
-            model.Folder = dialog.SelectedPath;
-            await model.FileOpenNewFormatAsync();
-#endif
+            _logger.LogDebug("OpenFile()");
+            if (!(DataContext is MainViewModel model)) return;
+            var r = OpenFileGeneric(model.DataFile);
+            if (!r.ok)
+                return;
+            
+            model.DataFile = r.fileName;
+
+            model.FileOpenOldFormat();
+        }
+
+
+        private async Task OpenFile()
+        {
+            _logger.LogDebug("OpenFile()");
+            if (!(DataContext is MainViewModel model)) return;
+            var r = OpenFileGeneric(model.DataFile);
+            if (!r.ok)
+                return;
+
+            model.DataFile = r.fileName;
+            await model.OpenFileNewFormatAsync();
         }
 
         private async Task FileSaveNewFormatAsync()
         {
-            var model = DataContext as MainViewModel;
-            if (model == null) return;
+            if (!(DataContext is MainViewModel model)) return;
 
-            if (Directory.Exists(Model.Folder))
+            if (File.Exists(Model.DataFile))
                 await model.FileSaveNewFormatAsync();
             else
                 await FileSaveAsNewFormatAsync();
@@ -100,8 +117,7 @@ namespace ProjectApp
 
         private async Task FileSaveAsNewFormatAsync()
         {
-            var model = DataContext as MainViewModel;
-            if (model == null) return;
+            if (!(DataContext is MainViewModel model)) return;
 #if AK
             var dialog = new FolderBrowserDialog();
             dialog.SelectedPath = model.Folder;
@@ -114,12 +130,9 @@ namespace ProjectApp
 
         private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            var addedItems = e.AddedItems;
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null) return;
+            if (!(DataContext is MainViewModel dataContext)) return;
 
-            var calendar = sender as Calendar;
-            if (calendar == null) return;
+            if (!(sender is Calendar calendar)) return;
 
             dataContext.Project.UpdateSelectDayTasks(calendar.SelectedDates);
             dataContext.OnGenerateReportChanged();

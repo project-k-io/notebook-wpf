@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Projects.Models
+namespace ProjectK.Notebook.Models
 {
     public class ExcelCsvRecord
     {
@@ -21,14 +21,18 @@ namespace Projects.Models
         public bool TryParse(string line)
         {
             var strArray = line.Split(',');
+
             if (!DateTime.TryParse(strArray[1], out var result))
                 return false;
+
             Day = result;
             if (!DateTime.TryParse(strArray[2], out result))
                 return false;
+
             Start = result;
             if (!DateTime.TryParse(strArray[3], out result))
                 return false;
+
             End = result;
             Type = strArray[9];
             Type1 = strArray[10];

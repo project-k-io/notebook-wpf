@@ -4,7 +4,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Vibor.Helpers
+namespace ProjectK.Utils
 {
     public static class XAttribute
     {

@@ -4,8 +4,9 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 
-namespace Vibor.Helpers
+namespace ProjectK.Utils
 {
     public class XTask
     {

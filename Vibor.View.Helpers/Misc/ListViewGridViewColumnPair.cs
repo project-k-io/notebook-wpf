@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Vibor.View.Helpers.Misc
+namespace ProjectK.View.Helpers.Misc
 {
     public class ListViewGridViewColumnPair
     {

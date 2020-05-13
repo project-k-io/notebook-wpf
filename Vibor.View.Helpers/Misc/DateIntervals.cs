@@ -1,4 +1,4 @@
-﻿namespace Vibor.View.Helpers.Misc
+﻿namespace ProjectK.View.Helpers.Misc
 {
     public enum DateIntervals
     {

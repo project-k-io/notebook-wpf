@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using GalaSoft.MvvmLight;
 
-namespace Projects.ViewModels
+namespace ProjectK.Notebook.ViewModels
 {
     public static class ViewModelExtensions
     {
@@ -14,9 +14,8 @@ namespace Projects.ViewModels
 
             setValue(newValue);
 
-            m.RaisePropertyChanged<T>(propertyName, oldValue, newValue, broadcast);
+            m.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
             return true;
         }
-
     }
 }

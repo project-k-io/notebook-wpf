@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using Projects.Views.Helpers;
+using ProjectK.Notebook.Views.Helpers;
 
-namespace Projects.Views.Controls.TreeViewList
+namespace ProjectK.Notebook.Views.Controls.TreeViewList
 {
     public class TreeListView : TreeView
     {

@@ -3,21 +3,24 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
+using ProjectK.Utils;
 
-namespace Vibor.View.Helpers.Misc
+namespace ProjectK.View.Helpers.Misc
 {
     public class ListViewSorterHelper
     {
+        private static readonly ILogger Logger = LogManager.GetLogger<ListViewSorterHelper>();
+
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
         private GridViewColumnHeader _lastHeaderClicked;
 
         public void Clicked(FrameworkElement parent, object sender, RoutedEventArgs e)
         {
-            var lv = sender as ListView;
-            if (lv == null)
+            if (!(sender is ListView lv))
                 return;
-            var originalSource = e.OriginalSource as GridViewColumnHeader;
-            if (originalSource == null || originalSource.Role == GridViewColumnHeaderRole.Padding)
+            if (!(e.OriginalSource is GridViewColumnHeader originalSource) || originalSource.Role == GridViewColumnHeaderRole.Padding)
                 return;
             var direction = originalSource == _lastHeaderClicked
                 ? _lastDirection != ListSortDirection.Ascending
@@ -47,6 +50,7 @@ namespace Vibor.View.Helpers.Misc
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
         }
     }

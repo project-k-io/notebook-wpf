@@ -2,12 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using Projects.Models.Versions.Version2;
-using Vibor.Helpers;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Utils;
 
-namespace Projects.ViewModels
+namespace ProjectK.Notebook.ViewModels
 {
     public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
     {
@@ -56,7 +56,6 @@ namespace Projects.ViewModels
         public ObservableCollection<string> ContextList { get; set; }
 
         public ObservableCollection<string> TaskTitleList { get; set; }
-
 
 
         public string Context
@@ -141,9 +140,9 @@ namespace Projects.ViewModels
             get => Model.DateStarted;
             set
             {
-                if(!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
-                RaisePropertyChanged($"TimeStarted");
-                RaisePropertyChanged($"Duration");
+                if (!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
+                RaisePropertyChanged("TimeStarted");
+                RaisePropertyChanged("Duration");
             }
         }
 
@@ -153,8 +152,8 @@ namespace Projects.ViewModels
             set
             {
                 if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
-                RaisePropertyChanged($"TimeEnded");
-                RaisePropertyChanged($"Duration");
+                RaisePropertyChanged("TimeEnded");
+                RaisePropertyChanged("Duration");
             }
         }
 
@@ -174,8 +173,8 @@ namespace Projects.ViewModels
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
                 RaisePropertyChanged(); // MC
-                RaisePropertyChanged($"DateStarted");
-                RaisePropertyChanged($"Duration");
+                RaisePropertyChanged("DateStarted");
+                RaisePropertyChanged("Duration");
             }
         }
 
@@ -189,8 +188,8 @@ namespace Projects.ViewModels
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
                 RaisePropertyChanged(); //MC
-                RaisePropertyChanged($"DateEnded");
-                RaisePropertyChanged($"Duration");
+                RaisePropertyChanged("DateEnded");
+                RaisePropertyChanged("Duration");
             }
         }
 
@@ -238,7 +237,7 @@ namespace Projects.ViewModels
 
         public TaskViewModel AddNewTask()
         {
-            var subTask = new TaskViewModel { Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
+            var subTask = new TaskViewModel {Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now};
             Add(subTask);
             var ii = SubTasks.IndexOf(subTask);
             FixContext(subTask);
@@ -354,10 +353,10 @@ namespace Projects.ViewModels
 
         public void FixTitles(TaskViewModel subTask, int ii)
         {
-            var getTitle1 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("yyyy"));
-            var getTitle2 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("MMMM"));
-            var getTitle3 = (Func<int, TaskViewModel, string>)((i, t) => "Week" + (i + 1).ToString());
-            var getTitle4 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.DayOfWeek.ToString());
+            var getTitle1 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("yyyy"));
+            var getTitle2 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("MMMM"));
+            var getTitle3 = (Func<int, TaskViewModel, string>) ((i, t) => "Week" + (i + 1));
+            var getTitle4 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.DayOfWeek.ToString());
             FixTitles("Time Tracker", getTitle1, subTask, ii);
             FixTitles("Year", getTitle2, subTask, ii);
             FixTitles("Month", getTitle3, subTask, ii);

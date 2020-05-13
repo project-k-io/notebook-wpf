@@ -1,9 +1,8 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Markup;
 
-namespace Projects.Views
+namespace ProjectK.Notebook.Views
 {
-    public partial class ExcelCsvView : UserControl, IComponentConnector
+    public partial class ExcelCsvView : UserControl
     {
         public ExcelCsvView()
         {

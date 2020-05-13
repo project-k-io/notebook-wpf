@@ -1,12 +1,11 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Markup;
-using Projects.ViewModels;
-using Vibor.View.Helpers.Misc;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.View.Helpers.Misc;
 
-namespace Projects.Views
+namespace ProjectK.Notebook.Views
 {
-    public partial class TasksListView : UserControl, IComponentConnector
+    public partial class TasksListView : UserControl
     {
         private readonly ListViewSorterHelper _helper = new ListViewSorterHelper();
 
@@ -18,17 +17,16 @@ namespace Projects.Views
 
         private void TasksListView_Loaded(object sender, RoutedEventArgs e)
         {
-            var dataContext = DataContext as MainViewModel;
-            if (dataContext == null)
+            if (!(DataContext is MainViewModel dataContext))
                 return;
             listViewTasks.SelectedItem = dataContext.Project.SelectedTask;
         }
 
-        private void buttonTest_Click(object sender, RoutedEventArgs e)
+        private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
         }
 
-        private void listViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ListViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
         }
 

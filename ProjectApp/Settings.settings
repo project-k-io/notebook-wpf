@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ProjectApp" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ProjectK.Notebook" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="MainWindowState" Type="System.Windows.WindowState" Scope="User">
@@ -25,9 +25,6 @@
     </Setting>
     <Setting Name="LastTreeTaskId" Type="System.Guid" Scope="User">
       <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
-    </Setting>
-    <Setting Name="RecentFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="RecentFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

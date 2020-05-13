@@ -8,10 +8,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Vibor.Helpers;
 using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
+using ProjectK.Utils;
 
-namespace Vibor.View.Helpers.Misc
+namespace ProjectK.View.Helpers.Misc
 {
     public class ViewLib
     {
@@ -89,15 +90,13 @@ namespace Vibor.View.Helpers.Misc
 
             if (player.Parent is ContentControl)
             {
-                var parent = player.Parent as ContentControl;
-                if (parent == null || parent.Content == null) return;
+                if (!(player.Parent is ContentControl parent) || parent.Content == null) return;
 
                 parent.Content = null;
             }
             else if (player.Parent is Panel)
             {
-                var parent = player.Parent as Panel;
-                if (parent == null || !parent.Children.Contains(player)) return;
+                if (!(player.Parent is Panel parent) || !parent.Children.Contains(player)) return;
 
                 parent.Children.Remove(player);
             }
@@ -105,8 +104,7 @@ namespace Vibor.View.Helpers.Misc
             {
                 if (!(player.Parent is Decorator)) return;
 
-                var parent = player.Parent as Decorator;
-                if (parent == null || parent.Child == null) return;
+                if (!(player.Parent is Decorator parent) || parent.Child == null) return;
 
                 parent.Child = null;
             }
@@ -146,11 +144,6 @@ namespace Vibor.View.Helpers.Misc
             defaultView.Refresh();
         }
 
-        public static void ShowStatusMessageItemsCount(IList items)
-        {
-        }
-
-
         public static Action<Action> GetAddAndShowDelegate(ListView lv)
         {
             return a => lv.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, (Action) (() =>
@@ -164,11 +157,10 @@ namespace Vibor.View.Helpers.Misc
         {
             if (lv.Items.Count <= 0) return;
 
-            lv.ScrollIntoView(lv.Items[lv.Items.Count - 1]);
+            lv.ScrollIntoView(lv.Items[^1]);
         }
 
-        public static Action<Action> GetAddDelegate(FrameworkElement lv,
-            DispatcherPriority priority = DispatcherPriority.Background)
+        public static Action<Action> GetAddDelegate(FrameworkElement lv, DispatcherPriority priority = DispatcherPriority.Background)
         {
             return a => lv.Dispatcher.BeginInvoke(priority, a);
         }
