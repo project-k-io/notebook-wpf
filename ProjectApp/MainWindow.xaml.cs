@@ -15,7 +15,7 @@ using ProjectK.View.Helpers.Misc;
 
 namespace ProjectK.Notebook
 {
-    public partial class MainWindow : RibbonWindow
+    public partial class MainWindow : Window
     {
         private readonly ILogger _logger = LogManager.GetLogger<MainWindow>();
 
