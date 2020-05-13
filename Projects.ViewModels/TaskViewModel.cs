@@ -4,6 +4,8 @@ using System.Linq;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Utils;
 
@@ -11,6 +13,7 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
     {
+        private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
         public enum KeyboardStates
         {
             None,
@@ -160,7 +163,7 @@ namespace ProjectK.Notebook.ViewModels
         public string Title
         {
             get => Model.Title;
-            set => this.Set(Title, v => Title = v, value);
+            set => this.Set(Model.Title, v => Model.Title = v, value);
         }
 
         public DateTime TimeStarted
@@ -452,6 +455,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectItem(task);
                     expandItem(task);
                     handled();
+                    Logger.LogDebug($"Added [{taskViewModel1.Title}] to [{task.Title}]");
                     break;
                 case KeyStates.Delete:
                     if (deleteMessageBox())

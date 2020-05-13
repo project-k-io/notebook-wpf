@@ -71,7 +71,7 @@
         <ListView x:Name="ListViewMessages" Grid.Row="1" ItemsSource="{Binding Records}">
             <ListView.View>
                 <GridView AllowsColumnReorder="false">
-                    <GridViewColumn Header="ID" Width="50" DisplayMemberBinding="{Binding ID}" />
+                    <GridViewColumn Header="Id" Width="50" DisplayMemberBinding="{Binding Id}" />
                     <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Type}" />
                     <GridViewColumn Header="Date" Width="140" DisplayMemberBinding="{Binding Date}" />
                     <GridViewColumn Header="State" Width="50" DisplayMemberBinding="{Binding State}" />
