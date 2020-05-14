@@ -134,6 +134,7 @@ namespace ProjectK.Notebook.ViewModels
             {
                 if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
                     return TimeSpan.Zero;
+
                 return DateEnded - DateStarted;
             }
         }
@@ -283,7 +284,8 @@ namespace ProjectK.Notebook.ViewModels
         {
             if (IsPersonalType)
                 return;
-            if (ListExtensions.IsNullOrEmpty(SubTasks))
+
+            if (SubTasks.IsNullOrEmpty())
             {
                 Total = Duration;
             }
