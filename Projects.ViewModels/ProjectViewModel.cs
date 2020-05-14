@@ -63,7 +63,7 @@ namespace ProjectK.Notebook.ViewModels
             SelectedTaskList.Clear();
             XTask.AddToList(SelectedTaskList, task);
             OnSelectedDaysChanged();
-            SelectedTask = !ListExtensions.IsNullOrEmpty(SelectedTaskList) ? SelectedTaskList[0] : task;
+            SelectedTask = !SelectedTaskList.IsNullOrEmpty() ? SelectedTaskList[0] : task;
             RaisePropertyChanged("SelectedTaskList");
         }
 
@@ -106,8 +106,8 @@ namespace ProjectK.Notebook.ViewModels
         private static void SaveTo(DataModel model, TaskViewModel task)
         {
             model.Tasks.Add(task.Model);
-            if (task.Model.Id == Guid.Empty)
-                task.Model.Id = Guid.NewGuid();
+            task.TrySetId();
+
             foreach (var subTask in task.SubTasks)
             {
                 SaveTo(model, subTask);

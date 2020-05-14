@@ -15,119 +15,45 @@ namespace ProjectK.Notebook.ViewModels
     public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
+        
+        #region Fields
 
         private static int _rating;
         private bool _isExpanded;
         private bool _isSelected;
         private TimeSpan _total;
+        private TaskModel _model;
 
-        public TaskViewModel()
-        {
-            Parent = null;
-            Model = new TaskModel();
-        }
+        #endregion
 
-        public TaskViewModel(string title, int rating)
-        {
-            Model = new TaskModel();
-            Parent = null;
-            Title = title;
-            Rating = rating;
-        }
+        #region Properties - Model Wrappers
+        public TaskModel Model { get => _model; set => _model = value; }
 
-        public TaskModel Model { get; set; }
-
-        public ObservableCollection<string> TypeList { get; set; }
-
-        public ObservableCollection<string> ContextList { get; set; }
-
-        public ObservableCollection<string> TaskTitleList { get; set; }
-
-
-        public string Context
-        {
-            get => Model.Context;
-            set => this.Set(Context, v => Model.Context = v, value);
-        }
-
-        public int Rating
-        {
-            get => Model.Rating;
-            set => this.Set(Rating, v => Model.Rating = v, value);
-        }
-
-        public TaskViewModel Parent { get; set; }
-
-        public Guid Id => Model.Id;
-
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set => Set(ref _isSelected, value);
-        }
-
-        public bool IsExpanded
-        {
-            get => _isExpanded;
-            set => Set(ref _isExpanded, value);
-        }
-
+        public Guid Id => _model.Id;
         public string Description
         {
-            get => Model.Description;
-            set => this.Set(Description, v => Model.Description = v, value);
+            get => _model.Description;
+            set => this.Set(Description, v => _model.Description = v, value);
         }
 
         public string Type
         {
-            get => Model.Type;
-            set => this.Set(Type, v => Model.Type = v, value);
+            get => _model.Type;
+            set => this.Set(Type, v => _model.Type = v, value);
         }
 
         public string SubType
         {
-            get => Model.SubType;
-            set => this.Set(SubType, v => Model.SubType = v, value);
-        }
-
-        public bool IsPersonalType
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(Type))
-                    return false;
-                var upper = Type.ToUpper();
-                return upper.Contains("LUNCH") || upper.Contains("PERSONAL");
-            }
-        }
-
-        public bool IsSubTypeSleep
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(SubType))
-                    return false;
-                return SubType.ToUpper().Contains("SLEEP");
-            }
-        }
-
-        public TimeSpan Duration
-        {
-            get
-            {
-                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
-                    return TimeSpan.Zero;
-
-                return DateEnded - DateStarted;
-            }
+            get => _model.SubType;
+            set => this.Set(SubType, v => _model.SubType = v, value);
         }
 
         public DateTime DateStarted
         {
-            get => Model.DateStarted;
+            get => _model.DateStarted;
             set
             {
-                if (!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
+                if (!this.Set(DateStarted, v => _model.DateStarted = v, value)) return;
                 RaisePropertyChanged("TimeStarted");
                 RaisePropertyChanged("Duration");
             }
@@ -135,10 +61,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime DateEnded
         {
-            get => Model.DateEnded;
+            get => _model.DateEnded;
             set
             {
-                if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
+                if (!this.Set(DateEnded, v => _model.DateEnded = v, value)) return;
                 RaisePropertyChanged("TimeEnded");
                 RaisePropertyChanged("Duration");
             }
@@ -146,16 +72,16 @@ namespace ProjectK.Notebook.ViewModels
 
         public string Title
         {
-            get => Model.Title;
-            set => this.Set(Model.Title, v => Model.Title = v, value);
+            get => _model.Title;
+            set => this.Set(_model.Title, v => _model.Title = v, value);
         }
 
         public DateTime TimeStarted
         {
-            get => Model.DateStarted;
+            get => _model.DateStarted;
             set
             {
-                var dateStarted = Model.DateStarted;
+                var dateStarted = _model.DateStarted;
                 var dateTime = value;
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
@@ -167,10 +93,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeEnded
         {
-            get => Model.DateEnded;
+            get => _model.DateEnded;
             set
             {
-                var dateEnded = Model.DateEnded;
+                var dateEnded = _model.DateEnded;
                 var dateTime = value;
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
@@ -180,19 +106,111 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
+        #endregion
+
+        #region Properties
+        public ObservableCollection<string> TypeList { get; set; }
+        public ObservableCollection<string> ContextList { get; set; }
+        public ObservableCollection<string> TaskTitleList { get; set; }
+        public string Context
+        {
+            get => _model.Context;
+            set => this.Set(Context, v => _model.Context = v, value);
+        }
+        public int Rating
+        {
+            get => _model.Rating;
+            set => this.Set(Rating, v => _model.Rating = v, value);
+        }
+        public TaskViewModel Parent { get; set; }
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => Set(ref _isSelected, value);
+        }
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set => Set(ref _isExpanded, value);
+        }
+        public bool IsPersonalType
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Type))
+                    return false;
+                var upper = Type.ToUpper();
+                return upper.Contains("LUNCH") || upper.Contains("PERSONAL");
+            }
+        }
+        public bool IsSubTypeSleep
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(SubType))
+                    return false;
+                return SubType.ToUpper().Contains("SLEEP");
+            }
+        }
+        public TimeSpan Duration
+        {
+            get
+            {
+                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
+                    return TimeSpan.Zero;
+
+                return DateEnded - DateStarted;
+            }
+        }
         public TimeSpan Total
         {
             get => _total;
             set => Set(ref _total, value);
         }
-
         public TaskViewModel LastSubTask => SubTasks.LastOrDefault();
+        public ObservableCollection<TaskViewModel> SubTasks { get; set; } = new ObservableCollection<TaskViewModel>();
+
+        #endregion
+
+        #region Commands
 
         public ICommand CommandSetStartedTime => new RelayCommand(SetStartedTime);
 
         public ICommand CommandSetEndedTime => new RelayCommand(SetEndedTime);
 
-        public ObservableCollection<TaskViewModel> SubTasks { get; set; } = new ObservableCollection<TaskViewModel>();
+
+        #endregion
+
+        #region Constructors
+
+        public TaskViewModel()
+        {
+            Parent = null;
+            _model = new TaskModel();
+        }
+
+        public TaskViewModel(string title, int rating)
+        {
+            _model = new TaskModel();
+            Parent = null;
+            Title = title;
+            Rating = rating;
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return _model.ToString();
+        }
+
+        public void TrySetId()
+        {
+            if (_model.Id != Guid.Empty)
+                return;
+
+            _model.Id = Guid.NewGuid();
+        }
 
         public void LoadFrom(Models.Versions.Version1.TaskModel model)
         {
@@ -204,8 +222,9 @@ namespace ProjectK.Notebook.ViewModels
             DateStarted = model.DateStarted;
             DateEnded = model.DateEnded;
             Title = model.Title;
-            if (ListExtensions.IsNullOrEmpty(model.SubTasks))
+            if (model.SubTasks.IsNullOrEmpty())
                 return;
+
             SubTasks = new ObservableCollection<TaskViewModel>();
             foreach (var subTask in model.SubTasks)
             {
@@ -215,16 +234,9 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public void PopulateModel()
-        {
-            if (!(Model.Id == Guid.Empty))
-                return;
-            Model.Id = Guid.NewGuid();
-        }
-
         public TaskViewModel AddNewTask()
         {
-            var subTask = new TaskViewModel {Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now};
+            var subTask = new TaskViewModel { Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
             Add(subTask);
             var ii = SubTasks.IndexOf(subTask);
             FixContext(subTask);
@@ -237,7 +249,6 @@ namespace ProjectK.Notebook.ViewModels
             subTask.Parent = this;
             SubTasks.Add(subTask);
         }
-
         public void Insert(int index, TaskViewModel subTask)
         {
             subTask.Parent = this;
@@ -257,12 +268,10 @@ namespace ProjectK.Notebook.ViewModels
         {
             DateStarted = DateTime.Now;
         }
-
         public void SetEndedTime()
         {
             DateEnded = DateTime.Now;
         }
-
         public void FixTime()
         {
             if (IsPersonalType)
@@ -305,14 +314,12 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var subTask in SubTasks)
                 subTask.ExtractContext(contextList);
         }
-
         private void FixContext(string parent, string child, TaskViewModel subTask)
         {
             if (!(Context == parent))
                 return;
             subTask.Context = child;
         }
-
         private void FixContext(TaskViewModel subTask)
         {
             FixContext("Time Tracker", "Year", subTask);
@@ -322,7 +329,6 @@ namespace ProjectK.Notebook.ViewModels
             FixContext("Day", "Task", subTask);
             FixContext("Task", "Task", subTask);
         }
-
         public void FixContext()
         {
             foreach (var subTask in SubTasks)
@@ -338,19 +344,17 @@ namespace ProjectK.Notebook.ViewModels
                 return;
             subTask.Title = getTitle(ii, subTask);
         }
-
         public void FixTitles(TaskViewModel subTask, int ii)
         {
-            var getTitle1 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("yyyy"));
-            var getTitle2 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("MMMM"));
-            var getTitle3 = (Func<int, TaskViewModel, string>) ((i, t) => "Week" + (i + 1));
-            var getTitle4 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.DayOfWeek.ToString());
+            var getTitle1 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("yyyy"));
+            var getTitle2 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("MMMM"));
+            var getTitle3 = (Func<int, TaskViewModel, string>)((i, t) => "Week" + (i + 1));
+            var getTitle4 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.DayOfWeek.ToString());
             FixTitles("Time Tracker", getTitle1, subTask, ii);
             FixTitles("Year", getTitle2, subTask, ii);
             FixTitles("Month", getTitle3, subTask, ii);
             FixTitles("Week", getTitle4, subTask, ii);
         }
-
         public void FixTitles()
         {
             for (var ii = 0; ii < SubTasks.Count; ++ii)
@@ -401,17 +405,13 @@ namespace ProjectK.Notebook.ViewModels
             return null;
         }
 
-        public override string ToString()
-        {
-            return Model.ToString();
-        }
 
         public void KeyboardAction(
-            KeyboardKeys keyboardKeys, 
+            KeyboardKeys keyboardKeys,
             Func<KeyboardStates> getState,
-            Action handled, 
+            Action handled,
             Action<TaskViewModel> selectItem, Action<TaskViewModel> expandItem,
-            Func<bool> deleteMessageBox, 
+            Func<bool> deleteMessageBox,
             Action<Action> dispatcher)
         {
             var state = getState();
