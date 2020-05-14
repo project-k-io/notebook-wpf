@@ -219,7 +219,7 @@ namespace ProjectK.Notebook.ViewModels
             await SaveDataAsync();
             CanSave = false;
             Project.Clear();
-            Project.RootTask.Add(new TaskViewModel("Time Tracker", 1)
+            Project.RootTask.Add(new TaskViewModel("Time Tracker")
             {
                 Context = "Time Tracker"
             });
@@ -285,7 +285,7 @@ namespace ProjectK.Notebook.ViewModels
                 var taskViewModel1 = selectedTreeTask.SubTasks.FirstOrDefault(t => t.Title == dayOfTheWeek);
                 if (taskViewModel1 == null)
                 {
-                    taskViewModel1 = new TaskViewModel(dayOfTheWeek, 0)
+                    taskViewModel1 = new TaskViewModel(dayOfTheWeek)
                     {
                         DateStarted = excelCsvRecord.Day,
                         DateEnded = excelCsvRecord.Day
@@ -293,7 +293,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectedTreeTask.SubTasks.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0) { Context = "Task" };
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) { Context = "Task" };
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;

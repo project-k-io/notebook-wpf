@@ -15,10 +15,9 @@ namespace ProjectK.Notebook.ViewModels
     public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
-        
+
         #region Fields
 
-        private static int _rating;
         private bool _isExpanded;
         private bool _isSelected;
         private TimeSpan _total;
@@ -117,11 +116,6 @@ namespace ProjectK.Notebook.ViewModels
             get => _model.Context;
             set => this.Set(Context, v => _model.Context = v, value);
         }
-        public int Rating
-        {
-            get => _model.Rating;
-            set => this.Set(Rating, v => _model.Rating = v, value);
-        }
         public TaskViewModel Parent { get; set; }
         public bool IsSelected
         {
@@ -189,20 +183,25 @@ namespace ProjectK.Notebook.ViewModels
             _model = new TaskModel();
         }
 
-        public TaskViewModel(string title, int rating)
+        public TaskViewModel(string title)
         {
             _model = new TaskModel();
             Parent = null;
             Title = title;
-            Rating = rating;
         }
 
         #endregion
 
+        #region Override functions
+        
         public override string ToString()
         {
             return _model.ToString();
         }
+
+        #endregion
+        
+        #region Public functions
 
         public void TrySetId()
         {
@@ -214,7 +213,6 @@ namespace ProjectK.Notebook.ViewModels
 
         public void LoadFrom(Models.Versions.Version1.TaskModel model)
         {
-            Rating = model.Rating;
             IsSelected = model.IsSelected;
             IsExpanded = model.IsExpanded;
             Description = model.Description;
@@ -234,7 +232,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public TaskViewModel AddNewTask()
+        private TaskViewModel AddNewTask()
         {
             var subTask = new TaskViewModel { Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
             Add(subTask);
@@ -249,7 +247,7 @@ namespace ProjectK.Notebook.ViewModels
             subTask.Parent = this;
             SubTasks.Add(subTask);
         }
-        public void Insert(int index, TaskViewModel subTask)
+        private void Insert(int index, TaskViewModel subTask)
         {
             subTask.Parent = this;
             SubTasks.Insert(index, subTask);
@@ -264,11 +262,11 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public void SetStartedTime()
+        private void SetStartedTime()
         {
             DateStarted = DateTime.Now;
         }
-        public void SetEndedTime()
+        private void SetEndedTime()
         {
             DateEnded = DateTime.Now;
         }
@@ -344,7 +342,7 @@ namespace ProjectK.Notebook.ViewModels
                 return;
             subTask.Title = getTitle(ii, subTask);
         }
-        public void FixTitles(TaskViewModel subTask, int ii)
+        private void FixTitles(TaskViewModel subTask, int ii)
         {
             var getTitle1 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("yyyy"));
             var getTitle2 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("MMMM"));
@@ -441,7 +439,6 @@ namespace ProjectK.Notebook.ViewModels
                             break;
                     }
 
-                    task.Rating = _rating++;
                     IsSelected = true;
                     selectItem(this);
                     expandItem(this);
@@ -538,5 +535,8 @@ namespace ProjectK.Notebook.ViewModels
                     break;
             }
         }
+
+        #endregion
+
     }
 }
