@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels
@@ -14,24 +15,6 @@ namespace ProjectK.Notebook.ViewModels
     public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
-        public enum KeyboardStates
-        {
-            None,
-            IsShiftPressed,
-            IsControlPressed,
-            IsCtrlShiftPressed
-        }
-
-        public enum KeyStates
-        {
-            None,
-            Insert,
-            Delete,
-            Left,
-            Right,
-            Up,
-            Down
-        }
 
         private static int _rating;
         private bool _isExpanded;
@@ -424,7 +407,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         public void KeyboardAction(
-            KeyStates key, 
+            KeyboardKeys keyboardKeys, 
             Func<KeyboardStates> getState,
             Action handled, 
             Action<TaskViewModel> selectItem, Action<TaskViewModel> expandItem,
@@ -432,10 +415,10 @@ namespace ProjectK.Notebook.ViewModels
             Action<Action> dispatcher)
         {
             var state = getState();
-            Logger.LogDebug($"KeyboardAction: {key}, {state}");
-            switch (key)
+            Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
+            switch (keyboardKeys)
             {
-                case KeyStates.Insert:
+                case KeyboardKeys.Insert:
                     TaskViewModel task;
                     switch (state)
                     {
@@ -465,7 +448,7 @@ namespace ProjectK.Notebook.ViewModels
                     handled();
                     Logger.LogDebug($"Added [{task.Title}] to [{Title}]");
                     break;
-                case KeyStates.Delete:
+                case KeyboardKeys.Delete:
                     if (deleteMessageBox())
                         break;
                     var parent = Parent;
@@ -479,7 +462,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectItem(taskViewModel2);
                     handled();
                     break;
-                case KeyStates.Left:
+                case KeyboardKeys.Left:
                     if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
                         var parent1 = Parent;
@@ -496,7 +479,7 @@ namespace ProjectK.Notebook.ViewModels
                     }
 
                     break;
-                case KeyStates.Right:
+                case KeyboardKeys.Right:
                     if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
                         var parent1 = Parent;
@@ -517,7 +500,7 @@ namespace ProjectK.Notebook.ViewModels
                     }
 
                     break;
-                case KeyStates.Up:
+                case KeyboardKeys.Up:
                     if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
                         var parent1 = Parent;
@@ -535,7 +518,7 @@ namespace ProjectK.Notebook.ViewModels
                     }
 
                     break;
-                case KeyStates.Down:
+                case KeyboardKeys.Down:
                     if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
                         var parent1 = Parent;

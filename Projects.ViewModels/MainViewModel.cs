@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
 using ProjectK.ViewModels;
 
@@ -327,10 +328,10 @@ namespace ProjectK.Notebook.ViewModels
                 taskViewModel1.SubTasks.Add(taskViewModel2);
             }
         }
-        public void OnTreeViewKeyDown(TaskViewModel.KeyStates keyState, TaskViewModel.KeyboardStates keyboardState)
+        public void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
             Project.SelectedTask.KeyboardAction(
-                keyState,
+                keyboardKeys,
                 () => keyboardState,
                 () => { }, t => t.IsSelected = true,
                 t => t.IsExpanded = true,
@@ -339,11 +340,11 @@ namespace ProjectK.Notebook.ViewModels
         }
         public void CopyTask()
         {
-            OnTreeViewKeyDown(TaskViewModel.KeyStates.Insert, TaskViewModel.KeyboardStates.IsControlPressed);
+            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
         }
         public void ContinueTask()
         {
-            OnTreeViewKeyDown(TaskViewModel.KeyStates.Insert, TaskViewModel.KeyboardStates.IsShiftPressed);
+            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
 
     }
