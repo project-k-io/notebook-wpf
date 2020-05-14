@@ -3,9 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d"
              Height="Auto" Width="400">
-    <Grid>
+    <UserControl.Resources>
+        <viewModels:TaskViewModel 
+            x:Key="Model" 
+            Context="Month" 
+            Title="May" 
+            DateStarted="{x:Static system:DateTime.Now}"
+            DateEnded="{x:Static system:DateTime.Now}"
+            Type="Task"
+            SubType="Testing"
+            Description="Test Task"
+            >
+
+        </viewModels:TaskViewModel>
+    </UserControl.Resources>
+    <Grid d:DataContext="{StaticResource Model}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10" />
             <ColumnDefinition Width="100" />
@@ -64,15 +80,14 @@
             <Button Grid.Column="3" Margin="2" Width="40" Content="Now" Command="{Binding CommandSetEndedTime}" />
         </Grid>
         <Label Content="Duration" Grid.Row="7" Grid.Column="1" />
-        <!--AK_1
-    <TextBox Grid.Row="7" Grid.Column="3">
-      <TextBox.Text>
-        <MultiBinding StringFormat={}{0:D1}hrs {1:D1}min" Mode="OneWay">
-          <Binding Path="Duration.Hours"/>
-          <Binding Path="Duration.Minutes"/>
-        </MultiBinding>
-      </TextBox.Text>
-    </TextBox>-->
+        <TextBox Grid.Row="7" Grid.Column="3">
+            <TextBox.Text>
+                <MultiBinding StringFormat="{}{0:D1} hrs {1:D1} min" Mode="OneWay">
+                    <Binding Path="Duration.Hours"/>
+                    <Binding Path="Duration.Minutes"/>
+                </MultiBinding>
+            </TextBox.Text>
+        </TextBox>
         <Label Content="Type" Grid.Row="8" Grid.Column="1" />
         <ComboBox Grid.Row="8" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TypeList}" Text="{Binding Type}" />
         <Label Content="SubType" Grid.Row="9" Grid.Column="1" />
