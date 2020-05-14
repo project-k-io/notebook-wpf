@@ -421,51 +421,56 @@ namespace ProjectK.Notebook.ViewModels
             return Model.ToString();
         }
 
-        public static void OnTreeViewKeyDown(TaskViewModel task, KeyStates key, Func<KeyboardStates> getState,
-            Action handled, Action<TaskViewModel> selectItem, Action<TaskViewModel> expandItem,
-            Func<bool> deleteMessageBox, Action<Action> dispatcher)
+        public void KeyboardAction(
+            KeyStates key, 
+            Func<KeyboardStates> getState,
+            Action handled, 
+            Action<TaskViewModel> selectItem, Action<TaskViewModel> expandItem,
+            Func<bool> deleteMessageBox, 
+            Action<Action> dispatcher)
         {
-            Logger.LogDebug("");
+            var state = getState();
+            Logger.LogDebug($"KeyboardAction: {key}, {state}");
             switch (key)
             {
                 case KeyStates.Insert:
-                    TaskViewModel taskViewModel1;
-                    if (getState() == KeyboardStates.IsShiftPressed)
+                    TaskViewModel task;
+                    switch (state)
                     {
-                        taskViewModel1 = task.Parent.AddNewTask();
-                        taskViewModel1.DateStarted = task.DateEnded;
-                    }
-                    else if (getState() == KeyboardStates.IsControlPressed)
-                    {
-                        var lastSubTask = task.Parent.LastSubTask;
-                        taskViewModel1 = task.Parent.AddNewTask();
-                        if (lastSubTask != null)
-                        {
-                            taskViewModel1.Type = task.Type;
-                            taskViewModel1.Title = task.Title;
-                            taskViewModel1.DateStarted = lastSubTask.DateEnded;
-                        }
-                    }
-                    else
-                    {
-                        taskViewModel1 = task.AddNewTask();
+                        case KeyboardStates.IsShiftPressed:
+                            task = Parent.AddNewTask();
+                            task.DateStarted = DateEnded;
+                            break;
+                        case KeyboardStates.IsControlPressed:
+                            var lastSubTask = Parent.LastSubTask;
+                            task = Parent.AddNewTask();
+                            if (lastSubTask != null)
+                            {
+                                task.Type = Type;
+                                task.Title = Title;
+                                task.DateStarted = lastSubTask.DateEnded;
+                            }
+                            break;
+                        default:
+                            task = AddNewTask();
+                            break;
                     }
 
-                    taskViewModel1.Rating = _rating++;
-                    task.IsSelected = true;
-                    selectItem(task);
-                    expandItem(task);
+                    task.Rating = _rating++;
+                    IsSelected = true;
+                    selectItem(this);
+                    expandItem(this);
                     handled();
-                    Logger.LogDebug($"Added [{taskViewModel1.Title}] to [{task.Title}]");
+                    Logger.LogDebug($"Added [{task.Title}] to [{Title}]");
                     break;
                 case KeyStates.Delete:
                     if (deleteMessageBox())
                         break;
-                    var parent = task.Parent;
+                    var parent = Parent;
                     if (parent == null)
                         break;
-                    var num1 = parent.SubTasks.IndexOf(task);
-                    dispatcher(() => parent.SubTasks.Remove(task));
+                    var num1 = parent.SubTasks.IndexOf(this);
+                    dispatcher(() => parent.SubTasks.Remove(this));
                     var taskViewModel2 = num1 > 0 ? parent.SubTasks[num1 - 1] : parent;
                     if (taskViewModel2 == null)
                         break;
@@ -473,75 +478,75 @@ namespace ProjectK.Notebook.ViewModels
                     handled();
                     break;
                 case KeyStates.Left:
-                    if (getState() == KeyboardStates.IsCtrlShiftPressed)
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = task.Parent;
+                        var parent1 = Parent;
                         if (parent1 == null)
                             break;
                         var parent2 = parent1.Parent;
                         if (parent2 == null)
                             break;
-                        parent1.SubTasks.Remove(task);
+                        parent1.SubTasks.Remove(this);
                         var num2 = parent2.SubTasks.IndexOf(parent1);
-                        parent2.Insert(num2 + 1, task);
-                        selectItem(task);
+                        parent2.Insert(num2 + 1, this);
+                        selectItem(this);
                         handled();
                     }
 
                     break;
                 case KeyStates.Right:
-                    if (getState() == KeyboardStates.IsCtrlShiftPressed)
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = task.Parent;
+                        var parent1 = Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.SubTasks.IndexOf(task);
+                        var num2 = parent1.SubTasks.IndexOf(this);
                         if (num2 <= 0)
                             break;
                         var subTask = parent1.SubTasks[num2 - 1];
                         if (subTask == null)
                             break;
-                        parent1.SubTasks.Remove(task);
-                        subTask.Add(task);
-                        selectItem(task);
+                        parent1.SubTasks.Remove(this);
+                        subTask.Add(this);
+                        selectItem(this);
                         parent1.IsExpanded = true;
-                        task.IsSelected = true;
+                        IsSelected = true;
                         handled();
                     }
 
                     break;
                 case KeyStates.Up:
-                    if (getState() == KeyboardStates.IsCtrlShiftPressed)
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = task.Parent;
+                        var parent1 = Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.SubTasks.IndexOf(task);
+                        var num2 = parent1.SubTasks.IndexOf(this);
                         if (num2 <= 0)
                             break;
-                        parent1.SubTasks.Remove(task);
-                        parent1.Insert(num2 - 1, task);
-                        selectItem(task);
+                        parent1.SubTasks.Remove(this);
+                        parent1.Insert(num2 - 1, this);
+                        selectItem(this);
                         parent1.IsExpanded = true;
-                        task.IsSelected = true;
+                        IsSelected = true;
                         handled();
                     }
 
                     break;
                 case KeyStates.Down:
-                    if (getState() == KeyboardStates.IsCtrlShiftPressed)
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = task.Parent;
+                        var parent1 = Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.SubTasks.IndexOf(task);
+                        var num2 = parent1.SubTasks.IndexOf(this);
                         if (num2 >= parent1.SubTasks.Count - 1)
                             break;
-                        parent1.SubTasks.Remove(task);
-                        parent1.Insert(num2 + 1, task);
-                        selectItem(task);
+                        parent1.SubTasks.Remove(this);
+                        parent1.Insert(num2 + 1, this);
+                        selectItem(this);
                         parent1.IsExpanded = true;
-                        task.IsSelected = true;
+                        IsSelected = true;
                         handled();
                     }
 

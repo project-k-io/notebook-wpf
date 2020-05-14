@@ -73,8 +73,7 @@ namespace ProjectK.Notebook.Views
             }
 
             var addDelegate = ViewLib.GetAddDelegate(this);
-            TaskViewModel.OnTreeViewKeyDown(task, keyState, () => KeyboardState, () => e.Handled = true,
-                treeView.SelectItem, ExpandItem, DeleteMessageBox, addDelegate);
+            task.KeyboardAction(keyState, () => KeyboardState, () => e.Handled = true, treeView.SelectItem, ExpandItem, DeleteMessageBox, addDelegate);
         }
 
         private static TaskViewModel.KeyStates GetKeyState(Key key)

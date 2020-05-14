@@ -6,12 +6,18 @@
              xmlns:vm="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
              xmlns:viewModels="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
              xmlns:vm1="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" x:Class="ProjectK.Views.OutputView"
-             d:DesignWidth="400" d:DesignHeight="80"
+             d:DesignWidth="400" d:DesignHeight="100"
              >
 
-
     <UserControl.Resources>
+        <viewModels:OutputViewModel x:Key="Model">
+            <viewModels:OutputViewModel.Records>
+                <vm:OutputRecordViewModel Id="1" Date="{x:Static system:DateTime.Now}" Duration="123456" >
+                </vm:OutputRecordViewModel>
+            </viewModels:OutputViewModel.Records>
+        </viewModels:OutputViewModel>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
         <Style x:Key="ImageStyle" >
             <Style.Triggers>
@@ -59,7 +65,7 @@
             </Button>
         </DataTemplate>
     </UserControl.Resources>
-    <Grid>
+    <Grid d:DataContext="{StaticResource Model}">
         <Grid.RowDefinitions>
             <RowDefinition Height="26" />
             <RowDefinition Height="*" />
@@ -73,7 +79,10 @@
                 <GridView AllowsColumnReorder="false">
                     <GridViewColumn Header="Id" Width="50" DisplayMemberBinding="{Binding Id}" />
                     <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Type}" />
-                    <GridViewColumn Header="Date" Width="140" DisplayMemberBinding="{Binding Date}" />
+                    <!--<GridViewColumn Header="Date" Width="100" DisplayMemberBinding="{Binding Date, StringFormat={}{0:HH:mm:ss.ffffff}}" />-->
+                    <GridViewColumn Header="Date" Width="100" DisplayMemberBinding="{Binding Date, StringFormat={}{0:HH:mm:ss tt}}" />
+                    <!--<GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration, StringFormat=hh\\:mm\\:ss\\:ffffff}" />-->
+                    <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration, StringFormat=mm\\:ss\\:ffffff}" />
                     <GridViewColumn Header="State" Width="50" DisplayMemberBinding="{Binding State}" />
                     <GridViewColumn Header="Message" Width="1200" DisplayMemberBinding="{Binding Message}" />
                 </GridView>

@@ -329,8 +329,7 @@ namespace ProjectK.Notebook.ViewModels
         }
         public void OnTreeViewKeyDown(TaskViewModel.KeyStates keyState, TaskViewModel.KeyboardStates keyboardState)
         {
-            TaskViewModel.OnTreeViewKeyDown(
-                Project.SelectedTask,
+            Project.SelectedTask.KeyboardAction(
                 keyState,
                 () => keyboardState,
                 () => { }, t => t.IsSelected = true,
