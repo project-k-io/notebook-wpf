@@ -63,7 +63,7 @@ namespace ProjectK.Notebook.ViewModels
             SelectedTaskList.Clear();
             XTask.AddToList(SelectedTaskList, task);
             OnSelectedDaysChanged();
-            SelectedTask = !XList.IsNullOrEmpty(SelectedTaskList) ? SelectedTaskList[0] : task;
+            SelectedTask = !ListExtensions.IsNullOrEmpty(SelectedTaskList) ? SelectedTaskList[0] : task;
             RaisePropertyChanged("SelectedTaskList");
         }
 

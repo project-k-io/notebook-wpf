@@ -32,30 +32,38 @@ namespace ProjectK.Notebook.Views
 
         private void ViewModel_GenerateReportChanged(object sender, EventArgs e)
         {
-            GenerateReportA();
+            GenerateReport();
         }
 
-        public void GenerateReportA()
+        public void GenerateReport()
         {
+            Logger.LogDebug("GenerateReport()");
             try
             {
                 if (!(DataContext is MainViewModel dataContext))
                     return;
+
                 var project = dataContext.Project;
                 var maxDelta = 40.0 / 5.0 * project.GetSelectedDays().Count;
+
                 var sb = new StringBuilder();
-                var report = GenerateReport(project.SelectedTaskList)
-                    .GenerateReport(maxDelta, dataContext.UseTimeOptimization);
+                var report = GenerateReport(project.SelectedTaskList).GenerateReport(maxDelta, dataContext.UseTimeOptimization);
                 var selectedTask = project.SelectedTask;
+                
                 if (selectedTask != null && selectedTask.Context == "Week")
                     AddHeader(selectedTask, sb);
+
                 sb.Append(report);
                 if (project.SelectedTask != null && project.SelectedTask.Context == "Week")
                 {
-                    var dateStarted = project.SelectedTask.SubTasks.LastOrDefault().DateStarted;
-                    File.WriteAllText(
-                        string.Format("Alan Kharebov Worksheet {0}-{1:00}-{2:00}.txt", dateStarted.Year,
-                            dateStarted.Month, dateStarted.Day), dataContext.Report);
+                    var subTasks = project.SelectedTask.SubTasks;
+                    var lastTask = subTasks.LastOrDefault();
+
+                    if (lastTask != null)
+                    {
+                        var dateStarted = lastTask.DateStarted;
+                        File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", dataContext.Report);
+                    }
                 }
 
                 dataContext.Report = sb.ToString();
@@ -68,20 +76,28 @@ namespace ProjectK.Notebook.Views
 
         public void AddHeader(TaskViewModel t, StringBuilder sb)
         {
-            var dateStarted1 = t.SubTasks.FirstOrDefault().DateStarted;
-            var dateStarted2 = t.SubTasks.LastOrDefault().DateStarted;
+            Logger.LogDebug("GenerateReport()");
+            if(t.SubTasks.IsNullOrEmpty() )
+                return;
+
+            var firstTask = t.SubTasks.FirstOrDefault();
+            var lastTask = t.SubTasks.LastOrDefault();
+
+            var dateStarted1 = firstTask?.DateStarted;
+            var dateStarted2 = lastTask?.DateStarted;
+
             sb.AppendLine("                       Alan Kharebov                                  ");
             sb.AppendLine();
             sb.AppendLine("                        Worksheet                                     ");
             sb.AppendLine();
             sb.Append("                 From ");
-            sb.Append(dateStarted1.ToShortDateString());
+            sb.Append(dateStarted1?.ToShortDateString());
             sb.Append(" to ");
-            sb.Append(dateStarted2.ToShortDateString());
+            sb.Append(dateStarted2?.ToShortDateString());
             sb.AppendLine();
             sb.AppendLine();
-            sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ",
-                dateStarted2.Year, dateStarted2.Month, dateStarted2.Day);
+
+            sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ", dateStarted2?.Year, dateStarted2?.Month, dateStarted2?.Day);
             sb.AppendLine();
             sb.AppendLine();
         }

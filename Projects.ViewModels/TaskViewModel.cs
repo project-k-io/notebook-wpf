@@ -220,7 +220,7 @@ namespace ProjectK.Notebook.ViewModels
             DateStarted = model.DateStarted;
             DateEnded = model.DateEnded;
             Title = model.Title;
-            if (XList.IsNullOrEmpty(model.SubTasks))
+            if (ListExtensions.IsNullOrEmpty(model.SubTasks))
                 return;
             SubTasks = new ObservableCollection<TaskViewModel>();
             foreach (var subTask in model.SubTasks)
@@ -283,7 +283,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             if (IsPersonalType)
                 return;
-            if (XList.IsNullOrEmpty(SubTasks))
+            if (ListExtensions.IsNullOrEmpty(SubTasks))
             {
                 Total = Duration;
             }
@@ -425,6 +425,7 @@ namespace ProjectK.Notebook.ViewModels
             Action handled, Action<TaskViewModel> selectItem, Action<TaskViewModel> expandItem,
             Func<bool> deleteMessageBox, Action<Action> dispatcher)
         {
+            Logger.LogDebug("");
             switch (key)
             {
                 case KeyStates.Insert:

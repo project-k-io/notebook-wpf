@@ -45,7 +45,7 @@ namespace ProjectK.View.Helpers.Misc
         {
             if (gridView == null) return;
 
-            if (!XList.IsNullOrEmpty(gridView.Columns)) gridView.Columns.Clear();
+            if (!ListExtensions.IsNullOrEmpty(gridView.Columns)) gridView.Columns.Clear();
 
             for (var index = 0; index < bindings.Length; ++index)
                 AddColumnWithBinding(gridView, bindings[index], headers[index], widths[index]);
