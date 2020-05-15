@@ -14,6 +14,23 @@ namespace ProjectK.Notebook.Models.Versions.Version2
         public string Title { get; set; }
         public string Description { get; set; }
         public string Context { get; set; }
+        public static TaskModel Copy(TaskModel a)
+        {
+            var b = new TaskModel
+            {
+                Id = a.Id,
+                ParentId = a.ParentId,
+                Rating = a.Rating,
+                DateStarted = a.DateStarted,
+                DateEnded = a.DateEnded,
+                Type = a.Type,
+                SubType = a.SubType,
+                Title = a.Title,
+                Description = a.Description,
+                Context = a.Context
+            };
+            return b;
+        }
 
 
         public static TaskModel NetTask()
