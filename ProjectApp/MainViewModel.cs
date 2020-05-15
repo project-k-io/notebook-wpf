@@ -27,18 +27,18 @@ namespace ProjectK.Notebook
         {
             var commandBindings = new CommandBindingCollection
             {
-                new CommandBinding(ApplicationCommands.New, async (s, e) => await NewProjectAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.Open, async (s, e) => await OpenFile(), (s, e) => e.CanExecute = true),
+                new CommandBinding(ApplicationCommands.New, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await UserOpenFileAsync(), (s, e) => e.CanExecute = true),
                 new CommandBinding(ApplicationCommands.Save, async (s, e) => await UserSaveFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await SaveFileAsAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.Close, async (s, e) => await NewProjectAsync(), (s, e) => e.CanExecute = true)
+                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await UserSaveFileAsAsync(), (s, e) => e.CanExecute = true),
+                new CommandBinding(ApplicationCommands.Close, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true)
             };
             return commandBindings;
         }
 
         private void UI_FileOpenOldFormat()
         {
-            _logger.LogDebug("OpenFile()");
+            _logger.LogDebug("UserOpenFileAsync()");
             var dialog = new OpenFileDialog();
             var r = SetFileDialog(dialog, DataFile);
             if (!r.ok)
@@ -49,16 +49,15 @@ namespace ProjectK.Notebook
         }
 
 
-        private async Task OpenFile()
+        private async Task UserOpenFileAsync()
         {
-            _logger.LogDebug("OpenFile()");
+            _logger.LogDebug("UserOpenFileAsync()");
             var dialog = new OpenFileDialog();
             var r = SetFileDialog(dialog, DataFile);
             if (!r.ok)
                 return;
 
-            DataFile = r.fileName;
-            await OpenFileNewFormatAsync();
+            await OpenFileAsync(r.fileName);  // User clicked open file
         }
 
         private async Task UserSaveFileAsync()
@@ -66,10 +65,10 @@ namespace ProjectK.Notebook
             if (File.Exists(DataFile))
                 await SaveFileAsync();  // User Save
             else
-                await SaveFileAsAsync();
+                await UserSaveFileAsAsync();
         }
 
-        private async Task SaveFileAsAsync()
+        private async Task UserSaveFileAsAsync()
         {
             var dialog = new SaveFileDialog();
             var r = SetFileDialog(dialog, DataFile);
@@ -79,6 +78,17 @@ namespace ProjectK.Notebook
             DataFile = r.fileName;
             await SaveFileAsync(); // User
         }
+
+        public async Task OpenFileAsync()
+        {
+            _logger.LogDebug("OpenFileAsync");
+            var path = DataFile;
+            if (!File.Exists(path))
+                await UserOpenFileAsync();
+            else
+                await OpenFileAsync(path);
+        }
+
 
         public (string fileName, bool ok) SetFileDialog(FileDialog dialog, string path)
         {
@@ -203,10 +213,11 @@ namespace ProjectK.Notebook
             _canSave = true;
             while (_canSave)
             {
-                await SaveFileIsModifiedAsync();
+                await SaveModifiedFilesync();
                 await Task.Run(() => Thread.Sleep(5000));
             }
         }
+
 
         public void StopSaving()
         {

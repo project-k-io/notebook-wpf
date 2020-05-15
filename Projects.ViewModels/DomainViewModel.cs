@@ -145,11 +145,11 @@ namespace ProjectK.Notebook.ViewModels
             await XFile.SaveToFileAsync(Notebook, DataFile);
         }
 
-        public async Task OpenFileNewFormatAsync()
+
+        public async Task OpenFileAsync(string path)
         {
-            Logger.LogDebug("OpenFileNewFormatAsync");
-            var path = DataFile;
-            if (!File.Exists(path)) return;
+            DataFile = path;
+            Logger.LogDebug($"OpenFileAsync : {path}");
             _data = await XFile.ReadFromFileAsync<DataModel>(path);
             Notebook.LoadFrom(_data);
             UseSettings();
@@ -168,7 +168,7 @@ namespace ProjectK.Notebook.ViewModels
             await XFile.SaveToFileAsync(_data, path);
         }
 
-        public async Task SaveFileIsModifiedAsync()
+        public async Task SaveModifiedFilesync()
         {
             var newData = new DataModel();
             Notebook.SaveTo(newData);
@@ -185,10 +185,6 @@ namespace ProjectK.Notebook.ViewModels
             await XFile.SaveToFileAsync(_data, path);
         }
 
-        public async Task LoadDataAsync()
-        {
-            await OpenFileNewFormatAsync();
-        }
         public async Task UpdateTypeListAsync()
         {
             await Task.Run(() =>
@@ -220,9 +216,9 @@ namespace ProjectK.Notebook.ViewModels
                 foreach (var str in sortedSet3) TaskTitleList.Add(str);
             });
         }
-        public async Task NewProjectAsync()
+        public async Task UserNewFileAsync()
         {
-            Logger.LogDebug("NewProjectAsync");
+            Logger.LogDebug("UserNewFileAsync");
             await SaveFileAsync();  //New
             CanSave = false;
             Notebook.Clear();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace ProjectK.Notebook.Models.Versions.Version2
@@ -22,6 +23,8 @@ namespace ProjectK.Notebook.Models.Versions.Version2
             {
                 var a = Tasks[i];
                 var b = data.Tasks[i];
+                if(b.Title == "XXX")
+                    Debug.WriteLine("XXX");
                 if (!a.IsSame(b))
                     return false;
 

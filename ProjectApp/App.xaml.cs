@@ -45,7 +45,7 @@ namespace ProjectK.Notebook
             _mainWindow.Show();
 
             // Load Data
-            await _mainModel.LoadDataAsync();
+            await _mainModel.OpenFileAsync();
             await _mainModel.UpdateTypeListAsync();
             await _mainModel.StartSavingAsync();
         }
