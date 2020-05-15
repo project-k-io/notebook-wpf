@@ -119,8 +119,8 @@
                 </TabItem>
             </TabControl>
         </Grid>
-        <views2:OutputView Grid.Row="2" DataContext="{Binding Output}">
-
-        </views2:OutputView>
+        <Border Grid.Row="2" Margin="5" BorderThickness="2">
+            <views2:OutputView DataContext="{Binding Output}"/>
+        </Border>
     </Grid>
 </Window>
