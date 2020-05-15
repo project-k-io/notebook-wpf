@@ -25,7 +25,7 @@ namespace ProjectK.Notebook.Views
 
         private void ReportView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!(DataContext is MainViewModel dataContext))
+            if (!(DataContext is NotebookViewModel dataContext))
                 return;
             dataContext.GenerateReportChanged += ViewModel_GenerateReportChanged;
         }
@@ -40,7 +40,7 @@ namespace ProjectK.Notebook.Views
             Logger.LogDebug("GenerateReport()");
             try
             {
-                if (!(DataContext is MainViewModel dataContext))
+                if (!(DataContext is NotebookViewModel dataContext))
                     return;
 
                 var project = dataContext.Project;

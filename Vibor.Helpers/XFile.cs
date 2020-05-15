@@ -14,24 +14,43 @@ namespace ProjectK.Utils
     {
         private static readonly ILogger Logger = LogManager.GetLogger<XFile>();
 
-        public static void SaveOldFile(string path)
+        public static (string path, bool ok)  GetNewLogFileName(string path)
         {
             try
             {
                 if (!File.Exists(path))
-                    return;
+                    return ("", false);
 
-                var str1 = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+                var suffix = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
                 var withoutExtension = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directoryName = Path.GetDirectoryName(path);
-                var str2 = directoryName == null ? "Logs" : Path.Combine(directoryName, "Logs");
-                if (!Directory.Exists(str2))
-                    Directory.CreateDirectory(str2);
+                var logs = string.IsNullOrWhiteSpace(directoryName) ? "Logs" : Path.Combine(directoryName, "Logs");
 
-                var path2 = $"{string.Format("{0}_{1}", withoutExtension, str1)}{extension}";
-                var destFileName = Path.Combine(str2, path2);
-                File.Copy(path, destFileName);
+                if (!Directory.Exists(logs))
+                    Directory.CreateDirectory(logs);
+
+                var fileName = $"{withoutExtension}_{suffix}{extension}";
+                var destFileName = Path.Combine(logs, fileName);
+                return (destFileName, true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ("", false);
+            }
+        }
+
+
+        public static void SaveFileToLog(string path)
+        {
+            try
+            {
+                var r = GetNewLogFileName(path);
+                if (!r.ok)
+                    return;
+
+                File.Copy(path, r.path);
             }
             catch (Exception ex)
             {
@@ -100,6 +119,7 @@ namespace ProjectK.Utils
                 return default;
             }
         }
+
 
     }
 }

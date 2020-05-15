@@ -19,9 +19,9 @@ using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public class NotebookViewModel : ViewModelBase
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
+        private static readonly ILogger Logger = LogManager.GetLogger<NotebookViewModel>();
 
         #region Fields
 
@@ -120,7 +120,7 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
 
-        public MainViewModel()
+        public NotebookViewModel()
         {
             Assembly = Assembly.GetExecutingAssembly();
             CanSave = true;
@@ -158,26 +158,28 @@ namespace ProjectK.Notebook.ViewModels
             UseSettings();
         }
 
-        public async Task FileSaveNewFormatAsync()
+        public async Task SaveFileAsync()
         {
             if (Data == null) 
                 Data = new DataModel();
 
             var path = DataFile;
-            XFile.SaveOldFile(path);
+            XFile.SaveFileToLog(path);
+
             Project.SaveTo(Data);
 
             await XFile.SaveToFileAsync(Data, path);
         }
+
         public async Task SaveDataAsync()
         {
-            // Todo" AK !!! Temp
-            return;
-
             Logger.LogDebug("SaveDataAsync");
-            if (!CanSave) return;
-            await FileSaveNewFormatAsync();
+            if (!CanSave) 
+                return;
+
+            await SaveFileAsync();
         }
+
         public async Task LoadDataAsync()
         {
             await OpenFileNewFormatAsync();
