@@ -51,25 +51,30 @@ namespace ProjectK.Notebook
             {
                 new CommandBinding(ApplicationCommands.New, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull),
                 new CommandBinding(ApplicationCommands.Open, async (s, e) => await OpenFile(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.Save, async (s, e) => await FileSaveNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
-                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await FileSaveAsNewFormatAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.Save, async (s, e) => await SaveFileAsync(), (s, e) => e.CanExecute = !IsModelNull),
+                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await SaveFileAsAsync(), (s, e) => e.CanExecute = !IsModelNull),
                 new CommandBinding(ApplicationCommands.Close, async (s, e) => await Model.NewProjectAsync(), (s, e) => e.CanExecute = !IsModelNull)
             };
             CommandBindings.AddRange(commandBindings);
         }
 
-        public static (string fileName, bool ok) OpenFileGeneric(string path)
+        public static (string fileName, bool ok) SetFileDialog(FileDialog dialog, string path)
         {
-            var dialog = new OpenFileDialog();
             var directoryName = Path.GetDirectoryName(path);
             if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
             {
                 dialog.InitialDirectory = directoryName;
             }
 
+            var fileName = Path.GetFileNameWithoutExtension(path);
+            if (!string.IsNullOrEmpty(fileName))
+            {
+                dialog.FileName = fileName;
+            }
+
             dialog.DefaultExt = ".json";
-            dialog.Filter = "Json documents (.json)|*.json" + 
-                            "|XML documents(.xml) | *.xml"; 
+            dialog.Filter = "Json documents (.json)|*.json" +
+                            "|XML documents(.xml) | *.xml";
 
             var result = dialog.ShowDialog();
             if (result != true)
@@ -83,10 +88,12 @@ namespace ProjectK.Notebook
         {
             _logger.LogDebug("OpenFile()");
             if (!(DataContext is MainViewModel model)) return;
-            var r = OpenFileGeneric(model.DataFile);
+
+            var dialog = new OpenFileDialog();
+            var r = SetFileDialog(dialog, model.DataFile);
             if (!r.ok)
                 return;
-            
+
             model.DataFile = r.fileName;
 
             model.FileOpenOldFormat();
@@ -97,7 +104,9 @@ namespace ProjectK.Notebook
         {
             _logger.LogDebug("OpenFile()");
             if (!(DataContext is MainViewModel model)) return;
-            var r = OpenFileGeneric(model.DataFile);
+
+            var dialog = new OpenFileDialog();
+            var r = SetFileDialog(dialog, model.DataFile);
             if (!r.ok)
                 return;
 
@@ -105,27 +114,27 @@ namespace ProjectK.Notebook
             await model.OpenFileNewFormatAsync();
         }
 
-        private async Task FileSaveNewFormatAsync()
+        private async Task SaveFileAsync()
         {
             if (!(DataContext is MainViewModel model)) return;
 
             if (File.Exists(Model.DataFile))
                 await model.FileSaveNewFormatAsync();
             else
-                await FileSaveAsNewFormatAsync();
+                await SaveFileAsAsync();
         }
 
-        private async Task FileSaveAsNewFormatAsync()
+        private async Task SaveFileAsAsync()
         {
             if (!(DataContext is MainViewModel model)) return;
-#if AK
-            var dialog = new FolderBrowserDialog();
-            dialog.SelectedPath = model.Folder;
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) return;
 
-            model.Folder = dialog.SelectedPath;
+            var dialog = new SaveFileDialog();
+            var r = SetFileDialog(dialog, model.DataFile);
+            if (!r.ok)
+                return;
+
+            model.DataFile = r.fileName;
             await model.FileSaveNewFormatAsync();
-#endif
         }
 
         private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
