@@ -1,353 +1,191 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
-using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
-using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
-using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.ViewModels
 {
     public class NotebookViewModel : ViewModelBase
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<NotebookViewModel>();
+        private TaskViewModel _selectedTask;
+        private TaskViewModel _selectedTreeTask;
 
-        #region Fields
+        public ObservableCollection<TaskViewModel> SelectedTaskList { get; } =
+            new ObservableCollection<TaskViewModel>();
 
-        private string _excelCsvText;
-        
-        private string _dataFolder = "";
-        private string _dataFile = "";
+        public TaskViewModel RootTask { get; set; } = new TaskViewModel();
 
-        private string _report;
-        private bool _useTimeOptimization;
-
-        #endregion
-
-        #region Events
-
-        public event EventHandler<EventArgs> GenerateReportChanged;
-        public event EventHandler<TaskEventArgs> SelectedTaskChanged;
-
-        #endregion
-
-        #region Commands
-
-        public ICommand ClearCommand { get; }
-        public ICommand EditCommand { get; }
-        public ICommand FixTimeCommand { get; }
-        public ICommand ExtractContextCommand { get; }
-        public ICommand FixContextCommand { get; private set; }
-        public ICommand FixTitlesCommand { get; }
-        public ICommand FixTypesCommand { get; }
-        public ICommand CopyTaskCommand { get; }
-        public ICommand ContinueTaskCommand { get; }
-
-        #endregion
-
-        #region Properties
-
-        public Guid LastListTaskId { get; set; }
-        public Guid LastTreeTaskId { get; set; }
-        public LayoutViewModel Layout { get; } = new LayoutViewModel();
-        public ProjectViewModel Project { get; } = new ProjectViewModel();
-        public TaskViewModel RootTask => Project.RootTask;
-        private Assembly Assembly { get; }
-        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + DataFile;
-
-        public string DataFile
+        public TaskViewModel SelectedTreeTask
         {
-            get => _dataFile;
-            set
-            {
-                if (!Set(ref _dataFile, value)) return;
-                RaisePropertyChanged("Title");
-            }
+            get => _selectedTreeTask;
+            set => Set(ref _selectedTreeTask, value);
         }
 
-        public DataModel Data { get; set; }
-        public string Report
+        public TaskViewModel SelectedTask
         {
-            get => _report;
-            set => Set(ref _report, value);
-        }
-        public string ExcelCsvText
-        {
-            get => _excelCsvText;
-            set => Set(ref _excelCsvText, value);
-        }
-        public bool UseTimeOptimization
-        {
-            get => _useTimeOptimization;
-            set => Set(ref _useTimeOptimization, value);
-        }
-        private string ConfigPath
-        {
-            get
-            {
-                var assemblyCompany = XAttribute.GetAssemblyCompany(Assembly);
-                var assemblyProduct = XAttribute.GetAssemblyProduct(Assembly);
-                var str = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    assemblyCompany);
-                if (!Directory.Exists(str)) Directory.CreateDirectory(str);
-
-                var path = Path.Combine(str, assemblyProduct);
-                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-                return path;
-            }
-        }
-        private string ConfigFile => Path.Combine(ConfigPath, "Config.xml");
-        public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
-        public ObservableCollection<string> TypeList { get; set; }
-        public ObservableCollection<string> ContextList { get; set; }
-        public ObservableCollection<string> TaskTitleList { get; set; }
-        public bool CanSave { get; set; } = false;
-        public Action<Action> OnDispatcher { get; set; }
-        public OutputViewModel Output { get; set; } = new OutputViewModel();
-
-        #endregion
-
-
-        public NotebookViewModel()
-        {
-            Assembly = Assembly.GetExecutingAssembly();
-            CanSave = true;
-            TypeList = new ObservableCollection<string>();
-            ContextList = new ObservableCollection<string>();
-            TaskTitleList = new ObservableCollection<string>();
-
-            ClearCommand = new RelayCommand(Project.Clear);
-            EditCommand = new RelayCommand(() => Process.Start("notepad.exe", DataFile));
-            FixTimeCommand = new RelayCommand(Project.FixTime);
-            ExtractContextCommand = new RelayCommand(Project.FixContext);
-            FixTitlesCommand = new RelayCommand(Project.FixTitles);
-            FixTypesCommand = new RelayCommand(Project.FixTypes);
-            CopyTaskCommand = new RelayCommand(CopyTask);
-            ContinueTaskCommand = new RelayCommand(ContinueTask);
+            get => _selectedTask;
+            set => Set(ref _selectedTask, value);
         }
 
+        public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
 
-        public void FileOpenOldFormat()
+        public List<DateTime> GetSelectedDays()
         {
-            Project.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
-        }
-        public async Task FileSaveOldFormatAsync()
-        {
-            await XFile.SaveToFileAsync(Project, DataFile);
-        }
+            var dateTimeList = new List<DateTime>();
+            foreach (var selectedTask in SelectedTaskList)
+                if (selectedTask.Context == "Day")
+                    dateTimeList.Add(selectedTask.DateStarted);
 
-        public async Task OpenFileNewFormatAsync()
-        {
-            Logger.LogDebug("OpenFileNewFormatAsync");
-            var path = DataFile;
-            if (!File.Exists(path)) return;
-            Data = await XFile.ReadFromFileAsync<DataModel>(path);
-            Project.LoadFrom(Data);
-            UseSettings();
+            return dateTimeList;
         }
 
-        public async Task SaveFileAsync()
+        public event EventHandler SelectedDaysChanged;
+
+        public void OnSelectedDaysChanged()
         {
-            if (Data == null) 
-                Data = new DataModel();
-
-            var path = DataFile;
-            XFile.SaveFileToLog(path);
-
-            Project.SaveTo(Data);
-
-            await XFile.SaveToFileAsync(Data, path);
+            SelectedDaysChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public async Task SaveDataAsync()
+        public TaskViewModel FindTask(Guid id)
         {
-            Logger.LogDebug("SaveDataAsync");
-            if (!CanSave) 
-                return;
-
-            await SaveFileAsync();
+            return RootTask.FindTask(id);
         }
 
-        public async Task LoadDataAsync()
-        {
-            await OpenFileNewFormatAsync();
-        }
-        public async Task UpdateTypeListAsync()
-        {
-            await Task.Run(() =>
-            {
-                var taskViewModelList = new List<TaskViewModel>();
-                XTask.AddToList(taskViewModelList, RootTask);
-                var sortedSet1 = new SortedSet<string>();
-                var sortedSet2 = new SortedSet<string>();
-                var sortedSet3 = new SortedSet<string>();
-                foreach (var taskViewModel in taskViewModelList)
-                {
-                    var type = taskViewModel.Type;
-                    if (!sortedSet1.Contains(type)) sortedSet1.Add(type);
-
-                    var context = taskViewModel.Context;
-                    if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
-
-                    var title = taskViewModel.Title;
-                    if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
-                }
-
-                TypeList.Clear();
-                foreach (var str in sortedSet1) TypeList.Add(str);
-
-                ContextList.Clear();
-                foreach (var str in sortedSet2) ContextList.Add(str);
-
-                TaskTitleList.Clear();
-                foreach (var str in sortedSet3) TaskTitleList.Add(str);
-            });
-        }
-        public async Task NewProjectAsync()
-        {
-            Logger.LogDebug("NewProjectAsync");
-            await SaveDataAsync();
-            CanSave = false;
-            Project.Clear();
-            Project.RootTask.Add(new TaskViewModel("Time Tracker")
-            {
-                Context = "Time Tracker"
-            });
-
-            Data = new DataModel();
-            var path = XFile2.MakeUnique(DataFile);
-            var name = Path.GetFileName(path);
-            DataFile = name;
-            CanSave = true;
-        }
-
-        public void OnSelectedTaskChanged(TaskViewModel task)
-        {
-            SelectedTaskChanged?.Invoke(this, new TaskEventArgs
-            {
-                Task = task
-            });
-        }
-        public void OnGenerateReportChanged()
-        {
-            GenerateReportChanged?.Invoke(this, EventArgs.Empty);
-        }
-        public void UseSettings()
-        {
-            Project.SelectTreeTask(LastListTaskId);
-            Project.SelectTask(LastTreeTaskId);
-        }
-        public void PrepareSettings()
-        {
-            if (Project.SelectedTask != null) LastListTaskId = Project.SelectedTask.Id;
-
-            if (Project.SelectedTreeTask == null) return;
-
-            LastTreeTaskId = Project.SelectedTreeTask.Id;
-        }
         public void SelectTreeTask(TaskViewModel task)
         {
-            task.TypeList = TypeList;
-            task.ContextList = ContextList;
-            task.TaskTitleList = TaskTitleList;
-            Project.SelectTreeTask(task);
-            OnGenerateReportChanged();
+            if (task == null)
+                return;
+
+            SelectedTreeTask = task;
+            SelectedTaskList.Clear();
+            XTask.AddToList(SelectedTaskList, task);
+            OnSelectedDaysChanged();
+            SelectedTask = !SelectedTaskList.IsNullOrEmpty() ? SelectedTaskList[0] : task;
+            RaisePropertyChanged("SelectedTaskList");
         }
-        public void CopyExcelCsvText()
+
+        public void SelectTreeTask(Guid id)
         {
-            var stringReader = new StringReader(ExcelCsvText);
-            var excelCsvRecordList = new List<ExcelCsvRecord>();
-            string line;
-            while ((line = stringReader.ReadLine()) != null)
-                if (!string.IsNullOrEmpty(line))
-                {
-                    var excelCsvRecord = new ExcelCsvRecord();
-                    if (excelCsvRecord.TryParse(line)) excelCsvRecordList.Add(excelCsvRecord);
-                }
+            SelectTreeTask(FindTask(id));
+        }
 
-            var selectedTreeTask = Project.SelectedTreeTask;
-            if (selectedTreeTask.Context != "Week") return;
+        public void SelectTask(TaskViewModel task)
+        {
+            if (task == null)
+                return;
+            SelectedTask = task;
+            RaisePropertyChanged("SelectedTaskList");
+        }
 
-            foreach (var excelCsvRecord in excelCsvRecordList)
+        public void SelectTask(Guid id)
+        {
+            SelectTask(FindTask(id));
+        }
+
+        public static bool ContainDate(IList dates, DateTime a)
+        {
+            foreach (var date in dates)
+                if (date is DateTime dateTime)
+                    if (a.Day == dateTime.Day && a.Month == dateTime.Month && a.Year == dateTime.Year)
+                        return true;
+
+            return false;
+        }
+
+        private static void AddToList(ICollection<TaskViewModel> list, TaskViewModel task, IList dates)
+        {
+            if (ContainDate(dates, task.DateStarted))
+                list.Add(task);
+            foreach (var subTask in task.SubTasks)
+                AddToList(list, subTask, dates);
+        }
+
+        private static void SaveTo(DataModel model, TaskViewModel task)
+        {
+            model.Tasks.Add(task.Model);
+            task.TrySetId();
+
+            foreach (var subTask in task.SubTasks)
             {
-                var dateTime1 = excelCsvRecord.Day;
-                var dayOfTheWeek = dateTime1.DayOfWeek.ToString();
-                var taskViewModel1 = selectedTreeTask.SubTasks.FirstOrDefault(t => t.Title == dayOfTheWeek);
-                if (taskViewModel1 == null)
-                {
-                    taskViewModel1 = new TaskViewModel(dayOfTheWeek)
-                    {
-                        DateStarted = excelCsvRecord.Day,
-                        DateEnded = excelCsvRecord.Day
-                    };
-                    selectedTreeTask.SubTasks.Add(taskViewModel1);
-                }
-
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) { Context = "Task" };
-                var taskViewModel3 = taskViewModel2;
-                dateTime1 = excelCsvRecord.Day;
-                var year1 = dateTime1.Year;
-                dateTime1 = excelCsvRecord.Day;
-                var month1 = dateTime1.Month;
-                dateTime1 = excelCsvRecord.Day;
-                var day1 = dateTime1.Day;
-                dateTime1 = excelCsvRecord.Start;
-                var hour1 = dateTime1.Hour;
-                dateTime1 = excelCsvRecord.Start;
-                var minute1 = dateTime1.Minute;
-                dateTime1 = excelCsvRecord.Start;
-                var second1 = dateTime1.Second;
-                var dateTime2 = new DateTime(year1, month1, day1, hour1, minute1, second1);
-                taskViewModel3.DateStarted = dateTime2;
-                var taskViewModel4 = taskViewModel2;
-                dateTime1 = excelCsvRecord.Day;
-                var year2 = dateTime1.Year;
-                dateTime1 = excelCsvRecord.Day;
-                var month2 = dateTime1.Month;
-                dateTime1 = excelCsvRecord.Day;
-                var day2 = dateTime1.Day;
-                dateTime1 = excelCsvRecord.End;
-                var hour2 = dateTime1.Hour;
-                dateTime1 = excelCsvRecord.End;
-                var minute2 = dateTime1.Minute;
-                dateTime1 = excelCsvRecord.End;
-                var second2 = dateTime1.Second;
-                var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
-                taskViewModel4.DateEnded = dateTime3;
-                taskViewModel2.Description = $"{excelCsvRecord.Type1}:{excelCsvRecord.Type2}:{excelCsvRecord.SubTask}";
-                taskViewModel1.SubTasks.Add(taskViewModel2);
+                SaveTo(model, subTask);
+                subTask.Model.ParentId = task.Model.Id;
             }
         }
-        public void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
+
+        public void LoadFrom(Models.Versions.Version1.DataModel model)
         {
-            Project.SelectedTask.KeyboardAction(
-                keyboardKeys,
-                () => keyboardState,
-                () => { }, t => t.IsSelected = true,
-                t => t.IsExpanded = true,
-                () => true,
-                OnDispatcher);
-        }
-        public void CopyTask()
-        {
-            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
-        }
-        public void ContinueTask()
-        {
-            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
+            Clear();
+            RootTask.LoadFrom(model.RootTask);
         }
 
+        public void LoadFrom(DataModel model)
+        {
+            if (model == null)
+                return;
+            Clear();
+            var sortedList = new SortedList<Guid, TaskViewModel>();
+            foreach (var task in model.Tasks)
+                if (task.ParentId == Guid.Empty)
+                {
+                    RootTask.Model = task;
+                    sortedList.Add(task.Id, RootTask);
+                }
+                else if (!sortedList.ContainsKey(task.Id))
+                {
+                    var taskViewModel = new TaskViewModel {Model = task};
+                    sortedList.Add(task.Id, taskViewModel);
+                }
+
+            foreach (var task in model.Tasks)
+                if (!(task.ParentId == Guid.Empty))
+                    sortedList[task.ParentId].SubTasks.Add(sortedList[task.Id]);
+        }
+
+        public void SaveTo(DataModel model)
+        {
+            model.Tasks.Clear();
+            SaveTo(model, RootTask);
+        }
+
+        public void FixTime()
+        {
+            SelectedTreeTask.FixTime();
+        }
+
+        public void Clear()
+        {
+            RootTask.SubTasks.Clear();
+        }
+
+        public void ExtractContext()
+        {
+            ContextList.Clear();
+            RootTask.ExtractContext(ContextList);
+            RaisePropertyChanged("ContextList");
+        }
+
+        public void FixContext()
+        {
+            SelectedTreeTask.FixContext();
+        }
+
+        public void FixTitles()
+        {
+            SelectedTreeTask.FixTitles();
+        }
+
+        public void FixTypes()
+        {
+            SelectedTreeTask.FixTypes();
+        }
+
+        public void UpdateSelectDayTasks(IList dates)
+        {
+            SelectedTaskList.Clear();
+            AddToList(SelectedTaskList, RootTask, dates);
+        }
     }
 }

@@ -18,7 +18,7 @@ using ProjectK.Utils;
 
 namespace ProjectK.Notebook
 {
-    class MainViewModel: NotebookViewModel
+    class MainViewModel: DomainViewModel
     {
         private ILogger _logger;
         private bool _canSave;

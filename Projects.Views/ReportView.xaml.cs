@@ -25,7 +25,7 @@ namespace ProjectK.Notebook.Views
 
         private void ReportView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!(DataContext is NotebookViewModel dataContext))
+            if (!(DataContext is DomainViewModel dataContext))
                 return;
             dataContext.GenerateReportChanged += ViewModel_GenerateReportChanged;
         }
@@ -40,10 +40,10 @@ namespace ProjectK.Notebook.Views
             Logger.LogDebug("GenerateReport()");
             try
             {
-                if (!(DataContext is NotebookViewModel dataContext))
+                if (!(DataContext is DomainViewModel dataContext))
                     return;
 
-                var project = dataContext.Project;
+                var project = dataContext.Notebook;
                 var maxDelta = 40.0 / 5.0 * project.GetSelectedDays().Count;
 
                 var sb = new StringBuilder();

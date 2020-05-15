@@ -9,7 +9,7 @@ namespace ProjectK.Notebook.ViewModels
 {
     public static class ViewModelExtensions
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<NotebookViewModel>();
+        private static readonly ILogger Logger = LogManager.GetLogger<DomainViewModel>();
 
         public static bool Set<T>(this ViewModelBase m, T oldValue, Action<T> setValue, T newValue, bool broadcast = false, [CallerMemberName] string propertyName = null)
         {

@@ -16,8 +16,8 @@
             ButtonBase.Click="ListViewTasks_OnClick"
             x:Name="listViewTasks" 
             SelectionMode="Extended"
-            ItemsSource="{Binding Path=Project.SelectedTaskList}"
-            SelectedItem="{Binding Project.SelectedTask, IsAsync=true}">
+            ItemsSource="{Binding Path=Notebook.SelectedTaskList}"
+            SelectedItem="{Binding Path=Notebook.SelectedTask, IsAsync=true}">
             <FrameworkElement.Resources>
                 <Style x:Key="TextStyle" TargetType="{x:Type TextBlock}">
                     <Style.Triggers>
@@ -69,14 +69,14 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <views:TaskView Grid.Column="0" DataContext="{Binding Project.SelectedTask}" />
+            <views:TaskView Grid.Column="0" DataContext="{Binding Path=Notebook.SelectedTask}" />
             <Grid Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="22" />
                     <RowDefinition Height="22" />
                     <RowDefinition Height="282" />
                 </Grid.RowDefinitions>
-                <ComboBox Grid.Row="0" IsEditable="true" ItemsSource="{Binding Project.ContextList}" />
+                <ComboBox Grid.Row="0" IsEditable="true" ItemsSource="{Binding Path=Notebook.ContextList}" />
                 <Button Click="ButtonTest_Click" x:Name="buttonTest" Grid.Row="1" />
             </Grid>
         </Grid>
