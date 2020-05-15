@@ -6,7 +6,8 @@
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d"
-             Height="Auto" Width="400">
+             Height="Auto" Width="400"
+             >
     <UserControl.Resources>
         <viewModels:TaskViewModel 
             x:Key="Model" 

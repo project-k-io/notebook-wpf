@@ -242,10 +242,11 @@ namespace ProjectK.Notebook.ViewModels
             return subTask;
         }
 
-        public void Add(TaskViewModel subTask)
+        public TaskViewModel Add(TaskViewModel subTask)
         {
             subTask.Parent = this;
             SubTasks.Add(subTask);
+            return subTask;
         }
         private void Insert(int index, TaskViewModel subTask)
         {
