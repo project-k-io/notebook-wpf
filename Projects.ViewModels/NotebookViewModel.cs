@@ -146,7 +146,6 @@ namespace ProjectK.Notebook.ViewModels
 
         public void SaveTo(DataModel model)
         {
-            model.Tasks.Clear();
             SaveTo(model, RootTask);
         }
 

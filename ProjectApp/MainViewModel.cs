@@ -64,7 +64,7 @@ namespace ProjectK.Notebook
         private async Task UserSaveFileAsync()
         {
             if (File.Exists(DataFile))
-                await SaveFileAsync();
+                await SaveFileAsync();  // User Save
             else
                 await SaveFileAsAsync();
         }
@@ -77,7 +77,7 @@ namespace ProjectK.Notebook
                 return;
 
             DataFile = r.fileName;
-            await SaveFileAsync();
+            await SaveFileAsync(); // User
         }
 
         public (string fileName, bool ok) SetFileDialog(FileDialog dialog, string path)
@@ -203,7 +203,7 @@ namespace ProjectK.Notebook
             _canSave = true;
             while (_canSave)
             {
-                await SaveDataAsync();
+                await SaveFileIsModifiedAsync();
                 await Task.Run(() => Thread.Sleep(5000));
             }
         }

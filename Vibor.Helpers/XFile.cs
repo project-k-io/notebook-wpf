@@ -60,6 +60,7 @@ namespace ProjectK.Utils
 
         public static async Task SaveToFileAsync<T>(T model, string path)
         {
+            Logger.LogDebug($"SaveToFileAsync: {path}");
             await Task.Run(() =>
             {
                 try

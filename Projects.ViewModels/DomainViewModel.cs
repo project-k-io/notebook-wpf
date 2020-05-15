@@ -157,23 +157,32 @@ namespace ProjectK.Notebook.ViewModels
 
         public async Task SaveFileAsync()
         {
+            Logger.LogDebug("SaveFileAsync");
             _data ??= new DataModel();
 
             var path = DataFile;
             XFile.SaveFileToLog(path);
-
+            
+            _data.Clear();
             Notebook.SaveTo(_data);
-
             await XFile.SaveToFileAsync(_data, path);
         }
 
-        public async Task SaveDataAsync()
+        public async Task SaveFileIsModifiedAsync()
         {
-            Logger.LogDebug("SaveDataAsync");
-            if (!CanSave) 
+            var newData = new DataModel();
+            Notebook.SaveTo(newData);
+
+            _data ??= new DataModel();
+            if (_data.IsSame(newData))
                 return;
 
-            await SaveFileAsync();
+            var path = DataFile;
+            XFile.SaveFileToLog(path);
+
+            _data.Tasks.Clear();
+            _data.Tasks.AddRange(newData.Tasks);
+            await XFile.SaveToFileAsync(_data, path);
         }
 
         public async Task LoadDataAsync()
@@ -214,7 +223,7 @@ namespace ProjectK.Notebook.ViewModels
         public async Task NewProjectAsync()
         {
             Logger.LogDebug("NewProjectAsync");
-            await SaveDataAsync();
+            await SaveFileAsync();  //New
             CanSave = false;
             Notebook.Clear();
             Notebook.RootTask.Add(new TaskViewModel("Time Tracker")

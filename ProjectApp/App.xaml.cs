@@ -55,7 +55,7 @@ namespace ProjectK.Notebook
             base.OnExit(e);
             _mainModel.SaveSettings(_mainWindow);
             _mainModel.StopSaving();
-            await _mainModel.SaveDataAsync();
+            await _mainModel.SaveFileAsync(); // Exit
             _mainWindow.Close();
             Shutdown();
         }
