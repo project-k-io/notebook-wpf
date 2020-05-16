@@ -4,6 +4,8 @@ namespace ProjectK.Notebook.Models.Versions.Version2
 {
     public class TaskModel
     {
+        public int Level = 0;
+
         public Guid Id { get; set; }
         public Guid ParentId { get; set; }
         public int Rating { get; set; }

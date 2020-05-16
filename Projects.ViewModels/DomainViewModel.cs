@@ -151,38 +151,35 @@ namespace ProjectK.Notebook.ViewModels
             DataFile = path;
             Logger.LogDebug($"OpenFileAsync : {path}");
             _data = await XFile.ReadFromFileAsync<DataModel>(path);
-            Notebook.LoadFrom(_data);
+            Notebook.LoadFrom(_data.Copy());
             UseSettings();
         }
 
         public async Task SaveFileAsync()
         {
             Logger.LogDebug("SaveFileAsync");
-            _data ??= new DataModel();
-
-            var path = DataFile;
-            XFile.SaveFileToLog(path);
-            
-            _data.Clear();
-            Notebook.SaveTo(_data);
-
-            await XFile.SaveToFileAsync(_data, path);
+            await SaveFileAsync((a, b) => false);
         }
 
         public async Task SaveModifiedFileAsync()
         {
+            await SaveFileAsync((a, b) => a.IsSame(b));
+        }
+
+        private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
+        {
+
             var newData = new DataModel();
             Notebook.SaveTo(newData);
 
             _data ??= new DataModel();
-            if (_data.IsSame(newData))
+            if (isSame(_data, newData))
                 return;
 
             var path = DataFile;
             XFile.SaveFileToLog(path);
 
-            _data.Tasks.Clear();
-            _data.Tasks.AddRange(newData.Tasks);
+            _data.Copy(newData);
             await XFile.SaveToFileAsync(_data, path);
         }
 
@@ -230,8 +227,7 @@ namespace ProjectK.Notebook.ViewModels
 
             _data = new DataModel();
             var path = XFile2.MakeUnique(DataFile);
-            var name = Path.GetFileName(path);
-            DataFile = name;
+            DataFile = path;
             CanSave = true;
         }
 

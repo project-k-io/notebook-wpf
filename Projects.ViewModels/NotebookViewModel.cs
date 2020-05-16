@@ -114,9 +114,12 @@ namespace ProjectK.Notebook.ViewModels
         {
             if (model == null)
                 return;
+
+            var tasks = model.Tasks;
             Clear();
             var sortedList = new SortedList<Guid, TaskViewModel>();
-            foreach (var task in model.Tasks)
+            foreach (var task in tasks)
+            {
                 if (task.ParentId == Guid.Empty)
                 {
                     RootTask.Model = task;
@@ -127,8 +130,9 @@ namespace ProjectK.Notebook.ViewModels
                     var taskViewModel = new TaskViewModel {Model = task};
                     sortedList.Add(task.Id, taskViewModel);
                 }
+            }
 
-            foreach (var task in model.Tasks)
+            foreach (var task in tasks)
                 if (!(task.ParentId == Guid.Empty))
                     sortedList[task.ParentId].SubTasks.Add(sortedList[task.Id]);
         }

@@ -17,6 +17,7 @@ namespace ProjectK.Notebook.ViewModels
     public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
+        private static int GlobalLevel = 0;
 
         #region Fields
 
@@ -27,8 +28,10 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
+
+
         #region Properties - Model Wrappers
-        public TaskModel Model { get => _model.Copy(); set => _model = value.Copy(); }
+        public TaskModel Model { get => _model; set => _model = value; }
 
         public Guid Id => _model.Id;
         public Guid ParentId { get => _model.ParentId; set => _model.ParentId = value; }
@@ -76,9 +79,13 @@ namespace ProjectK.Notebook.ViewModels
         public string Title
         {
             get => _model.Title;
-            set => this.Set(_model.Title, v => _model.Title = v, value);
+            set =>this.Set(_model.Title, v =>
+            {
+                _model.Level = GlobalLevel++;
+                _model.Title = v;
+            }, value);
         }
-
+        
         public DateTime TimeStarted
         {
             get => _model.DateStarted;
