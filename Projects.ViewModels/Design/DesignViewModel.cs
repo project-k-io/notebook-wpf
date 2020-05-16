@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ProjectK.Notebook.ViewModels
+namespace ProjectK.Notebook.ViewModels.Design
 {
     public class DesignViewModel : DomainViewModel
     {
