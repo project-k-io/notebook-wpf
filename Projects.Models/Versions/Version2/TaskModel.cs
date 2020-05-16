@@ -4,6 +4,8 @@ namespace ProjectK.Notebook.Models.Versions.Version2
 {
     public class TaskModel
     {
+        public int Level = 0;
+
         public Guid Id { get; set; }
         public Guid ParentId { get; set; }
         public int Rating { get; set; }
@@ -15,14 +17,45 @@ namespace ProjectK.Notebook.Models.Versions.Version2
         public string Description { get; set; }
         public string Context { get; set; }
 
+        public TaskModel Copy() =>
+            new TaskModel
+            {
+                Id = Id,
+                ParentId = ParentId,
+                Rating = Rating,
+                DateStarted = DateStarted,
+                DateEnded = DateEnded,
+                Type = Type,
+                SubType = SubType,
+                Title = Title,
+                Description = Description,
+                Context = Context
+            };
+
+
         public static TaskModel NetTask()
         {
-            return new TaskModel {Id = Guid.NewGuid(), DateStarted = DateTime.Now};
+            return new TaskModel { Id = Guid.NewGuid(), DateStarted = DateTime.Now };
         }
 
         public override string ToString()
         {
             return $"{Context}:{Type}:{Title}:{DateStarted}:{DateEnded}";
+        }
+
+        public bool IsSame(TaskModel m)
+        {
+            if (Id != m.Id) return false;
+            if (ParentId != m.ParentId) return false;
+            if (Rating != m.Rating) return false;
+            if (DateStarted != m.DateStarted) return false;
+            if (DateEnded != m.DateEnded) return false;
+            if (Type != m.Type) return false;
+            if (SubType != m.SubType) return false;
+            if (Title != m.Title) return false;
+            if (Description != m.Description) return false;
+            if (Context != m.Context) return false;
+            return true;
         }
     }
 }

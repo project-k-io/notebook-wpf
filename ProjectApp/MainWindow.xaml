@@ -1,4 +1,4 @@
-<RibbonWindow x:Class="ProjectK.Notebook.MainWindow"
+<Window x:Class="ProjectK.Notebook.MainWindow"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -119,8 +119,8 @@
                 </TabItem>
             </TabControl>
         </Grid>
-        <views2:OutputView Grid.Row="2" DataContext="{Binding Output}">
-
-        </views2:OutputView>
+        <Border Grid.Row="2" Margin="5" BorderThickness="2">
+            <views2:OutputView DataContext="{Binding Output}"/>
+        </Border>
     </Grid>
-</RibbonWindow>
+</Window>

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ProjectK.Notebook.ViewModels;
+using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.Views.Controls.TreeViewList;
 using ProjectK.View.Helpers;
 using ProjectK.View.Helpers.Misc;
@@ -18,27 +19,27 @@ namespace ProjectK.Notebook.Views
             Loaded += TasksTreeView_Loaded;
         }
 
-        private static TaskViewModel.KeyboardStates KeyboardState
+        private static KeyboardStates KeyboardState
         {
             get
             {
-                var keyboardStates = TaskViewModel.KeyboardStates.None;
+                var keyboardStates = KeyboardStates.None;
                 if (XKeyboard.IsCtrlShiftPressed)
-                    keyboardStates = TaskViewModel.KeyboardStates.IsCtrlShiftPressed;
+                    keyboardStates = KeyboardStates.IsCtrlShiftPressed;
                 else if (XKeyboard.IsShiftPressed)
-                    keyboardStates = TaskViewModel.KeyboardStates.IsShiftPressed;
+                    keyboardStates = KeyboardStates.IsShiftPressed;
                 else if (XKeyboard.IsControlPressed)
-                    keyboardStates = TaskViewModel.KeyboardStates.IsControlPressed;
+                    keyboardStates = KeyboardStates.IsControlPressed;
                 return keyboardStates;
             }
         }
 
         private void TasksTreeView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!(DataContext is MainViewModel dataContext))
+            if (!(DataContext is DomainViewModel dataContext))
                 return;
             dataContext.RootTask.SetParents();
-            TreeViewTasks.SelectItem(dataContext.Project.SelectedTreeTask);
+            TreeViewTasks.SelectItem(dataContext.Notebook.SelectedTreeTask);
             TreeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
         }
 
@@ -53,7 +54,7 @@ namespace ProjectK.Notebook.Views
             Debug.WriteLine("treeViewTasks_KeyDown");
             if (!(sender is TreeListView treeView))
                 return;
-            if (!(treeView.DataContext is MainViewModel dataContext))
+            if (!(treeView.DataContext is DomainViewModel dataContext))
                 return;
             if (!(treeView.SelectedItem is TaskViewModel task))
                 task = dataContext.RootTask;
@@ -73,32 +74,31 @@ namespace ProjectK.Notebook.Views
             }
 
             var addDelegate = ViewLib.GetAddDelegate(this);
-            TaskViewModel.OnTreeViewKeyDown(task, keyState, () => KeyboardState, () => e.Handled = true,
-                treeView.SelectItem, ExpandItem, DeleteMessageBox, addDelegate);
+            task.KeyboardAction(keyState, () => KeyboardState, () => e.Handled = true, treeView.SelectItem, ExpandItem, DeleteMessageBox, addDelegate);
         }
 
-        private static TaskViewModel.KeyStates GetKeyState(Key key)
+        private static KeyboardKeys GetKeyState(Key key)
         {
-            var keyStates = TaskViewModel.KeyStates.None;
+            var keyStates = KeyboardKeys.None;
             switch (key)
             {
                 case Key.Left:
-                    keyStates = TaskViewModel.KeyStates.Left;
+                    keyStates = KeyboardKeys.Left;
                     break;
                 case Key.Up:
-                    keyStates = TaskViewModel.KeyStates.Up;
+                    keyStates = KeyboardKeys.Up;
                     break;
                 case Key.Right:
-                    keyStates = TaskViewModel.KeyStates.Right;
+                    keyStates = KeyboardKeys.Right;
                     break;
                 case Key.Down:
-                    keyStates = TaskViewModel.KeyStates.Down;
+                    keyStates = KeyboardKeys.Down;
                     break;
                 case Key.Insert:
-                    keyStates = TaskViewModel.KeyStates.Insert;
+                    keyStates = KeyboardKeys.Insert;
                     break;
                 case Key.Delete:
-                    keyStates = TaskViewModel.KeyStates.Delete;
+                    keyStates = KeyboardKeys.Delete;
                     break;
             }
 
@@ -109,7 +109,7 @@ namespace ProjectK.Notebook.Views
         {
             if (!(sender is TreeListView treeListView))
                 return;
-            if (!(treeListView.DataContext is MainViewModel dataContext))
+            if (!(treeListView.DataContext is DomainViewModel dataContext))
                 return;
             var task = treeListView.SelectedItem as TaskViewModel ?? dataContext.RootTask;
             dataContext.SelectTreeTask(task);

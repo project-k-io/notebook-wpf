@@ -13,24 +13,23 @@ using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
 using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public class DomainViewModel : ViewModelBase
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
+        private static readonly ILogger Logger = LogManager.GetLogger<DomainViewModel>();
 
         #region Fields
 
         private string _excelCsvText;
-        
-        private string _dataFolder = "";
         private string _dataFile = "";
-
         private string _report;
         private bool _useTimeOptimization;
+        private DataModel _data;
 
         #endregion
 
@@ -60,8 +59,8 @@ namespace ProjectK.Notebook.ViewModels
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
         public LayoutViewModel Layout { get; } = new LayoutViewModel();
-        public ProjectViewModel Project { get; } = new ProjectViewModel();
-        public TaskViewModel RootTask => Project.RootTask;
+        public NotebookViewModel Notebook { get; } = new NotebookViewModel();
+        public TaskViewModel RootTask => Notebook.RootTask;
         private Assembly Assembly { get; }
         public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + DataFile;
 
@@ -75,7 +74,6 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public DataModel Data { get; set; }
         public string Report
         {
             get => _report;
@@ -119,7 +117,7 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
 
-        public MainViewModel()
+        public DomainViewModel()
         {
             Assembly = Assembly.GetExecutingAssembly();
             CanSave = true;
@@ -127,12 +125,12 @@ namespace ProjectK.Notebook.ViewModels
             ContextList = new ObservableCollection<string>();
             TaskTitleList = new ObservableCollection<string>();
 
-            ClearCommand = new RelayCommand(Project.Clear);
+            ClearCommand = new RelayCommand(Notebook.Clear);
             EditCommand = new RelayCommand(() => Process.Start("notepad.exe", DataFile));
-            FixTimeCommand = new RelayCommand(Project.FixTime);
-            ExtractContextCommand = new RelayCommand(Project.FixContext);
-            FixTitlesCommand = new RelayCommand(Project.FixTitles);
-            FixTypesCommand = new RelayCommand(Project.FixTypes);
+            FixTimeCommand = new RelayCommand(Notebook.FixTime);
+            ExtractContextCommand = new RelayCommand(Notebook.FixContext);
+            FixTitlesCommand = new RelayCommand(Notebook.FixTitles);
+            FixTypesCommand = new RelayCommand(Notebook.FixTypes);
             CopyTaskCommand = new RelayCommand(CopyTask);
             ContinueTaskCommand = new RelayCommand(ContinueTask);
         }
@@ -140,47 +138,51 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FileOpenOldFormat()
         {
-            Project.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
+            Notebook.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
         }
         public async Task FileSaveOldFormatAsync()
         {
-            await XFile.SaveToFileAsync(Project, DataFile);
+            await XFile.SaveToFileAsync(Notebook, DataFile);
         }
 
-        public async Task OpenFileNewFormatAsync()
+
+        public async Task OpenFileAsync(string path)
         {
-            Logger.LogDebug("OpenFileNewFormatAsync");
-            var path = DataFile;
-            if (!File.Exists(path)) return;
-            Data = await XFile.ReadFromFileAsync<DataModel>(path);
-            Project.LoadFrom(Data);
+            DataFile = path;
+            Logger.LogDebug($"OpenFileAsync : {path}");
+            _data = await XFile.ReadFromFileAsync<DataModel>(path);
+            Notebook.LoadFrom(_data.Copy());
             UseSettings();
         }
 
-        public async Task FileSaveNewFormatAsync()
+        public async Task SaveFileAsync()
         {
-            if (Data == null) 
-                Data = new DataModel();
+            Logger.LogDebug("SaveFileAsync");
+            await SaveFileAsync((a, b) => false);
+        }
+
+        public async Task SaveModifiedFileAsync()
+        {
+            await SaveFileAsync((a, b) => a.IsSame(b));
+        }
+
+        private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
+        {
+
+            var newData = new DataModel();
+            Notebook.SaveTo(newData);
+
+            _data ??= new DataModel();
+            if (isSame(_data, newData))
+                return;
 
             var path = DataFile;
-            XFile.SaveOldFile(path);
-            Project.SaveTo(Data);
+            XFile.SaveFileToLog(path);
 
-            await XFile.SaveToFileAsync(Data, path);
+            _data.Copy(newData);
+            await XFile.SaveToFileAsync(_data, path);
         }
-        public async Task SaveDataAsync()
-        {
-            // Todo" AK !!! Temp
-            return;
 
-            Logger.LogDebug("SaveDataAsync");
-            if (!CanSave) return;
-            await FileSaveNewFormatAsync();
-        }
-        public async Task LoadDataAsync()
-        {
-            await OpenFileNewFormatAsync();
-        }
         public async Task UpdateTypeListAsync()
         {
             await Task.Run(() =>
@@ -212,21 +214,20 @@ namespace ProjectK.Notebook.ViewModels
                 foreach (var str in sortedSet3) TaskTitleList.Add(str);
             });
         }
-        public async Task NewProjectAsync()
+        public async Task UserNewFileAsync()
         {
-            Logger.LogDebug("NewProjectAsync");
-            await SaveDataAsync();
+            Logger.LogDebug("UserNewFileAsync");
+            await SaveFileAsync();  //New
             CanSave = false;
-            Project.Clear();
-            Project.RootTask.Add(new TaskViewModel("Time Tracker", 1)
+            Notebook.Clear();
+            Notebook.RootTask.Add(new TaskViewModel("Time Tracker")
             {
                 Context = "Time Tracker"
             });
 
-            Data = new DataModel();
+            _data = new DataModel();
             var path = XFile2.MakeUnique(DataFile);
-            var name = Path.GetFileName(path);
-            DataFile = name;
+            DataFile = path;
             CanSave = true;
         }
 
@@ -243,23 +244,23 @@ namespace ProjectK.Notebook.ViewModels
         }
         public void UseSettings()
         {
-            Project.SelectTreeTask(LastListTaskId);
-            Project.SelectTask(LastTreeTaskId);
+            Notebook.SelectTreeTask(LastListTaskId);
+            Notebook.SelectTask(LastTreeTaskId);
         }
         public void PrepareSettings()
         {
-            if (Project.SelectedTask != null) LastListTaskId = Project.SelectedTask.Id;
+            if (Notebook.SelectedTask != null) LastListTaskId = Notebook.SelectedTask.Id;
 
-            if (Project.SelectedTreeTask == null) return;
+            if (Notebook.SelectedTreeTask == null) return;
 
-            LastTreeTaskId = Project.SelectedTreeTask.Id;
+            LastTreeTaskId = Notebook.SelectedTreeTask.Id;
         }
         public void SelectTreeTask(TaskViewModel task)
         {
             task.TypeList = TypeList;
             task.ContextList = ContextList;
             task.TaskTitleList = TaskTitleList;
-            Project.SelectTreeTask(task);
+            Notebook.SelectTreeTask(task);
             OnGenerateReportChanged();
         }
         public void CopyExcelCsvText()
@@ -274,7 +275,7 @@ namespace ProjectK.Notebook.ViewModels
                     if (excelCsvRecord.TryParse(line)) excelCsvRecordList.Add(excelCsvRecord);
                 }
 
-            var selectedTreeTask = Project.SelectedTreeTask;
+            var selectedTreeTask = Notebook.SelectedTreeTask;
             if (selectedTreeTask.Context != "Week") return;
 
             foreach (var excelCsvRecord in excelCsvRecordList)
@@ -284,7 +285,7 @@ namespace ProjectK.Notebook.ViewModels
                 var taskViewModel1 = selectedTreeTask.SubTasks.FirstOrDefault(t => t.Title == dayOfTheWeek);
                 if (taskViewModel1 == null)
                 {
-                    taskViewModel1 = new TaskViewModel(dayOfTheWeek, 0)
+                    taskViewModel1 = new TaskViewModel(dayOfTheWeek)
                     {
                         DateStarted = excelCsvRecord.Day,
                         DateEnded = excelCsvRecord.Day
@@ -292,7 +293,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectedTreeTask.SubTasks.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task, 0) { Context = "Task" };
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) { Context = "Task" };
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;
@@ -327,11 +328,10 @@ namespace ProjectK.Notebook.ViewModels
                 taskViewModel1.SubTasks.Add(taskViewModel2);
             }
         }
-        public void OnTreeViewKeyDown(TaskViewModel.KeyStates keyState, TaskViewModel.KeyboardStates keyboardState)
+        public void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
-            TaskViewModel.OnTreeViewKeyDown(
-                Project.SelectedTask,
-                keyState,
+            Notebook.SelectedTask.KeyboardAction(
+                keyboardKeys,
                 () => keyboardState,
                 () => { }, t => t.IsSelected = true,
                 t => t.IsExpanded = true,
@@ -340,11 +340,11 @@ namespace ProjectK.Notebook.ViewModels
         }
         public void CopyTask()
         {
-            OnTreeViewKeyDown(TaskViewModel.KeyStates.Insert, TaskViewModel.KeyboardStates.IsControlPressed);
+            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
         }
         public void ContinueTask()
         {
-            OnTreeViewKeyDown(TaskViewModel.KeyStates.Insert, TaskViewModel.KeyboardStates.IsShiftPressed);
+            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
 
     }

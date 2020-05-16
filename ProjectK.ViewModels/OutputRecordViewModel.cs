@@ -10,9 +10,10 @@ namespace ProjectK.ViewModels
         public int Id { get; set; }
         public LogLevel Type { get; set; }
         public DateTime Date { get; set; }
+        public TimeSpan Duration { get; set; }
         public string State { get; set; }
         public string Message { get; set; }
-        public static string Header => string.Format(Format, "ID", "Type", "Date", "State", "Message");
+        public static string Header => string.Format(Format, "Id", "Type", "Date", "State", "Message");
         public override string ToString() => string.Format(Format, Id, Type, Date, State, Message);
     }
 }

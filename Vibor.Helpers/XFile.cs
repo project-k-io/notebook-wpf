@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ProjectK.Logging;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ProjectK.Utils
 {
@@ -14,24 +15,47 @@ namespace ProjectK.Utils
     {
         private static readonly ILogger Logger = LogManager.GetLogger<XFile>();
 
-        public static void SaveOldFile(string path)
+        public static (string path, bool ok) GetNewLogFileName(string path)
         {
             try
             {
                 if (!File.Exists(path))
-                    return;
+                    return ("", false);
 
-                var str1 = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-                var withoutExtension = Path.GetFileNameWithoutExtension(path);
+                var suffix = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directoryName = Path.GetDirectoryName(path);
-                var str2 = directoryName == null ? "Logs" : Path.Combine(directoryName, "Logs");
-                if (!Directory.Exists(str2))
-                    Directory.CreateDirectory(str2);
+                var logs = string.IsNullOrWhiteSpace(directoryName) ? "Logs" : Path.Combine(directoryName, "Logs");
 
-                var path2 = $"{string.Format("{0}_{1}", withoutExtension, str1)}{extension}";
-                var destFileName = Path.Combine(str2, path2);
-                File.Copy(path, destFileName);
+                if (!Directory.Exists(logs))
+                    Directory.CreateDirectory(logs);
+
+                logs = string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? logs : Path.Combine(logs, fileNameWithoutExtension);
+                if (!Directory.Exists(logs))
+                    Directory.CreateDirectory(logs);
+
+                var fileName = $"{suffix}{extension}";
+                var destFileName = Path.Combine(logs, fileName);
+                return (destFileName, true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ("", false);
+            }
+        }
+
+
+        public static void SaveFileToLog(string path)
+        {
+            try
+            {
+                var r = GetNewLogFileName(path);
+                if (!r.ok)
+                    return;
+
+                File.Copy(path, r.path);
             }
             catch (Exception ex)
             {
@@ -41,6 +65,7 @@ namespace ProjectK.Utils
 
         public static async Task SaveToFileAsync<T>(T model, string path)
         {
+            Logger.LogDebug($"SaveToFileAsync: {path}");
             await Task.Run(() =>
             {
                 try
@@ -49,17 +74,18 @@ namespace ProjectK.Utils
                     switch (extension)
                     {
                         case ".XML":
-                        {
-                            using var sr = File.CreateText(path);
-                            new XmlSerializer(typeof(T)).Serialize(sr, model);
-                            break;
-                        }
+                            {
+                                using var sr = File.CreateText(path);
+                                new XmlSerializer(typeof(T)).Serialize(sr, model);
+                                break;
+                            }
                         case ".JSON":
-                        {
-                            using var sr = File.CreateText(path);
-                            new JsonSerializer().Serialize(sr, model);
-                            break;
-                        }
+                            {
+                                using var sr = File.CreateText(path);
+                                var serializer = new JsonSerializer { Formatting = Formatting.Indented };
+                                serializer.Serialize(sr, model);
+                                break;
+                            }
                     }
                 }
                 catch (Exception ex)
@@ -78,18 +104,18 @@ namespace ProjectK.Utils
                 switch (extension)
                 {
                     case ".XML":
-                    {
-                        var xmlSerializer = new XmlSerializer(typeof(T));
-                        using var sr = File.OpenText(path);
-                        var data = xmlSerializer.Deserialize(sr);
-                        return data as T;
-                    }
+                        {
+                            var xmlSerializer = new XmlSerializer(typeof(T));
+                            using var sr = File.OpenText(path);
+                            var data = xmlSerializer.Deserialize(sr);
+                            return data as T;
+                        }
                     case ".JSON":
-                    {
-                        var text = await File.ReadAllTextAsync(path);
-                        var data = JsonConvert.DeserializeObject<T>(text);
-                        return data;
-                    }
+                        {
+                            var text = await File.ReadAllTextAsync(path);
+                            var data = JsonConvert.DeserializeObject<T>(text);
+                            return data;
+                        }
                     default:
                         return default;
                 }
@@ -100,6 +126,7 @@ namespace ProjectK.Utils
                 return default;
             }
         }
+
 
     }
 }

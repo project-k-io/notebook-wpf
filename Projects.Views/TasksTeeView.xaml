@@ -6,8 +6,13 @@
              mc:Ignorable="d"
              xmlns:helpers="clr-namespace:ProjectK.Notebook.Views.Helpers"
              xmlns:treeViewList="clr-namespace:ProjectK.Notebook.Views.Controls.TreeViewList"
-             xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels">
+             xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
+             xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
+             d:DataContext="{d:DesignInstance Type=design:DesignViewModel, IsDesignTimeCreatable=true}" 
+             d:DesignWidth="545.465" d:DesignHeight="248.282"
+             >
     <FrameworkElement.Resources>
+
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Focusable" Value="false" />
             <Setter Property="Width" Value="19" />
@@ -54,9 +59,8 @@
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
-        <GridViewColumnCollection x:Key="gvcc">
-            <GridViewColumn Header="Title" CellTemplate="{StaticResource CellTemplateName}" Width="240" />
-            <GridViewColumn Header="Week" Width="60" DisplayMemberBinding="{Binding DateStarted, StringFormat=MMM}" />
+        <GridViewColumnCollection x:Key="Columns">
+            <GridViewColumn Header="Title" CellTemplate="{StaticResource CellTemplateName}" Width="200" />
             <GridViewColumn Header="Day" Width="60" DisplayMemberBinding="{Binding DateStarted}" />
             <GridViewColumn Header="Start" Width="70">
                 <GridViewColumn.CellTemplate>
@@ -84,9 +88,7 @@
                                     BorderBrush="{TemplateBinding Control.BorderBrush}"
                                     BorderThickness="{TemplateBinding Control.BorderThickness}"
                                     Padding="{TemplateBinding Control.Padding}">
-                                <GridViewRowPresenter x:Name="PART_Header"
-                                                      Content="{TemplateBinding HeaderedItemsControl.Header}"
-                                                      Columns="{StaticResource gvcc}" />
+                                <GridViewRowPresenter x:Name="PART_Header" Content="{TemplateBinding HeaderedItemsControl.Header}" Columns="{StaticResource Columns}" />
                             </Border>
                             <ItemsPresenter x:Name="ItemsHost" />
                         </StackPanel>
@@ -109,22 +111,16 @@
                                 <Setter TargetName="PART_Header" Property="FrameworkElement.MinHeight" Value="19" />
                             </MultiTrigger>
                             <Trigger Property="TreeViewItem.IsSelected" Value="true">
-                                <Setter TargetName="Bd"
-                                        Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
-                                        Property="Border.Background" />
-                                <Setter Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
-                                        Property="Control.Foreground" />
+                                <Setter TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Property="Border.Background" />
+                                <Setter Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" Property="Control.Foreground" />
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="TreeViewItem.IsSelected" Value="true" />
                                     <Condition Property="TreeViewItem.IsSelectionActive" Value="false" />
                                 </MultiTrigger.Conditions>
-                                <Setter TargetName="Bd"
-                                        Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                                        Property="Border.Background" />
-                                <Setter Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                                        Property="Control.Foreground" />
+                                <Setter TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Property="Border.Background" />
+                                <Setter Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" Property="Control.Foreground" />
                             </MultiTrigger>
                             <Trigger Property="UIElement.IsEnabled" Value="false">
                                 <Setter Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
@@ -142,7 +138,7 @@
                         <Border BorderBrush="{TemplateBinding Control.BorderBrush}"
                                 BorderThickness="{TemplateBinding Control.BorderThickness}">
                             <DockPanel>
-                                <GridViewHeaderRowPresenter Columns="{StaticResource gvcc}" DockPanel.Dock="Top" />
+                                <GridViewHeaderRowPresenter Columns="{StaticResource Columns}" DockPanel.Dock="Top" />
                                 <ItemsPresenter />
                             </DockPanel>
                         </Border>

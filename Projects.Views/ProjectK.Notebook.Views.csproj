@@ -8,6 +8,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Projects.Models\ProjectK.Notebook.Models.csproj" />
 		<ProjectReference Include="..\Projects.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
+		<ProjectReference Include="..\Vibor.Helpers\ProjectK.Utils.csproj" />
 		<ProjectReference Include="..\Vibor.View.Helpers\ProjectK.View.Helpers.csproj" />
 	</ItemGroup>
 

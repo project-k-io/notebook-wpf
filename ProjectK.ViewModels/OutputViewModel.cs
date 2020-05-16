@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
@@ -19,7 +20,6 @@ namespace ProjectK.ViewModels
         public Action<string, object> SetValue { get; set; }
         public Func<string, string, object> GetValue { get; set; }
         public Action UpdateFilter { get; set; }
-
 
         public ObservableCollection<OutputButtonViewModel> FilterButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
         public ObservableCollection<OutputButtonViewModel> CommandButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
@@ -75,19 +75,32 @@ namespace ProjectK.ViewModels
 
         public OutputRecordViewModel AddNewRecord(LoggingEventArgs e)
         {
-            if (e.Level == LogLevel.Information)
-                ++_outputButtonMessages.Count;
-            else if (e.Level == LogLevel.Error)
-                ++_outputButtonErrors.Count;
-            else if (e.Level == LogLevel.Warning)
-                ++_outputButtonWarnings.Count;
-            else if (e.Level == LogLevel.Debug)
-                ++_outputButtonDebug.Count;
+            switch (e.Level)
+            {
+                case LogLevel.Information:
+                    ++_outputButtonMessages.Count;
+                    break;
+                case LogLevel.Error:
+                    ++_outputButtonErrors.Count;
+                    break;
+                case LogLevel.Warning:
+                    ++_outputButtonWarnings.Count;
+                    break;
+                case LogLevel.Debug:
+                    ++_outputButtonDebug.Count;
+                    break;
+            }
+
+            var lastRecord = Records.LastOrDefault();
+            var now = DateTime.Now;
+            var duration = lastRecord != null ? now - lastRecord.Date : new TimeSpan(0);
+
             var outputRecordViewModel = new OutputRecordViewModel
             {
                 Id = Records.Count,
                 Type = e.Level,
-                Date = DateTime.Now,
+                Date = now,
+                Duration = duration,
                 State = e.State,
                 Message = e.Message
             };
@@ -146,7 +159,7 @@ namespace ProjectK.ViewModels
 
         public void LogEvent(LogLevel logLevel, EventId eventId, string message)
         {
-            AddNewRecord(new LoggingEventArgs { Level = logLevel, Message = message });
+            var record =  AddNewRecord(new LoggingEventArgs { Level = logLevel, Message = message });
         }
     }
 }

@@ -1,146 +1,65 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Documents;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels
 {
     public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
     {
-        public enum KeyboardStates
-        {
-            None,
-            IsShiftPressed,
-            IsControlPressed,
-            IsCtrlShiftPressed
-        }
+        private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
+        private static int GlobalLevel = 0;
 
-        public enum KeyStates
-        {
-            None,
-            Insert,
-            Delete,
-            Left,
-            Right,
-            Up,
-            Down
-        }
+        #region Fields
 
-        private static int _rating;
         private bool _isExpanded;
         private bool _isSelected;
         private TimeSpan _total;
+        private TaskModel _model;
 
-        public TaskViewModel()
-        {
-            Parent = null;
-            Model = new TaskModel();
-        }
-
-        public TaskViewModel(string title, int rating)
-        {
-            Model = new TaskModel();
-            Parent = null;
-            Title = title;
-            Rating = rating;
-        }
-
-        public TaskModel Model { get; set; }
-
-        public ObservableCollection<string> TypeList { get; set; }
-
-        public ObservableCollection<string> ContextList { get; set; }
-
-        public ObservableCollection<string> TaskTitleList { get; set; }
+        #endregion
 
 
-        public string Context
-        {
-            get => Model.Context;
-            set => this.Set(Context, v => Model.Context = v, value);
-        }
 
-        public int Rating
-        {
-            get => Model.Rating;
-            set => this.Set(Rating, v => Model.Rating = v, value);
-        }
+        #region Properties - Model Wrappers
+        public TaskModel Model { get => _model; set => _model = value; }
 
-        public TaskViewModel Parent { get; set; }
-
-        public Guid Id => Model.Id;
-
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set => Set(ref _isSelected, value);
-        }
-
-        public bool IsExpanded
-        {
-            get => _isExpanded;
-            set => Set(ref _isExpanded, value);
-        }
+        public Guid Id => _model.Id;
+        public Guid ParentId { get => _model.ParentId; set => _model.ParentId = value; }
 
         public string Description
         {
-            get => Model.Description;
-            set => this.Set(Description, v => Model.Description = v, value);
+            get => _model.Description;
+            set => this.Set(Description, v => _model.Description = v, value);
         }
 
         public string Type
         {
-            get => Model.Type;
-            set => this.Set(Type, v => Model.Type = v, value);
+            get => _model.Type;
+            set => this.Set(Type, v => _model.Type = v, value);
         }
 
         public string SubType
         {
-            get => Model.SubType;
-            set => this.Set(SubType, v => Model.SubType = v, value);
-        }
-
-        public bool IsPersonalType
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(Type))
-                    return false;
-                var upper = Type.ToUpper();
-                return upper.Contains("LUNCH") || upper.Contains("PERSONAL");
-            }
-        }
-
-        public bool IsSubTypeSleep
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(SubType))
-                    return false;
-                return SubType.ToUpper().Contains("SLEEP");
-            }
-        }
-
-        public TimeSpan Duration
-        {
-            get
-            {
-                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
-                    return TimeSpan.Zero;
-                return DateEnded - DateStarted;
-            }
+            get => _model.SubType;
+            set => this.Set(SubType, v => _model.SubType = v, value);
         }
 
         public DateTime DateStarted
         {
-            get => Model.DateStarted;
+            get => _model.DateStarted;
             set
             {
-                if (!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
+                if (!this.Set(DateStarted, v => _model.DateStarted = v, value)) return;
                 RaisePropertyChanged("TimeStarted");
                 RaisePropertyChanged("Duration");
             }
@@ -148,10 +67,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime DateEnded
         {
-            get => Model.DateEnded;
+            get => _model.DateEnded;
             set
             {
-                if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
+                if (!this.Set(DateEnded, v => _model.DateEnded = v, value)) return;
                 RaisePropertyChanged("TimeEnded");
                 RaisePropertyChanged("Duration");
             }
@@ -159,16 +78,20 @@ namespace ProjectK.Notebook.ViewModels
 
         public string Title
         {
-            get => Model.Title;
-            set => this.Set(Title, v => Title = v, value);
+            get => _model.Title;
+            set =>this.Set(_model.Title, v =>
+            {
+                _model.Level = GlobalLevel++;
+                _model.Title = v;
+            }, value);
         }
-
+        
         public DateTime TimeStarted
         {
-            get => Model.DateStarted;
+            get => _model.DateStarted;
             set
             {
-                var dateStarted = Model.DateStarted;
+                var dateStarted = _model.DateStarted;
                 var dateTime = value;
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
@@ -180,10 +103,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeEnded
         {
-            get => Model.DateEnded;
+            get => _model.DateEnded;
             set
             {
-                var dateEnded = Model.DateEnded;
+                var dateEnded = _model.DateEnded;
                 var dateTime = value;
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
@@ -193,23 +116,114 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
+        #endregion
+
+        #region Properties
+        public ObservableCollection<string> TypeList { get; set; }
+        public ObservableCollection<string> ContextList { get; set; }
+        public ObservableCollection<string> TaskTitleList { get; set; }
+        public string Context
+        {
+            get => _model.Context;
+            set => this.Set(Context, v => _model.Context = v, value);
+        }
+        public TaskViewModel Parent { get; set; }
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => Set(ref _isSelected, value);
+        }
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set => Set(ref _isExpanded, value);
+        }
+        public bool IsPersonalType
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Type))
+                    return false;
+                var upper = Type.ToUpper();
+                return upper.Contains("LUNCH") || upper.Contains("PERSONAL");
+            }
+        }
+        public bool IsSubTypeSleep
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(SubType))
+                    return false;
+                return SubType.ToUpper().Contains("SLEEP");
+            }
+        }
+        public TimeSpan Duration
+        {
+            get
+            {
+                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
+                    return TimeSpan.Zero;
+
+                return DateEnded - DateStarted;
+            }
+        }
         public TimeSpan Total
         {
             get => _total;
             set => Set(ref _total, value);
         }
-
         public TaskViewModel LastSubTask => SubTasks.LastOrDefault();
+        public ObservableCollection<TaskViewModel> SubTasks { get; set; } = new ObservableCollection<TaskViewModel>();
+
+        #endregion
+
+        #region Commands
 
         public ICommand CommandSetStartedTime => new RelayCommand(SetStartedTime);
 
         public ICommand CommandSetEndedTime => new RelayCommand(SetEndedTime);
 
-        public ObservableCollection<TaskViewModel> SubTasks { get; set; } = new ObservableCollection<TaskViewModel>();
+
+        #endregion
+
+        #region Constructors
+
+        public TaskViewModel()
+        {
+            Parent = null;
+            _model = new TaskModel();
+        }
+
+        public TaskViewModel(string title)
+        {
+            _model = new TaskModel();
+            Parent = null;
+            Title = title;
+        }
+
+        #endregion
+
+        #region Override functions
+
+        public override string ToString()
+        {
+            return _model.ToString();
+        }
+
+        #endregion
+
+        #region Public functions
+
+        public void TrySetId()
+        {
+            if (_model.Id != Guid.Empty)
+                return;
+
+            _model.Id = Guid.NewGuid();
+        }
 
         public void LoadFrom(Models.Versions.Version1.TaskModel model)
         {
-            Rating = model.Rating;
             IsSelected = model.IsSelected;
             IsExpanded = model.IsExpanded;
             Description = model.Description;
@@ -217,8 +231,9 @@ namespace ProjectK.Notebook.ViewModels
             DateStarted = model.DateStarted;
             DateEnded = model.DateEnded;
             Title = model.Title;
-            if (XList.IsNullOrEmpty(model.SubTasks))
+            if (model.SubTasks.IsNullOrEmpty())
                 return;
+
             SubTasks = new ObservableCollection<TaskViewModel>();
             foreach (var subTask in model.SubTasks)
             {
@@ -228,16 +243,9 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public void PopulateModel()
+        private TaskViewModel AddNewTask()
         {
-            if (!(Model.Id == Guid.Empty))
-                return;
-            Model.Id = Guid.NewGuid();
-        }
-
-        public TaskViewModel AddNewTask()
-        {
-            var subTask = new TaskViewModel {Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now};
+            var subTask = new TaskViewModel { Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
             Add(subTask);
             var ii = SubTasks.IndexOf(subTask);
             FixContext(subTask);
@@ -245,13 +253,13 @@ namespace ProjectK.Notebook.ViewModels
             return subTask;
         }
 
-        public void Add(TaskViewModel subTask)
+        public TaskViewModel Add(TaskViewModel subTask)
         {
             subTask.Parent = this;
             SubTasks.Add(subTask);
+            return subTask;
         }
-
-        public void Insert(int index, TaskViewModel subTask)
+        private void Insert(int index, TaskViewModel subTask)
         {
             subTask.Parent = this;
             SubTasks.Insert(index, subTask);
@@ -266,21 +274,20 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public void SetStartedTime()
+        private void SetStartedTime()
         {
             DateStarted = DateTime.Now;
         }
-
-        public void SetEndedTime()
+        private void SetEndedTime()
         {
             DateEnded = DateTime.Now;
         }
-
         public void FixTime()
         {
             if (IsPersonalType)
                 return;
-            if (XList.IsNullOrEmpty(SubTasks))
+
+            if (SubTasks.IsNullOrEmpty())
             {
                 Total = Duration;
             }
@@ -317,14 +324,12 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var subTask in SubTasks)
                 subTask.ExtractContext(contextList);
         }
-
         private void FixContext(string parent, string child, TaskViewModel subTask)
         {
             if (!(Context == parent))
                 return;
             subTask.Context = child;
         }
-
         private void FixContext(TaskViewModel subTask)
         {
             FixContext("Time Tracker", "Year", subTask);
@@ -334,7 +339,6 @@ namespace ProjectK.Notebook.ViewModels
             FixContext("Day", "Task", subTask);
             FixContext("Task", "Task", subTask);
         }
-
         public void FixContext()
         {
             foreach (var subTask in SubTasks)
@@ -350,19 +354,17 @@ namespace ProjectK.Notebook.ViewModels
                 return;
             subTask.Title = getTitle(ii, subTask);
         }
-
-        public void FixTitles(TaskViewModel subTask, int ii)
+        private void FixTitles(TaskViewModel subTask, int ii)
         {
-            var getTitle1 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("yyyy"));
-            var getTitle2 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("MMMM"));
-            var getTitle3 = (Func<int, TaskViewModel, string>) ((i, t) => "Week" + (i + 1));
-            var getTitle4 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.DayOfWeek.ToString());
+            var getTitle1 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("yyyy"));
+            var getTitle2 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("MMMM"));
+            var getTitle3 = (Func<int, TaskViewModel, string>)((i, t) => "Week" + (i + 1));
+            var getTitle4 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.DayOfWeek.ToString());
             FixTitles("Time Tracker", getTitle1, subTask, ii);
             FixTitles("Year", getTitle2, subTask, ii);
             FixTitles("Month", getTitle3, subTask, ii);
             FixTitles("Week", getTitle4, subTask, ii);
         }
-
         public void FixTitles()
         {
             for (var ii = 0; ii < SubTasks.Count; ++ii)
@@ -413,135 +415,153 @@ namespace ProjectK.Notebook.ViewModels
             return null;
         }
 
-        public override string ToString()
-        {
-            return Model.ToString();
-        }
 
-        public static void OnTreeViewKeyDown(TaskViewModel task, KeyStates key, Func<KeyboardStates> getState,
-            Action handled, Action<TaskViewModel> selectItem, Action<TaskViewModel> expandItem,
-            Func<bool> deleteMessageBox, Action<Action> dispatcher)
+        public void KeyboardAction(
+            KeyboardKeys keyboardKeys,
+            Func<KeyboardStates> getState,
+            Action handled,
+            Action<TaskViewModel> selectItem, Action<TaskViewModel> expandItem,
+            Func<bool> deleteMessageBox,
+            Action<Action> dispatcher)
         {
-            switch (key)
+            var state = getState();
+            Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
+            switch (keyboardKeys)
             {
-                case KeyStates.Insert:
-                    TaskViewModel taskViewModel1;
-                    if (getState() == KeyboardStates.IsShiftPressed)
+                case KeyboardKeys.Insert:
+                    TaskViewModel task;
+                    switch (state)
                     {
-                        taskViewModel1 = task.Parent.AddNewTask();
-                        taskViewModel1.DateStarted = task.DateEnded;
-                    }
-                    else if (getState() == KeyboardStates.IsControlPressed)
-                    {
-                        var lastSubTask = task.Parent.LastSubTask;
-                        taskViewModel1 = task.Parent.AddNewTask();
-                        if (lastSubTask != null)
-                        {
-                            taskViewModel1.Type = task.Type;
-                            taskViewModel1.Title = task.Title;
-                            taskViewModel1.DateStarted = lastSubTask.DateEnded;
-                        }
-                    }
-                    else
-                    {
-                        taskViewModel1 = task.AddNewTask();
+                        case KeyboardStates.IsShiftPressed:
+                            task = Parent.AddNewTask();
+                            task.DateStarted = DateEnded;
+                            break;
+                        case KeyboardStates.IsControlPressed:
+                            var lastSubTask = Parent.LastSubTask;
+                            task = Parent.AddNewTask();
+                            if (lastSubTask != null)
+                            {
+                                task.Type = Type;
+                                task.Title = Title;
+                                task.DateStarted = lastSubTask.DateEnded;
+                            }
+                            break;
+                        default:
+                            task = AddNewTask();
+                            break;
                     }
 
-                    taskViewModel1.Rating = _rating++;
-                    task.IsSelected = true;
-                    selectItem(task);
-                    expandItem(task);
+                    IsSelected = true;
+                    selectItem(this);
+                    expandItem(this);
                     handled();
+                    Logger.LogDebug($"Added [{task.Title}] to [{Title}]");
                     break;
-                case KeyStates.Delete:
+                case KeyboardKeys.Delete:
                     if (deleteMessageBox())
                         break;
-                    var parent = task.Parent;
+                    var parent = Parent;
                     if (parent == null)
                         break;
-                    var num1 = parent.SubTasks.IndexOf(task);
-                    dispatcher(() => parent.SubTasks.Remove(task));
+                    var num1 = parent.SubTasks.IndexOf(this);
+                    dispatcher(() => parent.SubTasks.Remove(this));
                     var taskViewModel2 = num1 > 0 ? parent.SubTasks[num1 - 1] : parent;
                     if (taskViewModel2 == null)
                         break;
                     selectItem(taskViewModel2);
                     handled();
                     break;
-                case KeyStates.Left:
-                    if (getState() == KeyboardStates.IsCtrlShiftPressed)
+                case KeyboardKeys.Left:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = task.Parent;
+                        var parent1 = Parent;
                         if (parent1 == null)
                             break;
                         var parent2 = parent1.Parent;
                         if (parent2 == null)
                             break;
-                        parent1.SubTasks.Remove(task);
+                        parent1.SubTasks.Remove(this);
                         var num2 = parent2.SubTasks.IndexOf(parent1);
-                        parent2.Insert(num2 + 1, task);
-                        selectItem(task);
+                        parent2.Insert(num2 + 1, this);
+                        selectItem(this);
                         handled();
                     }
 
                     break;
-                case KeyStates.Right:
-                    if (getState() == KeyboardStates.IsCtrlShiftPressed)
+                case KeyboardKeys.Right:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = task.Parent;
+                        var parent1 = Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.SubTasks.IndexOf(task);
+                        var num2 = parent1.SubTasks.IndexOf(this);
                         if (num2 <= 0)
                             break;
                         var subTask = parent1.SubTasks[num2 - 1];
                         if (subTask == null)
                             break;
-                        parent1.SubTasks.Remove(task);
-                        subTask.Add(task);
-                        selectItem(task);
+                        parent1.SubTasks.Remove(this);
+                        subTask.Add(this);
+                        selectItem(this);
                         parent1.IsExpanded = true;
-                        task.IsSelected = true;
+                        IsSelected = true;
                         handled();
                     }
 
                     break;
-                case KeyStates.Up:
-                    if (getState() == KeyboardStates.IsCtrlShiftPressed)
+                case KeyboardKeys.Up:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = task.Parent;
+                        var parent1 = Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.SubTasks.IndexOf(task);
+                        var num2 = parent1.SubTasks.IndexOf(this);
                         if (num2 <= 0)
                             break;
-                        parent1.SubTasks.Remove(task);
-                        parent1.Insert(num2 - 1, task);
-                        selectItem(task);
+                        parent1.SubTasks.Remove(this);
+                        parent1.Insert(num2 - 1, this);
+                        selectItem(this);
                         parent1.IsExpanded = true;
-                        task.IsSelected = true;
+                        IsSelected = true;
                         handled();
                     }
 
                     break;
-                case KeyStates.Down:
-                    if (getState() == KeyboardStates.IsCtrlShiftPressed)
+                case KeyboardKeys.Down:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = task.Parent;
+                        var parent1 = Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.SubTasks.IndexOf(task);
+                        var num2 = parent1.SubTasks.IndexOf(this);
                         if (num2 >= parent1.SubTasks.Count - 1)
                             break;
-                        parent1.SubTasks.Remove(task);
-                        parent1.Insert(num2 + 1, task);
-                        selectItem(task);
+                        parent1.SubTasks.Remove(this);
+                        parent1.Insert(num2 + 1, this);
+                        selectItem(this);
                         parent1.IsExpanded = true;
-                        task.IsSelected = true;
+                        IsSelected = true;
                         handled();
                     }
 
                     break;
             }
         }
+
+        #endregion
+
+
+        public void SaveTo(List<TaskModel> tasks)
+        {
+            tasks.Add(_model);
+            TrySetId();
+
+            foreach (var subTask in SubTasks)
+            {
+                subTask.SaveTo(tasks);
+                subTask.ParentId = _model.Id;
+            }
+        }
+
     }
 }

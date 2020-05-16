@@ -8,7 +8,7 @@ using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class ProjectViewModel : ViewModelBase
+    public class NotebookViewModel : ViewModelBase
     {
         private TaskViewModel _selectedTask;
         private TaskViewModel _selectedTreeTask;
@@ -63,7 +63,7 @@ namespace ProjectK.Notebook.ViewModels
             SelectedTaskList.Clear();
             XTask.AddToList(SelectedTaskList, task);
             OnSelectedDaysChanged();
-            SelectedTask = !XList.IsNullOrEmpty(SelectedTaskList) ? SelectedTaskList[0] : task;
+            SelectedTask = !SelectedTaskList.IsNullOrEmpty() ? SelectedTaskList[0] : task;
             RaisePropertyChanged("SelectedTaskList");
         }
 
@@ -103,17 +103,6 @@ namespace ProjectK.Notebook.ViewModels
                 AddToList(list, subTask, dates);
         }
 
-        private static void SaveTo(DataModel model, TaskViewModel task)
-        {
-            model.Tasks.Add(task.Model);
-            if (task.Model.Id == Guid.Empty)
-                task.Model.Id = Guid.NewGuid();
-            foreach (var subTask in task.SubTasks)
-            {
-                SaveTo(model, subTask);
-                subTask.Model.ParentId = task.Model.Id;
-            }
-        }
 
         public void LoadFrom(Models.Versions.Version1.DataModel model)
         {
@@ -125,9 +114,12 @@ namespace ProjectK.Notebook.ViewModels
         {
             if (model == null)
                 return;
+
+            var tasks = model.Tasks;
             Clear();
             var sortedList = new SortedList<Guid, TaskViewModel>();
-            foreach (var task in model.Tasks)
+            foreach (var task in tasks)
+            {
                 if (task.ParentId == Guid.Empty)
                 {
                     RootTask.Model = task;
@@ -138,16 +130,16 @@ namespace ProjectK.Notebook.ViewModels
                     var taskViewModel = new TaskViewModel {Model = task};
                     sortedList.Add(task.Id, taskViewModel);
                 }
+            }
 
-            foreach (var task in model.Tasks)
+            foreach (var task in tasks)
                 if (!(task.ParentId == Guid.Empty))
                     sortedList[task.ParentId].SubTasks.Add(sortedList[task.Id]);
         }
 
         public void SaveTo(DataModel model)
         {
-            model.Tasks.Clear();
-            SaveTo(model, RootTask);
+            RootTask.SaveTo(model.Tasks);
         }
 
         public void FixTime()

@@ -7,11 +7,16 @@ namespace ProjectK.Notebook.Views.Helpers
 {
     public class LevelToIndentConverter : IValueConverter
     {
-        private const double IndentSize = 19.0;
+        private const double IndentSize = 12.0;
 
         public object Convert(object o, Type type, object parameter, CultureInfo culture)
         {
-            return new Thickness((int) o * 19.0, 0.0, 0.0, 0.0);
+            var level = 1;
+            if (o is int i)
+                level = i;
+
+            var left = level * IndentSize;
+            return new Thickness((int) left, 0.0, 0.0, 0.0);
         }
 
         public object ConvertBack(object o, Type type, object parameter, CultureInfo culture)
