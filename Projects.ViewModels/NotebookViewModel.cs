@@ -103,17 +103,6 @@ namespace ProjectK.Notebook.ViewModels
                 AddToList(list, subTask, dates);
         }
 
-        private static void SaveTo(DataModel model, TaskViewModel task)
-        {
-            model.Tasks.Add(task.Model);
-            task.TrySetId();
-
-            foreach (var subTask in task.SubTasks)
-            {
-                SaveTo(model, subTask);
-                subTask.Model.ParentId = task.Model.Id;
-            }
-        }
 
         public void LoadFrom(Models.Versions.Version1.DataModel model)
         {
@@ -146,7 +135,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void SaveTo(DataModel model)
         {
-            SaveTo(model, RootTask);
+            RootTask.SaveTo(model.Tasks);
         }
 
         public void FixTime()

@@ -22,7 +22,7 @@ namespace ProjectK.Notebook
 
         public App()
         {
-            this.DispatcherUnhandledException += OnDispatcherUnhandledException; 
+            DispatcherUnhandledException += OnDispatcherUnhandledException; 
         }
 
         private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

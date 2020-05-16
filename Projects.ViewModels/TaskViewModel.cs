@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Documents;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -26,9 +28,11 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Properties - Model Wrappers
-        public TaskModel Model { get => _model; set => _model = value; }
+        public TaskModel Model { get => _model.Copy(); set => _model = value.Copy(); }
 
         public Guid Id => _model.Id;
+        public Guid ParentId { get => _model.ParentId; set => _model.ParentId = value; }
+
         public string Description
         {
             get => _model.Description;
@@ -193,14 +197,14 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Override functions
-        
+
         public override string ToString()
         {
             return _model.ToString();
         }
 
         #endregion
-        
+
         #region Public functions
 
         public void TrySetId()
@@ -538,6 +542,19 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         #endregion
+
+
+        public void SaveTo(List<TaskModel> tasks)
+        {
+            tasks.Add(_model);
+            TrySetId();
+
+            foreach (var subTask in SubTasks)
+            {
+                subTask.SaveTo(tasks);
+                subTask.ParentId = _model.Id;
+            }
+        }
 
     }
 }

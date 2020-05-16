@@ -165,10 +165,11 @@ namespace ProjectK.Notebook.ViewModels
             
             _data.Clear();
             Notebook.SaveTo(_data);
+
             await XFile.SaveToFileAsync(_data, path);
         }
 
-        public async Task SaveModifiedFilesync()
+        public async Task SaveModifiedFileAsync()
         {
             var newData = new DataModel();
             Notebook.SaveTo(newData);

@@ -213,7 +213,7 @@ namespace ProjectK.Notebook
             _canSave = true;
             while (_canSave)
             {
-                await SaveModifiedFilesync();
+                await SaveModifiedFileAsync();
                 await Task.Run(() => Thread.Sleep(5000));
             }
         }

@@ -18,7 +18,7 @@ namespace ProjectK.Views
         public OutputView()
         {
             InitializeComponent();
-            this.Loaded += OnLoaded;
+            Loaded += OnLoaded;
 
         }
 
@@ -38,7 +38,7 @@ namespace ProjectK.Views
                     if(item == null)
                         return;
 
-                    this.ListViewMessages.ScrollIntoView(item);
+                    ListViewMessages.ScrollIntoView(item);
                 }
             };
         }
