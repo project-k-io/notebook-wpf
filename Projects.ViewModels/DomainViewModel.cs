@@ -106,7 +106,7 @@ namespace ProjectK.Notebook.ViewModels
             TaskTitleList = new ObservableCollection<string>();
 
             ClearCommand = new RelayCommand(Notebook.Clear);
-            EditCommand = new RelayCommand(() => Process.Start("notepad.exe", DataFile));
+            EditCommand = new RelayCommand(() => Process.Start("explorer", DataFile));
             FixTimeCommand = new RelayCommand(Notebook.FixTime);
             ExtractContextCommand = new RelayCommand(Notebook.FixContext);
             FixTitlesCommand = new RelayCommand(Notebook.FixTitles);

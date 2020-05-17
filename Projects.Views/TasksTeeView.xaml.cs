@@ -38,6 +38,7 @@ namespace ProjectK.Notebook.Views
         {
             if (!(DataContext is DomainViewModel dataContext))
                 return;
+
             dataContext.RootTask.SetParents();
             TreeViewTasks.SelectItem(dataContext.Notebook.SelectedTreeTask);
             TreeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;

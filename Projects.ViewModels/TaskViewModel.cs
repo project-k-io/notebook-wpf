@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -255,6 +256,9 @@ namespace ProjectK.Notebook.ViewModels
 
         public TaskViewModel Add(TaskViewModel subTask)
         {
+            if(subTask.Title == "Time Tracker2")
+                Logger.LogDebug(subTask.Title);
+
             subTask.Parent = this;
             SubTasks.Add(subTask);
             return subTask;
