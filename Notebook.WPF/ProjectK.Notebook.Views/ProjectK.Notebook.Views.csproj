@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Library.WPF\ProjectK.View.Helpers\ProjectK.View.Helpers.csproj" />
+	  <ProjectReference Include="..\..\Library.WPF\ProjectK.Views\ProjectK.Views.csproj" />
+	  <ProjectReference Include="..\..\Notebook\ProjectK.Notebook.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
+	</ItemGroup>
+
+</Project>

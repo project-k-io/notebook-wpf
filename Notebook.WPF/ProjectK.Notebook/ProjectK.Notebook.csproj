@@ -44,13 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\ProjectK.Notebook.Models\ProjectK.Notebook.Models.csproj" />
-    <ProjectReference Include="..\..\Common\ProjectK.Notebook.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
-    <ProjectReference Include="..\..\Librarry\ProjectK.Logging\ProjectK.Logging.csproj" />
-    <ProjectReference Include="..\..\Librarry\ProjectK.Utils\ProjectK.Utils.csproj" />
-    <ProjectReference Include="..\..\Librarry\ProjectK.View.Helpers\ProjectK.View.Helpers.csproj" />
-    <ProjectReference Include="..\..\Librarry\ProjectK.ViewModels\ProjectK.ViewModels.csproj" />
-    <ProjectReference Include="..\..\Librarry\ProjectK.Views\ProjectK.Views.csproj" />
     <ProjectReference Include="..\ProjectK.Notebook.Views\ProjectK.Notebook.Views.csproj" />
   </ItemGroup>
 

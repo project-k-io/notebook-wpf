@@ -118,7 +118,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FileOpenOldFormat()
         {
-            Notebook.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
+            //AK Notebook.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
         }
         public async Task FileSaveOldFormatAsync()
         {

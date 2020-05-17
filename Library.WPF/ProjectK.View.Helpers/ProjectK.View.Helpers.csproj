@@ -13,13 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProjectK.Logging\ProjectK.Logging.csproj" />
-    <ProjectReference Include="..\ProjectK.Utils\ProjectK.Utils.csproj" />
-    <ProjectReference Include="..\ProjectK.ViewModels\ProjectK.ViewModels.csproj" />
+    <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
+    <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.Utils.csproj" />
   </ItemGroup>
 
 </Project>
