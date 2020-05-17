@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             mc:Ignorable="d"
-             Height="Auto" Width="400"
+             mc:Ignorable="d" d:DesignWidth="412.125" d:DesignHeight="312.095"
              >
     <UserControl.Resources>
         <viewModels:TaskViewModel 
@@ -41,9 +40,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <!--Context-->
@@ -61,9 +57,9 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <DatePicker Grid.Column="0" SelectedDate="{Binding DateStarted}" />
-            <TextBox Grid.Column="2" Text="{Binding TimeStarted, StringFormat=t}" />
-            <Button Grid.Column="3" Margin="2" Width="40" Content="Now" Command="{Binding CommandSetStartedTime}" />
+            <DatePicker Margin="2" Grid.Column="0" SelectedDate="{Binding DateStarted}" />
+            <TextBox Margin="2" Grid.Column="2" Text="{Binding TimeStarted, StringFormat=t}" />
+            <Button Margin="4" Grid.Column="3" Width="40" Content="Now" Command="{Binding CommandSetStartedTime}" />
         </Grid>
         <!--End-->
         <Label Content="End" Grid.Row="6" Grid.Column="1" />
@@ -74,9 +70,9 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <DatePicker Grid.Column="0" SelectedDate="{Binding DateEnded}" />
-            <TextBox Grid.Column="2" Text="{Binding TimeEnded, StringFormat=t}" />
-            <Button Grid.Column="3" Margin="2" Width="40" Content="Now" Command="{Binding CommandSetEndedTime}" />
+            <DatePicker Margin="2" Grid.Column="0" SelectedDate="{Binding DateEnded}" />
+            <TextBox Grid.Column="2" Margin="2" Text="{Binding TimeEnded, StringFormat=t}" />
+            <Button Grid.Column="3" Margin="4" Width="40" Content="Now" Command="{Binding CommandSetEndedTime}" />
         </Grid>
         <!--Duration-->
         <Label Content="Duration" Grid.Row="7" Grid.Column="1" />
@@ -96,6 +92,6 @@
         <TextBox Grid.Row="9" Grid.Column="3" Text="{Binding SubType}" />
         <!--Description-->
         <Label Content="Description" Grid.Row="10" Grid.Column="1" />
-        <TextBox Grid.Row="10" Grid.Column="3" MinHeight="60" Text="{Binding Description}" />
+        <TextBox Grid.Row="10" Grid.Column="3" MinHeight="60" Text="{Binding Description}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
     </Grid>
 </UserControl>
