@@ -18,7 +18,7 @@ namespace ProjectK.Notebook
     {
         private static ILogger _logger;
         private readonly MainViewModel _mainModel = new MainViewModel();
-        private MainWindow _mainWindow;
+        private MainWindowOne _mainWindowOne;
 
         public App()
         {
@@ -37,12 +37,12 @@ namespace ProjectK.Notebook
             _logger = LogManager.GetLogger<App>();
             _mainModel.SetOutput();
 
-            // MainWindow
-            _mainWindow = new MainWindow {DataContext = _mainModel};
+            // MainWindowOne
+            _mainWindowOne = new MainWindowOne {DataContext = _mainModel};
 
-            // Show MainWindow
-            _mainModel.LoadSettings(_mainWindow);
-            _mainWindow.Show();
+            // Show MainWindowOne
+            _mainModel.LoadSettings(_mainWindowOne);
+            _mainWindowOne.Show();
 
             // Load Data
             await _mainModel.OpenFileAsync();
@@ -53,10 +53,10 @@ namespace ProjectK.Notebook
         protected override async void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-            _mainModel.SaveSettings(_mainWindow);
+            _mainModel.SaveSettings(_mainWindowOne);
             _mainModel.StopSaving();
             await _mainModel.SaveFileAsync(); // Exit
-            _mainWindow.Close();
+            _mainWindowOne.Close();
             Shutdown();
         }
     }
