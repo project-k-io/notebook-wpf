@@ -15,11 +15,11 @@ using ProjectK.View.Helpers.Misc;
 
 namespace ProjectK.Notebook
 {
-    public partial class MainWindowOne : Window
+    public partial class MainWindow : Window
     {
-        private readonly ILogger _logger = LogManager.GetLogger<MainWindowOne>();
+        private readonly ILogger _logger = LogManager.GetLogger<MainWindow>();
 
-        public MainWindowOne()
+        public MainWindow()
         {
             InitializeComponent();
             Loaded += MainView_Loaded;
