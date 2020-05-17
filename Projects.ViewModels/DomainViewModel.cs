@@ -61,8 +61,6 @@ namespace ProjectK.Notebook.ViewModels
         public LayoutViewModel Layout { get; } = new LayoutViewModel();
         public NotebookViewModel Notebook { get; } = new NotebookViewModel();
         public TaskViewModel RootTask => Notebook.RootTask;
-        private Assembly Assembly { get; }
-        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + DataFile;
 
         public string DataFile
         {
@@ -89,23 +87,6 @@ namespace ProjectK.Notebook.ViewModels
             get => _useTimeOptimization;
             set => Set(ref _useTimeOptimization, value);
         }
-        private string ConfigPath
-        {
-            get
-            {
-                var assemblyCompany = XAttribute.GetAssemblyCompany(Assembly);
-                var assemblyProduct = XAttribute.GetAssemblyProduct(Assembly);
-                var str = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    assemblyCompany);
-                if (!Directory.Exists(str)) Directory.CreateDirectory(str);
-
-                var path = Path.Combine(str, assemblyProduct);
-                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-                return path;
-            }
-        }
-        private string ConfigFile => Path.Combine(ConfigPath, "Config.xml");
         public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
@@ -119,7 +100,6 @@ namespace ProjectK.Notebook.ViewModels
 
         public DomainViewModel()
         {
-            Assembly = Assembly.GetExecutingAssembly();
             CanSave = true;
             TypeList = new ObservableCollection<string>();
             ContextList = new ObservableCollection<string>();

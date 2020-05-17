@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,9 @@ namespace ProjectK.Notebook
     {
         private ILogger _logger;
         private bool _canSave;
+        private Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
+
+        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + DataFile;
 
         public CommandBindingCollection CreateCommandBindings()
         {
@@ -248,6 +252,7 @@ namespace ProjectK.Notebook
         {
             _canSave = false;
         }
+
 
     }
 }
