@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -149,23 +150,25 @@ namespace ProjectK.Notebook
         public void LoadSettings(Window window)
         {
             // ISSUE: variable of a compiler-generated type
-            var settings = Settings.Default;
             try
             {
+                var appSettings = ConfigurationManager.AppSettings;
+
+                var settings2 = Settings.Default;
                 _logger.LogDebug("LoadSettings");
 
                 // window settings
-                window.WindowState = settings.MainWindowState;
-                window.Top = settings.MainWindowTop;
-                window.Left = settings.MainWindowLeft;
-                window.Width = settings.MainWindowWidth;
-                window.Height = settings.MainWindowHeight;
+                window.WindowState = settings2.MainWindowState;
+                window.Top = settings2.MainWindowTop;
+                window.Left = settings2.MainWindowLeft;
+                window.Width = settings2.MainWindowWidth;
+                window.Height = settings2.MainWindowHeight;
 
                 // model settings
-                Layout.NavigatorWidth = settings.LayoutNavigatorWidth;
-                LastListTaskId = settings.LastListTaskId;
-                LastTreeTaskId = settings.LastTreeTaskId;
-                DataFile = settings.RecentFile;
+                Layout.NavigatorWidth = settings2.LayoutNavigatorWidth;
+                LastListTaskId = settings2.LastListTaskId;
+                LastTreeTaskId = settings2.LastTreeTaskId;
+                DataFile = appSettings["RecentFile"] ?? "New Data";
                 MostRecentFiles.Clear();
 
                 if (File.Exists(DataFile))
@@ -179,28 +182,45 @@ namespace ProjectK.Notebook
 
         public void SaveSettings(Window window)
         {
+            _logger.LogDebug("SaveSettings()");
             try
             {
-                _logger.LogDebug("SaveSettings()");
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var settings = configFile.AppSettings.Settings;
+
+                void SetValue(string key, string value)
+                {
+                    if (settings[key] == null)
+                    {
+                        settings.Add(key, value);
+                    }
+                    else
+                    {
+                        settings[key].Value = value;
+                    }
+                }
 
                 PrepareSettings();
-                var settings = Settings.Default;
+                var settings2 = Settings.Default;
 
                 // ISSUE: variable of a compiler-generated type
                 if (window.WindowState != WindowState.Minimized)
                 {
-                    settings.MainWindowTop = window.Top;
-                    settings.MainWindowLeft = window.Left;
-                    settings.MainWindowWidth = window.Width;
-                    settings.MainWindowHeight = window.Height;
-                    settings.LayoutNavigatorWidth = Layout.NavigatorWidth;
-                    settings.RecentFile = DataFile;
-                    settings.LastListTaskId = LastListTaskId;
-                    settings.LastTreeTaskId = LastTreeTaskId;
+                    settings2.MainWindowTop = window.Top;
+                    settings2.MainWindowLeft = window.Left;
+                    settings2.MainWindowWidth = window.Width;
+                    settings2.MainWindowHeight = window.Height;
+                    settings2.LayoutNavigatorWidth = Layout.NavigatorWidth;
                 }
 
-                settings.MainWindowState = window.WindowState;
-                settings.Save();
+                SetValue("RecentFile", DataFile);
+                settings2.LastListTaskId = LastListTaskId;
+                settings2.LastTreeTaskId = LastTreeTaskId;
+                settings2.MainWindowState = window.WindowState;
+                settings2.Save();
+
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
             }
             catch (Exception ex)
             {

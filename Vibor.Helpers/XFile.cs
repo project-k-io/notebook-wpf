@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using ProjectK.Logging;
-using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ProjectK.Utils
 {
@@ -63,36 +62,39 @@ namespace ProjectK.Utils
             }
         }
 
+
+        // write asynchronously to a file
+        public static async Task SaveJsonToFileAsync<T>(T model, string path)
+        {
+        }
+
         public static async Task SaveToFileAsync<T>(T model, string path)
         {
             Logger.LogDebug($"SaveToFileAsync: {path}");
-            await Task.Run(() =>
+            try
             {
-                try
+                var extension = Path.GetExtension(path).ToUpper();
+                switch (extension)
                 {
-                    var extension = Path.GetExtension(path).ToUpper();
-                    switch (extension)
-                    {
-                        case ".XML":
-                            {
-                                using var sr = File.CreateText(path);
-                                new XmlSerializer(typeof(T)).Serialize(sr, model);
-                                break;
-                            }
-                        case ".JSON":
-                            {
-                                using var sr = File.CreateText(path);
-                                var serializer = new JsonSerializer { Formatting = Formatting.Indented };
-                                serializer.Serialize(sr, model);
-                                break;
-                            }
-                    }
+                    case ".XML":
+                        {
+                            await using var sr = File.Create(path);
+                            new XmlSerializer(typeof(T)).Serialize(sr, model);
+                        }
+                        break;
+                    case ".JSON":
+                        {
+                            await using var fs = File.Create(path);
+                            var option = new JsonSerializerOptions {WriteIndented = true};
+                            await JsonSerializer.SerializeAsync<T>(fs, model, option);
+                            break;
+                        }
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
-            });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
 
@@ -105,17 +107,16 @@ namespace ProjectK.Utils
                 {
                     case ".XML":
                         {
-                            var xmlSerializer = new XmlSerializer(typeof(T));
-                            using var sr = File.OpenText(path);
-                            var data = xmlSerializer.Deserialize(sr);
+                            await using var fs = File.OpenRead(path);
+                            var data = new XmlSerializer(typeof(T)).Deserialize(fs);
                             return data as T;
                         }
                     case ".JSON":
-                        {
-                            var text = await File.ReadAllTextAsync(path);
-                            var data = JsonConvert.DeserializeObject<T>(text);
-                            return data;
-                        }
+                    {
+                        await using var fs = File.OpenRead(path);
+                        var data = await JsonSerializer.DeserializeAsync<T>(fs);
+                        return data;
+                    }
                     default:
                         return default;
                 }

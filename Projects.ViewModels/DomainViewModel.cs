@@ -151,7 +151,7 @@ namespace ProjectK.Notebook.ViewModels
             DataFile = path;
             Logger.LogDebug($"OpenFileAsync : {path}");
             _data = await XFile.ReadFromFileAsync<DataModel>(path);
-            Notebook.LoadFrom(_data.Copy());
+            Notebook.LoadFrom(_data?.Copy());
             UseSettings();
         }
 
