@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Vibor.Helpers\ProjectK.Utils.csproj" />
+    <ProjectReference Include="..\..\Librarry\ProjectK.Utils\ProjectK.Utils.csproj" />
   </ItemGroup>
 
 </Project>

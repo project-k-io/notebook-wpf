@@ -44,14 +44,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProjectK.Logging\ProjectK.Logging.csproj" />
-    <ProjectReference Include="..\ProjectK.ViewModels\ProjectK.ViewModels.csproj" />
-    <ProjectReference Include="..\ProjectK.Views\ProjectK.Views.csproj" />
-    <ProjectReference Include="..\Projects.Models\ProjectK.Notebook.Models.csproj" />
-    <ProjectReference Include="..\Projects.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
-    <ProjectReference Include="..\Projects.Views\ProjectK.Notebook.Views.csproj" />
-    <ProjectReference Include="..\Vibor.Helpers\ProjectK.Utils.csproj" />
-    <ProjectReference Include="..\Vibor.View.Helpers\ProjectK.View.Helpers.csproj" />
+    <ProjectReference Include="..\..\Common\ProjectK.Notebook.Models\ProjectK.Notebook.Models.csproj" />
+    <ProjectReference Include="..\..\Common\ProjectK.Notebook.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
+    <ProjectReference Include="..\..\Librarry\ProjectK.Logging\ProjectK.Logging.csproj" />
+    <ProjectReference Include="..\..\Librarry\ProjectK.Utils\ProjectK.Utils.csproj" />
+    <ProjectReference Include="..\..\Librarry\ProjectK.View.Helpers\ProjectK.View.Helpers.csproj" />
+    <ProjectReference Include="..\..\Librarry\ProjectK.ViewModels\ProjectK.ViewModels.csproj" />
+    <ProjectReference Include="..\..\Librarry\ProjectK.Views\ProjectK.Views.csproj" />
+    <ProjectReference Include="..\ProjectK.Notebook.Views\ProjectK.Notebook.Views.csproj" />
   </ItemGroup>
 
   <ItemGroup>
