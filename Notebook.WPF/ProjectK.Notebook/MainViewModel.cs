@@ -134,16 +134,10 @@ namespace ProjectK.Notebook
             }
         }
 
-        public void SetOutput()
+        public void InitOutput()
         {
             // MainModel
-            var registryPath = XApp.AppName + "\\Output";
-            var subKey = Registry.CurrentUser.CreateSubKey(registryPath);
-            Output.SetValue = (key, value) => subKey.SetValue(key, value);
-            Output.GetValue = (key, value) => subKey.GetValue(key, value);
-
             Output.UpdateFilter = () => CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
-            Output.ReadSettings();
         }
 
         public void LoadSettings(Window window)
@@ -155,18 +149,20 @@ namespace ProjectK.Notebook
                 _logger.LogDebug("LoadSettings");
                 // window settings
                 window.WindowState = appSettings.GetEnumValue("MainWindowState", WindowState.Normal);
-
                 window.Top = appSettings.GetDouble("MainWindowTop", 100);
                 window.Left = appSettings.GetDouble("MainWindowLeft", 100);
                 window.Width = appSettings.GetDouble("MainWindowWidth", 800);
                 window.Height = appSettings.GetDouble("MainWindowHeight", 400d);
-
                 // model settings
-                ;
                 Layout.NavigatorWidth = appSettings.GetInt("LayoutNavigatorWidth", 200);
                 LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
                 LastTreeTaskId = appSettings.GetGuid("LastTreeTaskId", Guid.Empty);
                 DataFile = appSettings.GetString("RecentFile", "New Data");
+                // Output
+                Output.OutputButtonErrors.IsChecked = appSettings.GetBool("OutputError", false);
+                Output.OutputButtonDebug.IsChecked = appSettings.GetBool("OutputDebug", false);
+                Output.OutputButtonMessages.IsChecked = appSettings.GetBool("OutputInfo", false);
+                Output.OutputButtonWarnings.IsChecked = appSettings.GetBool("OutputWarning", false);
 
                 MostRecentFiles.Clear();
                 if (File.Exists(DataFile))
@@ -203,6 +199,11 @@ namespace ProjectK.Notebook
                 settings.SetValue("LastListTaskId", LastListTaskId.ToString());
                 settings.SetValue("LastTreeTaskId", LastTreeTaskId.ToString());
                 settings.SetValue("MainWindowState", window.WindowState.ToString());
+
+                settings.SetValue("OutputError", Output.OutputButtonErrors.IsChecked.ToString());
+                settings.SetValue("OutputDebug", Output.OutputButtonDebug.IsChecked.ToString());
+                settings.SetValue("OutputInfo", Output.OutputButtonMessages.IsChecked.ToString());
+                settings.SetValue("OutputWarning", Output.OutputButtonWarnings.IsChecked.ToString());
 
                 configFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
