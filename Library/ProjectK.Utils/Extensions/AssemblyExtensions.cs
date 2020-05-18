@@ -6,14 +6,14 @@ using System.Reflection;
 
 namespace ProjectK.Utils
 {
-    public static class XAttribute
+    public static class AssemblyExtensions
     {
-        public static TAttribute[] GetAttributes<TAttribute>(this Assembly assembly) where TAttribute : Attribute
+        private static TAttribute[] GetAttributes<TAttribute>(this Assembly assembly) where TAttribute : Attribute
         {
             return assembly.GetCustomAttributes(typeof(TAttribute), false) as TAttribute[];
         }
 
-        public static object GetFirstAttributeValue<TAttribute>(this Assembly assembly,
+        private static object GetFirstAttributeValue<TAttribute>(this Assembly assembly,
             Expression<Func<TAttribute, object>> propertyLambda) where TAttribute : Attribute
         {
             var type = typeof(TAttribute);
@@ -36,37 +36,18 @@ namespace ProjectK.Utils
             return member.GetValue(attribute, null);
         }
 
-        public static string GetAssemblyDescription(Assembly assembly)
-        {
-            return assembly
-                .GetFirstAttributeValue((Expression<Func<AssemblyDescriptionAttribute, object>>) (x => x.Description))
-                .ToString();
-        }
 
-        public static string GetAssemblyTitle(Assembly assembly)
+        public static string GetAssemblyTitle(this Assembly assembly)
         {
             return assembly.GetFirstAttributeValue((Expression<Func<AssemblyTitleAttribute, object>>) (x => x.Title))
                 .ToString();
         }
 
-        public static string GetAssemblyCompany(Assembly assembly)
-        {
-            return assembly
-                .GetFirstAttributeValue((Expression<Func<AssemblyCompanyAttribute, object>>) (x => x.Company))
-                .ToString();
-        }
 
-        public static string GetAssemblyProduct(Assembly assembly)
-        {
-            return assembly
-                .GetFirstAttributeValue((Expression<Func<AssemblyProductAttribute, object>>) (x => x.Product))
-                .ToString();
-        }
-
-        public static string GetAssemblyVersion(Assembly assembly)
+        public static string GetAssemblyVersion(this Assembly assembly)
         {
             var version = assembly.GetName().Version;
-            return $"{version.Major}.{version.Minor}.{version.Build}";
+            return $"{version?.Major}.{version?.Minor}.{version?.Build}";
         }
     }
 }

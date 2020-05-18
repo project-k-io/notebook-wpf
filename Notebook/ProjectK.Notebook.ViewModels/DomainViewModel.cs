@@ -14,6 +14,7 @@ using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
+using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.ViewModels
@@ -48,7 +49,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public async Task FileSaveOldFormatAsync()
         {
-            await XFile.SaveToFileAsync(Notebook, DataFile);
+            await FileHelper.SaveToFileAsync(Notebook, DataFile);
         }
 
 
@@ -56,7 +57,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             DataFile = path;
             Logger.LogDebug($"OpenFileAsync : {path}");
-            _data = await XFile.ReadFromFileAsync<DataModel>(path);
+            _data = await FileHelper.ReadFromFileAsync<DataModel>(path);
             Notebook.LoadFrom(_data?.Copy());
             UseSettings();
         }
@@ -82,10 +83,10 @@ namespace ProjectK.Notebook.ViewModels
                 return;
 
             var path = DataFile;
-            XFile.SaveFileToLog(path);
+            FileHelper.SaveFileToLog(path);
 
             _data.Copy(newData);
-            await XFile.SaveToFileAsync(_data, path);
+            await FileHelper.SaveToFileAsync(_data, path);
         }
 
         public async Task UpdateTypeListAsync()
@@ -93,7 +94,7 @@ namespace ProjectK.Notebook.ViewModels
             await Task.Run(() =>
             {
                 var taskViewModelList = new List<TaskViewModel>();
-                XTask.AddToList(taskViewModelList, RootTask);
+                taskViewModelList.AddToList(RootTask);
                 var sortedSet1 = new SortedSet<string>();
                 var sortedSet2 = new SortedSet<string>();
                 var sortedSet3 = new SortedSet<string>();
@@ -132,7 +133,7 @@ namespace ProjectK.Notebook.ViewModels
             });
 
             _data = new DataModel();
-            var path = XFile2.MakeUnique(DataFile);
+            var path = FileHelper.MakeUnique(DataFile);
             DataFile = path;
             CanSave = true;
         }

@@ -10,10 +10,11 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
+using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
+    public class TaskViewModel : ViewModelBase, ITask<TaskViewModel>
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
         private static int _globalLevel;

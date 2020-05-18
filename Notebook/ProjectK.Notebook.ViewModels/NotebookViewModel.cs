@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
 using ProjectK.Notebook.Models.Versions.Version1;
 using ProjectK.Utils;
+using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -61,7 +62,7 @@ namespace ProjectK.Notebook.ViewModels
 
             SelectedTreeTask = task;
             SelectedTaskList.Clear();
-            XTask.AddToList(SelectedTaskList, task);
+            SelectedTaskList.AddToList(task);
             OnSelectedDaysChanged();
             SelectedTask = !SelectedTaskList.IsNullOrEmpty() ? SelectedTaskList[0] : task;
             RaisePropertyChanged("SelectedTaskList");

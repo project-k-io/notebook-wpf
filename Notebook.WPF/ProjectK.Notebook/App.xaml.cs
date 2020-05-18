@@ -26,7 +26,7 @@ namespace ProjectK.Notebook
             base.OnStartup(e);
             _mainModel.InitLogging();
             _logger = LogManager.GetLogger<App>();
-            _mainModel.SetOutput();
+            _mainModel.InitOutput();
 
             // MainWindow
             _mainWindow = new MainWindow {DataContext = _mainModel};
