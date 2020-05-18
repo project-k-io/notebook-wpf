@@ -15,5 +15,13 @@ namespace ProjectK.Utils
         {
             return !IsValidIndex(a, 0);
         }
+
+        public static void AddToList<T>(this ICollection<T> list, T task) where T : ITask<T>
+        {
+            list.Add(task);
+            foreach (var subTask in task.SubTasks)
+                AddToList(list, subTask);
+        }
+
     }
 }

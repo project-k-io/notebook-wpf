@@ -14,6 +14,7 @@ using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils;
+using AssemblyExtensions = ProjectK.Utils.AssemblyExtensions;
 
 namespace ProjectK.Notebook
 {
@@ -23,7 +24,7 @@ namespace ProjectK.Notebook
         private ILogger _logger;
         private Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
 
-        public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + DataFile;
+        public string Title => Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + DataFile;
 
         public CommandBindingCollection CreateCommandBindings()
         {

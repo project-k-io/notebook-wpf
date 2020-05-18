@@ -9,9 +9,9 @@ using ProjectK.Logging;
 
 namespace ProjectK.Utils
 {
-    public class XFile
+    public class FileHelper
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<XFile>();
+        private static readonly ILogger Logger = LogManager.GetLogger<FileHelper>();
 
         public static (string path, bool ok) GetNewLogFileName(string path)
         {
@@ -49,11 +49,11 @@ namespace ProjectK.Utils
         {
             try
             {
-                var r = GetNewLogFileName(path);
-                if (!r.ok)
+                var (s, ok) = GetNewLogFileName(path);
+                if (!ok)
                     return;
 
-                File.Copy(path, r.path);
+                File.Copy(path, s);
             }
             catch (Exception ex)
             {
@@ -61,11 +61,6 @@ namespace ProjectK.Utils
             }
         }
 
-
-        // write asynchronously to a file
-        public static async Task SaveJsonToFileAsync<T>(T model, string path)
-        {
-        }
 
         public static async Task SaveToFileAsync<T>(T model, string path)
         {
@@ -126,5 +121,32 @@ namespace ProjectK.Utils
                 return default;
             }
         }
+
+        public static string MakeUnique(string path)
+        {
+            var directoryName = GetDirectoryName(path);
+            var withoutExtension = Path.GetFileNameWithoutExtension(path);
+            var extension = Path.GetExtension(path);
+            var num = 1;
+            while (true)
+                if (File.Exists(path))
+                {
+                    if (directoryName != null)
+                        path = Path.Combine(directoryName, withoutExtension + " " + num + extension);
+                    ++num;
+                }
+                else
+                {
+                    break;
+                }
+
+            return path;
+        }
+
+        public static string GetDirectoryName(string path)
+        {
+            return string.IsNullOrEmpty(path) ? Directory.GetCurrentDirectory() : Path.GetDirectoryName(path);
+        }
+
     }
 }

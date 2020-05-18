@@ -13,7 +13,7 @@ using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
+    public class TaskViewModel : ViewModelBase, ITask<TaskViewModel>
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
         private static int _globalLevel;

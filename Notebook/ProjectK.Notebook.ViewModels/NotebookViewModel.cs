@@ -61,7 +61,7 @@ namespace ProjectK.Notebook.ViewModels
 
             SelectedTreeTask = task;
             SelectedTaskList.Clear();
-            XTask.AddToList(SelectedTaskList, task);
+            SelectedTaskList.AddToList(task);
             OnSelectedDaysChanged();
             SelectedTask = !SelectedTaskList.IsNullOrEmpty() ? SelectedTaskList[0] : task;
             RaisePropertyChanged("SelectedTaskList");
