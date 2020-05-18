@@ -1,0 +1,140 @@
+<Window x:Class="ProjectK.Notebook.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:io="clr-namespace:System.IO;assembly=System.IO.FileSystem"
+        xmlns:views="clr-namespace:ProjectK.Notebook.Views;assembly=ProjectK.Notebook.Views"
+        xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
+        xmlns:output="clr-namespace:ProjectK.Views.Output;assembly=ProjectK.Views"
+        MinWidth="800" MinHeight="600" WindowStartupLocation="CenterOwner"
+        Icon="/Images/apple_time_machine_alt.png"
+        Title="{Binding Path=Title}"
+        d:DesignWidth="1200" d:DesignHeight="800">
+
+    <FrameworkElement.Resources>
+        <converters:Int32FromGridLengthConverter x:Key="GridLengthConverter" />
+    </FrameworkElement.Resources>
+
+    <UIElement.InputBindings>
+        <KeyBinding Command="Help" Key="F1" />
+    </UIElement.InputBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+
+        <Ribbon x:Name="Ribbon" Title="Ribbon Title">
+            <Ribbon.HelpPaneContent>
+                <RibbonButton SmallImageSource="Images/apple_time_machine_alt.png" />
+            </Ribbon.HelpPaneContent>
+            <Ribbon.QuickAccessToolBar>
+                <RibbonQuickAccessToolBar>
+                    <RibbonButton Command="Save" Label="Save" ToolTip="Save" SmallImageSource="Images\SaveAs16.png" />
+                </RibbonQuickAccessToolBar>
+            </Ribbon.QuickAccessToolBar>
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu SmallImageSource="Images\FileGroup_10135_32x.png">
+                    <RibbonApplicationMenuItem Header="New" Command="New" ImageSource="Images/new_document.png"
+                                               KeyTip="N" />
+                    <RibbonApplicationMenuItem Header="Open" Command="Open" ImageSource="Images/Open16.png" KeyTip="O" />
+                    <RibbonApplicationMenuItem Header="Save" Command="Save" ImageSource="Images/Save16.png" KeyTip="S" />
+                    <RibbonApplicationMenuItem Header="Save As" Command="SaveAs" ImageSource="Images/SaveAs16.png"
+                                               KeyTip="R" />
+                    <RibbonApplicationMenu.AuxiliaryPaneContent>
+                        <RibbonGallery CanUserFilter="false" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <RibbonGalleryCategory Header="Recent Documents" Background="Transparent"
+                                                   ItemsSource="{Binding MostRecentFiles}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type io:FileInfo}">
+                                        <RibbonApplicationMenuItem Command="Open" ImageSource="Images/Open16.png"
+                                                                   KeyTip="O" Header="{Binding Name}"
+                                                                   ToolTip="{Binding FullName}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical" IsItemsHost="true" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </RibbonGalleryCategory>
+                        </RibbonGallery>
+                    </RibbonApplicationMenu.AuxiliaryPaneContent>
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <RibbonTab Header="Edit">
+                <RibbonGroup Header="Edit">
+                    <RibbonButton Command="{Binding Path=EditCommand}" Label="Edit" ToolTip="Edit"
+                                  SmallImageSource="Images\Modify.png" />
+                    <RibbonButton Command="{Binding Path=ClearCommand}" Label="Clear" ToolTip="Clear"
+                                  SmallImageSource="Images\Clear.png" />
+                </RibbonGroup>
+                <RibbonGroup Header="Fix">
+                    <RibbonButton Command="{Binding Path=FixTimeCommand}" Label="Fix Time"
+                                  SmallImageSource="Images\FixTime.png" ToolTip="Fix Time" />
+                    <RibbonButton Command="{Binding Path=FixTitlesCommand}" Label="Fix Titles"
+                                  SmallImageSource="Images\FixTitles.png" ToolTip="Fix Titles" />
+                    <RibbonButton Command="{Binding Path=FixTypesCommand}" Label="Fix Types"
+                                  SmallImageSource="Images\FixTypes.png" ToolTip="Fix Types" />
+                </RibbonGroup>
+                <RibbonGroup Header="Context">
+                    <RibbonButton Command="{Binding Path=ExtractContextCommand}" Label="Extract Context"
+                                  SmallImageSource="Images\Download.png" ToolTip="Extract Context" />
+                    <RibbonButton Command="{Binding Path=FixContextCommand}" Label="Fix Context"
+                                  SmallImageSource="Images\Repair.png" ToolTip="Fix Context" />
+                </RibbonGroup>
+                <RibbonGroup Header="Action">
+                    <RibbonButton Command="{Binding Path=CopyTaskCommand}" Label="Copy"
+                                  SmallImageSource="Images\Copy_6524.png" ToolTip="Copy current node. Ctrl+Ins"
+                                  KeyTip="Ctrl+Ins" />
+                    <RibbonButton Command="{Binding Path=ContinueTaskCommand}" Label="Continue"
+                                  SmallImageSource="Images\action_create_16xMD.png"
+                                  ToolTip="Start next task from current task end date. Shift+Ins" />
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+        <Grid Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="{Binding Path=Layout.NavigatorWidth, Mode=TwoWay, Converter={StaticResource GridLengthConverter}}" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid Margin="0,3,0,-3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TabControl Grid.Row="0">
+                    <TabItem Header="Task TreeView">
+                        <views:TasksTreeView x:Name="TasksTreeView" />
+                    </TabItem>
+                    <TabItem Header="Activity View">
+                        <views:ActivitiesView DataContext="{Binding}" />
+                    </TabItem>
+                </TabControl>
+                <Expander Grid.Row="1">
+                    <Calendar SelectedDatesChanged="Calendar_OnSelectedDatesChanged" SelectionMode="MultipleRange" />
+                </Expander>
+            </Grid>
+            <GridSplitter VerticalAlignment="Stretch" Width="5" Grid.Column="0" HorizontalAlignment="Right" />
+            <TabControl Grid.Column="1">
+                <TabItem Header="Task TreeView">
+                    <views:TasksListView />
+                </TabItem>
+                <TabItem Header="Report View">
+                    <views:ReportView />
+                </TabItem>
+                <TabItem Header="Excel CSV View">
+                    <views:ExcelCsvView />
+                </TabItem>
+            </TabControl>
+        </Grid>
+        <Border Grid.Row="2" Margin="5" BorderThickness="2">
+            <output:OutputView DataContext="{Binding Output}" />
+        </Border>
+    </Grid>
+</Window>
