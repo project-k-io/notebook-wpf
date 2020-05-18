@@ -8,6 +8,7 @@
               xmlns:views="clr-namespace:ProjectK.Notebook.Views;assembly=ProjectK.Notebook.Views"
               xmlns:views2="clr-namespace:ProjectK.Views;assembly=ProjectK.Views"
               xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
+              xmlns:output="clr-namespace:ProjectK.Views.Output;assembly=ProjectK.Views"
               MinWidth="800" MinHeight="600" WindowStartupLocation="CenterOwner"
               Icon="/Images/apple_time_machine_alt.png"
               Title="{Binding Path=Title}" 
@@ -120,7 +121,7 @@
             </TabControl>
         </Grid>
         <Border Grid.Row="2" Margin="5" BorderThickness="2">
-            <views2:OutputView DataContext="{Binding Output}"/>
+            <output:OutputView DataContext="{Binding Output}"/>
         </Border>
     </Grid>
 </Window>

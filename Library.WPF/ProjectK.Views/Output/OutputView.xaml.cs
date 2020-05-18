@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.ViewModels;
 
-namespace ProjectK.Views
+namespace ProjectK.Views.Output
 {
     public partial class OutputView : UserControl
     {

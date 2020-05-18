@@ -14,15 +14,5 @@ namespace ProjectK.Views.TreeViewList
         {
             return item is TreeListViewItem;
         }
-
-        public void SelectItem(object item)
-        {
-            TreeViewHelper.SelectItem(this, item);
-        }
-
-        public void ExpandAll()
-        {
-            TreeViewHelper.ExpandAll(this);
-        }
     }
 }
