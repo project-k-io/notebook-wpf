@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace ProjectK.View.Helpers.Misc
+namespace ProjectK.View.Helpers.Components
 {
     public class SortableGridViewColumn : GridViewColumn
     {

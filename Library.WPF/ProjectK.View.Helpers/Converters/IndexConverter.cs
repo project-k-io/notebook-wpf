@@ -7,11 +7,12 @@ namespace ProjectK.View.Helpers.Converters
 {
     public class IndexConverter : ConverterMarkupExtension<IndexConverter>, IValueConverter
     {
-        public object Convert(object value, Type TargetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var listViewItem = (ListViewItem) value;
             if (!(ItemsControl.ItemsControlFromItemContainer(listViewItem) is ListView listView))
                 return -1;
+
             return listView.ItemContainerGenerator.IndexFromContainer(listViewItem).ToString();
         }
 

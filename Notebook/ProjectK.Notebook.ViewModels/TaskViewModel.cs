@@ -16,7 +16,7 @@ namespace ProjectK.Notebook.ViewModels
     public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
-        private static int GlobalLevel = 0;
+        private static int _globalLevel = 0;
 
         #region Fields
 
@@ -80,7 +80,7 @@ namespace ProjectK.Notebook.ViewModels
             get => _model.Title;
             set =>this.Set(_model.Title, v =>
             {
-                _model.Level = GlobalLevel++;
+                _model.Level = _globalLevel++;
                 _model.Title = v;
             }, value);
         }

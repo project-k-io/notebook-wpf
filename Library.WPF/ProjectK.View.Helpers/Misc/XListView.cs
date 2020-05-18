@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Microsoft.Win32;
+using ProjectK.View.Helpers.Components;
 
 namespace ProjectK.View.Helpers.Misc
 {
@@ -17,8 +18,10 @@ namespace ProjectK.View.Helpers.Misc
             gridViewColumn.HeaderTemplate = direction != ListSortDirection.Ascending
                 ? listView.FindResource("HeaderTemplateArrowDown") as DataTemplate
                 : listView.FindResource("HeaderTemplateArrowUp") as DataTemplate;
+
             if (lastColumnClicked != null && lastColumnClicked != gridViewColumn)
                 lastColumnClicked.HeaderTemplate = null;
+
             lastColumnClicked = gridViewColumn;
             lastDirection = direction;
         }

@@ -5,11 +5,11 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
-namespace ProjectK.View.Helpers.Misc
+namespace ProjectK.View.Helpers.Extensions
 {
-    internal class XListBox
+    public static class ListBoxExtensions
     {
-        public static int GetCurrentIndex(ListBox listBox, Func<Point, Point> getPosition)
+        public static int GetCurrentIndex(this ListBox listBox, Func<Point, Point> getPosition)
         {
             var num = -1;
             for (var index = 0; index < listBox.Items.Count; ++index)
@@ -22,7 +22,7 @@ namespace ProjectK.View.Helpers.Misc
             return num;
         }
 
-        public static ListBoxItem GetCurrentListBoxItem(ListBox listBox, Func<Point, Point> getPosition)
+        public static ListBoxItem GetCurrentListBoxItem(this ListBox listBox, Func<Point, Point> getPosition)
         {
             for (var index = 0; index < listBox.Items.Count; ++index)
             {
@@ -34,7 +34,7 @@ namespace ProjectK.View.Helpers.Misc
             return null;
         }
 
-        private static ListBoxItem GetListBoxItem(ListBox listBox, int index)
+        private static ListBoxItem GetListBoxItem(this ListBox listBox, int index)
         {
             if (listBox.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
                 return null;
@@ -43,16 +43,12 @@ namespace ProjectK.View.Helpers.Misc
 
         private static bool IsMouseOverTarget(IInputElement target, Func<Point, Point> getPosition)
         {
-            return target == null ? false : false;
+            return target != null;
         }
 
-        public static ObservableCollection<T> GetDraggableIems<T>(ListBox listBox, MouseEventArgs e) where T : class
+        public static ObservableCollection<T> GetDraggableItems<T>(this ListBox listBox, MouseEventArgs e) where T : class
         {
             return null;
-        }
-
-        public static void Drop<T>(ListBox listBox, object sender, DragEventArgs e)
-        {
         }
     }
 }

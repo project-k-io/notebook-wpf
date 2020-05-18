@@ -5,13 +5,11 @@ namespace ProjectK.View.Helpers.Converters
 {
     public class ConverterMarkupExtension<T> : MarkupExtension where T : class, new()
     {
-        private static T extensionConverter;
+        private static T _extensionConverter;
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            if (extensionConverter == null)
-                extensionConverter = Activator.CreateInstance<T>();
-            return extensionConverter;
+            return _extensionConverter ??= Activator.CreateInstance<T>();
         }
     }
 }
