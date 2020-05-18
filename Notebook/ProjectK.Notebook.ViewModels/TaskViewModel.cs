@@ -10,6 +10,7 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
+using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ProjectK.Utils
+namespace ProjectK.Utils.Extensions
 {
     public static class ListExtensions
     {

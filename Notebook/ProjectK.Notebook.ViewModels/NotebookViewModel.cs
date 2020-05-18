@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
 using ProjectK.Notebook.Models.Versions.Version1;
 using ProjectK.Utils;
+using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {

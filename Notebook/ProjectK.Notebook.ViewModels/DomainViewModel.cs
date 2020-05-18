@@ -14,6 +14,7 @@ using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
+using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.ViewModels
