@@ -12,9 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
+using ProjectK.Notebook.Extensions;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils;
-using AssemblyExtensions = ProjectK.Utils.AssemblyExtensions;
 
 namespace ProjectK.Notebook
 {
@@ -152,46 +152,20 @@ namespace ProjectK.Notebook
             {
                 var appSettings = ConfigurationManager.AppSettings;
                 _logger.LogDebug("LoadSettings");
-
-                T GetEnumValue<T>(string key, T defaultValue) where T : struct
-                {
-                    return Enum.TryParse(appSettings[key], out T value) ? value : defaultValue;
-                }
-
-                double GetDoubleValue(string key, double defaultValue)
-                {
-                    return double.TryParse(appSettings[key], out var value) ? value : defaultValue;
-                }
-
-                int GetIntValue(string key, int defaultValue)
-                {
-                    return int.TryParse(appSettings[key], out var value) ? value : defaultValue;
-                }
-
-                Guid GetGuidValue(string key, Guid defaultValue)
-                {
-                    return Guid.TryParse(appSettings[key], out var value) ? value : defaultValue;
-                }
-
-                string GetStringValue(string key, string defaultValue)
-                {
-                    return appSettings[key] ?? defaultValue;
-                }
-
                 // window settings
-                window.WindowState = GetEnumValue<WindowState>("MainWindowState", WindowState.Normal);
+                window.WindowState = appSettings.GetEnumValue("MainWindowState", WindowState.Normal);
 
-                window.Top = GetDoubleValue("MainWindowTop", 100);
-                window.Left = GetDoubleValue("MainWindowLeft", 100);
-                window.Width = GetDoubleValue("MainWindowWidth", 800);
-                window.Height = GetDoubleValue("MainWindowHeight", 400d);
+                window.Top = appSettings.GetDouble("MainWindowTop", 100);
+                window.Left = appSettings.GetDouble("MainWindowLeft", 100);
+                window.Width = appSettings.GetDouble("MainWindowWidth", 800);
+                window.Height = appSettings.GetDouble("MainWindowHeight", 400d);
 
                 // model settings
                 ;
-                Layout.NavigatorWidth = GetIntValue("LayoutNavigatorWidth", 200);
-                LastListTaskId = GetGuidValue("LastListTaskId", Guid.Empty);
-                LastTreeTaskId = GetGuidValue("LastTreeTaskId", Guid.Empty);
-                DataFile = GetStringValue("RecentFile", "New Data");
+                Layout.NavigatorWidth = appSettings.GetInt("LayoutNavigatorWidth", 200);
+                LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
+                LastTreeTaskId = appSettings.GetGuid("LastTreeTaskId", Guid.Empty);
+                DataFile = appSettings.GetString("RecentFile", "New Data");
 
                 MostRecentFiles.Clear();
                 if (File.Exists(DataFile))
@@ -211,30 +185,23 @@ namespace ProjectK.Notebook
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 var settings = configFile.AppSettings.Settings;
 
-                void SetValue(string key, string value)
-                {
-                    if (settings[key] == null)
-                        settings.Add(key, value);
-                    else
-                        settings[key].Value = value;
-                }
 
                 PrepareSettings();
 
                 // ISSUE: variable of a compiler-generated type
                 if (window.WindowState != WindowState.Minimized)
                 {
-                    SetValue("MainWindowTop", window.Top.ToString(CultureInfo.InvariantCulture));
-                    SetValue("MainWindowLeft", window.Left.ToString(CultureInfo.InvariantCulture));
-                    SetValue("MainWindowWidth", window.Width.ToString(CultureInfo.InvariantCulture));
-                    SetValue("MainWindowHeight", window.Height.ToString(CultureInfo.InvariantCulture));
-                    SetValue("LayoutNavigatorWidth", Layout.NavigatorWidth.ToString(CultureInfo.InvariantCulture));
+                    settings.SetValue("MainWindowTop", window.Top.ToString(CultureInfo.InvariantCulture));
+                    settings.SetValue("MainWindowLeft", window.Left.ToString(CultureInfo.InvariantCulture));
+                    settings.SetValue("MainWindowWidth", window.Width.ToString(CultureInfo.InvariantCulture));
+                    settings.SetValue("MainWindowHeight", window.Height.ToString(CultureInfo.InvariantCulture));
+                    settings.SetValue("LayoutNavigatorWidth", Layout.NavigatorWidth.ToString(CultureInfo.InvariantCulture));
                 }
 
-                SetValue("RecentFile", DataFile);
-                SetValue("LastListTaskId", LastListTaskId.ToString());
-                SetValue("LastTreeTaskId", LastTreeTaskId.ToString());
-                SetValue("MainWindowState", window.WindowState.ToString());
+                settings.SetValue("RecentFile", DataFile);
+                settings.SetValue("LastListTaskId", LastListTaskId.ToString());
+                settings.SetValue("LastTreeTaskId", LastTreeTaskId.ToString());
+                settings.SetValue("MainWindowState", window.WindowState.ToString());
 
                 configFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
