@@ -8,9 +8,8 @@
              xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
              xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
              xmlns:treeViewList="clr-namespace:ProjectK.Views.TreeViewList;assembly=ProjectK.Views"
-             d:DataContext="{d:DesignInstance Type=design:DesignViewModel, IsDesignTimeCreatable=true}" 
-             d:DesignWidth="545.465" d:DesignHeight="248.282"
-             >
+             d:DataContext="{d:DesignInstance Type=design:DesignViewModel, IsDesignTimeCreatable=true}"
+             d:DesignWidth="545.465" d:DesignHeight="248.282">
     <FrameworkElement.Resources>
 
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
@@ -88,7 +87,9 @@
                                     BorderBrush="{TemplateBinding Control.BorderBrush}"
                                     BorderThickness="{TemplateBinding Control.BorderThickness}"
                                     Padding="{TemplateBinding Control.Padding}">
-                                <GridViewRowPresenter x:Name="PART_Header" Content="{TemplateBinding HeaderedItemsControl.Header}" Columns="{StaticResource Columns}" />
+                                <GridViewRowPresenter x:Name="PART_Header"
+                                                      Content="{TemplateBinding HeaderedItemsControl.Header}"
+                                                      Columns="{StaticResource Columns}" />
                             </Border>
                             <ItemsPresenter x:Name="ItemsHost" />
                         </StackPanel>
@@ -111,16 +112,22 @@
                                 <Setter TargetName="PART_Header" Property="FrameworkElement.MinHeight" Value="19" />
                             </MultiTrigger>
                             <Trigger Property="TreeViewItem.IsSelected" Value="true">
-                                <Setter TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Property="Border.Background" />
-                                <Setter Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" Property="Control.Foreground" />
+                                <Setter TargetName="Bd"
+                                        Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                                        Property="Border.Background" />
+                                <Setter Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                                        Property="Control.Foreground" />
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="TreeViewItem.IsSelected" Value="true" />
                                     <Condition Property="TreeViewItem.IsSelectionActive" Value="false" />
                                 </MultiTrigger.Conditions>
-                                <Setter TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Property="Border.Background" />
-                                <Setter Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" Property="Control.Foreground" />
+                                <Setter TargetName="Bd"
+                                        Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                                        Property="Border.Background" />
+                                <Setter Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                        Property="Control.Foreground" />
                             </MultiTrigger>
                             <Trigger Property="UIElement.IsEnabled" Value="false">
                                 <Setter Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
@@ -154,7 +161,7 @@
                                       ItemsSource="{Binding Path=SubTasks}" />
         </FrameworkElement.Resources>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <treeViewList:TreeListView x:Name="TreeViewTasks" 
+            <treeViewList:TreeListView x:Name="TreeViewTasks"
                                        SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
                                        ItemContainerStyle="{StaticResource treeListViewItem}"
                                        Style="{StaticResource TreeListView}"

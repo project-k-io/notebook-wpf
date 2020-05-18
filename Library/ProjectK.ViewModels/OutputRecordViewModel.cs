@@ -14,6 +14,10 @@ namespace ProjectK.ViewModels
         public string State { get; set; }
         public string Message { get; set; }
         public static string Header => string.Format(Format, "Id", "Type", "Date", "State", "Message");
-        public override string ToString() => string.Format(Format, Id, Type, Date, State, Message);
+
+        public override string ToString()
+        {
+            return string.Format(Format, Id, Type, Date, State, Message);
+        }
     }
 }

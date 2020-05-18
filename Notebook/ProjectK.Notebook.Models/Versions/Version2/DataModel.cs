@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 namespace ProjectK.Notebook.Models.Versions.Version2
 {
@@ -19,15 +17,14 @@ namespace ProjectK.Notebook.Models.Versions.Version2
             if (data.Tasks.Count != Tasks.Count)
                 return false;
 
-            for (int i = 0; i < Tasks.Count; i++)
+            for (var i = 0; i < Tasks.Count; i++)
             {
                 var a = Tasks[i];
                 var b = data.Tasks[i];
-                if(b.Title == "XXX")
+                if (b.Title == "XXX")
                     Debug.WriteLine("XXX");
                 if (!a.IsSame(b))
                     return false;
-
             }
 
             return true;
@@ -46,7 +43,7 @@ namespace ProjectK.Notebook.Models.Versions.Version2
 
             return model;
         }
-        
+
         public void Copy(DataModel model)
         {
             Tasks.Clear();

@@ -1,49 +1,47 @@
 <UserControl
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
-             xmlns:viewModels="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
-             xmlns:vm1="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
-             xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             mc:Ignorable="d" x:Class="ProjectK.Views.Output.OutputView"
-             d:DesignWidth="400" d:DesignHeight="100"
-             >
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
+    xmlns:viewModels="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
+    xmlns:vm1="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    mc:Ignorable="d" x:Class="ProjectK.Views.Output.OutputView"
+    d:DesignWidth="400" d:DesignHeight="100">
 
     <UserControl.Resources>
         <viewModels:OutputViewModel x:Key="Model">
             <viewModels:OutputViewModel.Records>
-                <vm:OutputRecordViewModel Id="1" Date="{x:Static system:DateTime.Now}" Duration="123456" >
-                </vm:OutputRecordViewModel>
+                <vm:OutputRecordViewModel Id="1" Date="{x:Static system:DateTime.Now}" Duration="123456" />
             </viewModels:OutputViewModel.Records>
         </viewModels:OutputViewModel>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
-        <Style x:Key="ImageStyle" >
+        <Style x:Key="ImageStyle">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Image}" Value="Clear">
-                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_c_cancel.png"/>
+                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_c_cancel.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Image}" Value="Warning">
-                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_warning.png"/>
+                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_warning.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Image}" Value="Message">
-                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_information.png"/>
+                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_information.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Image}" Value="Error">
-                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_error.png"/>
+                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_error.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Image}" Value="Debug">
-                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_completeandok.png"/>
+                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_completeandok.png" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
         <DataTemplate x:Key="ToggleButtonDataTemplate" DataType="{x:Type viewModels:OutputButtonViewModel}">
-            <ToggleButton  IsChecked="{Binding IsChecked}" Command="{Binding ClickedCommand}">
+            <ToggleButton IsChecked="{Binding IsChecked}" Command="{Binding ClickedCommand}">
                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4">
                     <Image Width="16" Height="16">
                         <Image.Style>
-                            <StaticResource ResourceKey="ImageStyle"/>
+                            <StaticResource ResourceKey="ImageStyle" />
                         </Image.Style>
                     </Image>
                     <Label FontSize="10" VerticalAlignment="Top" Content="{Binding Count}"
@@ -57,7 +55,7 @@
                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4" VerticalAlignment="Center">
                     <Image Width="16" Height="16">
                         <Image.Style>
-                            <StaticResource ResourceKey="ImageStyle"/>
+                            <StaticResource ResourceKey="ImageStyle" />
                         </Image.Style>
                     </Image>
                     <Label FontSize="10" Content="{Binding Label}" />
@@ -71,8 +69,10 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ToolBarTray>
-            <ToolBar Background="#FFC5CDE5" ItemTemplate="{StaticResource ToggleButtonDataTemplate}" ItemsSource="{Binding FilterButtons}" />
-            <ToolBar Background="#FFC5CDE5" ItemTemplate="{StaticResource ButtonDataTemplate}" ItemsSource="{Binding CommandButtons}" />
+            <ToolBar Background="#FFC5CDE5" ItemTemplate="{StaticResource ToggleButtonDataTemplate}"
+                     ItemsSource="{Binding FilterButtons}" />
+            <ToolBar Background="#FFC5CDE5" ItemTemplate="{StaticResource ButtonDataTemplate}"
+                     ItemsSource="{Binding CommandButtons}" />
         </ToolBarTray>
         <ListView x:Name="ListViewMessages" Grid.Row="1" ItemsSource="{Binding Records}">
             <ListView.View>
@@ -80,9 +80,11 @@
                     <GridViewColumn Header="Id" Width="50" DisplayMemberBinding="{Binding Id}" />
                     <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Type}" />
                     <!--<GridViewColumn Header="Date" Width="100" DisplayMemberBinding="{Binding Date, StringFormat={}{0:HH:mm:ss.ffffff}}" />-->
-                    <GridViewColumn Header="Date" Width="100" DisplayMemberBinding="{Binding Date, StringFormat={}{0:HH:mm:ss tt}}" />
+                    <GridViewColumn Header="Date" Width="100"
+                                    DisplayMemberBinding="{Binding Date, StringFormat={}{0:HH:mm:ss tt}}" />
                     <!--<GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration, StringFormat=hh\\:mm\\:ss\\:ffffff}" />-->
-                    <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration, StringFormat=mm\\:ss\\:ffffff}" />
+                    <GridViewColumn Header="Duration" Width="100"
+                                    DisplayMemberBinding="{Binding Duration, StringFormat=mm\\:ss\\:ffffff}" />
                     <GridViewColumn Header="State" Width="50" DisplayMemberBinding="{Binding State}" />
                     <GridViewColumn Header="Message" Width="1200" DisplayMemberBinding="{Binding Message}" />
                 </GridView>

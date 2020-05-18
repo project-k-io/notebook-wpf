@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
-using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Notebook.Models.Versions.Version1;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels
@@ -104,13 +104,13 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public void LoadFrom(Models.Versions.Version1.DataModel model)
+        public void LoadFrom(DataModel model)
         {
             Clear();
             RootTask.LoadFrom(model.RootTask);
         }
 
-        public void LoadFrom(DataModel model)
+        public void LoadFrom(Models.Versions.Version2.DataModel model)
         {
             if (model == null)
                 return;
@@ -119,7 +119,6 @@ namespace ProjectK.Notebook.ViewModels
             Clear();
             var sortedList = new SortedList<Guid, TaskViewModel>();
             foreach (var task in tasks)
-            {
                 if (task.ParentId == Guid.Empty)
                 {
                     RootTask.Model = task;
@@ -130,14 +129,13 @@ namespace ProjectK.Notebook.ViewModels
                     var taskViewModel = new TaskViewModel {Model = task};
                     sortedList.Add(task.Id, taskViewModel);
                 }
-            }
 
             foreach (var task in tasks)
                 if (!(task.ParentId == Guid.Empty))
                     sortedList[task.ParentId].SubTasks.Add(sortedList[task.Id]);
         }
 
-        public void SaveTo(DataModel model)
+        public void SaveTo(Models.Versions.Version2.DataModel model)
         {
             RootTask.SaveTo(model.Tasks);
         }

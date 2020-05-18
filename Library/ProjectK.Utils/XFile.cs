@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
@@ -77,18 +76,18 @@ namespace ProjectK.Utils
                 switch (extension)
                 {
                     case ".XML":
-                        {
-                            await using var sr = File.Create(path);
-                            new XmlSerializer(typeof(T)).Serialize(sr, model);
-                        }
+                    {
+                        await using var sr = File.Create(path);
+                        new XmlSerializer(typeof(T)).Serialize(sr, model);
+                    }
                         break;
                     case ".JSON":
-                        {
-                            await using var fs = File.Create(path);
-                            var option = new JsonSerializerOptions {WriteIndented = true};
-                            await JsonSerializer.SerializeAsync<T>(fs, model, option);
-                            break;
-                        }
+                    {
+                        await using var fs = File.Create(path);
+                        var option = new JsonSerializerOptions {WriteIndented = true};
+                        await JsonSerializer.SerializeAsync(fs, model, option);
+                        break;
+                    }
                 }
             }
             catch (Exception ex)
@@ -106,11 +105,11 @@ namespace ProjectK.Utils
                 switch (extension)
                 {
                     case ".XML":
-                        {
-                            await using var fs = File.OpenRead(path);
-                            var data = new XmlSerializer(typeof(T)).Deserialize(fs);
-                            return data as T;
-                        }
+                    {
+                        await using var fs = File.OpenRead(path);
+                        var data = new XmlSerializer(typeof(T)).Deserialize(fs);
+                        return data as T;
+                    }
                     case ".JSON":
                     {
                         await using var fs = File.OpenRead(path);
@@ -127,7 +126,5 @@ namespace ProjectK.Utils
                 return default;
             }
         }
-
-
     }
 }

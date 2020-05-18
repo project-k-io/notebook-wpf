@@ -11,19 +11,11 @@ namespace ProjectK.ViewModels
 {
     public class OutputViewModel : ViewModelBase
     {
-        private readonly OutputButtonViewModel _outputButtonClear = new OutputButtonViewModel { Image = "Clear", Label = "Clear" };
-        private readonly OutputButtonViewModel _outputButtonDebug = new OutputButtonViewModel { Image = "Debug", Label = "Logs", IsChecked = true};
-        private readonly OutputButtonViewModel _outputButtonErrors = new OutputButtonViewModel{Image = "Error", Label = "Errors", IsChecked = false};
-        private readonly OutputButtonViewModel _outputButtonMessages = new OutputButtonViewModel { Image = "Message", Label = "Messages", IsChecked = false};
-        private readonly OutputButtonViewModel _outputButtonWarnings = new OutputButtonViewModel { Image = "Warning", Label = "Warnings", IsChecked = false};
-
-        public Action<string, object> SetValue { get; set; }
-        public Func<string, string, object> GetValue { get; set; }
-        public Action UpdateFilter { get; set; }
-
-        public ObservableCollection<OutputButtonViewModel> FilterButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
-        public ObservableCollection<OutputButtonViewModel> CommandButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
-        public ObservableCollection<OutputRecordViewModel> Records { get; } = new ObservableCollection<OutputRecordViewModel>();
+        private readonly OutputButtonViewModel _outputButtonClear = new OutputButtonViewModel {Image = "Clear", Label = "Clear"};
+        private readonly OutputButtonViewModel _outputButtonDebug = new OutputButtonViewModel {Image = "Debug", Label = "Logs", IsChecked = true};
+        private readonly OutputButtonViewModel _outputButtonErrors = new OutputButtonViewModel {Image = "Error", Label = "Errors", IsChecked = false};
+        private readonly OutputButtonViewModel _outputButtonMessages = new OutputButtonViewModel {Image = "Message", Label = "Messages", IsChecked = false};
+        private readonly OutputButtonViewModel _outputButtonWarnings = new OutputButtonViewModel {Image = "Warning", Label = "Warnings", IsChecked = false};
 
 
         public OutputViewModel()
@@ -41,6 +33,14 @@ namespace ProjectK.ViewModels
             _outputButtonDebug.PropertyChanged += OutputButtRaisePropertyChanged;
             _outputButtonErrors.PropertyChanged += OutputButtRaisePropertyChanged;
         }
+
+        public Action<string, object> SetValue { get; set; }
+        public Func<string, string, object> GetValue { get; set; }
+        public Action UpdateFilter { get; set; }
+
+        public ObservableCollection<OutputButtonViewModel> FilterButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
+        public ObservableCollection<OutputButtonViewModel> CommandButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
+        public ObservableCollection<OutputRecordViewModel> Records { get; } = new ObservableCollection<OutputRecordViewModel>();
 
         private void OutputButtonClearOnClicked(object sender, EventArgs eventArgs)
         {
@@ -70,6 +70,7 @@ namespace ProjectK.ViewModels
                 if (outputRecordViewModel.Type == LogLevel.Debug)
                     return _outputButtonDebug.IsChecked;
             }
+
             return false;
         }
 
@@ -133,7 +134,6 @@ namespace ProjectK.ViewModels
         {
             try
             {
-
                 SetValue?.Invoke("Error", _outputButtonErrors.IsChecked);
                 SetValue?.Invoke("Debug", _outputButtonDebug.IsChecked);
                 SetValue?.Invoke("Info", _outputButtonMessages.IsChecked);
@@ -159,7 +159,7 @@ namespace ProjectK.ViewModels
 
         public void LogEvent(LogLevel logLevel, EventId eventId, string message)
         {
-            var record =  AddNewRecord(new LoggingEventArgs { Level = logLevel, Message = message });
+            var record = AddNewRecord(new LoggingEventArgs {Level = logLevel, Message = message});
         }
     }
 }

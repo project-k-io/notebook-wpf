@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,10 +17,10 @@ using ProjectK.Utils;
 
 namespace ProjectK.Notebook
 {
-    class MainViewModel : DomainViewModel
+    internal class MainViewModel : DomainViewModel
     {
-        private ILogger _logger;
         private bool _canSave;
+        private ILogger _logger;
         private Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
 
         public string Title => XAttribute.GetAssemblyTitle(Assembly) + " " + XAttribute.GetAssemblyVersion(Assembly) + " - " + DataFile;
@@ -63,13 +59,13 @@ namespace ProjectK.Notebook
             if (!r.ok)
                 return;
 
-            await OpenFileAsync(r.fileName);  // User clicked open file
+            await OpenFileAsync(r.fileName); // User clicked open file
         }
 
         private async Task UserSaveFileAsync()
         {
             if (File.Exists(DataFile))
-                await SaveFileAsync();  // User Save
+                await SaveFileAsync(); // User Save
             else
                 await UserSaveFileAsAsync();
         }
@@ -99,16 +95,10 @@ namespace ProjectK.Notebook
         public (string fileName, bool ok) SetFileDialog(FileDialog dialog, string path)
         {
             var directoryName = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
-            {
-                dialog.InitialDirectory = directoryName;
-            }
+            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName)) dialog.InitialDirectory = directoryName;
 
             var fileName = Path.GetFileNameWithoutExtension(path);
-            if (!string.IsNullOrEmpty(fileName))
-            {
-                dialog.FileName = fileName;
-            }
+            if (!string.IsNullOrEmpty(fileName)) dialog.FileName = fileName;
 
             dialog.DefaultExt = ".json";
             dialog.Filter = "Json documents (.json)|*.json" +
@@ -141,6 +131,7 @@ namespace ProjectK.Notebook
                 Console.WriteLine(e);
             }
         }
+
         public void SetOutput()
         {
             // MainModel
@@ -161,11 +152,30 @@ namespace ProjectK.Notebook
                 var appSettings = ConfigurationManager.AppSettings;
                 _logger.LogDebug("LoadSettings");
 
-                T GetEnumValue<T>(string key, T defaultValue) where T : struct => Enum.TryParse(appSettings[key], out T value) ? value : defaultValue;
-                double GetDoubleValue(string key, double defaultValue) => double.TryParse(appSettings[key], out var value) ? value : defaultValue;
-                int GetIntValue(string key, int defaultValue) => int.TryParse(appSettings[key], out var value) ? value : defaultValue;
-                Guid GetGuidValue(string key, Guid defaultValue) => Guid.TryParse(appSettings[key], out var value) ? value : defaultValue;
-                string GetStringValue(string key, string defaultValue) =>appSettings[key] ?? defaultValue;
+                T GetEnumValue<T>(string key, T defaultValue) where T : struct
+                {
+                    return Enum.TryParse(appSettings[key], out T value) ? value : defaultValue;
+                }
+
+                double GetDoubleValue(string key, double defaultValue)
+                {
+                    return double.TryParse(appSettings[key], out var value) ? value : defaultValue;
+                }
+
+                int GetIntValue(string key, int defaultValue)
+                {
+                    return int.TryParse(appSettings[key], out var value) ? value : defaultValue;
+                }
+
+                Guid GetGuidValue(string key, Guid defaultValue)
+                {
+                    return Guid.TryParse(appSettings[key], out var value) ? value : defaultValue;
+                }
+
+                string GetStringValue(string key, string defaultValue)
+                {
+                    return appSettings[key] ?? defaultValue;
+                }
 
                 // window settings
                 window.WindowState = GetEnumValue<WindowState>("MainWindowState", WindowState.Normal);
@@ -203,13 +213,9 @@ namespace ProjectK.Notebook
                 void SetValue(string key, string value)
                 {
                     if (settings[key] == null)
-                    {
                         settings.Add(key, value);
-                    }
                     else
-                    {
                         settings[key].Value = value;
-                    }
                 }
 
                 PrepareSettings();
@@ -226,7 +232,7 @@ namespace ProjectK.Notebook
 
                 SetValue("RecentFile", DataFile);
                 SetValue("LastListTaskId", LastListTaskId.ToString());
-                SetValue("LastTreeTaskId",  LastTreeTaskId.ToString());
+                SetValue("LastTreeTaskId", LastTreeTaskId.ToString());
                 SetValue("MainWindowState", window.WindowState.ToString());
 
                 configFile.Save(ConfigurationSaveMode.Modified);
@@ -253,7 +259,5 @@ namespace ProjectK.Notebook
         {
             _canSave = false;
         }
-
-
     }
 }

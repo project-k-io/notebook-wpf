@@ -14,7 +14,6 @@ namespace ProjectK.View.Helpers.Extensions
         private static void ExpandSubContainers(this ItemsControl parentContainer)
         {
             foreach (var obj in parentContainer.Items)
-            {
                 if (parentContainer.ItemContainerGenerator.ContainerFromItem(obj) is TreeViewItem currentContainer && currentContainer.Items.Count > 0)
                 {
                     currentContainer.IsExpanded = true;
@@ -35,7 +34,6 @@ namespace ProjectK.View.Helpers.Extensions
                         ExpandSubContainers(currentContainer);
                     }
                 }
-            }
         }
 
         public static void SelectItem(this TreeView treeView, object item)
@@ -46,7 +44,6 @@ namespace ProjectK.View.Helpers.Extensions
         private static bool ExpandAndSelectItem(this ItemsControl itemsControl, object itemToSelect)
         {
             foreach (var obj in itemsControl.Items)
-            {
                 if (obj == itemToSelect && itemsControl.ItemContainerGenerator.ContainerFromItem(obj) is TreeViewItem treeViewItem)
                 {
                     treeViewItem.IsSelected = true;
@@ -54,11 +51,10 @@ namespace ProjectK.View.Helpers.Extensions
                     treeViewItem.Focus();
                     return true;
                 }
-            }
 
             foreach (var obj in itemsControl.Items)
             {
-                if (!(itemsControl.ItemContainerGenerator.ContainerFromItem(obj) is TreeViewItem currentContainer) || currentContainer.Items.Count <= 0) 
+                if (!(itemsControl.ItemContainerGenerator.ContainerFromItem(obj) is TreeViewItem currentContainer) || currentContainer.Items.Count <= 0)
                     continue;
 
                 var isExpanded = currentContainer.IsExpanded;

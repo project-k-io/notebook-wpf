@@ -11,41 +11,46 @@ namespace ProjectK.View.Helpers.Misc
     public class ListViewSorterHelper
     {
         private static readonly ILogger Logger = LogManager.GetLogger<ListViewSorterHelper>();
+        private GridViewColumnHeader _lastColumn; // last column clicked
 
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
-        private GridViewColumnHeader _lastHeaderClicked;
 
         public void Clicked(FrameworkElement parent, object sender, RoutedEventArgs e)
         {
-            if (!(sender is ListView lv))
+            if (!(sender is ListView listView))
                 return;
-            if (!(e.OriginalSource is GridViewColumnHeader originalSource) || originalSource.Role == GridViewColumnHeaderRole.Padding)
+
+            if (!(e.OriginalSource is GridViewColumnHeader column) || column.Role == GridViewColumnHeaderRole.Padding)
                 return;
-            var direction = originalSource == _lastHeaderClicked
-                ? _lastDirection != ListSortDirection.Ascending
-                    ? ListSortDirection.Ascending
-                    : ListSortDirection.Descending
+
+            var direction = column == _lastColumn
+                ? _lastDirection != ListSortDirection.Ascending ? ListSortDirection.Ascending :
+                ListSortDirection.Descending
                 : ListSortDirection.Ascending;
-            var header = originalSource.Column.Header as string;
-            Sort(lv, header, direction);
-            originalSource.Column.HeaderTemplate = direction != ListSortDirection.Ascending
+
+            var header = column.Column.Header as string;
+            Sort(listView, header, direction);
+
+            column.Column.HeaderTemplate = direction != ListSortDirection.Ascending
                 ? parent.Resources["HeaderTemplateArrowDown"] as DataTemplate
                 : parent.Resources["HeaderTemplateArrowUp"] as DataTemplate;
-            if (_lastHeaderClicked != null && _lastHeaderClicked != originalSource)
-                _lastHeaderClicked.Column.HeaderTemplate = null;
-            _lastHeaderClicked = originalSource;
+
+            if (_lastColumn != null && _lastColumn != column)
+                _lastColumn.Column.HeaderTemplate = null;
+
+            _lastColumn = column;
             _lastDirection = direction;
         }
 
-        private static void Sort(ItemsControl lv, string sortBy, ListSortDirection direction)
+        private static void Sort(ItemsControl control, string sortBy, ListSortDirection direction)
         {
             try
             {
-                var defaultView = CollectionViewSource.GetDefaultView(lv.ItemsSource);
-                defaultView.SortDescriptions.Clear();
+                var view = CollectionViewSource.GetDefaultView(control.ItemsSource);
+                view.SortDescriptions.Clear();
                 var sortDescription = new SortDescription(sortBy, direction);
-                defaultView.SortDescriptions.Add(sortDescription);
-                defaultView.Refresh();
+                view.SortDescriptions.Add(sortDescription);
+                view.Refresh();
             }
             catch (Exception ex)
             {

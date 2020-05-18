@@ -16,49 +16,75 @@ namespace ProjectK.Notebook.ViewModels
     public class TaskViewModel : ViewModelBase, XTask.ITask<TaskViewModel>
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
-        private static int _globalLevel = 0;
+        private static int _globalLevel;
+
+        #region Override functions
+
+        public override string ToString()
+        {
+            return Model.ToString();
+        }
+
+        #endregion
+
+
+        public void SaveTo(List<TaskModel> tasks)
+        {
+            tasks.Add(Model);
+            TrySetId();
+
+            foreach (var subTask in SubTasks)
+            {
+                subTask.SaveTo(tasks);
+                subTask.ParentId = Model.Id;
+            }
+        }
 
         #region Fields
 
         private bool _isExpanded;
         private bool _isSelected;
         private TimeSpan _total;
-        private TaskModel _model;
 
         #endregion
 
 
-
         #region Properties - Model Wrappers
-        public TaskModel Model { get => _model; set => _model = value; }
 
-        public Guid Id => _model.Id;
-        public Guid ParentId { get => _model.ParentId; set => _model.ParentId = value; }
+        public TaskModel Model { get; set; }
+
+        public Guid Id => Model.Id;
+
+        public Guid ParentId
+        {
+            get => Model.ParentId;
+            set => Model.ParentId = value;
+        }
 
         public string Description
         {
-            get => _model.Description;
-            set => this.Set(Description, v => _model.Description = v, value);
+            get => Model.Description;
+            set => this.Set(Description, v => Model.Description = v, value);
         }
 
         public string Type
         {
-            get => _model.Type;
-            set => this.Set(Type, v => _model.Type = v, value);
+            get => Model.Type;
+            set => this.Set(Type, v => Model.Type = v, value);
         }
 
         public string SubType
         {
-            get => _model.SubType;
-            set => this.Set(SubType, v => _model.SubType = v, value);
+            get => Model.SubType;
+            set => this.Set(SubType, v => Model.SubType = v, value);
         }
 
         public DateTime DateStarted
         {
-            get => _model.DateStarted;
+            get => Model.DateStarted;
             set
             {
-                if (!this.Set(DateStarted, v => _model.DateStarted = v, value)) return;
+                if (!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
                 RaisePropertyChanged("TimeStarted");
                 RaisePropertyChanged("Duration");
             }
@@ -66,10 +92,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime DateEnded
         {
-            get => _model.DateEnded;
+            get => Model.DateEnded;
             set
             {
-                if (!this.Set(DateEnded, v => _model.DateEnded = v, value)) return;
+                if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
                 RaisePropertyChanged("TimeEnded");
                 RaisePropertyChanged("Duration");
             }
@@ -77,20 +103,20 @@ namespace ProjectK.Notebook.ViewModels
 
         public string Title
         {
-            get => _model.Title;
-            set =>this.Set(_model.Title, v =>
+            get => Model.Title;
+            set => this.Set(Model.Title, v =>
             {
-                _model.Level = _globalLevel++;
-                _model.Title = v;
+                Model.Level = _globalLevel++;
+                Model.Title = v;
             }, value);
         }
-        
+
         public DateTime TimeStarted
         {
-            get => _model.DateStarted;
+            get => Model.DateStarted;
             set
             {
-                var dateStarted = _model.DateStarted;
+                var dateStarted = Model.DateStarted;
                 var dateTime = value;
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
@@ -102,10 +128,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeEnded
         {
-            get => _model.DateEnded;
+            get => Model.DateEnded;
             set
             {
-                var dateEnded = _model.DateEnded;
+                var dateEnded = Model.DateEnded;
                 var dateTime = value;
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
@@ -118,25 +144,31 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Properties
+
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
         public ObservableCollection<string> TaskTitleList { get; set; }
+
         public string Context
         {
-            get => _model.Context;
-            set => this.Set(Context, v => _model.Context = v, value);
+            get => Model.Context;
+            set => this.Set(Context, v => Model.Context = v, value);
         }
+
         public TaskViewModel Parent { get; set; }
+
         public bool IsSelected
         {
             get => _isSelected;
             set => Set(ref _isSelected, value);
         }
+
         public bool IsExpanded
         {
             get => _isExpanded;
             set => Set(ref _isExpanded, value);
         }
+
         public bool IsPersonalType
         {
             get
@@ -147,6 +179,7 @@ namespace ProjectK.Notebook.ViewModels
                 return upper.Contains("LUNCH") || upper.Contains("PERSONAL");
             }
         }
+
         public bool IsSubTypeSleep
         {
             get
@@ -156,6 +189,7 @@ namespace ProjectK.Notebook.ViewModels
                 return SubType.ToUpper().Contains("SLEEP");
             }
         }
+
         public TimeSpan Duration
         {
             get
@@ -166,11 +200,13 @@ namespace ProjectK.Notebook.ViewModels
                 return DateEnded - DateStarted;
             }
         }
+
         public TimeSpan Total
         {
             get => _total;
             set => Set(ref _total, value);
         }
+
         public TaskViewModel LastSubTask => SubTasks.LastOrDefault();
         public ObservableCollection<TaskViewModel> SubTasks { get; set; } = new ObservableCollection<TaskViewModel>();
 
@@ -182,7 +218,6 @@ namespace ProjectK.Notebook.ViewModels
 
         public ICommand CommandSetEndedTime => new RelayCommand(SetEndedTime);
 
-
         #endregion
 
         #region Constructors
@@ -190,23 +225,14 @@ namespace ProjectK.Notebook.ViewModels
         public TaskViewModel()
         {
             Parent = null;
-            _model = new TaskModel();
+            Model = new TaskModel();
         }
 
         public TaskViewModel(string title)
         {
-            _model = new TaskModel();
+            Model = new TaskModel();
             Parent = null;
             Title = title;
-        }
-
-        #endregion
-
-        #region Override functions
-
-        public override string ToString()
-        {
-            return _model.ToString();
         }
 
         #endregion
@@ -215,10 +241,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public void TrySetId()
         {
-            if (_model.Id != Guid.Empty)
+            if (Model.Id != Guid.Empty)
                 return;
 
-            _model.Id = Guid.NewGuid();
+            Model.Id = Guid.NewGuid();
         }
 
         public void LoadFrom(Models.Versions.Version1.TaskModel model)
@@ -244,7 +270,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private TaskViewModel AddNewTask()
         {
-            var subTask = new TaskViewModel { Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
+            var subTask = new TaskViewModel {Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now};
             Add(subTask);
             var ii = SubTasks.IndexOf(subTask);
             FixContext(subTask);
@@ -254,13 +280,14 @@ namespace ProjectK.Notebook.ViewModels
 
         public TaskViewModel Add(TaskViewModel subTask)
         {
-            if(subTask.Title == "Time Tracker2")
+            if (subTask.Title == "Time Tracker2")
                 Logger.LogDebug(subTask.Title);
 
             subTask.Parent = this;
             SubTasks.Add(subTask);
             return subTask;
         }
+
         private void Insert(int index, TaskViewModel subTask)
         {
             subTask.Parent = this;
@@ -280,10 +307,12 @@ namespace ProjectK.Notebook.ViewModels
         {
             DateStarted = DateTime.Now;
         }
+
         private void SetEndedTime()
         {
             DateEnded = DateTime.Now;
         }
+
         public void FixTime()
         {
             if (IsPersonalType)
@@ -326,12 +355,14 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var subTask in SubTasks)
                 subTask.ExtractContext(contextList);
         }
+
         private void FixContext(string parent, string child, TaskViewModel subTask)
         {
             if (!(Context == parent))
                 return;
             subTask.Context = child;
         }
+
         private void FixContext(TaskViewModel subTask)
         {
             FixContext("Time Tracker", "Year", subTask);
@@ -341,6 +372,7 @@ namespace ProjectK.Notebook.ViewModels
             FixContext("Day", "Task", subTask);
             FixContext("Task", "Task", subTask);
         }
+
         public void FixContext()
         {
             foreach (var subTask in SubTasks)
@@ -356,17 +388,19 @@ namespace ProjectK.Notebook.ViewModels
                 return;
             subTask.Title = getTitle(ii, subTask);
         }
+
         private void FixTitles(TaskViewModel subTask, int ii)
         {
-            var getTitle1 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("yyyy"));
-            var getTitle2 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("MMMM"));
-            var getTitle3 = (Func<int, TaskViewModel, string>)((i, t) => "Week" + (i + 1));
-            var getTitle4 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.DayOfWeek.ToString());
+            var getTitle1 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("yyyy"));
+            var getTitle2 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("MMMM"));
+            var getTitle3 = (Func<int, TaskViewModel, string>) ((i, t) => "Week" + (i + 1));
+            var getTitle4 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.DayOfWeek.ToString());
             FixTitles("Time Tracker", getTitle1, subTask, ii);
             FixTitles("Year", getTitle2, subTask, ii);
             FixTitles("Month", getTitle3, subTask, ii);
             FixTitles("Week", getTitle4, subTask, ii);
         }
+
         public void FixTitles()
         {
             for (var ii = 0; ii < SubTasks.Count; ++ii)
@@ -447,6 +481,7 @@ namespace ProjectK.Notebook.ViewModels
                                 task.Title = Title;
                                 task.DateStarted = lastSubTask.DateEnded;
                             }
+
                             break;
                         default:
                             task = AddNewTask();
@@ -551,19 +586,5 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         #endregion
-
-
-        public void SaveTo(List<TaskModel> tasks)
-        {
-            tasks.Add(_model);
-            TrySetId();
-
-            foreach (var subTask in SubTasks)
-            {
-                subTask.SaveTo(tasks);
-                subTask.ParentId = _model.Id;
-            }
-        }
-
     }
 }

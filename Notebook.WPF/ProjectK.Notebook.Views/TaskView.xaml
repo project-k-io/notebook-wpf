@@ -5,21 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             mc:Ignorable="d" d:DesignWidth="412.125" d:DesignHeight="312.095"
-             >
+             mc:Ignorable="d" d:DesignWidth="412.125" d:DesignHeight="312.095">
     <UserControl.Resources>
-        <viewModels:TaskViewModel 
-            x:Key="Model" 
-            Context="Month" 
-            Title="May" 
+        <viewModels:TaskViewModel
+            x:Key="Model"
+            Context="Month"
+            Title="May"
             DateStarted="{x:Static system:DateTime.Now}"
             DateEnded="{x:Static system:DateTime.Now}"
             Type="Task"
             SubType="Testing"
-            Description="Test Task"
-            >
-
-        </viewModels:TaskViewModel>
+            Description="Test Task" />
     </UserControl.Resources>
     <Grid d:DataContext="{StaticResource Model}">
         <Grid.ColumnDefinitions>
@@ -44,10 +40,12 @@
         </Grid.RowDefinitions>
         <!--Context-->
         <Label Content="Context" Grid.Row="1" Grid.Column="1" />
-        <ComboBox Grid.Row="1" Grid.Column="3" IsEditable="true" IsReadOnly="true" ItemsSource="{Binding ContextList}" Text="{Binding Context}" />
+        <ComboBox Grid.Row="1" Grid.Column="3" IsEditable="true" IsReadOnly="true" ItemsSource="{Binding ContextList}"
+                  Text="{Binding Context}" />
         <!--Title-->
         <Label Content="Title" Grid.Row="2" Grid.Column="1" />
-        <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TaskTitleList}" Text="{Binding Title}" />
+        <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TaskTitleList}"
+                  Text="{Binding Title}" />
         <!--Start-->
         <Label Content="Start" Grid.Row="5" Grid.Column="1" />
         <Grid Row="5" Column="3">
@@ -79,8 +77,8 @@
         <TextBox Grid.Row="7" Grid.Column="3">
             <TextBox.Text>
                 <MultiBinding StringFormat="{}{0:D1} hrs {1:D1} min" Mode="OneWay">
-                    <Binding Path="Duration.Hours"/>
-                    <Binding Path="Duration.Minutes"/>
+                    <Binding Path="Duration.Hours" />
+                    <Binding Path="Duration.Minutes" />
                 </MultiBinding>
             </TextBox.Text>
         </TextBox>
@@ -92,6 +90,7 @@
         <TextBox Grid.Row="9" Grid.Column="3" Text="{Binding SubType}" />
         <!--Description-->
         <Label Content="Description" Grid.Row="10" Grid.Column="1" />
-        <TextBox Grid.Row="10" Grid.Column="3" MinHeight="60" Text="{Binding Description}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+        <TextBox Grid.Row="10" Grid.Column="3" MinHeight="60" Text="{Binding Description}" TextWrapping="Wrap"
+                 AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
     </Grid>
 </UserControl>

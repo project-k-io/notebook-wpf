@@ -17,8 +17,9 @@ namespace ProjectK.Notebook.Models.Versions.Version2
         public string Description { get; set; }
         public string Context { get; set; }
 
-        public TaskModel Copy() =>
-            new TaskModel
+        public TaskModel Copy()
+        {
+            return new TaskModel
             {
                 Id = Id,
                 ParentId = ParentId,
@@ -31,11 +32,12 @@ namespace ProjectK.Notebook.Models.Versions.Version2
                 Description = Description,
                 Context = Context
             };
+        }
 
 
         public static TaskModel NetTask()
         {
-            return new TaskModel { Id = Guid.NewGuid(), DateStarted = DateTime.Now };
+            return new TaskModel {Id = Guid.NewGuid(), DateStarted = DateTime.Now};
         }
 
         public override string ToString()

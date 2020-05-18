@@ -1,16 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
-using System.Windows.Input;
-using System.Windows.Media.Animation;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 using ProjectK.Logging;
-using ProjectK.Notebook.ViewModels;
-using ProjectK.Utils;
 using ProjectK.View.Helpers.Misc;
 
 namespace ProjectK.Notebook

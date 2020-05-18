@@ -49,7 +49,7 @@ namespace ProjectK.Notebook.Views
                 var sb = new StringBuilder();
                 var report = GenerateReport(project.SelectedTaskList).GenerateReport(maxDelta, dataContext.UseTimeOptimization);
                 var selectedTask = project.SelectedTask;
-                
+
                 if (selectedTask != null && selectedTask.Context == "Week")
                     AddHeader(selectedTask, sb);
 
@@ -77,7 +77,7 @@ namespace ProjectK.Notebook.Views
         public void AddHeader(TaskViewModel t, StringBuilder sb)
         {
             Logger.LogDebug("GenerateReport()");
-            if(t.SubTasks.IsNullOrEmpty() )
+            if (t.SubTasks.IsNullOrEmpty())
                 return;
 
             var firstTask = t.SubTasks.FirstOrDefault();

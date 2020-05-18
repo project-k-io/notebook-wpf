@@ -35,6 +35,9 @@ namespace ProjectK.ViewModels
 
         public ICommand ClickedCommand => new RelayCommand(OnClicked);
 
+
+        public string Image { get; set; }
+
         public event EventHandler Clicked;
 
         private void OnClicked()
@@ -44,10 +47,5 @@ namespace ProjectK.ViewModels
                 return;
             clicked(this, EventArgs.Empty);
         }
-
-
-        public string Image { get; set; }
-
     }
-
 }

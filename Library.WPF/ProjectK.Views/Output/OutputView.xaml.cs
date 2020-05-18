@@ -17,7 +17,6 @@ namespace ProjectK.Views.Output
         {
             InitializeComponent();
             Loaded += OnLoaded;
-
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -33,7 +32,7 @@ namespace ProjectK.Views.Output
                     if (args.NewItems == null || args.NewItems.Count <= 0) return;
 
                     var item = args.NewItems[0];
-                    if(item == null)
+                    if (item == null)
                         return;
 
                     ListViewMessages.ScrollIntoView(item);
@@ -43,7 +42,7 @@ namespace ProjectK.Views.Output
 
         private static void CopyCmdExecuted(object target, ExecutedRoutedEventArgs e)
         {
-            if(!(target is ListView listView))    
+            if (!(target is ListView listView))
                 return;
 
             var stringBuilder = new StringBuilder();

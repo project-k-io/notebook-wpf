@@ -4,10 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             xmlns:views="clr-namespace:ProjectK.Notebook.Views" 
-             d:DesignWidth="1000" 
-             d:DesignHeight="600"
-             >
+             xmlns:views="clr-namespace:ProjectK.Notebook.Views"
+             d:DesignWidth="1000"
+             d:DesignHeight="600">
     <UserControl.Resources>
         <Style x:Key="TextStyle" TargetType="{x:Type TextBlock}">
             <Style.Triggers>
@@ -31,35 +30,37 @@
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <ListView  Grid.Column="0"
-            SelectionChanged="ListViewTasks_SelectionChanged" 
-            ButtonBase.Click="ListViewTasks_OnClick"
-            x:Name="listViewTasks" 
-            SelectionMode="Extended"
-            ItemsSource="{Binding Path=Notebook.SelectedTaskList}"
-            SelectedItem="{Binding Path=Notebook.SelectedTask, IsAsync=true}">
+        <ListView Grid.Column="0"
+                  SelectionChanged="ListViewTasks_SelectionChanged"
+                  ButtonBase.Click="ListViewTasks_OnClick"
+                  x:Name="listViewTasks"
+                  SelectionMode="Extended"
+                  ItemsSource="{Binding Path=Notebook.SelectedTaskList}"
+                  SelectedItem="{Binding Path=Notebook.SelectedTask, IsAsync=true}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Context" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Context}" Style="{StaticResource TextStyle}">
-                                </TextBlock>
+                                <TextBlock Text="{Binding Context}" Style="{StaticResource TextStyle}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Type}" />
                     <GridViewColumn Header="Title" Width="200" DisplayMemberBinding="{Binding Title}" />
                     <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Description}" />
-                    <GridViewColumn Header="Started" Width="120" DisplayMemberBinding="{Binding DateStarted, StringFormat=g}" />
-                    <GridViewColumn Header="Ended" Width="120" DisplayMemberBinding="{Binding DateEnded, StringFormat=g}" />
-                    <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration, StringFormat=d\:hh\:mm}" />
+                    <GridViewColumn Header="Started" Width="120"
+                                    DisplayMemberBinding="{Binding DateStarted, StringFormat=g}" />
+                    <GridViewColumn Header="Ended" Width="120"
+                                    DisplayMemberBinding="{Binding DateEnded, StringFormat=g}" />
+                    <GridViewColumn Header="Duration" Width="100"
+                                    DisplayMemberBinding="{Binding Duration, StringFormat=d\:hh\:mm}" />
                     <GridViewColumn Header="Total" Width="100">
                         <GridViewColumn.DisplayMemberBinding>
                             <MultiBinding StringFormat="{}{0:D1} days {1:D1} hrs {2:D1} min" Mode="OneWay">
-                                <Binding Path="Total.Days"/>
-                                <Binding Path="Total.Hours"/>
-                                <Binding Path="Total.Minutes"/>
+                                <Binding Path="Total.Days" />
+                                <Binding Path="Total.Hours" />
+                                <Binding Path="Total.Minutes" />
                             </MultiBinding>
                         </GridViewColumn.DisplayMemberBinding>
                     </GridViewColumn>
@@ -67,10 +68,10 @@
             </ListView.View>
         </ListView>
 
-        <Grid Grid.Column="1" >
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Border Grid.Row="0" BorderThickness="2" BorderBrush="LightGray" CornerRadius="2" Margin="5">
                 <views:TaskView DataContext="{Binding Path=Notebook.SelectedTask}" BorderThickness="2" />
@@ -82,11 +83,11 @@
                         <RowDefinition Height="22" />
                         <RowDefinition Height="282" />
                     </Grid.RowDefinitions>
-                    <ComboBox Grid.Row="0" IsEditable="true" ItemsSource="{Binding Path=Notebook.ContextList}" Width="400" />
+                    <ComboBox Grid.Row="0" IsEditable="true" ItemsSource="{Binding Path=Notebook.ContextList}"
+                              Width="400" />
                     <Button Click="ButtonTest_Click" x:Name="buttonTest" Grid.Row="1" />
                 </Grid>
             </Border>
         </Grid>
     </Grid>
 </UserControl>
-    
