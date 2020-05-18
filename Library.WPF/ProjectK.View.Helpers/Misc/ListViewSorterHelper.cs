@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Utils;
 
 namespace ProjectK.View.Helpers.Misc
 {
@@ -38,7 +37,7 @@ namespace ProjectK.View.Helpers.Misc
             _lastDirection = direction;
         }
 
-        private void Sort(ListView lv, string sortBy, ListSortDirection direction)
+        private static void Sort(ItemsControl lv, string sortBy, ListSortDirection direction)
         {
             try
             {
