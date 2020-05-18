@@ -148,6 +148,7 @@ namespace ProjectK.Notebook
             var subKey = Registry.CurrentUser.CreateSubKey(registryPath);
             Output.SetValue = (key, value) => subKey.SetValue(key, value);
             Output.GetValue = (key, value) => subKey.GetValue(key, value);
+
             Output.UpdateFilter = () => CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
             Output.ReadSettings();
         }
