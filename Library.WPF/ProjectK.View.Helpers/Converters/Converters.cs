@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace ProjectK.Notebook.Views.Helpers
+namespace ProjectK.View.Helpers.Converters
 {
     public class LevelToIndentConverter : IValueConverter
     {

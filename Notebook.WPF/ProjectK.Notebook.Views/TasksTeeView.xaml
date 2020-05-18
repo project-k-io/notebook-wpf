@@ -8,6 +8,7 @@
              xmlns:treeViewList="clr-namespace:ProjectK.Notebook.Views.Controls.TreeViewList"
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
+             xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
              d:DataContext="{d:DesignInstance Type=design:DesignViewModel, IsDesignTimeCreatable=true}" 
              d:DesignWidth="545.465" d:DesignHeight="248.282"
              >
@@ -44,7 +45,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <helpers:LevelToIndentConverter x:Key="LevelIndentConverter" />
+        <converters:LevelToIndentConverter x:Key="LevelIndentConverter" />
         <DataTemplate x:Key="CellTemplateName">
             <DockPanel>
                 <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press"

@@ -8,6 +8,7 @@
               xmlns:helpers1="clr-namespace:ProjectK.Notebook.Views.Helpers;assembly=ProjectK.Notebook.Views"
               xmlns:views="clr-namespace:ProjectK.Notebook.Views;assembly=ProjectK.Notebook.Views"
               xmlns:views2="clr-namespace:ProjectK.Views;assembly=ProjectK.Views"
+              xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
               MinWidth="800" MinHeight="600" WindowStartupLocation="CenterOwner"
               Icon="/Images/apple_time_machine_alt.png"
               Title="{Binding Path=Title}" 
@@ -16,7 +17,7 @@
 
     <FrameworkElement.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <helpers1:Int32FromGridLengthConverter x:Key="GridLengthConverter" />
+        <converters:Int32FromGridLengthConverter x:Key="GridLengthConverter" />
     </FrameworkElement.Resources>
 
     <UIElement.InputBindings>
