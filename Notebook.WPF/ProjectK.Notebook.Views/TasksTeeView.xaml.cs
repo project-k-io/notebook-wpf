@@ -5,9 +5,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Notebook.Views.Controls.TreeViewList;
 using ProjectK.View.Helpers;
 using ProjectK.View.Helpers.Misc;
+using ProjectK.Views.TreeViewList;
 
 namespace ProjectK.Notebook.Views
 {

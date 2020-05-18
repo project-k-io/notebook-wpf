@@ -4,11 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             xmlns:helpers="clr-namespace:ProjectK.Notebook.Views.Helpers"
-             xmlns:treeViewList="clr-namespace:ProjectK.Notebook.Views.Controls.TreeViewList"
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
              xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
+             xmlns:treeViewList="clr-namespace:ProjectK.Views.TreeViewList;assembly=ProjectK.Views"
              d:DataContext="{d:DesignInstance Type=design:DesignViewModel, IsDesignTimeCreatable=true}" 
              d:DesignWidth="545.465" d:DesignHeight="248.282"
              >

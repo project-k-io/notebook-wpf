@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace ProjectK.Notebook.Views.Helpers
+namespace ProjectK.Views
 {
     public static class TreeViewHelper
     {

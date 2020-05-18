@@ -5,7 +5,6 @@
               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               mc:Ignorable="d"
               xmlns:io="clr-namespace:System.IO;assembly=System.IO.FileSystem"
-              xmlns:helpers1="clr-namespace:ProjectK.Notebook.Views.Helpers;assembly=ProjectK.Notebook.Views"
               xmlns:views="clr-namespace:ProjectK.Notebook.Views;assembly=ProjectK.Notebook.Views"
               xmlns:views2="clr-namespace:ProjectK.Views;assembly=ProjectK.Views"
               xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace ProjectK.Notebook.Views.Controls.TreeViewList
+namespace ProjectK.Views.TreeViewList
 {
     public class TreeListViewItem : TreeViewItem
     {
