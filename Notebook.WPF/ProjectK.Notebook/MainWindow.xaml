@@ -14,7 +14,6 @@
         d:DesignWidth="1200" d:DesignHeight="800">
 
     <FrameworkElement.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <converters:Int32FromGridLengthConverter x:Key="GridLengthConverter" />
     </FrameworkElement.Resources>
 
