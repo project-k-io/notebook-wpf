@@ -13,6 +13,7 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
+using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
@@ -148,7 +149,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void OnGenerateReportChanged()
         {
-            GenerateReportChanged?.Invoke(this, EventArgs.Empty);
+            this.GenerateReport(Logger);
         }
 
         public void UseSettings()
@@ -274,7 +275,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Events
 
-        public event EventHandler<EventArgs> GenerateReportChanged;
         public event EventHandler<TaskEventArgs> SelectedTaskChanged;
 
         #endregion
