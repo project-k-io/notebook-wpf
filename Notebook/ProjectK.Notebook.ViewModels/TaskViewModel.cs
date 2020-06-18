@@ -463,7 +463,8 @@ namespace ProjectK.Notebook.ViewModels
         {
             var state = getState();
             
-            if(keyboardKeys != KeyboardKeys.None)
+            // don't show logging ctl, alt, shift or arrow keys
+            if(keyboardKeys != KeyboardKeys.None && state != KeyboardStates.None)
                 Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
 
             switch (keyboardKeys)
