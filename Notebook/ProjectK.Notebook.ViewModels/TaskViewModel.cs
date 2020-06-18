@@ -462,7 +462,11 @@ namespace ProjectK.Notebook.ViewModels
             Action<Action> dispatcher)
         {
             var state = getState();
-            Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
+            
+            // don't show logging ctl, alt, shift or arrow keys
+            if(keyboardKeys != KeyboardKeys.None && state != KeyboardStates.None)
+                Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
+
             switch (keyboardKeys)
             {
                 case KeyboardKeys.Insert:
