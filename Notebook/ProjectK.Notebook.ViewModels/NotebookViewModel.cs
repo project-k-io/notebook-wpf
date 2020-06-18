@@ -133,7 +133,7 @@ namespace ProjectK.Notebook.ViewModels
 
             foreach (var task in tasks)
                 if (!(task.ParentId == Guid.Empty))
-                    sortedList[task.ParentId].SubTasks.Add(sortedList[task.Id]);
+                    sortedList[task.ParentId].Add(sortedList[task.Id]);
         }
 
         public void SaveTo(Models.Versions.Version2.DataModel model)
