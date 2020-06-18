@@ -462,7 +462,10 @@ namespace ProjectK.Notebook.ViewModels
             Action<Action> dispatcher)
         {
             var state = getState();
-            Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
+            
+            if(keyboardKeys != KeyboardKeys.None)
+                Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
+
             switch (keyboardKeys)
             {
                 case KeyboardKeys.Insert:

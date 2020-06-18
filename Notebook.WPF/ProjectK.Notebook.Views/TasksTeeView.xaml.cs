@@ -52,11 +52,12 @@ namespace ProjectK.Notebook.Views
         private void OnTreeViewKeyDown(object sender, KeyEventArgs e)
         {
             var keyState = GetKeyState(e.Key);
-            Debug.WriteLine("treeViewTasks_KeyDown");
             if (!(sender is TreeListView treeView))
                 return;
+
             if (!(treeView.DataContext is DomainViewModel dataContext))
                 return;
+
             if (!(treeView.SelectedItem is TaskViewModel task))
                 task = dataContext.RootTask;
 
