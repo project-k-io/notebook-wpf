@@ -7,7 +7,7 @@ namespace ProjectK.Notebook.Views
 {
     public partial class TasksListView : UserControl
     {
-        private readonly ListViewSorterHelper _helper = new ListViewSorterHelper();
+        private readonly ListViewSorterHelper _sorterHelper = new ListViewSorterHelper();
 
         public TasksListView()
         {
@@ -17,22 +17,16 @@ namespace ProjectK.Notebook.Views
 
         private void TasksListView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!(DataContext is DomainViewModel dataContext))
+            if (!(DataContext is DomainViewModel model))
                 return;
-            listViewTasks.SelectedItem = dataContext.Notebook.SelectedTask;
+
+            listViewTasks.SelectedItem = model.Notebook.SelectedTask;
         }
 
-        private void ButtonTest_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void ListViewTasks_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-        }
 
         private void ListViewTasks_OnClick(object sender, RoutedEventArgs e)
         {
-            _helper.Clicked(this, sender, e);
+            _sorterHelper.Clicked(this, sender, e);
         }
     }
 }
