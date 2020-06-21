@@ -209,6 +209,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         public TaskViewModel LastSubTask => SubTasks.LastOrDefault();
+        // ToDo: Improve allocation, maybe allocate only when you needed?
         public ObservableCollection<TaskViewModel> SubTasks { get; set; } = new ObservableCollection<TaskViewModel>();
 
         #endregion
@@ -279,14 +280,13 @@ namespace ProjectK.Notebook.ViewModels
             return subTask;
         }
 
-        public TaskViewModel Add(TaskViewModel subTask)
+        public void Add(TaskViewModel subTask)
         {
             if (subTask.Title == "Time Tracker2")
                 Logger.LogDebug(subTask.Title);
 
             subTask.Parent = this;
             SubTasks.Add(subTask);
-            return subTask;
         }
 
         private void Insert(int index, TaskViewModel subTask)
