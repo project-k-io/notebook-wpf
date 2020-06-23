@@ -76,7 +76,7 @@
                 </GridViewColumn.CellTemplate>
             </GridViewColumn>
         </GridViewColumnCollection>
-        <Style x:Key="treeListViewItem" TargetType="{x:Type treeViewList:TreeListViewItem}">
+        <Style x:Key="TreeListViewItemStyle" TargetType="{x:Type treeViewList:TreeListViewItem}">
             <Setter Property="TreeViewItem.IsSelected" Value="{Binding Path=IsSelected}" />
             <Setter Property="TreeViewItem.IsExpanded" Value="{Binding Path=IsExpanded}" />
             <Setter Property="Control.Template">
@@ -87,11 +87,12 @@
                                     BorderBrush="{TemplateBinding Control.BorderBrush}"
                                     BorderThickness="{TemplateBinding Control.BorderThickness}"
                                     Padding="{TemplateBinding Control.Padding}">
+
                                 <GridViewRowPresenter x:Name="PART_Header"
                                                       Content="{TemplateBinding HeaderedItemsControl.Header}"
                                                       Columns="{StaticResource Columns}" />
                             </Border>
-                            <ItemsPresenter x:Name="ItemsHost" />
+                            <ItemsPresenter x:Name="ItemsHost"/>
                         </StackPanel>
                         <ControlTemplate.Triggers>
                             <Trigger Property="TreeViewItem.IsExpanded" Value="false">
@@ -138,7 +139,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="TreeListView" TargetType="{x:Type treeViewList:TreeListView}">
+        <Style x:Key="TreeListViewStyle" TargetType="{x:Type treeViewList:TreeListView}">
             <Setter Property="Control.Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type treeViewList:TreeListView}">
@@ -160,11 +161,13 @@
                                       DataType="{x:Type viewModels:TaskViewModel}"
                                       ItemsSource="{Binding Path=SubTasks}" />
         </FrameworkElement.Resources>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                      FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
+                      >
             <treeViewList:TreeListView x:Name="TreeViewTasks"
                                        SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
-                                       ItemContainerStyle="{StaticResource treeListViewItem}"
-                                       Style="{StaticResource TreeListView}"
+                                       ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
+                                       Style="{StaticResource TreeListViewStyle}"
                                        ItemsSource="{Binding Path=RootTask.SubTasks}" />
         </ScrollViewer>
     </Grid>
