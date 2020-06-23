@@ -161,7 +161,9 @@
                                       DataType="{x:Type viewModels:TaskViewModel}"
                                       ItemsSource="{Binding Path=SubTasks}" />
         </FrameworkElement.Resources>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                      FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
+                      >
             <treeViewList:TreeListView x:Name="TreeViewTasks"
                                        SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
                                        ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
