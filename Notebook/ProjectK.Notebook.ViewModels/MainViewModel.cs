@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -20,12 +21,12 @@ using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class DomainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<DomainViewModel>();
+        private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
 
 
-        public DomainViewModel()
+        public MainViewModel()
         {
             CanSave = true;
             TypeList = new ObservableCollection<string>();
@@ -263,6 +264,8 @@ namespace ProjectK.Notebook.ViewModels
             OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
 
+
+
         #region Fields
 
         private string _excelCsvText;
@@ -294,6 +297,9 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Properties
+        public Assembly Assembly { get; set; } 
+
+        public string Title => Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + DataFile;
 
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }

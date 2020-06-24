@@ -89,7 +89,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             sb.AppendLine();
         }
 
-        public static void GenerateReport(this DomainViewModel dataContext, ILogger logger)
+        public static void GenerateReport(this MainViewModel dataContext, ILogger logger)
         {
             logger.LogDebug("GenerateReport()");
             try

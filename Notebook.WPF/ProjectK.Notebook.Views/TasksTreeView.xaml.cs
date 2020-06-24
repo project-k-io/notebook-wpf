@@ -36,7 +36,7 @@ namespace ProjectK.Notebook.Views
 
         private void TasksTreeView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!(DataContext is DomainViewModel dataContext))
+            if (!(DataContext is MainViewModel dataContext))
                 return;
 
             dataContext.RootTask.SetParents();
@@ -55,7 +55,7 @@ namespace ProjectK.Notebook.Views
             if (!(sender is TreeListView treeView))
                 return;
 
-            if (!(treeView.DataContext is DomainViewModel dataContext))
+            if (!(treeView.DataContext is MainViewModel dataContext))
                 return;
 
             if (!(treeView.SelectedItem is TaskViewModel task))
@@ -111,7 +111,7 @@ namespace ProjectK.Notebook.Views
         {
             if (!(sender is TreeListView treeListView))
                 return;
-            if (!(treeListView.DataContext is DomainViewModel dataContext))
+            if (!(treeListView.DataContext is MainViewModel dataContext))
                 return;
             var task = treeListView.SelectedItem as TaskViewModel ?? dataContext.RootTask;
             dataContext.SelectTreeTask(task);

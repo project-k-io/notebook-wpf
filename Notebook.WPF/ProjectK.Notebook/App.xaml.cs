@@ -1,7 +1,10 @@
-﻿using System.Windows;
+﻿using System.Reflection;
+using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Extensions;
+using ProjectK.Notebook.ViewModels;
 
 namespace ProjectK.Notebook
 {
@@ -24,8 +27,10 @@ namespace ProjectK.Notebook
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            _mainModel.Assembly = Assembly.GetExecutingAssembly();
             _mainModel.InitLogging();
             _logger = LogManager.GetLogger<App>();
+
             _mainModel.InitOutput();
 
             // MainWindow

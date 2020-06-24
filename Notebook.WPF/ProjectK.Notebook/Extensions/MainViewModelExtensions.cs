@@ -2,7 +2,6 @@
 using System.Configuration;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,89 +11,83 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
-using ProjectK.Notebook.Extensions;
 using ProjectK.Notebook.ViewModels;
-using ProjectK.Utils;
-using ProjectK.Utils.Extensions;
 
-namespace ProjectK.Notebook
+namespace ProjectK.Notebook.Extensions
 {
-    internal class MainViewModel : DomainViewModel
+    public static class MainViewModelExtensions
     {
-        private bool _canSave;
-        private ILogger _logger;
-        private Assembly Assembly { get; } = Assembly.GetExecutingAssembly();
+        private static ILogger _logger;
 
-        public string Title => Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + DataFile;
 
-        public CommandBindingCollection CreateCommandBindings()
+        public static CommandBindingCollection CreateCommandBindings(this MainViewModel model)
         {
             var commandBindings = new CommandBindingCollection
             {
-                new CommandBinding(ApplicationCommands.New, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.Open, async (s, e) => await UserOpenFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.Save, async (s, e) => await UserSaveFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await UserSaveFileAsAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.Close, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true)
+                new CommandBinding(ApplicationCommands.New, async (s, e) => await model.UserNewFileAsync(), (s, e) => e.CanExecute = true),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await model.UserOpenFileAsync(), (s, e) => e.CanExecute = true),
+                new CommandBinding(ApplicationCommands.Save, async (s, e) => await model.UserSaveFileAsync(), (s, e) => e.CanExecute = true),
+                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await model.UserSaveFileAsAsync(), (s, e) => e.CanExecute = true),
+                new CommandBinding(ApplicationCommands.Close, async (s, e) => await model.UserNewFileAsync(), (s, e) => e.CanExecute = true)
             };
             return commandBindings;
         }
 
-        private void UI_FileOpenOldFormat()
+        private static void UI_FileOpenOldFormat(this MainViewModel model)
         {
             _logger.LogDebug("UserOpenFileAsync()");
             var dialog = new OpenFileDialog();
-            var r = SetFileDialog(dialog, DataFile);
+            var r = SetFileDialog(dialog, model.DataFile);
             if (!r.ok)
                 return;
 
-            DataFile = r.fileName;
-            FileOpenOldFormat();
+            model.DataFile = r.fileName;
+            model.FileOpenOldFormat();
         }
 
 
-        private async Task UserOpenFileAsync()
+        private static async Task UserOpenFileAsync(this MainViewModel model)
         {
             _logger.LogDebug("UserOpenFileAsync()");
             var dialog = new OpenFileDialog();
-            var r = SetFileDialog(dialog, DataFile);
+            var r = SetFileDialog(dialog, model.DataFile);
             if (!r.ok)
                 return;
 
-            await OpenFileAsync(r.fileName); // User clicked open file
+            await model.OpenFileAsync(r.fileName); // User clicked open file
         }
 
-        private async Task UserSaveFileAsync()
+        private static async Task UserSaveFileAsync(this MainViewModel model)
         {
-            if (File.Exists(DataFile))
-                await SaveFileAsync(); // User Save
+            if (File.Exists(model.DataFile))
+                await model.SaveFileAsync(); // User Save
             else
-                await UserSaveFileAsAsync();
+                await model.UserSaveFileAsAsync();
         }
 
-        private async Task UserSaveFileAsAsync()
+        private static async Task UserSaveFileAsAsync(this MainViewModel model)
         {
             var dialog = new SaveFileDialog();
-            var r = SetFileDialog(dialog, DataFile);
+            var r = SetFileDialog(dialog, model.DataFile);
             if (!r.ok)
                 return;
 
-            DataFile = r.fileName;
-            await SaveFileAsync(); // Save As
+            model.DataFile = r.fileName;
+            await model.SaveFileAsync(); // Save As
         }
 
-        public async Task OpenFileAsync()
+        public static async Task OpenFileAsync(this MainViewModel model)
         {
             _logger.LogDebug("OpenFileAsync");
-            var path = DataFile;
+            var path = model.DataFile;
             if (!File.Exists(path))
-                await UserOpenFileAsync();
+                await model.UserOpenFileAsync();
             else
-                await OpenFileAsync(path);
+                await model.OpenFileAsync(path);
         }
 
 
-        public (string fileName, bool ok) SetFileDialog(FileDialog dialog, string path)
+        public static (string fileName, bool ok) SetFileDialog(FileDialog dialog, string path)
         {
             var directoryName = Path.GetDirectoryName(path);
             if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName)) dialog.InitialDirectory = directoryName;
@@ -113,14 +106,14 @@ namespace ProjectK.Notebook
             return (dialog.FileName, true);
         }
 
-        public void InitLogging()
+        public static void InitLogging(this MainViewModel model)
         {
             try
             {
                 var serviceProvider = new ServiceCollection()
                     .AddLogging(logging => logging.AddConsole())
                     .AddLogging(logging => logging.AddDebug())
-                    .AddLogging(logging => logging.AddProvider(new OutputLoggerProvider(Output.LogEvent)))
+                    .AddLogging(logging => logging.AddProvider(new OutputLoggerProvider(model.Output.LogEvent)))
                     .Configure<LoggerFilterOptions>(o => o.MinLevel = LogLevel.Debug)
                     .BuildServiceProvider();
 
@@ -134,13 +127,13 @@ namespace ProjectK.Notebook
             }
         }
 
-        public void InitOutput()
+        public static void InitOutput(this MainViewModel model)
         {
             // MainModel
-            Output.UpdateFilter = () => CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
+            model.Output.UpdateFilter = () => CollectionViewSource.GetDefaultView(model.Output.Records).Filter = o => model.Output.Filter(o);
         }
 
-        public void LoadSettings(Window window)
+        public static void LoadSettings(this MainViewModel model, Window window)
         {
             // ISSUE: variable of a compiler-generated type
             try
@@ -154,19 +147,19 @@ namespace ProjectK.Notebook
                 window.Width = appSettings.GetDouble("MainWindowWidth", 800);
                 window.Height = appSettings.GetDouble("MainWindowHeight", 400d);
                 // model settings
-                Layout.NavigatorWidth = appSettings.GetInt("LayoutNavigatorWidth", 200);
-                LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
-                LastTreeTaskId = appSettings.GetGuid("LastTreeTaskId", Guid.Empty);
-                DataFile = appSettings.GetString("RecentFile", "New Data");
+                model.Layout.NavigatorWidth = appSettings.GetInt("LayoutNavigatorWidth", 200);
+                model.LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
+                model.LastTreeTaskId = appSettings.GetGuid("LastTreeTaskId", Guid.Empty);
+                model.DataFile = appSettings.GetString("RecentFile", "New Data");
                 // Output
-                Output.OutputButtonErrors.IsChecked = appSettings.GetBool("OutputError", false);
-                Output.OutputButtonDebug.IsChecked = appSettings.GetBool("OutputDebug", false);
-                Output.OutputButtonMessages.IsChecked = appSettings.GetBool("OutputInfo", false);
-                Output.OutputButtonWarnings.IsChecked = appSettings.GetBool("OutputWarning", false);
+                model.Output.OutputButtonErrors.IsChecked = appSettings.GetBool("OutputError", false);
+                model.Output.OutputButtonDebug.IsChecked = appSettings.GetBool("OutputDebug", false);
+                model.Output.OutputButtonMessages.IsChecked = appSettings.GetBool("OutputInfo", false);
+                model.Output.OutputButtonWarnings.IsChecked = appSettings.GetBool("OutputWarning", false);
 
-                MostRecentFiles.Clear();
-                if (File.Exists(DataFile))
-                    MostRecentFiles.Add(new FileInfo(DataFile));
+                model.MostRecentFiles.Clear();
+                if (File.Exists(model.DataFile))
+                    model.MostRecentFiles.Add(new FileInfo(model.DataFile));
             }
             catch (Exception ex)
             {
@@ -174,7 +167,7 @@ namespace ProjectK.Notebook
             }
         }
 
-        public void SaveSettings(Window window)
+        public static void SaveSettings(this MainViewModel model, Window window)
         {
             _logger.LogDebug("SaveSettings()");
             try
@@ -183,7 +176,7 @@ namespace ProjectK.Notebook
                 var settings = configFile.AppSettings.Settings;
 
 
-                PrepareSettings();
+                model.PrepareSettings();
 
                 // ISSUE: variable of a compiler-generated type
                 if (window.WindowState != WindowState.Minimized)
@@ -192,18 +185,18 @@ namespace ProjectK.Notebook
                     settings.SetValue("MainWindowLeft", window.Left.ToString(CultureInfo.InvariantCulture));
                     settings.SetValue("MainWindowWidth", window.Width.ToString(CultureInfo.InvariantCulture));
                     settings.SetValue("MainWindowHeight", window.Height.ToString(CultureInfo.InvariantCulture));
-                    settings.SetValue("LayoutNavigatorWidth", Layout.NavigatorWidth.ToString(CultureInfo.InvariantCulture));
+                    settings.SetValue("LayoutNavigatorWidth", model.Layout.NavigatorWidth.ToString(CultureInfo.InvariantCulture));
                 }
 
-                settings.SetValue("RecentFile", DataFile);
-                settings.SetValue("LastListTaskId", LastListTaskId.ToString());
-                settings.SetValue("LastTreeTaskId", LastTreeTaskId.ToString());
+                settings.SetValue("RecentFile", model.DataFile);
+                settings.SetValue("LastListTaskId", model.LastListTaskId.ToString());
+                settings.SetValue("LastTreeTaskId", model.LastTreeTaskId.ToString());
                 settings.SetValue("MainWindowState", window.WindowState.ToString());
 
-                settings.SetValue("OutputError", Output.OutputButtonErrors.IsChecked.ToString());
-                settings.SetValue("OutputDebug", Output.OutputButtonDebug.IsChecked.ToString());
-                settings.SetValue("OutputInfo", Output.OutputButtonMessages.IsChecked.ToString());
-                settings.SetValue("OutputWarning", Output.OutputButtonWarnings.IsChecked.ToString());
+                settings.SetValue("OutputError", model.Output.OutputButtonErrors.IsChecked.ToString());
+                settings.SetValue("OutputDebug", model.Output.OutputButtonDebug.IsChecked.ToString());
+                settings.SetValue("OutputInfo", model.Output.OutputButtonMessages.IsChecked.ToString());
+                settings.SetValue("OutputWarning", model.Output.OutputButtonWarnings.IsChecked.ToString());
 
                 configFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
@@ -214,20 +207,20 @@ namespace ProjectK.Notebook
             }
         }
 
-        public async Task StartSavingAsync()
+        public static async Task StartSavingAsync(this MainViewModel model)
         {
-            _canSave = true;
-            while (_canSave)
+            model.CanSave = true;
+            while (model.CanSave)
             {
-                await SaveModifiedFileAsync();
+                await model.SaveModifiedFileAsync();
                 await Task.Run(() => Thread.Sleep(5000));
             }
         }
 
 
-        public void StopSaving()
+        public static void StopSaving(this MainViewModel model)
         {
-            _canSave = false;
+            model.CanSave = false;
         }
     }
 }
