@@ -3,25 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Utils.Extensions;
 
-namespace ProjectK.Notebook.ViewModels.Extensions
+namespace ProjectK.Notebook.ViewModels.Reports
 {
-    public static class ReportExtensions
+    public  class WorksheetReport
     {
-        // private static readonly ILogger Logger = LogManager.GetLogger<ReportExtensions>();
+        private static readonly ILogger Logger = LogManager.GetLogger<WorksheetReport>();
 
-#if AK
-                if (!(DataContext is DomainViewModel dataContext))
-                    return;
-
-
-#endif
-        public static ReportModule GenerateReport(IList<TaskViewModel> list)
+        private  ReportModule GenerateReport(IList<TaskViewModel> list)
         {
             var sortedList1 = new SortedList<string, SortedList<string, List<TaskViewModel>>>();
             foreach (var taskViewModel in list)
@@ -61,7 +54,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             return reportModule;
         }
 
-        private static void AddHeader(TaskViewModel t, StringBuilder sb, ILogger logger)
+        private  void AddHeader(TaskViewModel t, StringBuilder sb, ILogger logger)
         {
             logger.LogDebug("GenerateReport()");
             if (t.SubTasks.IsNullOrEmpty())
@@ -89,20 +82,20 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             sb.AppendLine();
         }
 
-        public static void GenerateReport(this MainViewModel dataContext, ILogger logger)
+        public  void GenerateReport(MainViewModel model)
         {
-            logger.LogDebug("GenerateReport()");
+            Logger.LogDebug("GenerateReport()");
             try
             {
-                var project = dataContext.Notebook;
+                var project = model.Notebook;
                 var maxDelta = 40.0 / 5.0 * project.GetSelectedDays().Count;
 
                 var sb = new StringBuilder();
-                var report = GenerateReport(project.SelectedTaskList).GenerateReport(maxDelta, dataContext.UseTimeOptimization);
+                var report = GenerateReport(project.SelectedTaskList).GenerateReport(maxDelta, model.UseTimeOptimization);
                 var selectedTask = project.SelectedTask;
 
                 if (selectedTask != null && selectedTask.Context == "Week")
-                    AddHeader(selectedTask, sb, logger);
+                    AddHeader(selectedTask, sb, Logger);
 
                 sb.Append(report);
                 if (project.SelectedTask != null && project.SelectedTask.Context == "Week")
@@ -113,15 +106,15 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     if (lastTask != null)
                     {
                         var dateStarted = lastTask.DateStarted;
-                        File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", dataContext.Report);
+                        File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", model.Report);
                     }
                 }
 
-                dataContext.Report = sb.ToString();
+                model.Report = sb.ToString();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex);
+                Logger.LogError(ex);
             }
         }
     }

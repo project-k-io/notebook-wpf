@@ -14,7 +14,7 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Notebook.ViewModels.Extensions;
+using ProjectK.Notebook.ViewModels.Reports;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
@@ -24,7 +24,6 @@ namespace ProjectK.Notebook.ViewModels
     public class MainViewModel : ViewModelBase
     {
         private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
-
 
         public MainViewModel()
         {
@@ -43,7 +42,6 @@ namespace ProjectK.Notebook.ViewModels
             ContinueTaskCommand = new RelayCommand(ContinueTask);
         }
 
-
         public void FileOpenOldFormat()
         {
             //AK Notebook.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
@@ -54,7 +52,6 @@ namespace ProjectK.Notebook.ViewModels
             await FileHelper.SaveToFileAsync(Notebook, DataFile);
         }
 
-
         public async Task OpenFileAsync(string path)
         {
             DataFile = path;
@@ -63,18 +60,15 @@ namespace ProjectK.Notebook.ViewModels
             Notebook.LoadFrom(_data?.Copy());
             UseSettings();
         }
-
         public async Task SaveFileAsync()
         {
             Logger.LogDebug("SaveFileAsync");
             await SaveFileAsync((a, b) => false);
         }
-
         public async Task SaveModifiedFileAsync()
         {
             await SaveFileAsync((a, b) => a.IsSame(b));
         }
-
         private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
         {
             var newData = new DataModel();
@@ -90,7 +84,6 @@ namespace ProjectK.Notebook.ViewModels
             _data.Copy(newData);
             await FileHelper.SaveToFileAsync(_data, path);
         }
-
         public async Task UpdateTypeListAsync()
         {
             await Task.Run(() =>
@@ -122,7 +115,6 @@ namespace ProjectK.Notebook.ViewModels
                 foreach (var str in sortedSet3) TaskTitleList.Add(str);
             });
         }
-
         public async Task UserNewFileAsync()
         {
             Logger.LogDebug("UserNewFileAsync");
@@ -139,7 +131,6 @@ namespace ProjectK.Notebook.ViewModels
             DataFile = path;
             CanSave = true;
         }
-
         public void OnSelectedTaskChanged(TaskViewModel task)
         {
             SelectedTaskChanged?.Invoke(this, new TaskEventArgs
@@ -147,18 +138,16 @@ namespace ProjectK.Notebook.ViewModels
                 Task = task
             });
         }
-
         public void OnGenerateReportChanged()
         {
-            this.GenerateReport(Logger);
+            WorksheetReport report = new WorksheetReport();
+            report.GenerateReport(this);
         }
-
         public void UseSettings()
         {
             Notebook.SelectTreeTask(LastListTaskId);
             Notebook.SelectTask(LastTreeTaskId);
         }
-
         public void PrepareSettings()
         {
             if (Notebook.SelectedTask != null) LastListTaskId = Notebook.SelectedTask.Id;
@@ -167,7 +156,6 @@ namespace ProjectK.Notebook.ViewModels
 
             LastTreeTaskId = Notebook.SelectedTreeTask.Id;
         }
-
         public void SelectTreeTask(TaskViewModel task)
         {
             task.TypeList = TypeList;
@@ -176,7 +164,6 @@ namespace ProjectK.Notebook.ViewModels
             Notebook.SelectTreeTask(task);
             OnGenerateReportChanged();
         }
-
         public void CopyExcelCsvText()
         {
             var stringReader = new StringReader(ExcelCsvText);
@@ -242,7 +229,6 @@ namespace ProjectK.Notebook.ViewModels
                 taskViewModel1.SubTasks.Add(taskViewModel2);
             }
         }
-
         public void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
             Notebook.SelectedTask.KeyboardAction(
@@ -253,17 +239,14 @@ namespace ProjectK.Notebook.ViewModels
                 () => true,
                 OnDispatcher);
         }
-
         public void CopyTask()
         {
             OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
         }
-
         public void ContinueTask()
         {
             OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
-
 
 
         #region Fields
