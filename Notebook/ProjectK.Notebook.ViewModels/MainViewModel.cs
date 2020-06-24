@@ -118,11 +118,20 @@ namespace ProjectK.Notebook.ViewModels
                 Task = task
             });
         }
+        WorksheetReport _worksheetReport = new WorksheetReport();
         public void OnGenerateReportChanged()
         {
-            WorksheetReport report = new WorksheetReport();
-            report.GenerateReport(this);
+            switch (ReportType)
+            {
+                case ReportTypes.Worksheet:
+                    _worksheetReport.GenerateReport(this);
+                    break;
+                case ReportTypes.Notes:
+                    // / _worksheetReport.GenerateReport(this);
+                    break;
+            }
         }
+
         public void PrepareSettings()
         {
             if (Notebook.SelectedTask != null) LastListTaskId = Notebook.SelectedTask.Id;
@@ -260,6 +269,7 @@ namespace ProjectK.Notebook.ViewModels
         private string _report;
         private bool _useTimeOptimization;
         private DataModel _data;
+        private ReportTypes _reportType = ReportTypes.Notes;
 
         #endregion
 
@@ -284,10 +294,19 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Properties
+
+
+        public ReportTypes ReportType 
+        {
+            get => _reportType;
+            set
+            {
+                if (!Set(ref _reportType, value)) return;
+            }
+        }
+
         public Assembly Assembly { get; set; } 
-
         public string Title => Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + DataFile;
-
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
         public LayoutViewModel Layout { get; } = new LayoutViewModel();

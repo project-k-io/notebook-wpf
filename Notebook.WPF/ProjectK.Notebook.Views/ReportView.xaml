@@ -3,15 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d">
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             xmlns:enums="clr-namespace:ProjectK.Notebook.ViewModels.Enums;assembly=ProjectK.Notebook.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignWidth="400" d:DesignHeight="300"
+             >
+    <UserControl.Resources>
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="ExampleEnumValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:ReportTypes" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
     <Grid>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ToolBar Grid.Row="0">
-            <CheckBox Content="Optimize" IsChecked="{Binding UseTimeOptimization}"
-                      Command="{Binding CommandGenerateReport}" />
+            <CheckBox Content="Optimize" IsChecked="{Binding UseTimeOptimization}" Command="{Binding CommandGenerateReport}" />
+            <Separator/>
+            <ComboBox ItemsSource="{Binding Source={StaticResource ExampleEnumValues}}" 
+                      SelectedValue="{Binding ReportType}" 
+                      Width="100"
+                      
+                      />
         </ToolBar>
         <TextBox TextWrapping="Wrap" AcceptsReturn="true" FontFamily="Courier New" Grid.Row="1" Text="{Binding Report}" />
     </Grid>
