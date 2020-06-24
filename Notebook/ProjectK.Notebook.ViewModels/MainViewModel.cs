@@ -118,7 +118,10 @@ namespace ProjectK.Notebook.ViewModels
                 Task = task
             });
         }
-        WorksheetReport _worksheetReport = new WorksheetReport();
+
+        readonly WorksheetReport _worksheetReport = new WorksheetReport();
+        readonly NotesReport _notesReport = new NotesReport();
+
         public void OnGenerateReportChanged()
         {
             switch (ReportType)
@@ -127,7 +130,7 @@ namespace ProjectK.Notebook.ViewModels
                     _worksheetReport.GenerateReport(this);
                     break;
                 case ReportTypes.Notes:
-                    // / _worksheetReport.GenerateReport(this);
+                    _notesReport.GenerateReport(this);
                     break;
             }
         }

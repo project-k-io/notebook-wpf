@@ -16,39 +16,39 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
         private  ReportModule GenerateReport(IList<TaskViewModel> list)
         {
-            var sortedList1 = new SortedList<string, SortedList<string, List<TaskViewModel>>>();
-            foreach (var taskViewModel in list)
-                if (!(taskViewModel.Context != "Task") && !string.IsNullOrEmpty(taskViewModel.Type) &&
-                    !taskViewModel.IsSubTypeSleep)
+            var sortedList = new SortedList<string, SortedList<string, List<TaskViewModel>>>();
+            foreach (var item in list)
+                if (item.Context == "Task" && !string.IsNullOrEmpty(item.Type) &&
+                    !item.IsSubTypeSleep)
                 {
-                    if (!sortedList1.ContainsKey(taskViewModel.Type))
-                        sortedList1.Add(taskViewModel.Type, new SortedList<string, List<TaskViewModel>>());
-                    var sortedList2 = sortedList1[taskViewModel.Type];
-                    if (!sortedList2.ContainsKey(taskViewModel.Title))
-                        sortedList2.Add(taskViewModel.Title, new List<TaskViewModel>());
-                    sortedList2[taskViewModel.Title].Add(taskViewModel);
+                    if (!sortedList.ContainsKey(item.Type))
+                        sortedList.Add(item.Type, new SortedList<string, List<TaskViewModel>>());
+                    var sortedList2 = sortedList[item.Type];
+                    if (!sortedList2.ContainsKey(item.Title))
+                        sortedList2.Add(item.Title, new List<TaskViewModel>());
+                    sortedList2[item.Title].Add(item);
                 }
 
             var reportModule = new ReportModule();
-            foreach (var keyValuePair1 in sortedList1)
+            foreach (var kv1 in sortedList)
             {
-                var key1 = keyValuePair1.Key;
-                var reportRecord1 = new ReportRecord { Type = key1, Text = key1 };
-                reportModule.Records.Add(reportRecord1);
-                foreach (var keyValuePair2 in keyValuePair1.Value)
+                var key1 = kv1.Key;
+                var record = new ReportRecord { Type = key1, Text = key1 };
+                reportModule.Records.Add(record);
+                foreach (var kv2 in kv1.Value)
                 {
-                    var key2 = keyValuePair2.Key;
-                    var taskViewModelList = keyValuePair2.Value;
+                    var key2 = kv2.Key;
+                    var tasks = kv2.Value;
                     var timeSpan = new TimeSpan();
-                    foreach (var taskViewModel in taskViewModelList)
-                        timeSpan += taskViewModel.Duration;
-                    var reportRecord2 = new ReportRecord { Level = 2, Text = key2, Duration = timeSpan };
-                    reportRecord2.Type = key1;
-                    reportRecord1.Duration += reportRecord2.Duration;
-                    reportModule.Records.Add(reportRecord2);
+                    foreach (var task in tasks)
+                        timeSpan += task.Duration;
+                    var record2 = new ReportRecord { Level = 2, Text = key2, Duration = timeSpan };
+                    record2.Type = key1;
+                    record.Duration += record2.Duration;
+                    reportModule.Records.Add(record2);
                 }
 
-                reportModule.TotalRecord.Duration += reportRecord1.Duration;
+                reportModule.TotalRecord.Duration += record.Duration;
             }
 
             return reportModule;
