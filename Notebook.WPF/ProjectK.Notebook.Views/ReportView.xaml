@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              xmlns:enums="clr-namespace:ProjectK.Notebook.ViewModels.Enums;assembly=ProjectK.Notebook.ViewModels"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignWidth="400" d:DesignHeight="300"
              >
@@ -24,12 +25,25 @@
         <ToolBar Grid.Row="0">
             <CheckBox Content="Optimize" IsChecked="{Binding UseTimeOptimization}" Command="{Binding CommandGenerateReport}" />
             <Separator/>
-            <ComboBox ItemsSource="{Binding Source={StaticResource ExampleEnumValues}}" 
-                      SelectedValue="{Binding ReportType}" 
+            <ComboBox ItemsSource="{Binding Source={StaticResource ExampleEnumValues}}"
+                      SelectedItem="{Binding ReportType}" 
                       Width="100"
-                      
-                      />
+                      >
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="SelectionChanged">
+                        <b:InvokeCommandAction  Command="{Binding ShowReportCommand}" CommandParameter="{Binding ReportType}"></b:InvokeCommandAction>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+            </ComboBox>
+
         </ToolBar>
-        <TextBox TextWrapping="Wrap" AcceptsReturn="true" FontFamily="Courier New" Grid.Row="1" Text="{Binding Report}" />
+        <TextBox VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+            TextWrapping="Wrap" 
+            AcceptsTab="True"
+            MaxLength="40"
+            AcceptsReturn="true" 
+            FontFamily="Courier New" 
+            Grid.Row="1" 
+            Text="{Binding Report}" />
     </Grid>
 </UserControl>

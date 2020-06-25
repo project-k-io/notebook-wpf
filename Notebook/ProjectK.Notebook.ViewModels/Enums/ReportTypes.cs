@@ -7,6 +7,8 @@ namespace ProjectK.Notebook.ViewModels.Enums
         [Description("Worksheet")]
         Worksheet,
         [Description("Notes")]
-        Notes
+        Notes,
+        [Description("Rich Text")]
+        RichText
     }
 }

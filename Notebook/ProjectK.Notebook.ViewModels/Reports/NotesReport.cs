@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
+using ProjectK.Utils;
 using LoggerExtensions = Microsoft.Extensions.Logging.LoggerExtensions;
 
 namespace ProjectK.Notebook.ViewModels.Reports
@@ -22,6 +23,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
                 var sb = new StringBuilder();
                 GenerateReport(model.Notebook.SelectedTask, sb, 0);
+
                 model.Report = sb.ToString();
             }
             catch (Exception ex)
@@ -32,19 +34,38 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
         private void GenerateReport(TaskViewModel node, StringBuilder sb, int offset)
         {
+            const int Max = 80;
             if(node == null)
                 return;
 
-            sb.Append(new string(' ', offset * 2));
+            var description = string.IsNullOrEmpty(node.Description) ? "" : node.Description;
 
-            if(string.IsNullOrEmpty(node.Description))
+            if (string.IsNullOrEmpty(description))
+            {
+                sb.Append(new string(' ', offset));
                 sb.AppendLine(node.Title);
+            }
             else
-                sb.AppendLine(node.Description);
+            {
+                if (description.Length > Max)
+                {
+                    var  lines =  StringHelper.ConvertTextInMultipleLines(description, Max);
+                    foreach (var line in lines)
+                    {
+                        sb.Append(new string(' ', offset));
+                        sb.AppendLine(line);
+                    }
+                }
+                else
+                {
+                    sb.Append(new string(' ', offset));
+                    sb.AppendLine(description);
+                }
+            }
 
             foreach (var subTask in node.SubTasks)
             {
-                GenerateReport(subTask, sb, offset + 1);
+                GenerateReport(subTask, sb, offset + 2);
             }
         }
     }

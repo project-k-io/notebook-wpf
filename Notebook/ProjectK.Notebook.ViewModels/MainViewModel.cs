@@ -40,7 +40,9 @@ namespace ProjectK.Notebook.ViewModels
             FixTypesCommand = new RelayCommand(Notebook.FixTypes);
             CopyTaskCommand = new RelayCommand(CopyTask);
             ContinueTaskCommand = new RelayCommand(ContinueTask);
+            ShowReportCommand = new RelayCommand<ReportTypes>(ShowReport);
         }
+
 
         #region Public functions
         public void FileOpenOldFormat()
@@ -262,6 +264,11 @@ namespace ProjectK.Notebook.ViewModels
         {
             OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
+        private void ShowReport(ReportTypes reportType)
+        {
+            Logger.LogDebug($"Show Report: {reportType}");
+            OnGenerateReportChanged();
+        }
 
         #endregion
 
@@ -293,6 +300,8 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand FixTypesCommand { get; }
         public ICommand CopyTaskCommand { get; }
         public ICommand ContinueTaskCommand { get; }
+        public ICommand ShowReportCommand { get; }
+
 
         #endregion
 
