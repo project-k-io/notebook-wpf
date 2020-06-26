@@ -18,7 +18,9 @@ namespace ProjectK.Utils.Tests
             // Arrange
             var text  = "with disruptive business models and/or that are building products and services for markets / demographics that have historically been underserved\r\n";
             var line0 = "with disruptive business models and/or that are building products and services ";
-            var line1 = "for markets / demographics that have historically been underserved\r\n";
+            var line1 = "for markets / demographics that have historically been underserved";
+            var line2 = "";
+
 
             var maxLength = 80;
 
@@ -29,9 +31,10 @@ namespace ProjectK.Utils.Tests
             //AK double actual = account.Balance;
             //AK Assert.AreEqual(expected, actual, 0.001, "Account not debited correctly");
 
-            Assert.AreEqual(lines.Count, 2);
+            Assert.AreEqual(lines.Count, 3);
             Assert.AreEqual(lines[0], line0);
             Assert.AreEqual(lines[1], line1);
+            Assert.AreEqual(lines[2], line2);
         }
     }
 }

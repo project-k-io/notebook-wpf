@@ -24,13 +24,15 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 var sb = new StringBuilder();
                 GenerateReport(model.Notebook.SelectedTask, sb, 0);
 
-                model.Report = sb.ToString();
+                model.TextReport = sb.ToString();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
         }
+
+        private const char SpaceChar = ' ';
 
         private void GenerateReport(TaskViewModel node, StringBuilder sb, int offset)
         {
@@ -42,7 +44,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
             if (string.IsNullOrEmpty(description))
             {
-                sb.Append(new string(' ', offset));
+                sb.Append(new string(SpaceChar, offset));
                 sb.AppendLine(node.Title);
             }
             else
@@ -52,13 +54,13 @@ namespace ProjectK.Notebook.ViewModels.Reports
                     var  lines =  StringHelper.ConvertTextInMultipleLines(description, Max);
                     foreach (var line in lines)
                     {
-                        sb.Append(new string(' ', offset));
+                        sb.Append(new string(SpaceChar, offset));
                         sb.AppendLine(line);
                     }
                 }
                 else
                 {
-                    sb.Append(new string(' ', offset));
+                    sb.Append(new string(SpaceChar, offset));
                     sb.AppendLine(description);
                 }
             }

@@ -21,7 +21,7 @@
         <KeyBinding Command="Help" Key="F1" />
     </UIElement.InputBindings>
 
-    <Border BorderThickness="2" BorderBrush="Black" Margin="5">
+    <Border BorderThickness="1" BorderBrush="LightGray" Margin="2" CornerRadius="3">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

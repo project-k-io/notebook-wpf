@@ -112,6 +112,7 @@
                      Text="{Binding Description}" 
                      TextWrapping="Wrap"
                      AcceptsReturn="True" 
+                     SpellCheck.IsEnabled="True"
                      VerticalScrollBarVisibility="Auto"/>
         </Grid>
     </Grid>

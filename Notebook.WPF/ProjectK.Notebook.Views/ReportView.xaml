@@ -37,13 +37,16 @@
             </ComboBox>
 
         </ToolBar>
-        <TextBox VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-            TextWrapping="Wrap" 
+        <TextBox 
+            VerticalScrollBarVisibility="Auto" 
+            HorizontalScrollBarVisibility="Auto"
             AcceptsTab="True"
-            MaxLength="40"
-            AcceptsReturn="true" 
+            SpellCheck.IsEnabled="True"
+            TextWrapping="Wrap"
+            AcceptsReturn="True" 
             FontFamily="Courier New" 
             Grid.Row="1" 
-            Text="{Binding Report}" />
+            Text="{Binding TextReport}" 
+            />
     </Grid>
 </UserControl>

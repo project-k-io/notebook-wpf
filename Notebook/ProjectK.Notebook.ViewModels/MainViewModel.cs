@@ -276,7 +276,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private string _excelCsvText;
         private string _dataFile = "";
-        private string _report;
+        private string _textReport;
         private bool _useTimeOptimization;
         private DataModel _data;
         private ReportTypes _reportType = ReportTypes.Notes;
@@ -335,10 +335,10 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public string Report
+        public string TextReport
         {
-            get => _report;
-            set => Set(ref _report, value);
+            get => _textReport;
+            set => Set(ref _textReport, value);
         }
 
         public string ExcelCsvText

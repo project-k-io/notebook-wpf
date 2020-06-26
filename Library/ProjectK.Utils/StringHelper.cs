@@ -10,13 +10,22 @@ namespace ProjectK.Utils
     {
         public static List<string> ConvertTextInMultipleLines(string text, int maxLength)
         {
-            if (text.Length <= maxLength)
-                return null;
-
-
+            var separators = new[] {"\r\n", "\r", "\n"};
+            var paragraphs = text.Split(separators, StringSplitOptions.None);
             var lines = new List<string>();
-            var words = text.Split(" ");
+            foreach (var paragraph in paragraphs)
+            {
+                var paragraphLines = ConvertTextInMultipleLines(paragraph, maxLength, ' ');
+                lines.AddRange(paragraphLines);
+            }
 
+            return lines;
+        }
+        
+        public static List<string> ConvertTextInMultipleLines(string text, int maxLength, char separator)
+        {
+            var lines = new List<string>();
+            var words = text.Split(separator, StringSplitOptions.None);
             var sb = new StringBuilder();
             for(var i = 0; i < words.Length; i++)
             {
@@ -33,9 +42,7 @@ namespace ProjectK.Utils
                     sb.Append(" ");
             }
 
-            if (sb.Length > 0)
-                lines.Add(sb.ToString());
-
+            lines.Add(sb.ToString());
 
             return lines;
         }
