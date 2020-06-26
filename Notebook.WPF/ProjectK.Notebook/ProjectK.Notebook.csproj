@@ -9,7 +9,9 @@
     <Product>Notebook</Product>
     <Description>To manage projects</Description>
     <Copyright>Project K, Inc</Copyright>
-    <Version>1.4.2</Version>
+    <Version>1.4.3</Version>
+    <PackageId>ProjectK.Notebook</PackageId>
+    <PackageReleaseNotes>New Text Report</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
