@@ -15,4 +15,8 @@
     <ProjectReference Include="..\ProjectK.Notebook.Models\ProjectK.Notebook.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>

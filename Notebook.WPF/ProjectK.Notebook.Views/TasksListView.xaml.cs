@@ -17,7 +17,7 @@ namespace ProjectK.Notebook.Views
 
         private void TasksListView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!(DataContext is DomainViewModel model))
+            if (!(DataContext is MainViewModel model))
                 return;
 
             listViewTasks.SelectedItem = model.Notebook.SelectedTask;

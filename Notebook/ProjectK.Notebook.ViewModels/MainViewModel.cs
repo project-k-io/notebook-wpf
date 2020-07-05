@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -13,19 +14,18 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Notebook.ViewModels.Extensions;
+using ProjectK.Notebook.ViewModels.Reports;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class DomainViewModel : ViewModelBase
+    public class MainViewModel : ViewModelBase
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<DomainViewModel>();
+        private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
 
-
-        public DomainViewModel()
+        public MainViewModel()
         {
             CanSave = true;
             TypeList = new ObservableCollection<string>();
@@ -40,20 +40,15 @@ namespace ProjectK.Notebook.ViewModels
             FixTypesCommand = new RelayCommand(Notebook.FixTypes);
             CopyTaskCommand = new RelayCommand(CopyTask);
             ContinueTaskCommand = new RelayCommand(ContinueTask);
+            ShowReportCommand = new RelayCommand<ReportTypes>(ShowReport);
         }
 
 
+        #region Public functions
         public void FileOpenOldFormat()
         {
             //AK Notebook.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
         }
-
-        public async Task FileSaveOldFormatAsync()
-        {
-            await FileHelper.SaveToFileAsync(Notebook, DataFile);
-        }
-
-
         public async Task OpenFileAsync(string path)
         {
             DataFile = path;
@@ -62,34 +57,15 @@ namespace ProjectK.Notebook.ViewModels
             Notebook.LoadFrom(_data?.Copy());
             UseSettings();
         }
-
         public async Task SaveFileAsync()
         {
             Logger.LogDebug("SaveFileAsync");
             await SaveFileAsync((a, b) => false);
         }
-
         public async Task SaveModifiedFileAsync()
         {
             await SaveFileAsync((a, b) => a.IsSame(b));
         }
-
-        private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
-        {
-            var newData = new DataModel();
-            Notebook.SaveTo(newData);
-
-            _data ??= new DataModel();
-            if (isSame(_data, newData))
-                return;
-
-            var path = DataFile;
-            FileHelper.SaveFileToLog(path);
-
-            _data.Copy(newData);
-            await FileHelper.SaveToFileAsync(_data, path);
-        }
-
         public async Task UpdateTypeListAsync()
         {
             await Task.Run(() =>
@@ -121,7 +97,6 @@ namespace ProjectK.Notebook.ViewModels
                 foreach (var str in sortedSet3) TaskTitleList.Add(str);
             });
         }
-
         public async Task UserNewFileAsync()
         {
             Logger.LogDebug("UserNewFileAsync");
@@ -138,7 +113,6 @@ namespace ProjectK.Notebook.ViewModels
             DataFile = path;
             CanSave = true;
         }
-
         public void OnSelectedTaskChanged(TaskViewModel task)
         {
             SelectedTaskChanged?.Invoke(this, new TaskEventArgs
@@ -147,15 +121,20 @@ namespace ProjectK.Notebook.ViewModels
             });
         }
 
+        readonly WorksheetReport _worksheetReport = new WorksheetReport();
+        readonly NotesReport _notesReport = new NotesReport();
+
         public void OnGenerateReportChanged()
         {
-            this.GenerateReport(Logger);
-        }
-
-        public void UseSettings()
-        {
-            Notebook.SelectTreeTask(LastListTaskId);
-            Notebook.SelectTask(LastTreeTaskId);
+            switch (ReportType)
+            {
+                case ReportTypes.Worksheet:
+                    _worksheetReport.GenerateReport(this);
+                    break;
+                case ReportTypes.Notes:
+                    _notesReport.GenerateReport(this);
+                    break;
+            }
         }
 
         public void PrepareSettings()
@@ -166,7 +145,6 @@ namespace ProjectK.Notebook.ViewModels
 
             LastTreeTaskId = Notebook.SelectedTreeTask.Id;
         }
-
         public void SelectTreeTask(TaskViewModel task)
         {
             task.TypeList = TypeList;
@@ -176,7 +154,34 @@ namespace ProjectK.Notebook.ViewModels
             OnGenerateReportChanged();
         }
 
-        public void CopyExcelCsvText()
+        #endregion
+
+        #region Private functions
+        private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
+        {
+            var newData = new DataModel();
+            Notebook.SaveTo(newData);
+
+            _data ??= new DataModel();
+            if (isSame(_data, newData))
+                return;
+
+            var path = DataFile;
+            FileHelper.SaveFileToLog(path);
+
+            _data.Copy(newData);
+            await FileHelper.SaveToFileAsync(_data, path);
+        }
+        private async Task FileSaveOldFormatAsync()
+        {
+            await FileHelper.SaveToFileAsync(Notebook, DataFile);
+        }
+        private void UseSettings()
+        {
+            Notebook.SelectTreeTask(LastListTaskId);
+            Notebook.SelectTask(LastTreeTaskId);
+        }
+        private void CopyExcelCsvText()
         {
             var stringReader = new StringReader(ExcelCsvText);
             var excelCsvRecordList = new List<ExcelCsvRecord>();
@@ -206,7 +211,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectedTreeTask.SubTasks.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) {Context = "Task"};
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) { Context = "Task" };
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;
@@ -241,8 +246,7 @@ namespace ProjectK.Notebook.ViewModels
                 taskViewModel1.SubTasks.Add(taskViewModel2);
             }
         }
-
-        public void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
+        private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
             Notebook.SelectedTask.KeyboardAction(
                 keyboardKeys,
@@ -252,24 +256,30 @@ namespace ProjectK.Notebook.ViewModels
                 () => true,
                 OnDispatcher);
         }
-
-        public void CopyTask()
+        private void CopyTask()
         {
             OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
         }
-
-        public void ContinueTask()
+        private void ContinueTask()
         {
             OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
+        private void ShowReport(ReportTypes reportType)
+        {
+            Logger.LogDebug($"Show Report: {reportType}");
+            OnGenerateReportChanged();
+        }
+
+        #endregion
 
         #region Fields
 
         private string _excelCsvText;
         private string _dataFile = "";
-        private string _report;
+        private string _textReport;
         private bool _useTimeOptimization;
         private DataModel _data;
+        private ReportTypes _reportType = ReportTypes.Notes;
 
         #endregion
 
@@ -290,11 +300,25 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand FixTypesCommand { get; }
         public ICommand CopyTaskCommand { get; }
         public ICommand ContinueTaskCommand { get; }
+        public ICommand ShowReportCommand { get; }
+
 
         #endregion
 
         #region Properties
 
+
+        public ReportTypes ReportType 
+        {
+            get => _reportType;
+            set
+            {
+                if (!Set(ref _reportType, value)) return;
+            }
+        }
+
+        public Assembly Assembly { get; set; } 
+        public string Title => Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + DataFile;
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
         public LayoutViewModel Layout { get; } = new LayoutViewModel();
@@ -311,10 +335,10 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public string Report
+        public string TextReport
         {
-            get => _report;
-            set => Set(ref _report, value);
+            get => _textReport;
+            set => Set(ref _textReport, value);
         }
 
         public string ExcelCsvText

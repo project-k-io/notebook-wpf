@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.Utils.csproj" />
-    <ProjectReference Include="..\ProjectK.Notebook.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 
 namespace ProjectK.Notebook.ViewModels.Design
 {
-    public class DesignViewModel : DomainViewModel
+    public class DesignViewModel : MainViewModel
     {
         public DesignViewModel()
         {

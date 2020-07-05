@@ -2,6 +2,8 @@
 using System.Windows.Controls;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Extensions;
+using ProjectK.Notebook.ViewModels;
 using ProjectK.View.Helpers.Misc;
 
 namespace ProjectK.Notebook
