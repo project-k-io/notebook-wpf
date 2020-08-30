@@ -8,6 +8,7 @@
         xmlns:views="clr-namespace:ProjectK.Notebook.Views;assembly=ProjectK.Notebook.Views"
         xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
         xmlns:output="clr-namespace:ProjectK.Views.Output;assembly=ProjectK.Views"
+        xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
         MinWidth="800" MinHeight="600" WindowStartupLocation="CenterOwner"
         Icon="/Images/apple_time_machine_alt.png"
         Title="{Binding Path=Title}"
@@ -25,8 +26,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="2*" />
-                <RowDefinition Height="1*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <Ribbon x:Name="Ribbon" Title="Ribbon Title">
@@ -98,12 +98,7 @@
                     </RibbonGroup>
                 </RibbonTab>
             </Ribbon>
-            <Grid Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding Path=Layout.NavigatorWidth, Mode=TwoWay, Converter={StaticResource GridLengthConverter}}" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="400" />
-                </Grid.ColumnDefinitions>
+            <syncfusion:DockingManager Grid.Row="1">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -121,7 +116,6 @@
                         <Calendar SelectedDatesChanged="Calendar_OnSelectedDatesChanged" SelectionMode="MultipleRange" />
                     </Expander>
                 </Grid>
-                <GridSplitter VerticalAlignment="Stretch" Width="5" Grid.Column="0" HorizontalAlignment="Right" />
                 <TabControl Grid.Column="1">
                     <TabItem Header="Report View">
                         <views:ReportView />
@@ -153,11 +147,9 @@
                         </Grid>
                     </Border>
                 </Grid>
-
-            </Grid>
-            <Border Grid.Row="2" Margin="5" BorderThickness="2">
                 <output:OutputView DataContext="{Binding Output}" />
-            </Border>
+
+            </syncfusion:DockingManager>
         </Grid>
     </Border>
 
