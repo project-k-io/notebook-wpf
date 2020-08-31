@@ -1,10 +1,14 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Xml;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Extensions;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.View.Helpers.Misc;
+using Syncfusion.Windows.Shared;
+using Syncfusion.Windows.Tools.Controls;
 
 namespace ProjectK.Notebook
 {
@@ -33,6 +37,17 @@ namespace ProjectK.Notebook
             if (!(sender is Calendar calendar)) return;
             model.Notebook.UpdateSelectDayTasks(calendar.SelectedDates);
             model.OnGenerateReportChanged();
+        }
+
+
+
+
+        private void DockingManager_OnDockStateChanged(FrameworkElement sender, DockStateEventArgs e)
+        {
+            if (e.NewState == DockState.Hidden)
+            {
+                DockingManager.Children.Remove(sender);
+            }
         }
     }
 }

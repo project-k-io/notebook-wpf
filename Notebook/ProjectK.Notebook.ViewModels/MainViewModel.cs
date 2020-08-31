@@ -321,7 +321,6 @@ namespace ProjectK.Notebook.ViewModels
         public string Title => Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + DataFile;
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
-        public LayoutViewModel Layout { get; } = new LayoutViewModel();
         public NotebookViewModel Notebook { get; } = new NotebookViewModel();
         public TaskViewModel RootTask => Notebook.RootTask;
 

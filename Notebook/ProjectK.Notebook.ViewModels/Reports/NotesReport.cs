@@ -36,7 +36,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
         private void GenerateReport(TaskViewModel node, StringBuilder sb, int offset)
         {
-            const int Max = 80;
+            const int max = 80;
             if(node == null)
                 return;
 
@@ -49,9 +49,9 @@ namespace ProjectK.Notebook.ViewModels.Reports
             }
             else
             {
-                if (description.Length > Max)
+                if (description.Length > max)
                 {
-                    var  lines =  StringHelper.ConvertTextInMultipleLines(description, Max);
+                    var  lines =  StringHelper.ConvertTextInMultipleLines(description, max);
                     foreach (var line in lines)
                     {
                         sb.Append(new string(SpaceChar, offset));

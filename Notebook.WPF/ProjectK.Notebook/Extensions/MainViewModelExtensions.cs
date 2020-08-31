@@ -25,7 +25,7 @@ namespace ProjectK.Notebook.Extensions
             var commandBindings = new CommandBindingCollection
             {
                 new CommandBinding(ApplicationCommands.New, async (s, e) => await model.UserNewFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.Open, async (s, e) => await model.UserOpenFileAsync(), (s, e) => e.CanExecute = true),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) =>  await model.UserOpenFileAsync(), (s, e) => e.CanExecute = true),
                 new CommandBinding(ApplicationCommands.Save, async (s, e) => await model.UserSaveFileAsync(), (s, e) => e.CanExecute = true),
                 new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await model.UserSaveFileAsAsync(), (s, e) => e.CanExecute = true),
                 new CommandBinding(ApplicationCommands.Close, async (s, e) => await model.UserNewFileAsync(), (s, e) => e.CanExecute = true)
@@ -133,24 +133,29 @@ namespace ProjectK.Notebook.Extensions
             model.Output.UpdateFilter = () => CollectionViewSource.GetDefaultView(model.Output.Records).Filter = o => model.Output.Filter(o);
         }
 
-        public static void LoadSettings(this MainViewModel model, Window window)
+        public static void LoadSettings(this AppViewModel model, Window window)
         {
             // ISSUE: variable of a compiler-generated type
             try
             {
                 var appSettings = ConfigurationManager.AppSettings;
                 _logger.LogDebug("LoadSettings");
+
                 // window settings
                 window.WindowState = appSettings.GetEnumValue("MainWindowState", WindowState.Normal);
                 window.Top = appSettings.GetDouble("MainWindowTop", 100);
                 window.Left = appSettings.GetDouble("MainWindowLeft", 100);
                 window.Width = appSettings.GetDouble("MainWindowWidth", 800);
                 window.Height = appSettings.GetDouble("MainWindowHeight", 400d);
+
+                // dock
+                model.LoadDockLayout(null);
+
                 // model settings
-                model.Layout.NavigatorWidth = appSettings.GetInt("LayoutNavigatorWidth", 200);
                 model.LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
                 model.LastTreeTaskId = appSettings.GetGuid("LastTreeTaskId", Guid.Empty);
                 model.DataFile = appSettings.GetString("RecentFile", "New Data");
+
                 // Output
                 model.Output.OutputButtonErrors.IsChecked = appSettings.GetBool("OutputError", false);
                 model.Output.OutputButtonDebug.IsChecked = appSettings.GetBool("OutputDebug", false);
@@ -167,7 +172,7 @@ namespace ProjectK.Notebook.Extensions
             }
         }
 
-        public static void SaveSettings(this MainViewModel model, Window window)
+        public static void SaveSettings(this AppViewModel model, Window window)
         {
             _logger.LogDebug("SaveSettings()");
             try
@@ -179,20 +184,25 @@ namespace ProjectK.Notebook.Extensions
                 model.PrepareSettings();
 
                 // ISSUE: variable of a compiler-generated type
+                // window settings
                 if (window.WindowState != WindowState.Minimized)
                 {
                     settings.SetValue("MainWindowTop", window.Top.ToString(CultureInfo.InvariantCulture));
                     settings.SetValue("MainWindowLeft", window.Left.ToString(CultureInfo.InvariantCulture));
                     settings.SetValue("MainWindowWidth", window.Width.ToString(CultureInfo.InvariantCulture));
                     settings.SetValue("MainWindowHeight", window.Height.ToString(CultureInfo.InvariantCulture));
-                    settings.SetValue("LayoutNavigatorWidth", model.Layout.NavigatorWidth.ToString(CultureInfo.InvariantCulture));
                 }
 
+                // dock
+                model.SaveDockLayout(null);
+
+                // model settings
                 settings.SetValue("RecentFile", model.DataFile);
                 settings.SetValue("LastListTaskId", model.LastListTaskId.ToString());
                 settings.SetValue("LastTreeTaskId", model.LastTreeTaskId.ToString());
                 settings.SetValue("MainWindowState", window.WindowState.ToString());
 
+                // Output
                 settings.SetValue("OutputError", model.Output.OutputButtonErrors.IsChecked.ToString());
                 settings.SetValue("OutputDebug", model.Output.OutputButtonDebug.IsChecked.ToString());
                 settings.SetValue("OutputInfo", model.Output.OutputButtonMessages.IsChecked.ToString());

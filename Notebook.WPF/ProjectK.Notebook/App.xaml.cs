@@ -5,17 +5,19 @@ using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Extensions;
 using ProjectK.Notebook.ViewModels;
+using Syncfusion.Licensing;
 
 namespace ProjectK.Notebook
 {
     public partial class App : Application
     {
         private static ILogger _logger;
-        private readonly MainViewModel _mainModel = new MainViewModel();
+        private readonly AppViewModel _mainModel = new AppViewModel();
         private MainWindow _mainWindow;
 
         public App()
         {
+            SyncfusionLicenseProvider.RegisterLicense("MzEwNjY0QDMxMzgyZTMyMmUzMEdzZjVJbzlJbzdSTkNLWWJuNFlPRWlZOXBOWkZNc0N0cnVTRm9PcXVBNEE9");
             DispatcherUnhandledException += OnDispatcherUnhandledException;
         }
 
