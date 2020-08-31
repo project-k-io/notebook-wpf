@@ -13,28 +13,27 @@ namespace ProjectK.Utils
     {
         private static readonly ILogger Logger = LogManager.GetLogger<FileHelper>();
 
-        public static (string path, bool ok) GetNewLogFileName(string path)
+        public static (string path, bool ok) GetNewFileName(string path, string folderName, string suffix)
         {
             try
             {
                 if (!File.Exists(path))
                     return ("", false);
 
-                var suffix = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
                 var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directoryName = Path.GetDirectoryName(path);
-                var logs = string.IsNullOrWhiteSpace(directoryName) ? "Logs" : Path.Combine(directoryName, "Logs");
+                var subFolder = string.IsNullOrWhiteSpace(directoryName) ? folderName : Path.Combine(directoryName, folderName);
 
-                if (!Directory.Exists(logs))
-                    Directory.CreateDirectory(logs);
+                if (!Directory.Exists(subFolder))
+                    Directory.CreateDirectory(subFolder);
 
-                logs = string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? logs : Path.Combine(logs, fileNameWithoutExtension);
-                if (!Directory.Exists(logs))
-                    Directory.CreateDirectory(logs);
+                subFolder = string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? subFolder : Path.Combine(subFolder, fileNameWithoutExtension);
+                if (!Directory.Exists(subFolder))
+                    Directory.CreateDirectory(subFolder);
 
                 var fileName = $"{suffix}{extension}";
-                var destFileName = Path.Combine(logs, fileName);
+                var destFileName = Path.Combine(subFolder, fileName);
                 return (destFileName, true);
             }
             catch (Exception ex)
@@ -42,6 +41,11 @@ namespace ProjectK.Utils
                 Debug.WriteLine(ex);
                 return ("", false);
             }
+        }
+        public static (string path, bool ok) GetNewLogFileName(string path)
+        {
+            var suffix = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+            return GetNewFileName(path, "Logs", suffix);
         }
 
 

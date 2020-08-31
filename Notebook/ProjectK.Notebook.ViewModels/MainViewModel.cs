@@ -41,7 +41,9 @@ namespace ProjectK.Notebook.ViewModels
             CopyTaskCommand = new RelayCommand(CopyTask);
             ContinueTaskCommand = new RelayCommand(ContinueTask);
             ShowReportCommand = new RelayCommand<ReportTypes>(ShowReport);
+            ExportSelectedAllAsTextCommand = new RelayCommand(async() => await ExportSelectedAllAsText());
         }
+
 
 
         #region Public functions
@@ -62,6 +64,17 @@ namespace ProjectK.Notebook.ViewModels
             Logger.LogDebug("SaveFileAsync");
             await SaveFileAsync((a, b) => false);
         }
+
+        private async Task ExportSelectedAllAsText()
+        {
+            var path = DataFile;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", Notebook.SelectedTask.Title);
+            if(!ok)
+                return;
+
+            await File.WriteAllTextAsync(exportPath, TextReport);
+        }
+
         public async Task SaveModifiedFileAsync()
         {
             await SaveFileAsync((a, b) => a.IsSame(b));
@@ -301,6 +314,7 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand CopyTaskCommand { get; }
         public ICommand ContinueTaskCommand { get; }
         public ICommand ShowReportCommand { get; }
+        public ICommand ExportSelectedAllAsTextCommand { get; }
 
 
         #endregion
@@ -308,7 +322,7 @@ namespace ProjectK.Notebook.ViewModels
         #region Properties
 
 
-        public ReportTypes ReportType 
+        public ReportTypes ReportType
         {
             get => _reportType;
             set
@@ -317,7 +331,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public Assembly Assembly { get; set; } 
+        public Assembly Assembly { get; set; }
         public string Title => Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + DataFile;
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }

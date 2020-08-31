@@ -103,6 +103,11 @@
                                       SmallImageSource="Images\open16.png" ToolTip="LoadDockLayout Dock layout"
                         />
                 </RibbonGroup>
+                <RibbonGroup Header="Export Text">
+                    <RibbonButton Command="{Binding Path=ExportSelectedAllAsTextCommand}" Label="Save Selected"
+                                  SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Text"
+                    />
+                </RibbonGroup>
             </RibbonTab>
         </Ribbon>
         <syncfusion:DockingManager 
