@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
@@ -83,8 +85,12 @@ namespace ProjectK.Utils
                     case ".JSON":
                     {
                         await using var fs = File.Create(path);
-                        var option = new JsonSerializerOptions {WriteIndented = true};
-                        await JsonSerializer.SerializeAsync(fs, model, option);
+                        var options = new JsonSerializerOptions
+                        {
+                            Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
+                            WriteIndented = true
+                        };
+                        await JsonSerializer.SerializeAsync(fs, model, options);
                         break;
                     }
                 }
