@@ -87,8 +87,8 @@ namespace ProjectK.Utils
                         await using var fs = File.Create(path);
                         var options = new JsonSerializerOptions
                         {
-                            Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
-                            WriteIndented = true
+                            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                            WriteIndented = true,
                         };
                         await JsonSerializer.SerializeAsync(fs, model, options);
                         break;
