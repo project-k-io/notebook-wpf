@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
@@ -37,6 +39,9 @@ namespace ProjectK.Notebook
 
             // MainWindow
             _mainWindow = new MainWindow {DataContext = _mainModel};
+            _mainWindow.Closing += async (s1,e1) => await MainWindowOnClosing(s1, e1);
+        
+
 
             // Show MainWindow
             _mainModel.LoadSettings(_mainWindow);
@@ -48,12 +53,16 @@ namespace ProjectK.Notebook
             await _mainModel.StartSavingAsync();
         }
 
-        protected override async void OnExit(ExitEventArgs e)
+        private async Task MainWindowOnClosing(object sender, CancelEventArgs e)
         {
-            base.OnExit(e);
             _mainModel.SaveSettings(_mainWindow);
             _mainModel.StopSaving();
             await _mainModel.SaveFileAsync(); // Exit
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
             _mainWindow.Close();
             Shutdown();
         }
