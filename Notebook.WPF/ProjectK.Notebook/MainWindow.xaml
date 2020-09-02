@@ -104,9 +104,12 @@
                         />
                 </RibbonGroup>
                 <RibbonGroup Header="Export Text">
-                    <RibbonButton Command="{Binding Path=ExportSelectedAllAsTextCommand}" Label="Save Selected"
-                                  SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Text"
-                    />
+                    <RibbonButton Command="{Binding Path=ExportSelectedAllAsTextCommand}" Label="Export Selected as Text"
+                                  SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Text"/>
+                    <RibbonButton Command="{Binding Path=ExportSelectedAllAsJsonCommand}" Label="Export Selected as Json"
+                                  SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Data"/>
+                    <RibbonButton Command="{Binding Path=ImportToSelectedAsJsonCommand}" Label="Import To Selected as Json"
+                                  SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Data"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

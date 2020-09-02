@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.ViewModels;
+using ProjectK.Notebook.ViewModels.Extensions;
 
 namespace ProjectK.Notebook.Extensions
 {
@@ -37,7 +38,7 @@ namespace ProjectK.Notebook.Extensions
         {
             _logger.LogDebug("UserOpenFileAsync()");
             var dialog = new OpenFileDialog();
-            var r = SetFileDialog(dialog, model.DataFile);
+            var r = dialog.SetFileDialog(model.DataFile);
             if (!r.ok)
                 return;
 
@@ -50,7 +51,7 @@ namespace ProjectK.Notebook.Extensions
         {
             _logger.LogDebug("UserOpenFileAsync()");
             var dialog = new OpenFileDialog();
-            var r = SetFileDialog(dialog, model.DataFile);
+            var r = dialog.SetFileDialog(model.DataFile);
             if (!r.ok)
                 return;
 
@@ -68,7 +69,7 @@ namespace ProjectK.Notebook.Extensions
         private static async Task UserSaveFileAsAsync(this MainViewModel model)
         {
             var dialog = new SaveFileDialog();
-            var r = SetFileDialog(dialog, model.DataFile);
+            var r = dialog.SetFileDialog(model.DataFile);
             if (!r.ok)
                 return;
 
@@ -87,24 +88,6 @@ namespace ProjectK.Notebook.Extensions
         }
 
 
-        public static (string fileName, bool ok) SetFileDialog(FileDialog dialog, string path)
-        {
-            var directoryName = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName)) dialog.InitialDirectory = directoryName;
-
-            var fileName = Path.GetFileNameWithoutExtension(path);
-            if (!string.IsNullOrEmpty(fileName)) dialog.FileName = fileName;
-
-            dialog.DefaultExt = ".json";
-            dialog.Filter = "Json documents (.json)|*.json" +
-                            "|XML documents(.xml) | *.xml";
-
-            var result = dialog.ShowDialog();
-            if (result != true)
-                return ("", false);
-
-            return (dialog.FileName, true);
-        }
 
         public static void InitLogging(this MainViewModel model)
         {

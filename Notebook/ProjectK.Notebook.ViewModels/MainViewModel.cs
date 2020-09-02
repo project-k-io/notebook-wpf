@@ -10,10 +10,12 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
+using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Reports;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
@@ -42,6 +44,8 @@ namespace ProjectK.Notebook.ViewModels
             ContinueTaskCommand = new RelayCommand(ContinueTask);
             ShowReportCommand = new RelayCommand<ReportTypes>(ShowReport);
             ExportSelectedAllAsTextCommand = new RelayCommand(async() => await ExportSelectedAllAsText());
+            ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await ExportSelectedAllAsJson());
+            ImportToSelectedAsJsonCommand = new RelayCommand(async () => await ImportToSelectedAsJson());
         }
 
 
@@ -68,12 +72,27 @@ namespace ProjectK.Notebook.ViewModels
         private async Task ExportSelectedAllAsText()
         {
             var path = DataFile;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", Notebook.SelectedTask.Title);
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", Notebook.SelectedTask.Title, ".txt");
             if(!ok)
                 return;
 
             await File.WriteAllTextAsync(exportPath, TextReport);
         }
+        private async Task ExportSelectedAllAsJson()
+        {
+            var path = DataFile;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", Notebook.SelectedTask.Title);
+            if (!ok)
+                return;
+
+            await Notebook.SelectedTask.ExportToFileAsync(exportPath);
+        }
+
+        private async Task ImportToSelectedAsJson()
+        {
+            await Notebook.SelectedTask.ImportToSelectedAsJson();
+        }
+
 
         public async Task SaveModifiedFileAsync()
         {
@@ -170,10 +189,18 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Private functions
-        private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
+
+        // Save File and Log
+        private async Task SaveFileAsync(TaskViewModel rootTask, Func<DataModel, DataModel, bool> isSame)
         {
             var newData = new DataModel();
-            Notebook.SaveTo(newData);
+            foreach (var subTask in rootTask.SubTasks)
+            {
+                foreach (var subSubTask in subTask.SubTasks)
+                {
+                    subSubTask.SaveTo(newData.Tasks);
+                }
+            }
 
             _data ??= new DataModel();
             if (isSame(_data, newData))
@@ -185,6 +212,13 @@ namespace ProjectK.Notebook.ViewModels
             _data.Copy(newData);
             await FileHelper.SaveToFileAsync(_data, path);
         }
+
+        // Save File and Log
+        private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
+        {
+            await SaveFileAsync(Notebook.RootTask, isSame);
+        }
+
         private async Task FileSaveOldFormatAsync()
         {
             await FileHelper.SaveToFileAsync(Notebook, DataFile);
@@ -315,6 +349,8 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand ContinueTaskCommand { get; }
         public ICommand ShowReportCommand { get; }
         public ICommand ExportSelectedAllAsTextCommand { get; }
+        public ICommand ExportSelectedAllAsJsonCommand { get; }
+        public ICommand ImportToSelectedAsJsonCommand { get; }
 
 
         #endregion

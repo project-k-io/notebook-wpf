@@ -15,7 +15,7 @@ namespace ProjectK.Utils
     {
         private static readonly ILogger Logger = LogManager.GetLogger<FileHelper>();
 
-        public static (string path, bool ok) GetNewFileName(string path, string folderName, string suffix)
+        public static (string path, bool ok) GetNewFileName(string path, string folderName, string suffix, string newExtension = "")
         {
             try
             {
@@ -34,6 +34,9 @@ namespace ProjectK.Utils
                 if (!Directory.Exists(subFolder))
                     Directory.CreateDirectory(subFolder);
 
+                if (!string.IsNullOrEmpty(newExtension))
+                    extension = newExtension;
+
                 var fileName = $"{suffix}{extension}";
                 var destFileName = Path.Combine(subFolder, fileName);
                 return (destFileName, true);
@@ -44,6 +47,7 @@ namespace ProjectK.Utils
                 return ("", false);
             }
         }
+
         public static (string path, bool ok) GetNewLogFileName(string path)
         {
             var suffix = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");

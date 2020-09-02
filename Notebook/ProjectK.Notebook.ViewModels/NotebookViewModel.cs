@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
 using ProjectK.Notebook.Models.Versions.Version1;
+using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
+using TaskModel = ProjectK.Notebook.Models.Versions.Version2.TaskModel;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -118,28 +120,11 @@ namespace ProjectK.Notebook.ViewModels
 
             var tasks = model.Tasks;
             Clear();
-            var sortedList = new SortedList<Guid, TaskViewModel>();
-            foreach (var task in tasks)
-                if (task.ParentId == Guid.Empty)
-                {
-                    RootTask.Model = task;
-                    sortedList.Add(task.Id, RootTask);
-                }
-                else if (!sortedList.ContainsKey(task.Id))
-                {
-                    var taskViewModel = new TaskViewModel {Model = task};
-                    sortedList.Add(task.Id, taskViewModel);
-                }
 
-            foreach (var task in tasks)
-                if (!(task.ParentId == Guid.Empty))
-                    sortedList[task.ParentId].Add(sortedList[task.Id]);
+            // Build Tree
+            RootTask.BuildTree(tasks);
         }
 
-        public void SaveTo(Models.Versions.Version2.DataModel model)
-        {
-            RootTask.SaveTo(model.Tasks);
-        }
 
         public void FixTime()
         {
