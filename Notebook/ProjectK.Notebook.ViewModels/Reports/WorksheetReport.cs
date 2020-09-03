@@ -87,30 +87,34 @@ namespace ProjectK.Notebook.ViewModels.Reports
             Logger.LogDebug("GenerateReport()");
             try
             {
-                var project = model.Notebook;
-                var maxDelta = 40.0 / 5.0 * project.GetSelectedDays().Count;
+                var notebook = model.SelectedNotebook;
+                if(notebook == null)
+                    return;
+
+
+                var maxDelta = 40.0 / 5.0 * notebook.GetSelectedDays().Count;
 
                 var sb = new StringBuilder();
-                var report = GenerateReport(project.SelectedTaskList).GenerateReport(maxDelta, model.UseTimeOptimization);
-                var selectedTask = project.SelectedTask;
+                var report = GenerateReport(notebook.SelectedTaskList).GenerateReport(maxDelta, model.UseTimeOptimization);
+                var selectedTask = notebook.SelectedTask;
 
                 if (selectedTask != null && selectedTask.Context == "Week")
                     AddHeader(selectedTask, sb, Logger);
 
                 sb.Append(report);
-                if (project.SelectedTask != null && project.SelectedTask.Context == "Week")
+                if (notebook.SelectedTask != null && notebook.SelectedTask.Context == "Week")
                 {
-                    var subTasks = project.SelectedTask.SubTasks;
+                    var subTasks = notebook.SelectedTask.SubTasks;
                     var lastTask = subTasks.LastOrDefault();
 
                     if (lastTask != null)
                     {
                         var dateStarted = lastTask.DateStarted;
-                        File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", model.TextReport);
+                        File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", notebook.TextReport);
                     }
                 }
 
-                model.TextReport = sb.ToString();
+                notebook.TextReport = sb.ToString();
             }
             catch (Exception ex)
             {

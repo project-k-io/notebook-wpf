@@ -14,7 +14,7 @@ namespace ProjectK.Notebook
     public partial class App : Application
     {
         private static ILogger _logger;
-        private readonly AppViewModel _mainModel = new AppViewModel();
+        private AppViewModel _mainModel = null;
         private MainWindow _mainWindow;
 
         public App()
@@ -31,8 +31,11 @@ namespace ProjectK.Notebook
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            _mainModel = new AppViewModel();
             _mainModel.Assembly = Assembly.GetExecutingAssembly();
-            _mainModel.InitLogging();
+            _mainModel.LogEvent = _mainModel.Output.LogEvent;
+            _mainModel.InitLogging(_mainModel.LogEvent);
+
             _logger = LogManager.GetLogger<App>();
 
             _mainModel.InitOutput();
@@ -40,21 +43,23 @@ namespace ProjectK.Notebook
             // MainWindow
             _mainWindow = new MainWindow {DataContext = _mainModel};
             _mainWindow.Closing += async (s1,e1) => await MainWindowOnClosing(s1, e1);
-        
+
 
 
             // Show MainWindow
+            await _mainModel.LoadRecentFiles();
             _mainModel.LoadSettings(_mainWindow);
             _mainWindow.Show();
 
             // Load Data
-            await _mainModel.OpenFileAsync();
+            await _mainModel.OpenRecentFilesAsync();
             await _mainModel.UpdateTypeListAsync();
             await _mainModel.StartSavingAsync();
         }
 
         private async Task MainWindowOnClosing(object sender, CancelEventArgs e)
         {
+            await _mainModel.SaveRecentFiles();
             _mainModel.SaveSettings(_mainWindow);
             _mainModel.StopSaving();
             await _mainModel.SaveFileAsync(); // Exit

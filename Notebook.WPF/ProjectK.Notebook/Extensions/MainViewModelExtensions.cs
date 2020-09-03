@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -13,6 +14,8 @@ using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Extensions;
+using ProjectK.Utils;
+using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Extensions
 {
@@ -38,11 +41,11 @@ namespace ProjectK.Notebook.Extensions
         {
             _logger.LogDebug("UserOpenFileAsync()");
             var dialog = new OpenFileDialog();
-            var r = dialog.SetFileDialog(model.DataFile);
+            var r = dialog.SetFileDialog(model.SelectedNotebook.DataFile);
             if (!r.ok)
                 return;
 
-            model.DataFile = r.fileName;
+            model.SelectedNotebook.DataFile = r.fileName;
             model.FileOpenOldFormat();
         }
 
@@ -51,16 +54,45 @@ namespace ProjectK.Notebook.Extensions
         {
             _logger.LogDebug("UserOpenFileAsync()");
             var dialog = new OpenFileDialog();
-            var r = dialog.SetFileDialog(model.DataFile);
+            var r = dialog.SetFileDialog("model.Notebook?.DataFile");
             if (!r.ok)
                 return;
 
-            await model.OpenFileAsync(r.fileName); // User clicked open file
+            var notebook = new NotebookViewModel();
+
+            await notebook.OpenFileAsync(r.fileName); // User clicked open file
+            model.SelectedNotebook = notebook; 
+            model.Notebooks.Add(notebook);
+            model.RootTask.Add(notebook.RootTask);
         }
+
+
+        public static async Task OpenRecentFilesAsync(this MainViewModel model)
+        {
+
+            foreach (var notebook in model.Notebooks)
+            {
+                _logger.LogDebug("OpenRecentFilesAsync");
+                var path = notebook.DataFile;
+                if (!File.Exists(path))
+                    continue;
+
+                await notebook.OpenFileAsync(path);
+
+                // add notebook node to root node
+                model.RootTask.Add(notebook.RootTask);
+                model.SelectedNotebook = notebook;
+            }
+        }
+
 
         private static async Task UserSaveFileAsync(this MainViewModel model)
         {
-            if (File.Exists(model.DataFile))
+            var notebook = model.SelectedNotebook;
+            if (notebook == null)
+                return;
+
+            if (File.Exists(notebook.DataFile))
                 await model.SaveFileAsync(); // User Save
             else
                 await model.UserSaveFileAsAsync();
@@ -68,35 +100,37 @@ namespace ProjectK.Notebook.Extensions
 
         private static async Task UserSaveFileAsAsync(this MainViewModel model)
         {
+            var notebook = model.SelectedNotebook;
+            if(notebook == null)
+                return;
+
             var dialog = new SaveFileDialog();
-            var r = dialog.SetFileDialog(model.DataFile);
+            var r = dialog.SetFileDialog(notebook.DataFile);
             if (!r.ok)
                 return;
 
-            model.DataFile = r.fileName;
+            notebook.DataFile = r.fileName;
             await model.SaveFileAsync(); // Save As
         }
 
-        public static async Task OpenFileAsync(this MainViewModel model)
+
+        public static void OpenFileAsync1(string path)
         {
-            _logger.LogDebug("OpenFileAsync");
-            var path = model.DataFile;
-            if (!File.Exists(path))
-                await model.UserOpenFileAsync();
-            else
-                await model.OpenFileAsync(path);
+            // Notebooks.Add(notebook);
+            // UseSettings();
+            // var notebook = new NotebookViewModel();
         }
 
 
 
-        public static void InitLogging(this MainViewModel model)
+        public static void InitLogging(this MainViewModel model, Action<LogLevel, EventId, string> logEvent )
         {
             try
             {
                 var serviceProvider = new ServiceCollection()
                     .AddLogging(logging => logging.AddConsole())
                     .AddLogging(logging => logging.AddDebug())
-                    .AddLogging(logging => logging.AddProvider(new OutputLoggerProvider(model.Output.LogEvent)))
+                    .AddLogging(logging => logging.AddProvider(new OutputLoggerProvider(logEvent)))
                     .Configure<LoggerFilterOptions>(o => o.MinLevel = LogLevel.Debug)
                     .BuildServiceProvider();
 
@@ -137,8 +171,9 @@ namespace ProjectK.Notebook.Extensions
                 // model settings
                 model.LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
                 model.LastTreeTaskId = appSettings.GetGuid("LastTreeTaskId", Guid.Empty);
-                model.DataFile = appSettings.GetString("RecentFile", "New Data");
-
+#if AK
+                model.Notebook.DataFile = appSettings.GetString("RecentFile", "New Data");
+#endif
                 // Output
                 model.Output.OutputButtonErrors.IsChecked = appSettings.GetBool("OutputError", false);
                 model.Output.OutputButtonDebug.IsChecked = appSettings.GetBool("OutputDebug", false);
@@ -146,14 +181,46 @@ namespace ProjectK.Notebook.Extensions
                 model.Output.OutputButtonWarnings.IsChecked = appSettings.GetBool("OutputWarning", false);
 
                 model.MostRecentFiles.Clear();
-                if (File.Exists(model.DataFile))
-                    model.MostRecentFiles.Add(new FileInfo(model.DataFile));
+#if AK
+                if (File.Exists(model.Notebook.DataFile))
+                    model.MostRecentFiles.Add(new FileInfo(model.Notebook.DataFile));
+#endif
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex);
             }
         }
+
+        private const string FileNameRecentFiles = "RecentFiles.json";
+
+        public static async Task SaveRecentFiles(this AppViewModel model)
+        {
+            var recentFiles = new List<string>();
+            foreach (var notebook in model.Notebooks)
+            {
+                var recentFile = notebook.DataFile;
+                recentFiles.Add(recentFile);
+            }
+
+            await FileHelper.SaveToFileAsync(recentFiles, FileNameRecentFiles);
+        }
+
+        public static async Task LoadRecentFiles(this AppViewModel model)
+        {
+            var recentFiles = await FileHelper.ReadFromFileAsync<List<string>>(FileNameRecentFiles);
+            if (recentFiles.IsNullOrEmpty())
+                return;
+
+            foreach (var recentFile in recentFiles)
+            {
+                var notebook = new NotebookViewModel();
+                notebook.DataFile = recentFile;
+                notebook.RootTask.Context = "Notebook";
+                model.Notebooks.Add(notebook);
+            }
+        }
+
 
         public static void SaveSettings(this AppViewModel model, Window window)
         {
@@ -162,8 +229,6 @@ namespace ProjectK.Notebook.Extensions
             {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 var settings = configFile.AppSettings.Settings;
-
-
                 model.PrepareSettings();
 
                 // ISSUE: variable of a compiler-generated type
@@ -180,7 +245,7 @@ namespace ProjectK.Notebook.Extensions
                 model.SaveDockLayout(null);
 
                 // model settings
-                settings.SetValue("RecentFile", model.DataFile);
+                settings.SetValue("RecentFile", model.SelectedNotebook?.DataFile);
                 settings.SetValue("LastListTaskId", model.LastListTaskId.ToString());
                 settings.SetValue("LastTreeTaskId", model.LastTreeTaskId.ToString());
                 settings.SetValue("MainWindowState", window.WindowState.ToString());

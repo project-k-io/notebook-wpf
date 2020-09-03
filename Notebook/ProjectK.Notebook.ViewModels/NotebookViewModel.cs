@@ -2,7 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
@@ -11,9 +15,27 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class NotebookViewModel : ViewModelBase
     {
+        private readonly ILogger Logger = LogManager.GetLogger<NotebookViewModel>();
+
         private TaskViewModel _selectedTask;
         private TaskViewModel _selectedTreeTask;
         public DataModel _data;
+        private string _textReport;
+
+
+        public async Task OpenFileAsync(string path)
+        {
+            Logger.LogDebug($"OpenFileAsync : {path}");
+            // created notebook node
+            RootTask.Model.Id = Guid.NewGuid();
+            RootTask.Model.Title = path;
+
+            // load notebook 
+            _data = await FileHelper.ReadFromFileAsync<DataModel>(path);
+            LoadFrom(_data?.Copy());
+        }
+
+
 
         public ObservableCollection<TaskViewModel> SelectedTaskList { get; } =
             new ObservableCollection<TaskViewModel>();
@@ -33,9 +55,19 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
-        public string Path { get; set; }
+        public string TextReport
+        {
+            get => _textReport;
+            set => Set(ref _textReport, value);
+        }
 
-        public List<DateTime> GetSelectedDays()
+        public string DataFile
+        {
+            get => RootTask.Title;
+            set => RootTask.Title = value;
+        }
+
+        public List< DateTime> GetSelectedDays()
         {
             var dateTimeList = new List<DateTime>();
             foreach (var selectedTask in SelectedTaskList)
@@ -163,5 +195,45 @@ namespace ProjectK.Notebook.ViewModels
             SelectedTaskList.Clear();
             AddToList(SelectedTaskList, RootTask, dates);
         }
+
+
+
+        public async Task ExportSelectedAllAsText()
+        {
+
+            var path = DataFile;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedTask.Title, ".txt");
+            if (!ok)
+                return;
+
+            await File.WriteAllTextAsync(exportPath, TextReport);
+        }
+
+        public async Task ExportSelectedAllAsJson()
+        {
+            var path = DataFile;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedTask.Title);
+            if (!ok)
+                return;
+
+            await SelectedTask.ExportToFileAsync(exportPath);
+        }
+
+        public async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
+        {
+            var newData = new DataModel();
+            RootTask.SaveTo(newData.Tasks);
+
+            _data ??= new DataModel();
+            if (isSame(_data, newData))
+                return;
+
+            var path = DataFile;
+            FileHelper.SaveFileToLog(path);
+
+            _data.Copy(newData);
+            await FileHelper.SaveToFileAsync(_data, path);
+        }
+
     }
 }

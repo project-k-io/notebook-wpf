@@ -35,7 +35,7 @@ namespace ProjectK.Notebook
         {
             if (!(DataContext is MainViewModel model)) return;
             if (!(sender is Calendar calendar)) return;
-            model.Notebook.UpdateSelectDayTasks(calendar.SelectedDates);
+            model.SelectedNotebook.UpdateSelectDayTasks(calendar.SelectedDates);
             model.OnGenerateReportChanged();
         }
 

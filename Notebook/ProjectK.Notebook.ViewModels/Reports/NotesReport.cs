@@ -19,12 +19,13 @@ namespace ProjectK.Notebook.ViewModels.Reports
             Logger.LogDebug("GenerateReport()");
             try
             {
-                var project = model.Notebook;
+                var notebook = model.SelectedNotebook;
+                if(notebook == null)
+                    return;
 
                 var sb = new StringBuilder();
-                GenerateReport(model.Notebook.SelectedTask, sb, 0);
-
-                model.TextReport = sb.ToString();
+                GenerateReport(notebook.SelectedTask, sb, 0);
+                notebook.TextReport = sb.ToString();
             }
             catch (Exception ex)
             {

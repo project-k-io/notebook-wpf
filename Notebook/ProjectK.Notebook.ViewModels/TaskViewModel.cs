@@ -505,14 +505,18 @@ namespace ProjectK.Notebook.ViewModels
                     var parent = Parent;
                     if (parent == null)
                         break;
+                    
                     var num1 = parent.SubTasks.IndexOf(this);
                     dispatcher(() => parent.SubTasks.Remove(this));
+                    
                     var taskViewModel2 = num1 > 0 ? parent.SubTasks[num1 - 1] : parent;
                     if (taskViewModel2 == null)
                         break;
+
                     selectItem(taskViewModel2);
                     handled();
                     break;
+
                 case KeyboardKeys.Left:
                     if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
