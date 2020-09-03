@@ -10,7 +10,6 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Versions.Version2;
@@ -25,7 +24,23 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        #region Static
+
         private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
+
+        #endregion
+
+        #region Fields
+
+        private string _excelCsvText;
+        private string _dataFile = "";
+        private string _textReport;
+        private bool _useTimeOptimization;
+        private ReportTypes _reportType = ReportTypes.Notes;
+
+        #endregion
+
+        #region Consuctors
 
         public MainViewModel()
         {
@@ -43,290 +58,10 @@ namespace ProjectK.Notebook.ViewModels
             CopyTaskCommand = new RelayCommand(CopyTask);
             ContinueTaskCommand = new RelayCommand(ContinueTask);
             ShowReportCommand = new RelayCommand<ReportTypes>(ShowReport);
-            ExportSelectedAllAsTextCommand = new RelayCommand(async() => await ExportSelectedAllAsText());
+            ExportSelectedAllAsTextCommand = new RelayCommand(async () => await ExportSelectedAllAsText());
             ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await ExportSelectedAllAsJson());
             ImportToSelectedAsJsonCommand = new RelayCommand(async () => await ImportToSelectedAsJson());
         }
-
-
-
-        #region Public functions
-        public void FileOpenOldFormat()
-        {
-            //AK Notebook.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
-        }
-        public async Task OpenFileAsync(string path)
-        {
-            DataFile = path;
-            Logger.LogDebug($"OpenFileAsync : {path}");
-            _data = await FileHelper.ReadFromFileAsync<DataModel>(path);
-            Notebook.LoadFrom(_data?.Copy());
-            UseSettings();
-        }
-        public async Task SaveFileAsync()
-        {
-            Logger.LogDebug("SaveFileAsync");
-            await SaveFileAsync((a, b) => false);
-        }
-
-        private async Task ExportSelectedAllAsText()
-        {
-            var path = DataFile;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", Notebook.SelectedTask.Title, ".txt");
-            if(!ok)
-                return;
-
-            await File.WriteAllTextAsync(exportPath, TextReport);
-        }
-        private async Task ExportSelectedAllAsJson()
-        {
-            var path = DataFile;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", Notebook.SelectedTask.Title);
-            if (!ok)
-                return;
-
-            await Notebook.SelectedTask.ExportToFileAsync(exportPath);
-        }
-
-        private async Task ImportToSelectedAsJson()
-        {
-            await Notebook.SelectedTask.ImportToSelectedAsJson();
-        }
-
-
-        public async Task SaveModifiedFileAsync()
-        {
-            await SaveFileAsync((a, b) => a.IsSame(b));
-        }
-        public async Task UpdateTypeListAsync()
-        {
-            await Task.Run(() =>
-            {
-                var taskViewModelList = new List<TaskViewModel>();
-                taskViewModelList.AddToList(RootTask);
-                var sortedSet1 = new SortedSet<string>();
-                var sortedSet2 = new SortedSet<string>();
-                var sortedSet3 = new SortedSet<string>();
-                foreach (var taskViewModel in taskViewModelList)
-                {
-                    var type = taskViewModel.Type;
-                    if (!sortedSet1.Contains(type)) sortedSet1.Add(type);
-
-                    var context = taskViewModel.Context;
-                    if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
-
-                    var title = taskViewModel.Title;
-                    if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
-                }
-
-                TypeList.Clear();
-                foreach (var str in sortedSet1) TypeList.Add(str);
-
-                ContextList.Clear();
-                foreach (var str in sortedSet2) ContextList.Add(str);
-
-                TaskTitleList.Clear();
-                foreach (var str in sortedSet3) TaskTitleList.Add(str);
-            });
-        }
-        public async Task UserNewFileAsync()
-        {
-            Logger.LogDebug("UserNewFileAsync");
-            await SaveFileAsync(); //New
-            CanSave = false;
-            Notebook.Clear();
-            Notebook.RootTask.Add(new TaskViewModel("Time Tracker")
-            {
-                Context = "Time Tracker"
-            });
-
-            _data = new DataModel();
-            var path = FileHelper.MakeUnique(DataFile);
-            DataFile = path;
-            CanSave = true;
-        }
-        public void OnSelectedTaskChanged(TaskViewModel task)
-        {
-            SelectedTaskChanged?.Invoke(this, new TaskEventArgs
-            {
-                Task = task
-            });
-        }
-
-        readonly WorksheetReport _worksheetReport = new WorksheetReport();
-        readonly NotesReport _notesReport = new NotesReport();
-
-        public void OnGenerateReportChanged()
-        {
-            switch (ReportType)
-            {
-                case ReportTypes.Worksheet:
-                    _worksheetReport.GenerateReport(this);
-                    break;
-                case ReportTypes.Notes:
-                    _notesReport.GenerateReport(this);
-                    break;
-            }
-        }
-
-        public void PrepareSettings()
-        {
-            if (Notebook.SelectedTask != null) LastListTaskId = Notebook.SelectedTask.Id;
-
-            if (Notebook.SelectedTreeTask == null) return;
-
-            LastTreeTaskId = Notebook.SelectedTreeTask.Id;
-        }
-        public void SelectTreeTask(TaskViewModel task)
-        {
-            task.TypeList = TypeList;
-            task.ContextList = ContextList;
-            task.TaskTitleList = TaskTitleList;
-            Notebook.SelectTreeTask(task);
-            OnGenerateReportChanged();
-        }
-
-        #endregion
-
-        #region Private functions
-
-        // Save File and Log
-        private async Task SaveFileAsync(TaskViewModel rootTask, Func<DataModel, DataModel, bool> isSame)
-        {
-            var newData = new DataModel();
-            foreach (var subTask in rootTask.SubTasks)
-            {
-                foreach (var subSubTask in subTask.SubTasks)
-                {
-                    subSubTask.SaveTo(newData.Tasks);
-                }
-            }
-
-            _data ??= new DataModel();
-            if (isSame(_data, newData))
-                return;
-
-            var path = DataFile;
-            FileHelper.SaveFileToLog(path);
-
-            _data.Copy(newData);
-            await FileHelper.SaveToFileAsync(_data, path);
-        }
-
-        // Save File and Log
-        private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
-        {
-            await SaveFileAsync(Notebook.RootTask, isSame);
-        }
-
-        private async Task FileSaveOldFormatAsync()
-        {
-            await FileHelper.SaveToFileAsync(Notebook, DataFile);
-        }
-        private void UseSettings()
-        {
-            Notebook.SelectTreeTask(LastListTaskId);
-            Notebook.SelectTask(LastTreeTaskId);
-        }
-        private void CopyExcelCsvText()
-        {
-            var stringReader = new StringReader(ExcelCsvText);
-            var excelCsvRecordList = new List<ExcelCsvRecord>();
-            string line;
-            while ((line = stringReader.ReadLine()) != null)
-                if (!string.IsNullOrEmpty(line))
-                {
-                    var excelCsvRecord = new ExcelCsvRecord();
-                    if (excelCsvRecord.TryParse(line)) excelCsvRecordList.Add(excelCsvRecord);
-                }
-
-            var selectedTreeTask = Notebook.SelectedTreeTask;
-            if (selectedTreeTask.Context != "Week") return;
-
-            foreach (var excelCsvRecord in excelCsvRecordList)
-            {
-                var dateTime1 = excelCsvRecord.Day;
-                var dayOfTheWeek = dateTime1.DayOfWeek.ToString();
-                var taskViewModel1 = selectedTreeTask.SubTasks.FirstOrDefault(t => t.Title == dayOfTheWeek);
-                if (taskViewModel1 == null)
-                {
-                    taskViewModel1 = new TaskViewModel(dayOfTheWeek)
-                    {
-                        DateStarted = excelCsvRecord.Day,
-                        DateEnded = excelCsvRecord.Day
-                    };
-                    selectedTreeTask.SubTasks.Add(taskViewModel1);
-                }
-
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) { Context = "Task" };
-                var taskViewModel3 = taskViewModel2;
-                dateTime1 = excelCsvRecord.Day;
-                var year1 = dateTime1.Year;
-                dateTime1 = excelCsvRecord.Day;
-                var month1 = dateTime1.Month;
-                dateTime1 = excelCsvRecord.Day;
-                var day1 = dateTime1.Day;
-                dateTime1 = excelCsvRecord.Start;
-                var hour1 = dateTime1.Hour;
-                dateTime1 = excelCsvRecord.Start;
-                var minute1 = dateTime1.Minute;
-                dateTime1 = excelCsvRecord.Start;
-                var second1 = dateTime1.Second;
-                var dateTime2 = new DateTime(year1, month1, day1, hour1, minute1, second1);
-                taskViewModel3.DateStarted = dateTime2;
-                var taskViewModel4 = taskViewModel2;
-                dateTime1 = excelCsvRecord.Day;
-                var year2 = dateTime1.Year;
-                dateTime1 = excelCsvRecord.Day;
-                var month2 = dateTime1.Month;
-                dateTime1 = excelCsvRecord.Day;
-                var day2 = dateTime1.Day;
-                dateTime1 = excelCsvRecord.End;
-                var hour2 = dateTime1.Hour;
-                dateTime1 = excelCsvRecord.End;
-                var minute2 = dateTime1.Minute;
-                dateTime1 = excelCsvRecord.End;
-                var second2 = dateTime1.Second;
-                var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
-                taskViewModel4.DateEnded = dateTime3;
-                taskViewModel2.Description = $"{excelCsvRecord.Type1}:{excelCsvRecord.Type2}:{excelCsvRecord.SubTask}";
-                taskViewModel1.SubTasks.Add(taskViewModel2);
-            }
-        }
-        private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
-        {
-            Notebook.SelectedTask.KeyboardAction(
-                keyboardKeys,
-                () => keyboardState,
-                () => { }, t => t.IsSelected = true,
-                t => t.IsExpanded = true,
-                () => true,
-                OnDispatcher);
-        }
-        private void CopyTask()
-        {
-            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
-        }
-        private void ContinueTask()
-        {
-            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
-        }
-        private void ShowReport(ReportTypes reportType)
-        {
-            Logger.LogDebug($"Show Report: {reportType}");
-            OnGenerateReportChanged();
-        }
-
-        #endregion
-
-        #region Fields
-
-        private string _excelCsvText;
-        private string _dataFile = "";
-        private string _textReport;
-        private bool _useTimeOptimization;
-        private DataModel _data;
-        private ReportTypes _reportType = ReportTypes.Notes;
 
         #endregion
 
@@ -335,7 +70,7 @@ namespace ProjectK.Notebook.ViewModels
         public event EventHandler<TaskEventArgs> SelectedTaskChanged;
 
         #endregion
-
+        
         #region Commands
 
         public ICommand ClearCommand { get; }
@@ -352,11 +87,9 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand ExportSelectedAllAsJsonCommand { get; }
         public ICommand ImportToSelectedAsJsonCommand { get; }
 
-
         #endregion
 
         #region Properties
-
 
         public ReportTypes ReportType
         {
@@ -372,7 +105,8 @@ namespace ProjectK.Notebook.ViewModels
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
         public NotebookViewModel Notebook { get; } = new NotebookViewModel();
-        public TaskViewModel RootTask => Notebook.RootTask;
+        public ObservableCollection<NotebookViewModel> Notebooks { get; } = new ObservableCollection<NotebookViewModel>();
+        public TaskViewModel RootTask { get; set; } = new TaskViewModel {Title = "Root"};
 
         public string DataFile
         {
@@ -409,6 +143,300 @@ namespace ProjectK.Notebook.ViewModels
         public bool CanSave { get; set; }
         public Action<Action> OnDispatcher { get; set; }
         public OutputViewModel Output { get; set; } = new OutputViewModel();
+
+        #endregion
+
+        #region Public functions
+
+        public void FileOpenOldFormat()
+        {
+            //AK Notebook.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
+        }
+
+        public async Task OpenFileAsync(string path)
+        {
+            DataFile = path;
+            Logger.LogDebug($"OpenFileAsync : {path}");
+            var notebook = new NotebookViewModel();
+            notebook.Path = path;
+            Notebooks.Add(notebook);
+            // created notebook node
+            var notebookModel = new TaskModel{Id = new Guid()};
+            notebook.RootTask = new TaskViewModel {Model = notebookModel};
+            notebook.RootTask.Title = path;
+
+            // add notebook node to root node
+            RootTask.Add(notebook.RootTask);
+
+            // load notebook 
+            notebook._data = await FileHelper.ReadFromFileAsync<DataModel>(path);
+            notebook.LoadFrom(notebook._data?.Copy());
+
+            UseSettings();
+        }
+
+        public async Task SaveFileAsync()
+        {
+            Logger.LogDebug("SaveFileAsync");
+            await SaveFileAsync((a, b) => false);
+        }
+
+        private async Task ExportSelectedAllAsText()
+        {
+            var path = DataFile;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", Notebook.SelectedTask.Title, ".txt");
+            if (!ok)
+                return;
+
+            await File.WriteAllTextAsync(exportPath, TextReport);
+        }
+
+        private async Task ExportSelectedAllAsJson()
+        {
+            var path = DataFile;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", Notebook.SelectedTask.Title);
+            if (!ok)
+                return;
+
+            await Notebook.SelectedTask.ExportToFileAsync(exportPath);
+        }
+
+        private async Task ImportToSelectedAsJson()
+        {
+            await Notebook.SelectedTask.ImportToSelectedAsJson();
+        }
+
+
+        public async Task SaveModifiedFileAsync()
+        {
+            await SaveFileAsync((a, b) => a.IsSame(b));
+        }
+
+        public async Task UpdateTypeListAsync()
+        {
+            await Task.Run(() =>
+            {
+                var taskViewModelList = new List<TaskViewModel>();
+                taskViewModelList.AddToList(RootTask);
+                var sortedSet1 = new SortedSet<string>();
+                var sortedSet2 = new SortedSet<string>();
+                var sortedSet3 = new SortedSet<string>();
+                foreach (var taskViewModel in taskViewModelList)
+                {
+                    var type = taskViewModel.Type;
+                    if (!sortedSet1.Contains(type)) sortedSet1.Add(type);
+
+                    var context = taskViewModel.Context;
+                    if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
+
+                    var title = taskViewModel.Title;
+                    if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
+                }
+
+                TypeList.Clear();
+                foreach (var str in sortedSet1) TypeList.Add(str);
+
+                ContextList.Clear();
+                foreach (var str in sortedSet2) ContextList.Add(str);
+
+                TaskTitleList.Clear();
+                foreach (var str in sortedSet3) TaskTitleList.Add(str);
+            });
+        }
+
+        public async Task UserNewFileAsync()
+        {
+            Logger.LogDebug("UserNewFileAsync");
+            await SaveFileAsync(); //New
+            CanSave = false;
+            Notebook.Clear();
+            Notebook.RootTask.Add(new TaskViewModel("Time Tracker")
+            {
+                Context = "Time Tracker"
+            });
+
+            Notebook._data = new DataModel();
+            var path = FileHelper.MakeUnique(DataFile);
+            DataFile = path;
+            CanSave = true;
+        }
+
+        public void OnSelectedTaskChanged(TaskViewModel task)
+        {
+            SelectedTaskChanged?.Invoke(this, new TaskEventArgs
+            {
+                Task = task
+            });
+        }
+
+        private readonly WorksheetReport _worksheetReport = new WorksheetReport();
+        private readonly NotesReport _notesReport = new NotesReport();
+
+        public void OnGenerateReportChanged()
+        {
+            switch (ReportType)
+            {
+                case ReportTypes.Worksheet:
+                    _worksheetReport.GenerateReport(this);
+                    break;
+                case ReportTypes.Notes:
+                    _notesReport.GenerateReport(this);
+                    break;
+            }
+        }
+
+        public void PrepareSettings()
+        {
+            if (Notebook.SelectedTask != null) LastListTaskId = Notebook.SelectedTask.Id;
+
+            if (Notebook.SelectedTreeTask == null) return;
+
+            LastTreeTaskId = Notebook.SelectedTreeTask.Id;
+        }
+
+        public void SelectTreeTask(TaskViewModel task)
+        {
+            task.TypeList = TypeList;
+            task.ContextList = ContextList;
+            task.TaskTitleList = TaskTitleList;
+            Notebook.SelectTreeTask(task);
+            OnGenerateReportChanged();
+        }
+
+        #endregion
+
+        #region Private functions
+
+        // Save File and Log
+        private async Task SaveFileAsync(TaskViewModel rootTask, Func<DataModel, DataModel, bool> isSame)
+        {
+            var newData = new DataModel();
+            foreach (var subTask in rootTask.SubTasks)
+            foreach (var subSubTask in subTask.SubTasks)
+                subSubTask.SaveTo(newData.Tasks);
+
+
+
+            Notebook._data ??= new DataModel();
+            if (isSame(Notebook._data, newData))
+                return;
+
+            var path = DataFile;
+            FileHelper.SaveFileToLog(path);
+
+            Notebook._data.Copy(newData);
+            await FileHelper.SaveToFileAsync(Notebook._data, path);
+        }
+
+        // Save File and Log
+        private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
+        {
+            await SaveFileAsync(Notebook.RootTask, isSame);
+        }
+
+        private async Task FileSaveOldFormatAsync()
+        {
+            await FileHelper.SaveToFileAsync(Notebook, DataFile);
+        }
+
+        private void UseSettings()
+        {
+            Notebook.SelectTreeTask(LastListTaskId);
+            Notebook.SelectTask(LastTreeTaskId);
+        }
+
+        private void CopyExcelCsvText()
+        {
+            var stringReader = new StringReader(ExcelCsvText);
+            var excelCsvRecordList = new List<ExcelCsvRecord>();
+            string line;
+            while ((line = stringReader.ReadLine()) != null)
+                if (!string.IsNullOrEmpty(line))
+                {
+                    var excelCsvRecord = new ExcelCsvRecord();
+                    if (excelCsvRecord.TryParse(line)) excelCsvRecordList.Add(excelCsvRecord);
+                }
+
+            var selectedTreeTask = Notebook.SelectedTreeTask;
+            if (selectedTreeTask.Context != "Week") return;
+
+            foreach (var excelCsvRecord in excelCsvRecordList)
+            {
+                var dateTime1 = excelCsvRecord.Day;
+                var dayOfTheWeek = dateTime1.DayOfWeek.ToString();
+                var taskViewModel1 = selectedTreeTask.SubTasks.FirstOrDefault(t => t.Title == dayOfTheWeek);
+                if (taskViewModel1 == null)
+                {
+                    taskViewModel1 = new TaskViewModel(dayOfTheWeek)
+                    {
+                        DateStarted = excelCsvRecord.Day,
+                        DateEnded = excelCsvRecord.Day
+                    };
+                    selectedTreeTask.SubTasks.Add(taskViewModel1);
+                }
+
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) {Context = "Task"};
+                var taskViewModel3 = taskViewModel2;
+                dateTime1 = excelCsvRecord.Day;
+                var year1 = dateTime1.Year;
+                dateTime1 = excelCsvRecord.Day;
+                var month1 = dateTime1.Month;
+                dateTime1 = excelCsvRecord.Day;
+                var day1 = dateTime1.Day;
+                dateTime1 = excelCsvRecord.Start;
+                var hour1 = dateTime1.Hour;
+                dateTime1 = excelCsvRecord.Start;
+                var minute1 = dateTime1.Minute;
+                dateTime1 = excelCsvRecord.Start;
+                var second1 = dateTime1.Second;
+                var dateTime2 = new DateTime(year1, month1, day1, hour1, minute1, second1);
+                taskViewModel3.DateStarted = dateTime2;
+                var taskViewModel4 = taskViewModel2;
+                dateTime1 = excelCsvRecord.Day;
+                var year2 = dateTime1.Year;
+                dateTime1 = excelCsvRecord.Day;
+                var month2 = dateTime1.Month;
+                dateTime1 = excelCsvRecord.Day;
+                var day2 = dateTime1.Day;
+                dateTime1 = excelCsvRecord.End;
+                var hour2 = dateTime1.Hour;
+                dateTime1 = excelCsvRecord.End;
+                var minute2 = dateTime1.Minute;
+                dateTime1 = excelCsvRecord.End;
+                var second2 = dateTime1.Second;
+                var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
+                taskViewModel4.DateEnded = dateTime3;
+                taskViewModel2.Description = $"{excelCsvRecord.Type1}:{excelCsvRecord.Type2}:{excelCsvRecord.SubTask}";
+                taskViewModel1.SubTasks.Add(taskViewModel2);
+            }
+        }
+
+        private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
+        {
+            Notebook.SelectedTask.KeyboardAction(
+                keyboardKeys,
+                () => keyboardState,
+                () => { }, t => t.IsSelected = true,
+                t => t.IsExpanded = true,
+                () => true,
+                OnDispatcher);
+        }
+
+        private void CopyTask()
+        {
+            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
+        }
+
+        private void ContinueTask()
+        {
+            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
+        }
+
+        private void ShowReport(ReportTypes reportType)
+        {
+            Logger.LogDebug($"Show Report: {reportType}");
+            OnGenerateReportChanged();
+        }
 
         #endregion
     }

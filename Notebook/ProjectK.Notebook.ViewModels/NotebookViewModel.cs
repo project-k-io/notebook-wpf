@@ -3,18 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight;
-using ProjectK.Notebook.Models.Versions.Version1;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
-using TaskModel = ProjectK.Notebook.Models.Versions.Version2.TaskModel;
-
+using ProjectK.Notebook.Models.Versions.Version2;
 namespace ProjectK.Notebook.ViewModels
 {
     public class NotebookViewModel : ViewModelBase
     {
         private TaskViewModel _selectedTask;
         private TaskViewModel _selectedTreeTask;
+        public DataModel _data;
 
         public ObservableCollection<TaskViewModel> SelectedTaskList { get; } =
             new ObservableCollection<TaskViewModel>();
@@ -34,6 +33,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
+        public string Path { get; set; }
 
         public List<DateTime> GetSelectedDays()
         {
@@ -107,7 +107,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public void LoadFrom(DataModel model)
+        public void LoadFrom(Models.Versions.Version1.DataModel model)
         {
             Clear();
             RootTask.LoadFrom(model.RootTask);
