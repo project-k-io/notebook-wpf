@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
@@ -13,28 +15,30 @@ namespace ProjectK.Utils
     {
         private static readonly ILogger Logger = LogManager.GetLogger<FileHelper>();
 
-        public static (string path, bool ok) GetNewLogFileName(string path)
+        public static (string path, bool ok) GetNewFileName(string path, string folderName, string suffix, string newExtension = "")
         {
             try
             {
                 if (!File.Exists(path))
                     return ("", false);
 
-                var suffix = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
                 var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directoryName = Path.GetDirectoryName(path);
-                var logs = string.IsNullOrWhiteSpace(directoryName) ? "Logs" : Path.Combine(directoryName, "Logs");
+                var subFolder = string.IsNullOrWhiteSpace(directoryName) ? folderName : Path.Combine(directoryName, folderName);
 
-                if (!Directory.Exists(logs))
-                    Directory.CreateDirectory(logs);
+                if (!Directory.Exists(subFolder))
+                    Directory.CreateDirectory(subFolder);
 
-                logs = string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? logs : Path.Combine(logs, fileNameWithoutExtension);
-                if (!Directory.Exists(logs))
-                    Directory.CreateDirectory(logs);
+                subFolder = string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? subFolder : Path.Combine(subFolder, fileNameWithoutExtension);
+                if (!Directory.Exists(subFolder))
+                    Directory.CreateDirectory(subFolder);
+
+                if (!string.IsNullOrEmpty(newExtension))
+                    extension = newExtension;
 
                 var fileName = $"{suffix}{extension}";
-                var destFileName = Path.Combine(logs, fileName);
+                var destFileName = Path.Combine(subFolder, fileName);
                 return (destFileName, true);
             }
             catch (Exception ex)
@@ -42,6 +46,12 @@ namespace ProjectK.Utils
                 Debug.WriteLine(ex);
                 return ("", false);
             }
+        }
+
+        public static (string path, bool ok) GetNewLogFileName(string path)
+        {
+            var suffix = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+            return GetNewFileName(path, "Logs", suffix);
         }
 
 
@@ -62,9 +72,9 @@ namespace ProjectK.Utils
         }
 
 
-        public static async Task SaveToFileAsync<T>(T model, string path)
+        public static async Task SaveToFileAsync<T>(string path, T model)
         {
-            Logger.LogDebug($"SaveToFileAsync: {path}");
+            Logger.LogDebug($"SaveToFileAsync | {Path.GetFileName(path)} | {Path.GetDirectoryName(path)}");
             try
             {
                 var extension = Path.GetExtension(path).ToUpper();
@@ -79,8 +89,12 @@ namespace ProjectK.Utils
                     case ".JSON":
                     {
                         await using var fs = File.Create(path);
-                        var option = new JsonSerializerOptions {WriteIndented = true};
-                        await JsonSerializer.SerializeAsync(fs, model, option);
+                        var options = new JsonSerializerOptions
+                        {
+                            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                            WriteIndented = true,
+                        };
+                        await JsonSerializer.SerializeAsync(fs, model, options);
                         break;
                     }
                 }

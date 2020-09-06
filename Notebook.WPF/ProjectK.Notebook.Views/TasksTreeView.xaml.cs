@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -36,11 +37,11 @@ namespace ProjectK.Notebook.Views
 
         private void TasksTreeView_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!(DataContext is MainViewModel dataContext))
+            if (!(DataContext is MainViewModel model))
                 return;
 
-            dataContext.RootTask.SetParents();
-            TreeViewTasks.SelectItem(dataContext.Notebook.SelectedTreeTask);
+            model.RootTask.SetParents();
+            TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeTask);
             TreeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
         }
 
@@ -55,11 +56,11 @@ namespace ProjectK.Notebook.Views
             if (!(sender is TreeListView treeView))
                 return;
 
-            if (!(treeView.DataContext is MainViewModel dataContext))
+            if (!(treeView.DataContext is MainViewModel mainViewModel))
                 return;
 
             if (!(treeView.SelectedItem is TaskViewModel task))
-                task = dataContext.RootTask;
+                task = mainViewModel.RootTask;
 
             void ExpandItem(TaskViewModel t)
             {
@@ -77,6 +78,18 @@ namespace ProjectK.Notebook.Views
 
             var addDelegate = ViewLib.GetAddDelegate(this);
             task.KeyboardAction(keyState, () => KeyboardState, () => e.Handled = true, treeView.SelectItem, ExpandItem, DeleteMessageBox, addDelegate);
+
+            if (keyState == KeyboardKeys.Delete)
+            {
+                if (task.Context == "Notebook")
+                {
+                    var notebook =  mainViewModel.Notebooks.First(n => n.RootTask.Id == task.Id);
+                    if(notebook == null)
+                        return;
+
+                    mainViewModel.Notebooks.Remove(notebook);
+                }
+            }
         }
 
         private static KeyboardKeys GetKeyState(Key key)
@@ -111,10 +124,12 @@ namespace ProjectK.Notebook.Views
         {
             if (!(sender is TreeListView treeListView))
                 return;
-            if (!(treeListView.DataContext is MainViewModel dataContext))
+
+            if (!(treeListView.DataContext is MainViewModel model))
                 return;
-            var task = treeListView.SelectedItem as TaskViewModel ?? dataContext.RootTask;
-            dataContext.SelectTreeTask(task);
+
+            var task = treeListView.SelectedItem as TaskViewModel ?? model.RootTask;
+            model.SelectTreeTask(task);
         }
     }
 }

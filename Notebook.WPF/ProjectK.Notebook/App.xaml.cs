@@ -1,21 +1,29 @@
-﻿using System.Reflection;
+﻿using System;
+using System.ComponentModel;
+using System.Configuration;
+using System.Globalization;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Extensions;
 using ProjectK.Notebook.ViewModels;
+using Syncfusion.Licensing;
 
 namespace ProjectK.Notebook
 {
     public partial class App : Application
     {
         private static ILogger _logger;
-        private readonly MainViewModel _mainModel = new MainViewModel();
+        private AppViewModel _appModel;
         private MainWindow _mainWindow;
 
         public App()
         {
+            SyncfusionLicenseProvider.RegisterLicense("MzEwNjY0QDMxMzgyZTMyMmUzMEdzZjVJbzlJbzdSTkNLWWJuNFlPRWlZOXBOWkZNc0N0cnVTRm9PcXVBNEE9");
             DispatcherUnhandledException += OnDispatcherUnhandledException;
         }
 
@@ -27,31 +35,39 @@ namespace ProjectK.Notebook
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            _mainModel.Assembly = Assembly.GetExecutingAssembly();
-            _mainModel.InitLogging();
+            _appModel = new AppViewModel();
             _logger = LogManager.GetLogger<App>();
 
-            _mainModel.InitOutput();
-
             // MainWindow
-            _mainWindow = new MainWindow {DataContext = _mainModel};
+            _mainWindow = new MainWindow {DataContext = _appModel};
+            _mainWindow.Closing += async (s1,e1) => await MainWindowOnClosing(s1, e1);
 
             // Show MainWindow
-            _mainModel.LoadSettings(_mainWindow);
+            await _appModel.LoadRecentFiles();
+            _appModel.LoadSettings(_mainWindow);
             _mainWindow.Show();
 
             // Load Data
-            await _mainModel.OpenFileAsync();
-            await _mainModel.UpdateTypeListAsync();
-            await _mainModel.StartSavingAsync();
+            await _appModel.OpenRecentFilesAsync();
+            await _appModel.UpdateTypeListAsync();
+            await _appModel.StartSavingAsync();
         }
 
-        protected override async void OnExit(ExitEventArgs e)
+
+        private async Task MainWindowOnClosing(object sender, CancelEventArgs e)
+        {
+            _logger?.LogDebug("MainWindowOnClosing");
+            await _appModel.SaveRecentFiles();
+            _appModel.SaveSettings(_mainWindow);
+            _appModel.StopSaving();
+            await _appModel.SaveFileAsync(); // Exit
+        }
+
+
+
+        protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-            _mainModel.SaveSettings(_mainWindow);
-            _mainModel.StopSaving();
-            await _mainModel.SaveFileAsync(); // Exit
             _mainWindow.Close();
             Shutdown();
         }

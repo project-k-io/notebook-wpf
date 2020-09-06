@@ -14,21 +14,20 @@ namespace ProjectK.Notebook.ViewModels.Reports
     {
         private static readonly ILogger Logger = LogManager.GetLogger<NotesReport>();
 
-        public void GenerateReport(MainViewModel model)
+        public string GenerateReport(TaskViewModel task)
         {
             Logger.LogDebug("GenerateReport()");
             try
             {
-                var project = model.Notebook;
 
                 var sb = new StringBuilder();
-                GenerateReport(model.Notebook.SelectedTask, sb, 0);
-
-                model.TextReport = sb.ToString();
+                GenerateReport(task, sb, 0);
+                return sb.ToString();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
+                return "";
             }
         }
 
@@ -36,7 +35,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
         private void GenerateReport(TaskViewModel node, StringBuilder sb, int offset)
         {
-            const int Max = 80;
+            const int max = 80;
             if(node == null)
                 return;
 
@@ -49,9 +48,9 @@ namespace ProjectK.Notebook.ViewModels.Reports
             }
             else
             {
-                if (description.Length > Max)
+                if (description.Length > max)
                 {
-                    var  lines =  StringHelper.ConvertTextInMultipleLines(description, Max);
+                    var  lines =  StringHelper.ConvertTextInMultipleLines(description, max);
                     foreach (var line in lines)
                     {
                         sb.Append(new string(SpaceChar, offset));

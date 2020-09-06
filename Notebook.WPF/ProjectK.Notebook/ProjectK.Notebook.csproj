@@ -9,7 +9,7 @@
     <Product>Notebook</Product>
     <Description>To manage projects</Description>
     <Copyright>Project K, Inc</Copyright>
-    <Version>1.4.3</Version>
+    <Version>1.5.4</Version>
     <PackageId>ProjectK.Notebook</PackageId>
     <PackageReleaseNotes>New Text Report</PackageReleaseNotes>
   </PropertyGroup>
@@ -43,6 +43,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.0" />
     <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Syncfusion.SfSkinManager.WPF" Version="18.2.0.55" />
+    <PackageReference Include="Syncfusion.Shared.WPF" Version="18.2.0.55" />
+    <PackageReference Include="Syncfusion.Themes.MaterialLight.WPF" Version="18.2.0.55" />
+    <PackageReference Include="Syncfusion.Tools.WPF" Version="18.2.0.55" />
   </ItemGroup>
 
   <ItemGroup>
