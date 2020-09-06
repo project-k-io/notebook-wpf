@@ -33,7 +33,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public async Task OpenFileAsync(string path)
         {
-            Logger.LogDebug($"OpenFileAsync : {path}");
+            Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
             // created notebook node
             RootTask.Model.Id = Guid.NewGuid();
             RootTask.Model.Title = path;

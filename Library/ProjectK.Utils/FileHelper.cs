@@ -74,7 +74,7 @@ namespace ProjectK.Utils
 
         public static async Task SaveToFileAsync<T>(string path, T model)
         {
-            Logger.LogDebug($"SaveToFileAsync: {path}");
+            Logger.LogDebug($"SaveToFileAsync | {Path.GetFileName(path)} | {Path.GetDirectoryName(path)}");
             try
             {
                 var extension = Path.GetExtension(path).ToUpper();

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
+using ProjectK.Notebook.ViewModels.Enums;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
@@ -19,7 +20,8 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 return;
 
             var path = notebook.DataFile;
-            Logger.LogDebug($"{Tag} | Edit | {path}");
+            Logger.LogDebug($"{Tag} | Edit | {Path.GetFileName(path)} | {Path.GetDirectoryName(path)}");
+
             Process.Start("explorer", path);
         }
 
@@ -52,7 +54,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
         private static void UserAction_FileOpenOldFormat(this MainViewModel model)
         {
-            Logger.LogDebug("{ Tag} | FileOpenOldFormat()");
+            Logger.LogDebug($"{Tag} | FileOpenOldFormat()");
             var dialog = new OpenFileDialog();
             var r = dialog.SetFileDialog(model.SelectedNotebook.DataFile);
             if (!r.ok)
@@ -65,7 +67,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
         public static async Task UserAction_SaveFileAsync(this MainViewModel model)
         {
-            Logger.LogDebug("{ Tag} | SaveFileAsync()");
+            Logger.LogDebug($"{Tag} | SaveFileAsync()");
             var notebook = model.SelectedNotebook;
             if (notebook == null)
                 return;
@@ -78,7 +80,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
         public static async Task UserAction_SaveFileAsAsync(this MainViewModel model)
         {
-            Logger.LogDebug("{ Tag} | SaveFileAsAsync()");
+            Logger.LogDebug($"{Tag} | SaveFileAsAsync()");
             var notebook = model.SelectedNotebook;
             if (notebook == null)
                 return;
@@ -92,6 +94,46 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             await model.SaveFileAsync(); // Save As
         }
 
+        public static async Task UserAction_ExportSelectedAllAsText(this MainViewModel model)
+        {
+            Logger.LogDebug($"{Tag} | ExportSelectedAllAsText()");
+
+            var notebook = model.SelectedNotebook;
+            if (notebook == null)
+                return;
+
+
+
+            await notebook.ExportSelectedAllAsText(model.TextReport);
+        }
+
+        public static async Task UserAction_ExportSelectedAllAsJson(this MainViewModel model)
+        {
+            Logger.LogDebug($"{Tag} | ExportSelectedAllAsJson()");
+
+            var notebook = model.SelectedNotebook;
+            if (notebook == null)
+                return;
+
+            await notebook.ExportSelectedAllAsJson();
+        }
+
+        public static async Task UserAction_ImportToSelectedAsJson(this MainViewModel model)
+        {
+            Logger.LogDebug($"{Tag} | ImportToSelectedAsJson()");
+
+            var notebook = model.SelectedNotebook;
+            if (notebook == null)
+                return;
+
+            await notebook.SelectedTask.ImportToSelectedAsJson();
+        }
+
+        public static void UserAction_ShowReport(this MainViewModel model, ReportTypes reportType)
+        {
+            Logger.LogDebug($"Show Report: {reportType}");
+            model.OnGenerateReportChanged();
+        }
 
     }
 }

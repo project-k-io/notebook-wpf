@@ -71,7 +71,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
         public static async Task ImportToSelectedAsJson(this TaskViewModel rootTask)
         {
-            Logger.LogDebug("ImportToSelectedAsJson()");
+            Logger.LogDebug("UserAction_ImportToSelectedAsJson()");
 
             // Select Import File
             var dialog = new OpenFileDialog();

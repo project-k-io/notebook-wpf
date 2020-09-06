@@ -59,10 +59,10 @@ namespace ProjectK.Notebook.ViewModels
 #endif
             CopyTaskCommand = new RelayCommand(CopyTask);
             ContinueTaskCommand = new RelayCommand(ContinueTask);
-            ShowReportCommand = new RelayCommand<ReportTypes>(ShowReport);
-            ExportSelectedAllAsTextCommand = new RelayCommand(async () => await ExportSelectedAllAsText());
-            ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await ExportSelectedAllAsJson());
-            ImportToSelectedAsJsonCommand = new RelayCommand(async () => await ImportToSelectedAsJson());
+            ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
+            ExportSelectedAllAsTextCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
+            ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
+            ImportToSelectedAsJsonCommand = new RelayCommand(async () => await this.UserAction_ImportToSelectedAsJson());
             CurrentNotebookChanged += OnCurrentNotebookChanged;
 
         }
@@ -184,28 +184,6 @@ namespace ProjectK.Notebook.ViewModels
             await SaveFileAsync((a, b) => false);
         }
 
-        private async Task ExportSelectedAllAsText()
-        {
-            if (SelectedNotebook == null)
-                return;
-
-
-
-            await SelectedNotebook.ExportSelectedAllAsText(TextReport);
-        }
-
-        private async Task ExportSelectedAllAsJson()
-        {
-            if (SelectedNotebook == null)
-                return;
-
-            await SelectedNotebook.ExportSelectedAllAsJson();
-        }
-
-        private async Task ImportToSelectedAsJson()
-        {
-            await SelectedTask.ImportToSelectedAsJson();
-        }
 
 
         public async Task SaveModifiedFileAsync()
@@ -428,11 +406,6 @@ namespace ProjectK.Notebook.ViewModels
             OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
 
-        private void ShowReport(ReportTypes reportType)
-        {
-            Logger.LogDebug($"Show Report: {reportType}");
-            OnGenerateReportChanged();
-        }
 
         #endregion
 
