@@ -88,5 +88,19 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             // Build Tree
             rootTask.BuildTree(tasks);
         }
+
+        public static (bool ok, TaskViewModel task) FindNode(this TaskViewModel task1, Func<TaskViewModel, bool> check)
+        {
+            var node = task1;
+            while (node != null)
+            {
+                if (check(node))
+                    return (true, node);
+
+                node = node.Parent;
+            }
+            return (false, null);
+        }
+
     }
 }

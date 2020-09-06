@@ -30,7 +30,6 @@ namespace ProjectK.Notebook
     {
         #region SaveDockLayoutCommand
         private ICommand _saveDockLayoutCommand;
-        private readonly ILogger _logger;
         private const string DockFileName = "DockStates.xml";
         private const string FileNameRecentFiles = "RecentFiles.json";
 
@@ -39,8 +38,8 @@ namespace ProjectK.Notebook
             Assembly = Assembly.GetExecutingAssembly();
             InitLogging();
             InitOutput();
-            _logger = LogManager.GetLogger<ViewModels.MainViewModel>();
-            _logger.LogDebug("Init Logging()");
+            Logger = LogManager.GetLogger<ViewModels.MainViewModel>();
+            Logger.LogDebug("Init Logging()");
         }
 
 
@@ -143,7 +142,7 @@ namespace ProjectK.Notebook
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                Logger.LogError(ex.Message);
                 throw;
             }
         }
@@ -188,7 +187,7 @@ namespace ProjectK.Notebook
 
         public async Task LoadRecentFiles()
         {
-            _logger.LogDebug($"LoadRecentFiles | {FileNameRecentFiles} | {Path.GetDirectoryName(Path.GetFullPath(FileNameRecentFiles))}");
+            Logger.LogDebug($"LoadRecentFiles | {FileNameRecentFiles} | {Path.GetDirectoryName(Path.GetFullPath(FileNameRecentFiles))}");
 
             var recentFiles = await FileHelper.ReadFromFileAsync<List<string>>(FileNameRecentFiles);
             if (recentFiles.IsNullOrEmpty())
@@ -196,11 +195,20 @@ namespace ProjectK.Notebook
 
             foreach (var recentFile in recentFiles)
             {
-                _logger.LogDebug($"{recentFile}");
+                Logger.LogDebug($"{recentFile}");
+                if (!File.Exists(recentFile))
+                {
+                    Logger.LogWarning($"File {recentFile} doesn't exist!");
+                    continue;
+                }
+
                 var notebook = new NotebookViewModel
                 {
                     DataFile = recentFile, 
-                    RootTask = {Context = "Notebook"}
+                    RootTask =
+                    {
+                        Context = "Notebook",
+                    }
                 };
                 Notebooks.Add(notebook);
             }
@@ -208,12 +216,12 @@ namespace ProjectK.Notebook
 
         public async Task SaveRecentFiles()
         {
-            _logger.LogDebug("SaveRecentFiles");
+            Logger.LogDebug("SaveRecentFiles");
             var recentFiles = new List<string>();
             foreach (var notebook in Notebooks)
             {
                 var recentFile = notebook.DataFile;
-                _logger.LogDebug($"{recentFile}");
+                Logger.LogDebug($"{recentFile}");
                 recentFiles.Add(recentFile);
             }
 
@@ -222,7 +230,7 @@ namespace ProjectK.Notebook
 
         public void LoadSettings(Window window)
         {
-            _logger.LogDebug("LoadSettings");
+            Logger.LogDebug("LoadSettings");
             // ISSUE: variable of a compiler-generated type
             try
             {
@@ -242,7 +250,7 @@ namespace ProjectK.Notebook
                 LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
                 LastTreeTaskId = appSettings.GetGuid("LastTreeTaskId", Guid.Empty);
 #if AK
-                Notebook.DataFile = appSettings.GetString("RecentFile", "New Data");
+                SelectedNotebook.DataFile = appSettings.GetString("RecentFile", "New Data");
 #endif
                 // Output
                 Output.OutputButtonErrors.IsChecked = appSettings.GetBool("OutputError", false);
@@ -252,13 +260,13 @@ namespace ProjectK.Notebook
 
                 MostRecentFiles.Clear();
 #if AK
-                if (File.Exists(Notebook.DataFile))
-                    MostRecentFiles.Add(new FileInfo(Notebook.DataFile));
+                if (File.Exists(SelectedNotebook.DataFile))
+                    MostRecentFiles.Add(new FileInfo(SelectedNotebook.DataFile));
 #endif
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex);
+                Logger.LogError(ex);
             }
         }
 
@@ -268,7 +276,7 @@ namespace ProjectK.Notebook
 
         public void SaveSettings(Window window)
         {
-            _logger.LogDebug("SaveSettings()");
+            Logger.LogDebug("SaveSettings()");
             try
             {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -305,7 +313,7 @@ namespace ProjectK.Notebook
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex);
+                Logger.LogError(ex);
             }
         }
 
@@ -341,7 +349,7 @@ namespace ProjectK.Notebook
 
         public async Task OpenRecentFilesAsync()
         {
-            _logger.LogDebug("Open Recent Files");
+            Logger.LogDebug("Open Recent Files");
             foreach (var notebook in Notebooks)
             {
                 var path = notebook.DataFile;

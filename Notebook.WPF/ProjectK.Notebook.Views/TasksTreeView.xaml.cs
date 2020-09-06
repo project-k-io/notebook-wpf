@@ -124,10 +124,12 @@ namespace ProjectK.Notebook.Views
         {
             if (!(sender is TreeListView treeListView))
                 return;
-            if (!(treeListView.DataContext is MainViewModel dataContext))
+
+            if (!(treeListView.DataContext is MainViewModel model))
                 return;
-            var task = treeListView.SelectedItem as TaskViewModel ?? dataContext.RootTask;
-            dataContext.SelectTreeTask(task);
+
+            var task = treeListView.SelectedItem as TaskViewModel ?? model.RootTask;
+            model.SelectTreeTask(task);
         }
     }
 }

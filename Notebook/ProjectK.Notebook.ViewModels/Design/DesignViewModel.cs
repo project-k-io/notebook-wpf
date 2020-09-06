@@ -44,7 +44,7 @@ namespace ProjectK.Notebook.ViewModels.Design
             monthMay2020.Add(week1);
 
 
-            // Notebook
+            // SelectedNotebook
             notebook.Add(year2018);
             notebook.Add(year2019);
             notebook.Add(year2020);

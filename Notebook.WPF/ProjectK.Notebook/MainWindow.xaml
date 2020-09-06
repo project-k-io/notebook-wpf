@@ -202,7 +202,7 @@
                 syncfusion:DockingManager.Header="Team Explorer"
                 syncfusion:DockingManager.SideInDockedMode="Tabbed"
                 syncfusion:DockingManager.TargetNameInDockedMode="solutionExplorer">
-                <ComboBox Grid.Row="0" IsEditable="true" ItemsSource="{Binding Path=Notebook.ContextList}"/>
+                <ComboBox Grid.Row="0" IsEditable="true" ItemsSource="{Binding Path=SelectedNotebook.ContextList}"/>
             </ContentControl>
             <ContentControl
                     x:Name="ExcelCSVView"

@@ -56,7 +56,7 @@ namespace ProjectK.Notebook
 
         private async Task MainWindowOnClosing(object sender, CancelEventArgs e)
         {
-            _logger.LogDebug("MainWindowOnClosing");
+            _logger?.LogDebug("MainWindowOnClosing");
             await _appModel.SaveRecentFiles();
             _appModel.SaveSettings(_mainWindow);
             _appModel.StopSaving();

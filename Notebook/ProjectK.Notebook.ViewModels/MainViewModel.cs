@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -26,7 +27,7 @@ namespace ProjectK.Notebook.ViewModels
     {
         #region Static
 
-        private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
+        protected ILogger Logger;
 
         #endregion
 
@@ -52,10 +53,10 @@ namespace ProjectK.Notebook.ViewModels
             ClearCommand = new RelayCommand(this.UserAction_Clear);
             EditCommand = new RelayCommand(this.UserAction_Edit);
 #if AK
-            FixTimeCommand = new RelayCommand(Notebook.FixTime);
-            ExtractContextCommand = new RelayCommand(Notebook.FixContext);
-            FixTitlesCommand = new RelayCommand(Notebook.FixTitles);
-            FixTypesCommand = new RelayCommand(Notebook.FixTypes);
+            FixTimeCommand = new RelayCommand(SelectedNotebook.FixTime);
+            ExtractContextCommand = new RelayCommand(SelectedNotebook.FixContext);
+            FixTitlesCommand = new RelayCommand(SelectedNotebook.FixTitles);
+            FixTypesCommand = new RelayCommand(SelectedNotebook.FixTypes);
 #endif
             CopyTaskCommand = new RelayCommand(CopyTask);
             ContinueTaskCommand = new RelayCommand(ContinueTask);
@@ -136,15 +137,25 @@ namespace ProjectK.Notebook.ViewModels
 
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
-        public NotebookViewModel SelectedNotebook { get; set; }
+        private NotebookViewModel _selectedNotebook;
+        public TaskViewModel _selectedTask;
 
         public ObservableCollection<NotebookViewModel> Notebooks { get; } =
             new ObservableCollection<NotebookViewModel>();
 
         public TaskViewModel RootTask { get; set; } = new TaskViewModel {Title = "Root"};
-        public TaskViewModel SelectedTask { get; set; }
 
+        public NotebookViewModel SelectedNotebook
+        {
+            get => _selectedNotebook;
+            set => Set(ref _selectedNotebook, value);
+        }
 
+        public TaskViewModel SelectedTask
+        {
+            get => _selectedTask;
+            set => Set(ref _selectedTask, value);
+        }
 
         public string ExcelCsvText
         {
@@ -174,13 +185,13 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FileOpenOldFormat()
         {
-            //AK Notebook.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
+            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
         }
 
 
         public async Task SaveFileAsync()
         {
-            Logger.LogDebug("SaveFileAsync");
+            Logger?.LogDebug("SaveFileAsync");
             await SaveFileAsync((a, b) => false);
         }
 
@@ -280,10 +291,31 @@ namespace ProjectK.Notebook.ViewModels
             task.ContextList = ContextList;
             task.TaskTitleList = TaskTitleList;
             SelectedTask = task;
+
+            var notebook = FindNotebook(task);
+            if (notebook != null)
+            {
+                SelectedNotebook = notebook;
+                SelectedNotebook.SelectedTask = task;
+                Logger.LogDebug($"SelectedNotebook selected | {notebook.DataFile}");
+            }
+
             SelectedNotebook?.SelectTreeTask(task);
             OnGenerateReportChanged();
         }
 
+
+        public NotebookViewModel FindNotebook(TaskViewModel task)
+        {
+            var (ok, notebookNode) = task.FindNode(t => t.Context == "Notebook");
+            if (!ok)
+                return null;
+
+            var path = notebookNode.Title;
+
+            var notebook = Notebooks.FirstOrDefault(n => n.DataFile == path);
+            return notebook;
+        }
 
 
         #endregion

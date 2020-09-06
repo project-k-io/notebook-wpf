@@ -30,8 +30,8 @@
                   ButtonBase.Click="ListViewTasks_OnClick"
                   x:Name="listViewTasks"
                   SelectionMode="Extended"
-                  ItemsSource="{Binding Path=Notebook.SelectedTaskList}"
-                  SelectedItem="{Binding Path=Notebook.SelectedTask, IsAsync=true}">
+                  ItemsSource="{Binding Path=SelectedNotebook.SelectedTaskList}"
+                  SelectedItem="{Binding Path=SelectedNotebook.SelectedTask, IsAsync=true}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Context" Width="100">
