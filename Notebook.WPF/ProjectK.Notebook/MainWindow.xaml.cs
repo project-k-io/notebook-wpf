@@ -25,7 +25,7 @@ namespace ProjectK.Notebook
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
             _logger.LogDebug("Loaded()");
-            if (!(DataContext is MainViewModel model)) return;
+            if (!(DataContext is AppViewModel model)) return;
 
             model.OnDispatcher = ViewLib.GetAddDelegate(this);
             CommandBindings.AddRange(model.CreateCommandBindings());
@@ -33,7 +33,7 @@ namespace ProjectK.Notebook
 
         private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!(DataContext is MainViewModel model)) return;
+            if (!(DataContext is AppViewModel model)) return;
             if (!(sender is Calendar calendar)) return;
             model.SelectedNotebook.UpdateSelectDayTasks(calendar.SelectedDates);
             model.OnGenerateReportChanged();

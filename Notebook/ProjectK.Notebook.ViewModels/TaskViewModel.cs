@@ -16,7 +16,7 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class TaskViewModel : ViewModelBase, ITask<TaskViewModel>
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
+        private readonly ILogger _logger = LogManager.GetLogger<TaskViewModel>();
         private static int _globalLevel;
 
         #region Override functions
@@ -28,15 +28,22 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-
         public void SaveTo(List<TaskModel> tasks)
+        {
+            foreach (var subTask in SubTasks)
+            {
+                subTask.SaveRecursively(tasks);
+            }
+        }
+
+        private void SaveRecursively(ICollection<TaskModel> tasks)
         {
             tasks.Add(Model);
             TrySetId();
 
             foreach (var subTask in SubTasks)
             {
-                subTask.SaveTo(tasks);
+                subTask.SaveRecursively(tasks);
                 subTask.ParentId = Model.Id;
             }
         }
@@ -283,7 +290,7 @@ namespace ProjectK.Notebook.ViewModels
         public void Add(TaskViewModel subTask)
         {
             if (subTask.Title == "Time Tracker2")
-                Logger.LogDebug(subTask.Title);
+                _logger.LogDebug(subTask.Title);
 
             subTask.Parent = this;
             SubTasks.Add(subTask);
@@ -465,7 +472,7 @@ namespace ProjectK.Notebook.ViewModels
             
             // don't show logging ctl, alt, shift or arrow keys
             if(keyboardKeys != KeyboardKeys.None && state != KeyboardStates.None)
-                Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
+                _logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
 
             switch (keyboardKeys)
             {
@@ -497,7 +504,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectItem(this);
                     expandItem(this);
                     handled();
-                    Logger.LogDebug($"Added [{task.Title}] to [{Title}]");
+                    _logger.LogDebug($"Added [{task.Title}] to [{Title}]");
                     break;
                 case KeyboardKeys.Delete:
                     if (deleteMessageBox())

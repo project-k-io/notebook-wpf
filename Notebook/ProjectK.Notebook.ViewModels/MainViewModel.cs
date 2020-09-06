@@ -35,8 +35,8 @@ namespace ProjectK.Notebook.ViewModels
         private string _excelCsvText;
         private bool _useTimeOptimization;
         private ReportTypes _reportType = ReportTypes.Notes;
-        public Action<LogLevel, EventId, string> LogEvent { get; set; }
-        public Action CurrentNotebookChanged { get; set; }
+        private string _textReport;
+        private string _title;
 
 
         #endregion
@@ -49,9 +49,9 @@ namespace ProjectK.Notebook.ViewModels
             TypeList = new ObservableCollection<string>();
             ContextList = new ObservableCollection<string>();
             TaskTitleList = new ObservableCollection<string>();
+            ClearCommand = new RelayCommand(this.UserAction_Clear);
+            EditCommand = new RelayCommand(this.UserAction_Edit);
 #if AK
-            ClearCommand = new RelayCommand(Notebook.Clear);
-            EditCommand = new RelayCommand(() => Process.Start("explorer", Notebook.DataFile));
             FixTimeCommand = new RelayCommand(Notebook.FixTime);
             ExtractContextCommand = new RelayCommand(Notebook.FixContext);
             FixTitlesCommand = new RelayCommand(Notebook.FixTitles);
@@ -67,6 +67,7 @@ namespace ProjectK.Notebook.ViewModels
 
         }
 
+
         private void OnCurrentNotebookChanged()
         {
             var noteBookName = SelectedNotebook != null ? SelectedNotebook.RootTask.Title : "";
@@ -75,13 +76,14 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        #region Events
+        #region Delegates
 
         public event EventHandler<TaskEventArgs> SelectedTaskChanged;
+        public Action CurrentNotebookChanged { get; set; }
 
-#endregion
-        
-#region Commands
+        #endregion
+
+        #region Commands
 
         public ICommand ClearCommand { get; }
         public ICommand EditCommand { get; }
@@ -97,9 +99,9 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand ExportSelectedAllAsJsonCommand { get; }
         public ICommand ImportToSelectedAsJsonCommand { get; }
 
-#endregion
+        #endregion
 
-#region Properties
+        #region Properties
 
         public ReportTypes ReportType
         {
@@ -112,12 +114,13 @@ namespace ProjectK.Notebook.ViewModels
 
         public Assembly Assembly { get; set; }
 
-        private string _title;
-        public string Title { 
+
+        public string Title
+        {
             get => _title;
             set
             {
-                if(_title == null)
+                if (_title == null)
                     return;
 
                 _title = value;
@@ -125,11 +128,19 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
+        public string TextReport
+        {
+            get => _textReport;
+            set => Set(ref _textReport, value);
+        }
 
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
         public NotebookViewModel SelectedNotebook { get; set; }
-        public ObservableCollection<NotebookViewModel> Notebooks { get; } = new ObservableCollection<NotebookViewModel>();
+
+        public ObservableCollection<NotebookViewModel> Notebooks { get; } =
+            new ObservableCollection<NotebookViewModel>();
+
         public TaskViewModel RootTask { get; set; } = new TaskViewModel {Title = "Root"};
         public TaskViewModel SelectedTask { get; set; }
 
@@ -155,9 +166,9 @@ namespace ProjectK.Notebook.ViewModels
         public Action<Action> OnDispatcher { get; set; }
         public OutputViewModel Output { get; set; } = new OutputViewModel();
 
-#endregion
+        #endregion
 
-#region Public functions
+        #region Public functions
 
 
 
@@ -175,10 +186,12 @@ namespace ProjectK.Notebook.ViewModels
 
         private async Task ExportSelectedAllAsText()
         {
-            if(SelectedNotebook == null)
+            if (SelectedNotebook == null)
                 return;
 
-            await SelectedNotebook.ExportSelectedAllAsText();
+
+
+            await SelectedNotebook.ExportSelectedAllAsText(TextReport);
         }
 
         private async Task ExportSelectedAllAsJson()
@@ -239,12 +252,6 @@ namespace ProjectK.Notebook.ViewModels
             CanSave = false;
 
             var notebook = new NotebookViewModel();
-            notebook.RootTask.Add(new TaskViewModel("Time Tracker")
-            {
-                Context = "Time Tracker"
-            });
-
-            notebook._data = new DataModel();
             var path = FileHelper.MakeUnique(notebook.DataFile);
             notebook.DataFile = path;
 
@@ -253,8 +260,6 @@ namespace ProjectK.Notebook.ViewModels
             SelectedNotebook = notebook;
             CanSave = true;
         }
-
-
 
 
         public void OnSelectedTaskChanged(TaskViewModel task)
@@ -276,14 +281,14 @@ namespace ProjectK.Notebook.ViewModels
                     _worksheetReport.GenerateReport(this);
                     break;
                 case ReportTypes.Notes:
-                    _notesReport.GenerateReport(this);
+                    TextReport = _notesReport.GenerateReport(SelectedTask);
                     break;
             }
         }
 
         public void PrepareSettings()
         {
-            if (SelectedTask != null) 
+            if (SelectedTask != null)
                 LastListTaskId = SelectedTask.Id;
 
             if (SelectedNotebook?.SelectedTreeTask == null) return;
@@ -296,31 +301,24 @@ namespace ProjectK.Notebook.ViewModels
             task.TypeList = TypeList;
             task.ContextList = ContextList;
             task.TaskTitleList = TaskTitleList;
+            SelectedTask = task;
             SelectedNotebook?.SelectTreeTask(task);
             OnGenerateReportChanged();
         }
 
-#endregion
 
-#region Private functions
 
-        // Save File and Log
-        private async Task SaveFileAsync(TaskViewModel rootTask, Func<DataModel, DataModel, bool> isSame)
-        {
-            if (SelectedNotebook == null)
-                return;
+        #endregion
 
-            await SelectedNotebook.SaveFileAsync(isSame);
-
-        }
+        #region Private functions
 
         // Save File and Log
         private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
         {
-            if(SelectedNotebook == null)
-                return;
-
-            await SaveFileAsync(SelectedNotebook.RootTask, isSame);
+            foreach (var notebook in Notebooks)
+            {
+                await notebook.SaveFileAsync(isSame);
+            }
         }
 
         private async Task FileSaveOldFormatAsync()
@@ -328,7 +326,7 @@ namespace ProjectK.Notebook.ViewModels
             if (SelectedNotebook == null)
                 return;
 
-            await FileHelper.SaveToFileAsync(SelectedNotebook, SelectedNotebook.DataFile);
+            await FileHelper.SaveToFileAsync(SelectedNotebook.DataFile, SelectedNotebook);
         }
 
         private void UseSettings()
@@ -436,6 +434,8 @@ namespace ProjectK.Notebook.ViewModels
             OnGenerateReportChanged();
         }
 
-#endregion
+        #endregion
+
     }
+
 }

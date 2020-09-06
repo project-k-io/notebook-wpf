@@ -14,22 +14,20 @@ namespace ProjectK.Notebook.ViewModels.Reports
     {
         private static readonly ILogger Logger = LogManager.GetLogger<NotesReport>();
 
-        public void GenerateReport(MainViewModel model)
+        public string GenerateReport(TaskViewModel task)
         {
             Logger.LogDebug("GenerateReport()");
             try
             {
-                var notebook = model.SelectedNotebook;
-                if(notebook == null)
-                    return;
 
                 var sb = new StringBuilder();
-                GenerateReport(notebook.SelectedTask, sb, 0);
-                notebook.TextReport = sb.ToString();
+                GenerateReport(task, sb, 0);
+                return sb.ToString();
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
+                return "";
             }
         }
 

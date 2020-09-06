@@ -19,9 +19,17 @@ namespace ProjectK.Notebook.ViewModels
 
         private TaskViewModel _selectedTask;
         private TaskViewModel _selectedTreeTask;
-        public DataModel _data;
-        private string _textReport;
+        private DataModel _data;
 
+        public NotebookViewModel()
+        {
+            RootTask.Add(new TaskViewModel("Time Tracker")
+            {
+                Context = "Time Tracker"
+            });
+
+            _data = new DataModel();
+        }
 
         public async Task OpenFileAsync(string path)
         {
@@ -55,11 +63,6 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
-        public string TextReport
-        {
-            get => _textReport;
-            set => Set(ref _textReport, value);
-        }
 
         public string DataFile
         {
@@ -198,7 +201,7 @@ namespace ProjectK.Notebook.ViewModels
 
 
 
-        public async Task ExportSelectedAllAsText()
+        public async Task ExportSelectedAllAsText(string text)
         {
 
             var path = DataFile;
@@ -206,7 +209,7 @@ namespace ProjectK.Notebook.ViewModels
             if (!ok)
                 return;
 
-            await File.WriteAllTextAsync(exportPath, TextReport);
+            await File.WriteAllTextAsync(exportPath, text);
         }
 
         public async Task ExportSelectedAllAsJson()
@@ -232,7 +235,7 @@ namespace ProjectK.Notebook.ViewModels
             FileHelper.SaveFileToLog(path);
 
             _data.Copy(newData);
-            await FileHelper.SaveToFileAsync(_data, path);
+            await FileHelper.SaveToFileAsync(path, _data);
         }
 
     }

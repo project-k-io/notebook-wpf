@@ -20,7 +20,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         {
             var newData = new DataModel();
             rootTask.SaveTo(newData.Tasks);
-            await FileHelper.SaveToFileAsync(newData, path);
+            await FileHelper.SaveToFileAsync(path, newData);
         }
 
         public static void BuildTree(this TaskViewModel rootTask, List<TaskModel> tasks)

@@ -110,11 +110,11 @@ namespace ProjectK.Notebook.ViewModels.Reports
                     if (lastTask != null)
                     {
                         var dateStarted = lastTask.DateStarted;
-                        File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", notebook.TextReport);
+                        File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", model.TextReport);
                     }
                 }
 
-                notebook.TextReport = sb.ToString();
+                model.TextReport = sb.ToString();
             }
             catch (Exception ex)
             {
