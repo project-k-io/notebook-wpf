@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Notebook.Domain;
 
 namespace ProjectK.Notebook.ViewModels.Tests
 {

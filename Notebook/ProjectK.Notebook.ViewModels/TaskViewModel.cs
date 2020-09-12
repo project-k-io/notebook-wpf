@@ -7,7 +7,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
@@ -44,7 +44,7 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var subTask in SubTasks)
             {
                 subTask.SaveRecursively(tasks);
-                subTask.ParentId = Model.Id;
+                subTask.ParentId = Model.TaskId;
             }
         }
 
@@ -61,7 +61,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public TaskModel Model { get; set; }
 
-        public Guid Id => Model.Id;
+        public Guid Id => Model.TaskId;
 
         public Guid ParentId
         {
@@ -111,11 +111,11 @@ namespace ProjectK.Notebook.ViewModels
 
         public string Title
         {
-            get => Model.Title;
-            set => this.Set(Model.Title, v =>
+            get => Model.Name;
+            set => this.Set(Model.Name, v =>
             {
                 Model.Level = _globalLevel++;
-                Model.Title = v;
+                Model.Name = v;
             }, value);
         }
 
@@ -250,10 +250,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public void TrySetId()
         {
-            if (Model.Id != Guid.Empty)
+            if (Model.TaskId != Guid.Empty)
                 return;
 
-            Model.Id = Guid.NewGuid();
+            Model.TaskId = Guid.NewGuid();
         }
 
         public void LoadFrom(Models.Versions.Version1.TaskModel model)

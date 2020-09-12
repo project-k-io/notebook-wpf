@@ -1,27 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ProjectK.Notebook.Models.Versions.Version2
+namespace ProjectK.Notebook.Domain
 {
-    public class DataModel
+    public class NotebookModel
     {
-        public DataModel()
-        {
-            Tasks = new List<TaskModel>();
-        }
+        public int Id { get; set; }
+        public string Name { get; set; }
 
-        public List<TaskModel> Tasks { get; set; }
+        public virtual List<TaskModel> Tasks { get; set; } = new List<TaskModel>();
 
-        public bool IsSame(DataModel data)
+        public bool IsSame(NotebookModel notebook)
         {
-            if (data.Tasks.Count != Tasks.Count)
+            if (notebook.Tasks.Count != Tasks.Count)
                 return false;
 
             for (var i = 0; i < Tasks.Count; i++)
             {
                 var a = Tasks[i];
-                var b = data.Tasks[i];
-                if (b.Title == "XXX")
+                var b = notebook.Tasks[i];
+                if (b.Name == "XXX")
                     Debug.WriteLine("XXX");
                 if (!a.IsSame(b))
                     return false;
@@ -35,16 +33,16 @@ namespace ProjectK.Notebook.Models.Versions.Version2
             Tasks.Clear();
         }
 
-        public DataModel Copy()
+        public NotebookModel Copy()
         {
-            var model = new DataModel();
+            var model = new NotebookModel();
             foreach (var task in Tasks)
                 model.Tasks.Add(task.Copy());
 
             return model;
         }
 
-        public void Copy(DataModel model)
+        public void CopyFrom(NotebookModel model)
         {
             Tasks.Clear();
             foreach (var task in model.Tasks)

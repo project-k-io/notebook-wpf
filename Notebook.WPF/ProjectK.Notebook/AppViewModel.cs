@@ -13,9 +13,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Data;
+using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Extensions;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Extensions;
@@ -32,7 +35,6 @@ namespace ProjectK.Notebook
         private ICommand _saveDockLayoutCommand;
         private const string DockFileName = "DockStates.xml";
         private const string FileNameRecentFiles = "RecentFiles.json";
-
         public AppViewModel()
         {
             Assembly = Assembly.GetExecutingAssembly();
@@ -185,48 +187,7 @@ namespace ProjectK.Notebook
 
         #endregion
 
-        public async Task LoadRecentFiles()
-        {
-            Logger.LogDebug($"LoadRecentFiles | {FileNameRecentFiles} | {Path.GetDirectoryName(Path.GetFullPath(FileNameRecentFiles))}");
-
-            var recentFiles = await FileHelper.ReadFromFileAsync<List<string>>(FileNameRecentFiles);
-            if (recentFiles.IsNullOrEmpty())
-                return;
-
-            foreach (var recentFile in recentFiles)
-            {
-                Logger.LogDebug($"{recentFile}");
-                if (!File.Exists(recentFile))
-                {
-                    Logger.LogWarning($"File {recentFile} doesn't exist!");
-                    continue;
-                }
-
-                var notebook = new NotebookViewModel
-                {
-                    DataFile = recentFile, 
-                    RootTask =
-                    {
-                        Context = "Notebook",
-                    }
-                };
-                Notebooks.Add(notebook);
-            }
-        }
-
-        public async Task SaveRecentFiles()
-        {
-            Logger.LogDebug("SaveRecentFiles");
-            var recentFiles = new List<string>();
-            foreach (var notebook in Notebooks)
-            {
-                var recentFile = notebook.DataFile;
-                Logger.LogDebug($"{recentFile}");
-                recentFiles.Add(recentFile);
-            }
-
-            await FileHelper.SaveToFileAsync(FileNameRecentFiles, recentFiles);
-        }
+        private readonly NotebookContext _db = new NotebookContext();
 
         public void LoadSettings(Window window)
         {
@@ -250,7 +211,7 @@ namespace ProjectK.Notebook
                 LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
                 LastTreeTaskId = appSettings.GetGuid("LastTreeTaskId", Guid.Empty);
 #if AK
-                SelectedNotebook.DataFile = appSettings.GetString("RecentFile", "New Data");
+                SelectedNotebook.Name = appSettings.GetString("RecentFile", "New Data");
 #endif
                 // Output
                 Output.OutputButtonErrors.IsChecked = appSettings.GetBool("OutputError", false);
@@ -260,8 +221,8 @@ namespace ProjectK.Notebook
 
                 MostRecentFiles.Clear();
 #if AK
-                if (File.Exists(SelectedNotebook.DataFile))
-                    MostRecentFiles.Add(new FileInfo(SelectedNotebook.DataFile));
+                if (File.Exists(SelectedNotebook.Name))
+                    MostRecentFiles.Add(new FileInfo(SelectedNotebook.Name));
 #endif
             }
             catch (Exception ex)
@@ -297,7 +258,7 @@ namespace ProjectK.Notebook
                 SaveDockLayout(null);
 
                 // model settings
-                settings.SetValue("RecentFile", SelectedNotebook?.DataFile);
+                settings.SetValue("RecentFile", SelectedNotebook?.Title);
                 settings.SetValue("LastListTaskId", LastListTaskId.ToString());
                 settings.SetValue("LastTreeTaskId", LastTreeTaskId.ToString());
                 settings.SetValue("MainWindowState", window.WindowState.ToString());
@@ -317,17 +278,6 @@ namespace ProjectK.Notebook
             }
         }
 
-        public async Task StartSavingAsync()
-        {
-            CanSave = true;
-            while (CanSave)
-            {
-                await SaveModifiedFileAsync();
-                await Task.Run(() => Thread.Sleep(5000));
-            }
-        }
-
-
         public void StopSaving()
         {
             CanSave = false;
@@ -340,29 +290,106 @@ namespace ProjectK.Notebook
             {
                 new CommandBinding(ApplicationCommands.New, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true),
                 new CommandBinding(ApplicationCommands.Open, async (s, e) =>  await this.UserAction_OpenFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.Save, async (s, e) => await this.UserAction_SaveFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await this.UserAction_SaveFileAsAsync(), (s, e) => e.CanExecute = true),
                 new CommandBinding(ApplicationCommands.Close, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true)
             };
             return commandBindings;
         }
 
-        public async Task OpenRecentFilesAsync()
+
+        public async Task SaveRecentFiles()
         {
-            Logger.LogDebug("Open Recent Files");
+            Logger.LogDebug("SaveRecentFiles");
+            var recentFiles = new List<string>();
             foreach (var notebook in Notebooks)
             {
-                var path = notebook.DataFile;
-                if (!File.Exists(path))
-                    continue;
+                var recentFile = notebook.Title;
+                Logger.LogDebug($"{recentFile}");
+                recentFiles.Add(recentFile);
+            }
 
-                await notebook.OpenFileAsync(path);
+            await FileHelper.SaveToFileAsync(FileNameRecentFiles, recentFiles);
+        }
 
-                // add notebook node to root node
-                RootTask.Add(notebook.RootTask);
+
+        public void OpenDatabase()
+        {
+            // this is for demo purposes only, to make it easier
+            // to get up and running
+            _db.Database.EnsureCreated();
+
+            // load the entities into EF Core
+            // _db.Notebooks.Load();
+
+            // bind to the source
+            var models = _db.Notebooks.Local.ToList();
+
+            // PopulateNotebookViewModels(notebookModels);
+            var count = 0;
+            foreach (var model in models)
+            {
+                var title = $"Notebook_{count++}";
+                var notebook = AddNotebook(model, title);
                 SelectedNotebook = notebook;
             }
         }
+
+
+        public NotebookViewModel AddNotebook(NotebookModel model, string title)
+        {
+            var notebook = new NotebookViewModel
+            {
+                RootTask = { Context = "Notebook" }
+            };
+            notebook.PopulateFromModel(model, title);
+            SelectedNotebook = notebook;
+            Notebooks.Add(notebook);
+            RootTask.Add(notebook.RootTask);
+            // add notebook node to root node
+            return notebook;
+        }
+
+        public override void AddNewNotebook(NotebookModel model, string title)
+        {
+            // 
+            _db.Notebooks.Add(model);
+            _db.SaveChanges();
+            AddNotebook(model, title);
+        }
+
+
+
+
+        public void CloseDatabase()
+        {
+            foreach (var notebook in Notebooks)
+            {
+                notebook.CopyFromViewModelToModels();
+            }
+
+            _db.SaveChanges();
+            // clean up database connections
+            _db.Dispose();
+        }
+
+        public async Task UserNewFileAsync()
+        {
+            Logger.LogDebug("UserNewFileAsync");
+            CanSave = false;
+
+            var notebook = new NotebookViewModel();
+            var path = FileHelper.MakeUnique(notebook.Title);
+
+
+            Notebooks.Add(notebook);
+            RootTask.Add(notebook.RootTask);
+            SelectedNotebook = notebook;
+            CanSave = true;
+        }
+
+
+
+
+
 
 
     }

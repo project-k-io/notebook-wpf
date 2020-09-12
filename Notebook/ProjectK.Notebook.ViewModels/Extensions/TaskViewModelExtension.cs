@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
-using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Notebook.Domain;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
@@ -18,7 +18,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
         public static async Task ExportToFileAsync(this TaskViewModel rootTask, string path)
         {
-            var newData = new DataModel();
+            var newData = new NotebookModel();
             rootTask.SaveTo(newData.Tasks);
             await FileHelper.SaveToFileAsync(path, newData);
         }
@@ -31,19 +31,19 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             // build index
             foreach (var task in tasks)
             {
-                if (!index.ContainsKey(task.Id))
-                    index.Add(task.Id, new TaskViewModel { Model = task });
+                if (!index.ContainsKey(task.TaskId))
+                    index.Add(task.TaskId, new TaskViewModel { Model = task });
             }
 
             foreach (var task in tasks)
             {
                 if (!index.ContainsKey(task.ParentId))
                 {
-                    rootTask.Add(index[task.Id]);
+                    rootTask.Add(index[task.TaskId]);
                 }
                 else
                 {
-                    index[task.ParentId].Add(index[task.Id]);
+                    index[task.ParentId].Add(index[task.TaskId]);
                 }
             }
 
@@ -80,7 +80,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 return;
 
             // Read Import File
-            var data = await FileHelper.ReadFromFileAsync<DataModel>(r.fileName);
+            var data = await FileHelper.ReadFromFileAsync<NotebookModel>(r.fileName);
 
             // Get Tasks
             var tasks = data.Tasks;

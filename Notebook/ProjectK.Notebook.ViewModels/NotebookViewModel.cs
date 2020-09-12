@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
-using ProjectK.Notebook.Models.Versions.Version2;
+
 namespace ProjectK.Notebook.ViewModels
 {
     public class NotebookViewModel : ViewModelBase
@@ -19,7 +20,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private TaskViewModel _selectedTask;
         private TaskViewModel _selectedTreeTask;
-        private DataModel _data;
+        private NotebookModel _notebook;
 
         public NotebookViewModel()
         {
@@ -28,25 +29,61 @@ namespace ProjectK.Notebook.ViewModels
                 Context = "Time Tracker"
             });
 
-            _data = new DataModel();
+            _notebook = new NotebookModel();
         }
 
-        public async Task OpenFileAsync(string path)
+        #region Storage Functions Ver 1
+
+        public void LoadFrom(Models.Versions.Version1.DataModel model)
         {
-            Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
+            Clear();
+            RootTask.LoadFrom(model.RootTask);
+        }
+
+        #endregion
+
+        #region Storage Functions 
+        public void CopyFromViewModelToModels()
+        {
+            var tasks = new List<TaskModel>();
+            RootTask.SaveTo(tasks);
+
+            foreach (var task in tasks)
+            {
+                
+            }
+            
+            _notebook.Tasks.Clear();
+            _notebook.Tasks.AddRange(tasks);
+        }
+
+
+
+        public void PopulateFromModel(NotebookModel notebook, string name)
+        {
             // created notebook node
-            RootTask.Model.Id = Guid.NewGuid();
-            RootTask.Model.Title = path;
+            RootTask.Model.TaskId = Guid.NewGuid();
+            RootTask.Model.Name = name;
 
             // load notebook 
-            _data = await FileHelper.ReadFromFileAsync<DataModel>(path);
-            LoadFrom(_data?.Copy());
+            _notebook = notebook;
+
+            var model = _notebook?.Copy();
+            if (model == null)
+                return;
+
+            var tasks = model.Tasks;
+            Clear();
+
+            // Build Tree
+            RootTask.BuildTree(tasks);
         }
 
 
 
-        public ObservableCollection<TaskViewModel> SelectedTaskList { get; } =
-            new ObservableCollection<TaskViewModel>();
+        #endregion
+
+        public ObservableCollection<TaskViewModel> SelectedTaskList { get; } = new ObservableCollection<TaskViewModel>();
 
         public TaskViewModel RootTask { get; set; } = new TaskViewModel();
 
@@ -63,14 +100,10 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
+        public string? Title  => _notebook.Name;
 
-        public string DataFile
-        {
-            get => RootTask.Title;
-            set => RootTask.Title = value;
-        }
 
-        public List< DateTime> GetSelectedDays()
+        public List<DateTime> GetSelectedDays()
         {
             var dateTimeList = new List<DateTime>();
             foreach (var selectedTask in SelectedTaskList)
@@ -142,23 +175,6 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public void LoadFrom(Models.Versions.Version1.DataModel model)
-        {
-            Clear();
-            RootTask.LoadFrom(model.RootTask);
-        }
-
-        public void LoadFrom(Models.Versions.Version2.DataModel model)
-        {
-            if (model == null)
-                return;
-
-            var tasks = model.Tasks;
-            Clear();
-
-            // Build Tree
-            RootTask.BuildTree(tasks);
-        }
 
 
         public void FixTime()
@@ -204,7 +220,7 @@ namespace ProjectK.Notebook.ViewModels
         public async Task ExportSelectedAllAsText(string text)
         {
 
-            var path = DataFile;
+            var path = Title;
             var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedTask.Title, ".txt");
             if (!ok)
                 return;
@@ -214,7 +230,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public async Task ExportSelectedAllAsJson()
         {
-            var path = DataFile;
+            var path = Title;
             var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedTask.Title);
             if (!ok)
                 return;
@@ -222,21 +238,6 @@ namespace ProjectK.Notebook.ViewModels
             await SelectedTask.ExportToFileAsync(exportPath);
         }
 
-        public async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
-        {
-            var newData = new DataModel();
-            RootTask.SaveTo(newData.Tasks);
-
-            _data ??= new DataModel();
-            if (isSame(_data, newData))
-                return;
-
-            var path = DataFile;
-            FileHelper.SaveFileToLog(path);
-
-            _data.Copy(newData);
-            await FileHelper.SaveToFileAsync(path, _data);
-        }
 
     }
 }

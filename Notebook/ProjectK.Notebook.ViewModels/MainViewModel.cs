@@ -12,8 +12,8 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Models;
-using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Reports;
@@ -38,7 +38,8 @@ namespace ProjectK.Notebook.ViewModels
         private ReportTypes _reportType = ReportTypes.Notes;
         private string _textReport;
         private string _title;
-
+        private NotebookViewModel _selectedNotebook;
+        private TaskViewModel _selectedTask;
 
         #endregion
 
@@ -112,10 +113,7 @@ namespace ProjectK.Notebook.ViewModels
                 if (!Set(ref _reportType, value)) return;
             }
         }
-
         public Assembly Assembly { get; set; }
-
-
         public string Title
         {
             get => _title;
@@ -128,47 +126,35 @@ namespace ProjectK.Notebook.ViewModels
                 RaisePropertyChanged();
             }
         }
-
         public string TextReport
         {
             get => _textReport;
             set => Set(ref _textReport, value);
         }
-
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
-        private NotebookViewModel _selectedNotebook;
-        public TaskViewModel _selectedTask;
-
-        public ObservableCollection<NotebookViewModel> Notebooks { get; } =
-            new ObservableCollection<NotebookViewModel>();
-
+        public ObservableCollection<NotebookViewModel> Notebooks { get; set; } = new ObservableCollection<NotebookViewModel>();
         public TaskViewModel RootTask { get; set; } = new TaskViewModel {Title = "Root"};
-
         public NotebookViewModel SelectedNotebook
         {
             get => _selectedNotebook;
             set => Set(ref _selectedNotebook, value);
         }
-
         public TaskViewModel SelectedTask
         {
             get => _selectedTask;
             set => Set(ref _selectedTask, value);
         }
-
         public string ExcelCsvText
         {
             get => _excelCsvText;
             set => Set(ref _excelCsvText, value);
         }
-
         public bool UseTimeOptimization
         {
             get => _useTimeOptimization;
             set => Set(ref _useTimeOptimization, value);
         }
-
         public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
@@ -185,22 +171,9 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FileOpenOldFormat()
         {
-            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.DataModel.ReadFromFile(DataFile));
+            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Name));
         }
 
-
-        public async Task SaveFileAsync()
-        {
-            Logger?.LogDebug("SaveFileAsync");
-            await SaveFileAsync((a, b) => false);
-        }
-
-
-
-        public async Task SaveModifiedFileAsync()
-        {
-            await SaveFileAsync((a, b) => a.IsSame(b));
-        }
 
         public async Task UpdateTypeListAsync()
         {
@@ -234,21 +207,7 @@ namespace ProjectK.Notebook.ViewModels
             });
         }
 
-        public async Task UserNewFileAsync()
-        {
-            Logger.LogDebug("UserNewFileAsync");
-            await SaveFileAsync(); //New
-            CanSave = false;
 
-            var notebook = new NotebookViewModel();
-            var path = FileHelper.MakeUnique(notebook.DataFile);
-            notebook.DataFile = path;
-
-            Notebooks.Add(notebook);
-            RootTask.Add(notebook.RootTask);
-            SelectedNotebook = notebook;
-            CanSave = true;
-        }
 
 
         public void OnSelectedTaskChanged(TaskViewModel task)
@@ -297,7 +256,7 @@ namespace ProjectK.Notebook.ViewModels
             {
                 SelectedNotebook = notebook;
                 SelectedNotebook.SelectedTask = task;
-                Logger.LogDebug($"SelectedNotebook selected | {notebook.DataFile}");
+                Logger.LogDebug($"SelectedNotebook selected | {notebook.Title}");
             }
 
             SelectedNotebook?.SelectTreeTask(task);
@@ -313,7 +272,7 @@ namespace ProjectK.Notebook.ViewModels
 
             var path = notebookNode.Title;
 
-            var notebook = Notebooks.FirstOrDefault(n => n.DataFile == path);
+            var notebook = Notebooks.FirstOrDefault(n => n.Title == path);
             return notebook;
         }
 
@@ -321,23 +280,6 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Private functions
-
-        // Save File and Log
-        private async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
-        {
-            foreach (var notebook in Notebooks)
-            {
-                await notebook.SaveFileAsync(isSame);
-            }
-        }
-
-        private async Task FileSaveOldFormatAsync()
-        {
-            if (SelectedNotebook == null)
-                return;
-
-            await FileHelper.SaveToFileAsync(SelectedNotebook.DataFile, SelectedNotebook);
-        }
 
         private void UseSettings()
         {
@@ -441,6 +383,10 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
+
+        public virtual void AddNewNotebook(NotebookModel model, string path)
+        {
+        }
     }
 
 }
