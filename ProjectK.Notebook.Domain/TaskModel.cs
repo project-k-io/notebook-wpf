@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace ProjectK.Notebook.Domain
 {
     public class TaskModel
     {
+        [JsonIgnore]
         public int Id { get; set; }
+        [JsonPropertyName("Title")]
         public string Name { get; set; }
-
         public int Level = 0;
+        [JsonPropertyName("Id")]
         public Guid TaskId { get; set; }
         public Guid ParentId { get; set; }
         public int Rating { get; set; }

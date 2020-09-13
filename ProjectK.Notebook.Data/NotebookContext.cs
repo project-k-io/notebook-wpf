@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Logging;
 using ProjectK.Notebook.Domain;
 
 namespace ProjectK.Notebook.Data
@@ -11,6 +15,7 @@ namespace ProjectK.Notebook.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=notebooks.db");
+            optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
             //optionsBuilder.UseLazyLoadingProxies();
             // optionsBuilder.EnableSensitiveDataLogging();
         }
