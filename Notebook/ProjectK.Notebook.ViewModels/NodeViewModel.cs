@@ -31,7 +31,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void SaveTo(List<TaskModel> tasks)
         {
-            foreach (var subTask in SubTasks)
+            foreach (var subTask in Nodes)
             {
                 subTask.SaveRecursively(tasks);
             }
@@ -42,7 +42,7 @@ namespace ProjectK.Notebook.ViewModels
             tasks.Add(Model);
             TrySetId();
 
-            foreach (var subTask in SubTasks)
+            foreach (var subTask in Nodes)
             {
                 subTask.SaveRecursively(tasks);
                 subTask.ParentId = Model.TaskId;
@@ -216,9 +216,9 @@ namespace ProjectK.Notebook.ViewModels
             set => Set(ref _total, value);
         }
 
-        public NodeViewModel LastSubNode => SubTasks.LastOrDefault();
+        public NodeViewModel LastSubNode => Nodes.LastOrDefault();
         // ToDo: Improve allocation, maybe allocate only when you needed?
-        public ObservableCollection<NodeViewModel> SubTasks { get; set; } = new ObservableCollection<NodeViewModel>();
+        public ObservableCollection<NodeViewModel> Nodes { get; set; } = new ObservableCollection<NodeViewModel>();
 
         #endregion
 
@@ -269,12 +269,12 @@ namespace ProjectK.Notebook.ViewModels
             if (model.SubTasks.IsNullOrEmpty())
                 return;
 
-            SubTasks = new ObservableCollection<NodeViewModel>();
+            Nodes = new ObservableCollection<NodeViewModel>();
             foreach (var subTask in model.SubTasks)
             {
                 var taskViewModel = new NodeViewModel();
                 taskViewModel.LoadFrom(subTask);
-                SubTasks.Add(taskViewModel);
+                Nodes.Add(taskViewModel);
             }
         }
 
@@ -282,7 +282,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             var subTask = new NodeViewModel {Title = "New Node", DateStarted = DateTime.Now, DateEnded = DateTime.Now};
             Add(subTask);
-            var ii = SubTasks.IndexOf(subTask);
+            var ii = Nodes.IndexOf(subTask);
             FixContext(subTask);
             FixTitles(subTask, ii);
             return subTask;
@@ -294,18 +294,18 @@ namespace ProjectK.Notebook.ViewModels
                 _logger.LogDebug(subNode.Title);
 
             subNode.Parent = this;
-            SubTasks.Add(subNode);
+            Nodes.Add(subNode);
         }
 
         private void Insert(int index, NodeViewModel subNode)
         {
             subNode.Parent = this;
-            SubTasks.Insert(index, subNode);
+            Nodes.Insert(index, subNode);
         }
 
         public void SetParents()
         {
-            foreach (var subTask in SubTasks)
+            foreach (var subTask in Nodes)
             {
                 subTask.Parent = this;
                 subTask.SetParents();
@@ -327,31 +327,31 @@ namespace ProjectK.Notebook.ViewModels
             if (IsPersonalType)
                 return;
 
-            if (SubTasks.IsNullOrEmpty())
+            if (Nodes.IsNullOrEmpty())
             {
                 Total = Duration;
             }
             else
             {
-                for (var index = 0; index < SubTasks.Count; ++index)
+                for (var index = 0; index < Nodes.Count; ++index)
                 {
-                    var subTask = SubTasks[index];
-                    if (subTask.DateEnded == DateTime.MinValue && index < SubTasks.Count - 1)
-                        subTask.DateEnded = SubTasks[index + 1].DateStarted;
+                    var subTask = Nodes[index];
+                    if (subTask.DateEnded == DateTime.MinValue && index < Nodes.Count - 1)
+                        subTask.DateEnded = Nodes[index + 1].DateStarted;
                 }
 
                 Total = TimeSpan.Zero;
-                for (var index = 0; index < SubTasks.Count; ++index)
+                for (var index = 0; index < Nodes.Count; ++index)
                 {
-                    var subTask = SubTasks[index];
+                    var subTask = Nodes[index];
                     subTask.FixTime();
                     Total += subTask.Total;
                 }
 
-                var subTask1 = SubTasks[SubTasks.Count - 1];
+                var subTask1 = Nodes[Nodes.Count - 1];
                 if (subTask1.DateEnded != DateTime.MinValue)
                     DateEnded = subTask1.DateEnded;
-                var subTask2 = SubTasks[0];
+                var subTask2 = Nodes[0];
                 if (subTask2.DateStarted != DateTime.MinValue)
                     DateStarted = subTask2.DateStarted;
             }
@@ -361,7 +361,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             if (!string.IsNullOrEmpty(Context) && !contextList.Contains(Context))
                 contextList.Add(Context);
-            foreach (var subTask in SubTasks)
+            foreach (var subTask in Nodes)
                 subTask.ExtractContext(contextList);
         }
 
@@ -384,7 +384,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixContext()
         {
-            foreach (var subTask in SubTasks)
+            foreach (var subTask in Nodes)
             {
                 FixContext(subTask);
                 subTask.FixContext();
@@ -412,9 +412,9 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTitles()
         {
-            for (var ii = 0; ii < SubTasks.Count; ++ii)
+            for (var ii = 0; ii < Nodes.Count; ++ii)
             {
-                var subTask = SubTasks[ii];
+                var subTask = Nodes[ii];
                 FixTitles(subTask, ii);
                 subTask.FixTitles();
             }
@@ -442,7 +442,7 @@ namespace ProjectK.Notebook.ViewModels
                     Type = "Support";
             }
 
-            foreach (var subTask in SubTasks)
+            foreach (var subTask in Nodes)
                 subTask.FixTypes();
         }
 
@@ -450,7 +450,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             if (Id == id)
                 return this;
-            foreach (var subTask in SubTasks)
+            foreach (var subTask in Nodes)
             {
                 var task = subTask.FindTask(id);
                 if (task != null)
@@ -514,10 +514,10 @@ namespace ProjectK.Notebook.ViewModels
                     if (parent == null)
                         break;
                     
-                    var num1 = parent.SubTasks.IndexOf(this);
-                    dispatcher(() => parent.SubTasks.Remove(this));
+                    var num1 = parent.Nodes.IndexOf(this);
+                    dispatcher(() => parent.Nodes.Remove(this));
                     
-                    var taskViewModel2 = num1 > 0 ? parent.SubTasks[num1 - 1] : parent;
+                    var taskViewModel2 = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
                     if (taskViewModel2 == null)
                         break;
 
@@ -534,8 +534,8 @@ namespace ProjectK.Notebook.ViewModels
                         var parent2 = parent1.Parent;
                         if (parent2 == null)
                             break;
-                        parent1.SubTasks.Remove(this);
-                        var num2 = parent2.SubTasks.IndexOf(parent1);
+                        parent1.Nodes.Remove(this);
+                        var num2 = parent2.Nodes.IndexOf(parent1);
                         parent2.Insert(num2 + 1, this);
                         selectItem(this);
                         handled();
@@ -548,13 +548,13 @@ namespace ProjectK.Notebook.ViewModels
                         var parent1 = Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.SubTasks.IndexOf(this);
+                        var num2 = parent1.Nodes.IndexOf(this);
                         if (num2 <= 0)
                             break;
-                        var subTask = parent1.SubTasks[num2 - 1];
+                        var subTask = parent1.Nodes[num2 - 1];
                         if (subTask == null)
                             break;
-                        parent1.SubTasks.Remove(this);
+                        parent1.Nodes.Remove(this);
                         subTask.Add(this);
                         selectItem(this);
                         parent1.IsExpanded = true;
@@ -569,10 +569,10 @@ namespace ProjectK.Notebook.ViewModels
                         var parent1 = Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.SubTasks.IndexOf(this);
+                        var num2 = parent1.Nodes.IndexOf(this);
                         if (num2 <= 0)
                             break;
-                        parent1.SubTasks.Remove(this);
+                        parent1.Nodes.Remove(this);
                         parent1.Insert(num2 - 1, this);
                         selectItem(this);
                         parent1.IsExpanded = true;
@@ -587,10 +587,10 @@ namespace ProjectK.Notebook.ViewModels
                         var parent1 = Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.SubTasks.IndexOf(this);
-                        if (num2 >= parent1.SubTasks.Count - 1)
+                        var num2 = parent1.Nodes.IndexOf(this);
+                        if (num2 >= parent1.Nodes.Count - 1)
                             break;
-                        parent1.SubTasks.Remove(this);
+                        parent1.Nodes.Remove(this);
                         parent1.Insert(num2 + 1, this);
                         selectItem(this);
                         parent1.IsExpanded = true;

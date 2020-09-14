@@ -4,6 +4,6 @@ namespace ProjectK.Utils
 {
     public interface INode<T>
     {
-        ObservableCollection<T> SubTasks { get; }
+        ObservableCollection<T> Nodes { get; }
     }
 }

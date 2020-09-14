@@ -64,7 +64,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 }
             }
 
-            foreach (var subTask in node.SubTasks)
+            foreach (var subTask in node.Nodes)
             {
                 GenerateReport(subTask, sb, offset + 2);
             }

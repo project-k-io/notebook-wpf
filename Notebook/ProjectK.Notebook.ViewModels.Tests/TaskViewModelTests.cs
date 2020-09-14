@@ -63,7 +63,7 @@ namespace ProjectK.Notebook.ViewModels.Tests
             //AK double actual = account.Balance;
             //AK Assert.AreEqual(expected, actual, 0.001, "Account not debited correctly");
             Assert.AreEqual(child.Parent.Id, parent.Id, "Node has wrong parent");
-            Assert.IsTrue(parent.SubTasks.Contains(child), "Node has wrong child");
+            Assert.IsTrue(parent.Nodes.Contains(child), "Node has wrong child");
         }
 
         [TestMethod()]

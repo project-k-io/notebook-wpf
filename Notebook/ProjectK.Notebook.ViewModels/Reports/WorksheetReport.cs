@@ -57,11 +57,11 @@ namespace ProjectK.Notebook.ViewModels.Reports
         private  void AddHeader(NodeViewModel t, StringBuilder sb, ILogger logger)
         {
             logger.LogDebug("GenerateReport()");
-            if (t.SubTasks.IsNullOrEmpty())
+            if (t.Nodes.IsNullOrEmpty())
                 return;
 
-            var firstTask = t.SubTasks.FirstOrDefault();
-            var lastTask = t.SubTasks.LastOrDefault();
+            var firstTask = t.Nodes.FirstOrDefault();
+            var lastTask = t.Nodes.LastOrDefault();
 
             var dateStarted1 = firstTask?.DateStarted;
             var dateStarted2 = lastTask?.DateStarted;
@@ -104,7 +104,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 sb.Append(report);
                 if (notebook.SelectedNode != null && notebook.SelectedNode.Context == "Week")
                 {
-                    var subTasks = notebook.SelectedNode.SubTasks;
+                    var subTasks = notebook.SelectedNode.Nodes;
                     var lastTask = subTasks.LastOrDefault();
 
                     if (lastTask != null)

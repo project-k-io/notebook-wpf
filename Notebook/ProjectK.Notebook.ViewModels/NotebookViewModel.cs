@@ -171,7 +171,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             if (ContainDate(dates, node.DateStarted))
                 list.Add(node);
-            foreach (var subTask in node.SubTasks)
+            foreach (var subTask in node.Nodes)
                 AddToList(list, subTask, dates);
         }
 
@@ -185,7 +185,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void Clear()
         {
-            RootNode.SubTasks.Clear();
+            RootNode.Nodes.Clear();
         }
 
         public void ExtractContext()

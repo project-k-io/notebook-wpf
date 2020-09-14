@@ -19,7 +19,7 @@ namespace ProjectK.Utils.Extensions
         public static void AddToList<T>(this ICollection<T> list, T task) where T : INode<T>
         {
             list.Add(task);
-            foreach (var subTask in task.SubTasks)
+            foreach (var subTask in task.Nodes)
                 AddToList(list, subTask);
         }
 

@@ -158,7 +158,7 @@
         <FrameworkElement.Resources>
             <HierarchicalDataTemplate x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
                                       DataType="{x:Type viewModels:NodeViewModel}"
-                                      ItemsSource="{Binding Path=SubTasks}" />
+                                      ItemsSource="{Binding Path=Nodes}" />
         </FrameworkElement.Resources>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                       FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
@@ -167,7 +167,7 @@
                                        SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
                                        ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
                                        Style="{StaticResource TreeListViewStyle}"
-                                       ItemsSource="{Binding Path=RootNode.SubTasks}" />
+                                       ItemsSource="{Binding Path=RootNode.Nodes}" />
         </ScrollViewer>
     </Grid>
 </UserControl>

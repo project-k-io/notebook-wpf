@@ -331,7 +331,7 @@ namespace ProjectK.Notebook.ViewModels
             {
                 var dateTime1 = excelCsvRecord.Day;
                 var dayOfTheWeek = dateTime1.DayOfWeek.ToString();
-                var taskViewModel1 = selectedTreeTask.SubTasks.FirstOrDefault(t => t.Title == dayOfTheWeek);
+                var taskViewModel1 = selectedTreeTask.Nodes.FirstOrDefault(t => t.Title == dayOfTheWeek);
                 if (taskViewModel1 == null)
                 {
                     taskViewModel1 = new NodeViewModel(dayOfTheWeek)
@@ -339,7 +339,7 @@ namespace ProjectK.Notebook.ViewModels
                         DateStarted = excelCsvRecord.Day,
                         DateEnded = excelCsvRecord.Day
                     };
-                    selectedTreeTask.SubTasks.Add(taskViewModel1);
+                    selectedTreeTask.Nodes.Add(taskViewModel1);
                 }
 
                 var taskViewModel2 = new NodeViewModel(excelCsvRecord.Task) {Context = "Node"};
@@ -374,7 +374,7 @@ namespace ProjectK.Notebook.ViewModels
                 var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
                 taskViewModel4.DateEnded = dateTime3;
                 taskViewModel2.Description = $"{excelCsvRecord.Type1}:{excelCsvRecord.Type2}:{excelCsvRecord.SubTask}";
-                taskViewModel1.SubTasks.Add(taskViewModel2);
+                taskViewModel1.Nodes.Add(taskViewModel2);
             }
         }
 
