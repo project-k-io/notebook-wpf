@@ -311,7 +311,7 @@ namespace ProjectK.Notebook
         }
 
 
-        public void OpenDatabase()
+        public override void OpenDatabase()
         {
             // this is for demo purposes only, to make it easier
             // to get up and running
@@ -333,6 +333,18 @@ namespace ProjectK.Notebook
             }
         }
 
+        public override void CloseDatabase()
+        {
+            foreach (var notebook in Notebooks)
+            {
+                notebook.CopyFromViewModelToModels();
+            }
+
+            _db.SaveChanges();
+            // clean up database connections
+            _db.Dispose();
+        }
+
 
         public NotebookViewModel AddNotebook(NotebookModel model, string title)
         {
@@ -350,26 +362,17 @@ namespace ProjectK.Notebook
 
         public override void AddNewNotebook(NotebookModel model, string title)
         {
+#if AK
             // 
             _db.Notebooks.Add(model);
             _db.SaveChanges();
+#endif
             AddNotebook(model, title);
         }
 
 
 
 
-        public void CloseDatabase()
-        {
-            foreach (var notebook in Notebooks)
-            {
-                notebook.CopyFromViewModelToModels();
-            }
-
-            _db.SaveChanges();
-            // clean up database connections
-            _db.Dispose();
-        }
 
         public async Task UserNewFileAsync()
         {

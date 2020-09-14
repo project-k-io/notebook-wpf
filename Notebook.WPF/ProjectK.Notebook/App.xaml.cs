@@ -46,10 +46,13 @@ namespace ProjectK.Notebook
             _mainWindow.Show();
 
             // Open Database
+#if AK
             _appModel.OpenDatabase();
 
             // PopulateFromModel Data
+
             await _appModel.UpdateTypeListAsync();
+#endif
         }
 
 
@@ -57,10 +60,11 @@ namespace ProjectK.Notebook
         {
             _logger?.LogDebug("OnExit");
             _appModel.SaveSettings(_mainWindow);
-           
-            // Close Database
-            _appModel.CloseDatabase();
 
+            // Close Database
+#if AK
+            _appModel.CloseDatabase();
+#endif
             _mainWindow.Close();
             Shutdown();
             base.OnExit(e);

@@ -91,7 +91,8 @@
                     <RibbonButton Command="{Binding Path=ImportToSelectedAsJsonCommand}" Label="Import To Selected as Json" SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Data"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Database">
-                    <RibbonButton Command="{Binding Path=ExportSelectedAllAsTextCommand}" Label="Copy to Database" SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Text"/>
+                    <RibbonButton Command="{Binding Path=OpenDatabaseCommand}" Label="Open Database" SmallImageSource="Images\open16.png" ToolTip="Open Database"/>
+                    <RibbonButton Command="{Binding Path=CloseDatabaseCommand}" Label="Close Database" SmallImageSource="Images\save16.png" ToolTip="Close Database"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
