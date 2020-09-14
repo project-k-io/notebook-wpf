@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace ProjectK.Notebook.Domain
+namespace ProjectK.Notebook.Models.Versions.Version2
 {
-
     public class TaskModel
     {
-        [JsonIgnore]
-        public int Id { get; set; }
-        [JsonPropertyName("Title")]
-        public string Name { get; set; }
+        public string Title { get; set; }
         public int Level = 0;
-        [JsonPropertyName("Id")]
-        public Guid TaskId { get; set; }
+        public Guid Id { get; set; }
         public Guid ParentId { get; set; }
         public int Rating { get; set; }
         public DateTime DateStarted { get; set; }
@@ -26,14 +21,14 @@ namespace ProjectK.Notebook.Domain
         {
             return new TaskModel
             {
-                TaskId = TaskId,
+                Id = Id,
                 ParentId = ParentId,
                 Rating = Rating,
                 DateStarted = DateStarted,
                 DateEnded = DateEnded,
                 Type = Type,
                 SubType = SubType,
-                Name = Name,
+                Title = Title,
                 Description = Description,
                 Context = Context
             };
@@ -42,24 +37,24 @@ namespace ProjectK.Notebook.Domain
 
         public static TaskModel NetTask()
         {
-            return new TaskModel {TaskId = Guid.NewGuid(), DateStarted = DateTime.Now};
+            return new TaskModel {Id = Guid.NewGuid(), DateStarted = DateTime.Now};
         }
 
         public override string ToString()
         {
-            return $"{Context}:{Type}:{Name}:{DateStarted}:{DateEnded}";
+            return $"{Context}:{Type}:{Title}:{DateStarted}:{DateEnded}";
         }
 
         public bool IsSame(TaskModel m)
         {
-            if (TaskId != m.TaskId) return false;
+            if (Id != m.Id) return false;
             if (ParentId != m.ParentId) return false;
             if (Rating != m.Rating) return false;
             if (DateStarted != m.DateStarted) return false;
             if (DateEnded != m.DateEnded) return false;
             if (Type != m.Type) return false;
             if (SubType != m.SubType) return false;
-            if (Name != m.Name) return false;
+            if (Title != m.Title) return false;
             if (Description != m.Description) return false;
             if (Context != m.Context) return false;
             return true;

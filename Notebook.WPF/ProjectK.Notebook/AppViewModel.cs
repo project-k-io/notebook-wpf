@@ -20,6 +20,7 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Extensions;
+// using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
@@ -360,16 +361,37 @@ namespace ProjectK.Notebook
             return notebook;
         }
 
-        public override void AddNewNotebook(NotebookModel model, string title)
+        public override void ImportNotebook(Models.Versions.Version2.DataModel dataModel, string title)
         {
 #if AK
             // 
             _db.Notebooks.Add(model);
             _db.SaveChanges();
 #endif
+            var model = new NotebookModel();
+            foreach (var task2 in dataModel.Tasks)
+            {
+                var task = new TaskModel();
+                Init(task, task2);
+                model.Tasks.Add(task);
+            }
+
             AddNotebook(model, title);
         }
 
+        public static void Init(TaskModel task, Models.Versions.Version2.TaskModel task2)
+        {
+            task.TaskId = task2.Id;
+            task.ParentId = task2.ParentId;
+            task.Rating = task2.Rating;
+            task.DateStarted = task2.DateStarted;
+            task.DateEnded = task2.DateEnded;
+            task.Type = task2.Type;
+            task.SubType = task2.SubType;
+            task.Name = task2.Title;
+            task.Description = task2.Description;
+            task.Context = task2.Context;
+        }
 
 
 

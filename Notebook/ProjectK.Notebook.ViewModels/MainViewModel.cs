@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Models;
+// using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Reports;
@@ -402,7 +403,7 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
 
-        public virtual void AddNewNotebook(NotebookModel model, string path)
+        public virtual void ImportNotebook(ProjectK.Notebook.Models.Versions.Version2.DataModel model, string path)
         {
         }
     }

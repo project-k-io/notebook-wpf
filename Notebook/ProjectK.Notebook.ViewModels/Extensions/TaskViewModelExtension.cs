@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+// using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
