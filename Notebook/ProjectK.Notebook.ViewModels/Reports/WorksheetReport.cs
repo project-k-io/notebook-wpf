@@ -14,18 +14,18 @@ namespace ProjectK.Notebook.ViewModels.Reports
     {
         private static readonly ILogger Logger = LogManager.GetLogger<WorksheetReport>();
 
-        private  ReportModule GenerateReport(IList<TaskViewModel> list)
+        private  ReportModule GenerateReport(IList<NodeViewModel> list)
         {
-            var sortedList = new SortedList<string, SortedList<string, List<TaskViewModel>>>();
+            var sortedList = new SortedList<string, SortedList<string, List<NodeViewModel>>>();
             foreach (var item in list)
-                if (item.Context == "Task" && !string.IsNullOrEmpty(item.Type) &&
+                if (item.Context == "Node" && !string.IsNullOrEmpty(item.Type) &&
                     !item.IsSubTypeSleep)
                 {
                     if (!sortedList.ContainsKey(item.Type))
-                        sortedList.Add(item.Type, new SortedList<string, List<TaskViewModel>>());
+                        sortedList.Add(item.Type, new SortedList<string, List<NodeViewModel>>());
                     var sortedList2 = sortedList[item.Type];
                     if (!sortedList2.ContainsKey(item.Title))
-                        sortedList2.Add(item.Title, new List<TaskViewModel>());
+                        sortedList2.Add(item.Title, new List<NodeViewModel>());
                     sortedList2[item.Title].Add(item);
                 }
 
@@ -54,7 +54,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
             return reportModule;
         }
 
-        private  void AddHeader(TaskViewModel t, StringBuilder sb, ILogger logger)
+        private  void AddHeader(NodeViewModel t, StringBuilder sb, ILogger logger)
         {
             logger.LogDebug("GenerateReport()");
             if (t.SubTasks.IsNullOrEmpty())
@@ -96,15 +96,15 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
                 var sb = new StringBuilder();
                 var report = GenerateReport(notebook.SelectedTaskList).GenerateReport(maxDelta, model.UseTimeOptimization);
-                var selectedTask = notebook.SelectedTask;
+                var selectedTask = notebook.SelectedNode;
 
                 if (selectedTask != null && selectedTask.Context == "Week")
                     AddHeader(selectedTask, sb, Logger);
 
                 sb.Append(report);
-                if (notebook.SelectedTask != null && notebook.SelectedTask.Context == "Week")
+                if (notebook.SelectedNode != null && notebook.SelectedNode.Context == "Week")
                 {
-                    var subTasks = notebook.SelectedTask.SubTasks;
+                    var subTasks = notebook.SelectedNode.SubTasks;
                     var lastTask = subTasks.LastOrDefault();
 
                     if (lastTask != null)

@@ -2,7 +2,7 @@
 
 namespace ProjectK.Utils
 {
-    public interface ITask<T>
+    public interface INode<T>
     {
         ObservableCollection<T> SubTasks { get; }
     }

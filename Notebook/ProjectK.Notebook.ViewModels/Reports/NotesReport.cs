@@ -14,14 +14,14 @@ namespace ProjectK.Notebook.ViewModels.Reports
     {
         private static readonly ILogger Logger = LogManager.GetLogger<NotesReport>();
 
-        public string GenerateReport(TaskViewModel task)
+        public string GenerateReport(NodeViewModel node)
         {
             Logger.LogDebug("GenerateReport()");
             try
             {
 
                 var sb = new StringBuilder();
-                GenerateReport(task, sb, 0);
+                GenerateReport(node, sb, 0);
                 return sb.ToString();
             }
             catch (Exception ex)
@@ -33,7 +33,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
         private const char SpaceChar = ' ';
 
-        private void GenerateReport(TaskViewModel node, StringBuilder sb, int offset)
+        private void GenerateReport(NodeViewModel node, StringBuilder sb, int offset)
         {
             const int max = 80;
             if(node == null)

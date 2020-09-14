@@ -156,8 +156,8 @@
     </FrameworkElement.Resources>
     <Grid>
         <FrameworkElement.Resources>
-            <HierarchicalDataTemplate x:Key="{DataTemplateKey {x:Type viewModels:TaskViewModel}}"
-                                      DataType="{x:Type viewModels:TaskViewModel}"
+            <HierarchicalDataTemplate x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
+                                      DataType="{x:Type viewModels:NodeViewModel}"
                                       ItemsSource="{Binding Path=SubTasks}" />
         </FrameworkElement.Resources>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
@@ -167,7 +167,7 @@
                                        SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
                                        ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
                                        Style="{StaticResource TreeListViewStyle}"
-                                       ItemsSource="{Binding Path=RootTask.SubTasks}" />
+                                       ItemsSource="{Binding Path=RootNode.SubTasks}" />
         </ScrollViewer>
     </Grid>
 </UserControl>

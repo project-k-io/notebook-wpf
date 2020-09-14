@@ -40,8 +40,8 @@ namespace ProjectK.Notebook.Views
             if (!(DataContext is MainViewModel model))
                 return;
 
-            model.RootTask.SetParents();
-            TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeTask);
+            model.RootNode.SetParents();
+            TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeNode);
             TreeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
         }
 
@@ -59,10 +59,10 @@ namespace ProjectK.Notebook.Views
             if (!(treeView.DataContext is MainViewModel mainViewModel))
                 return;
 
-            if (!(treeView.SelectedItem is TaskViewModel task))
-                task = mainViewModel.RootTask;
+            if (!(treeView.SelectedItem is NodeViewModel task))
+                task = mainViewModel.RootNode;
 
-            void ExpandItem(TaskViewModel t)
+            void ExpandItem(NodeViewModel t)
             {
                 if (!(treeView.ItemContainerGenerator.ContainerFromItem(task) is TreeViewItem treeViewItem))
                     return;
@@ -83,7 +83,7 @@ namespace ProjectK.Notebook.Views
             {
                 if (task.Context == "Notebook")
                 {
-                    var notebook =  mainViewModel.Notebooks.First(n => n.RootTask.Id == task.Id);
+                    var notebook =  mainViewModel.Notebooks.First(n => n.RootNode.Id == task.Id);
                     if(notebook == null)
                         return;
 
@@ -128,7 +128,7 @@ namespace ProjectK.Notebook.Views
             if (!(treeListView.DataContext is MainViewModel model))
                 return;
 
-            var task = treeListView.SelectedItem as TaskViewModel ?? model.RootTask;
+            var task = treeListView.SelectedItem as NodeViewModel ?? model.RootNode;
             model.SelectTreeTask(task);
         }
     }

@@ -15,32 +15,32 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 {
     public static class TaskViewModelExtension
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
+        private static readonly ILogger Logger = LogManager.GetLogger<NodeViewModel>();
 
-        public static async Task ExportToFileAsync(this TaskViewModel rootTask, string path)
+        public static async Task ExportToFileAsync(this NodeViewModel rootNode, string path)
         {
             var newData = new NotebookModel();
-            rootTask.SaveTo(newData.Tasks);
+            rootNode.SaveTo(newData.Tasks);
             await FileHelper.SaveToFileAsync(path, newData);
         }
 
-        public static void BuildTree(this TaskViewModel rootTask, List<TaskModel> tasks)
+        public static void BuildTree(this NodeViewModel rootNode, List<TaskModel> tasks)
         {
             // 
-            var index = new SortedList<Guid, TaskViewModel>();
+            var index = new SortedList<Guid, NodeViewModel>();
 
             // build index
             foreach (var task in tasks)
             {
                 if (!index.ContainsKey(task.TaskId))
-                    index.Add(task.TaskId, new TaskViewModel { Model = task });
+                    index.Add(task.TaskId, new NodeViewModel { Model = task });
             }
 
             foreach (var task in tasks)
             {
                 if (!index.ContainsKey(task.ParentId))
                 {
-                    rootTask.Add(index[task.TaskId]);
+                    rootNode.Add(index[task.TaskId]);
                 }
                 else
                 {
@@ -70,7 +70,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             return (dialog.FileName, true);
         }
 
-        public static async Task ImportToSelectedAsJson(this TaskViewModel rootTask)
+        public static async Task ImportToSelectedAsJson(this NodeViewModel rootNode)
         {
             Logger.LogDebug("UserAction_ImportToSelectedAsJson()");
 
@@ -87,10 +87,10 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             var tasks = data.Tasks;
 
             // Build Tree
-            rootTask.BuildTree(tasks);
+            rootNode.BuildTree(tasks);
         }
 
-        public static (bool ok, TaskViewModel task) FindNode(this TaskViewModel task1, Func<TaskViewModel, bool> check)
+        public static (bool ok, NodeViewModel task) FindNode(this NodeViewModel task1, Func<NodeViewModel, bool> check)
         {
             var node = task1;
             while (node != null)

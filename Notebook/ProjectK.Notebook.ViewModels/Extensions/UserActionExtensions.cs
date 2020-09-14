@@ -87,7 +87,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             if (notebook == null)
                 return;
 
-            await notebook.SelectedTask.ImportToSelectedAsJson();
+            await notebook.SelectedNode.ImportToSelectedAsJson();
         }
 
         public static void UserAction_ShowReport(this MainViewModel model, ReportTypes reportType)
