@@ -15,9 +15,10 @@ using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class NodeViewModel : ViewModelBase, INode<NodeViewModel>
+
+    public class TaskViewModel : ViewModelBase, INode<TaskViewModel>
     {
-        private readonly ILogger _logger = LogManager.GetLogger<NodeViewModel>();
+        private readonly ILogger _logger = LogManager.GetLogger<TaskViewModel>();
         private static int _globalLevel;
 
         #region Override functions
@@ -164,7 +165,7 @@ namespace ProjectK.Notebook.ViewModels
             set => this.Set(Context, v => Model.Context = v, value);
         }
 
-        public NodeViewModel Parent { get; set; }
+        public TaskViewModel Parent { get; set; }
 
         public bool IsSelected
         {
@@ -216,9 +217,9 @@ namespace ProjectK.Notebook.ViewModels
             set => Set(ref _total, value);
         }
 
-        public NodeViewModel LastSubNode => Nodes.LastOrDefault();
+        public TaskViewModel LastSubTask => Nodes.LastOrDefault();
         // ToDo: Improve allocation, maybe allocate only when you needed?
-        public ObservableCollection<NodeViewModel> Nodes { get; set; } = new ObservableCollection<NodeViewModel>();
+        public ObservableCollection<TaskViewModel> Nodes { get; set; } = new ObservableCollection<TaskViewModel>();
 
         #endregion
 
@@ -232,13 +233,13 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Constructors
 
-        public NodeViewModel()
+        public TaskViewModel()
         {
             Parent = null;
             Model = new TaskModel();
         }
 
-        public NodeViewModel(string title)
+        public TaskViewModel(string title)
         {
             Model = new TaskModel();
             Parent = null;
@@ -269,18 +270,18 @@ namespace ProjectK.Notebook.ViewModels
             if (model.SubTasks.IsNullOrEmpty())
                 return;
 
-            Nodes = new ObservableCollection<NodeViewModel>();
+            Nodes = new ObservableCollection<TaskViewModel>();
             foreach (var subTask in model.SubTasks)
             {
-                var taskViewModel = new NodeViewModel();
+                var taskViewModel = new TaskViewModel();
                 taskViewModel.LoadFrom(subTask);
                 Nodes.Add(taskViewModel);
             }
         }
 
-        private NodeViewModel AddNewTask()
+        private TaskViewModel AddNewTask()
         {
-            var subTask = new NodeViewModel {Title = "New Node", DateStarted = DateTime.Now, DateEnded = DateTime.Now};
+            var subTask = new TaskViewModel {Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now};
             Add(subTask);
             var ii = Nodes.IndexOf(subTask);
             FixContext(subTask);
@@ -288,19 +289,19 @@ namespace ProjectK.Notebook.ViewModels
             return subTask;
         }
 
-        public void Add(NodeViewModel subNode)
+        public void Add(TaskViewModel subTask)
         {
-            if (subNode.Title == "Time Tracker2")
-                _logger.LogDebug(subNode.Title);
+            if (subTask.Title == "Time Tracker2")
+                _logger.LogDebug(subTask.Title);
 
-            subNode.Parent = this;
-            Nodes.Add(subNode);
+            subTask.Parent = this;
+            Nodes.Add(subTask);
         }
 
-        private void Insert(int index, NodeViewModel subNode)
+        private void Insert(int index, TaskViewModel subTask)
         {
-            subNode.Parent = this;
-            Nodes.Insert(index, subNode);
+            subTask.Parent = this;
+            Nodes.Insert(index, subTask);
         }
 
         public void SetParents()
@@ -365,21 +366,21 @@ namespace ProjectK.Notebook.ViewModels
                 subTask.ExtractContext(contextList);
         }
 
-        private void FixContext(string parent, string child, NodeViewModel subNode)
+        private void FixContext(string parent, string child, TaskViewModel subTask)
         {
             if (!(Context == parent))
                 return;
-            subNode.Context = child;
+            subTask.Context = child;
         }
 
-        private void FixContext(NodeViewModel subNode)
+        private void FixContext(TaskViewModel subTask)
         {
-            FixContext("Time Tracker", "Year", subNode);
-            FixContext("Year", "Month", subNode);
-            FixContext("Month", "Week", subNode);
-            FixContext("Week", "Day", subNode);
-            FixContext("Day", "Node", subNode);
-            FixContext("Node", "Node", subNode);
+            FixContext("Time Tracker", "Year", subTask);
+            FixContext("Year", "Month", subTask);
+            FixContext("Month", "Week", subTask);
+            FixContext("Week", "Day", subTask);
+            FixContext("Day", "Task", subTask);
+            FixContext("Task", "Task", subTask);
         }
 
         public void FixContext()
@@ -391,23 +392,23 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private void FixTitles(string parent, Func<int, NodeViewModel, string> getTitle, NodeViewModel subNode, int ii)
+        private void FixTitles(string parent, Func<int, TaskViewModel, string> getTitle, TaskViewModel subTask, int ii)
         {
             if (!(Context == parent))
                 return;
-            subNode.Title = getTitle(ii, subNode);
+            subTask.Title = getTitle(ii, subTask);
         }
 
-        private void FixTitles(NodeViewModel subNode, int ii)
+        private void FixTitles(TaskViewModel subTask, int ii)
         {
-            var getTitle1 = (Func<int, NodeViewModel, string>) ((i, t) => t.DateStarted.ToString("yyyy"));
-            var getTitle2 = (Func<int, NodeViewModel, string>) ((i, t) => t.DateStarted.ToString("MMMM"));
-            var getTitle3 = (Func<int, NodeViewModel, string>) ((i, t) => "Week" + (i + 1));
-            var getTitle4 = (Func<int, NodeViewModel, string>) ((i, t) => t.DateStarted.DayOfWeek.ToString());
-            FixTitles("Time Tracker", getTitle1, subNode, ii);
-            FixTitles("Year", getTitle2, subNode, ii);
-            FixTitles("Month", getTitle3, subNode, ii);
-            FixTitles("Week", getTitle4, subNode, ii);
+            var getTitle1 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("yyyy"));
+            var getTitle2 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("MMMM"));
+            var getTitle3 = (Func<int, TaskViewModel, string>) ((i, t) => "Week" + (i + 1));
+            var getTitle4 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.DayOfWeek.ToString());
+            FixTitles("Time Tracker", getTitle1, subTask, ii);
+            FixTitles("Year", getTitle2, subTask, ii);
+            FixTitles("Month", getTitle3, subTask, ii);
+            FixTitles("Week", getTitle4, subTask, ii);
         }
 
         public void FixTitles()
@@ -446,7 +447,7 @@ namespace ProjectK.Notebook.ViewModels
                 subTask.FixTypes();
         }
 
-        public NodeViewModel FindTask(Guid id)
+        public TaskViewModel FindTask(Guid id)
         {
             if (Id == id)
                 return this;
@@ -465,7 +466,7 @@ namespace ProjectK.Notebook.ViewModels
             KeyboardKeys keyboardKeys,
             Func<KeyboardStates> getState,
             Action handled,
-            Action<NodeViewModel> selectItem, Action<NodeViewModel> expandItem,
+            Action<TaskViewModel> selectItem, Action<TaskViewModel> expandItem,
             Func<bool> deleteMessageBox,
             Action<Action> dispatcher)
         {
@@ -478,26 +479,26 @@ namespace ProjectK.Notebook.ViewModels
             switch (keyboardKeys)
             {
                 case KeyboardKeys.Insert:
-                    NodeViewModel node;
+                    TaskViewModel task;
                     switch (state)
                     {
                         case KeyboardStates.IsShiftPressed:
-                            node = Parent.AddNewTask();
-                            node.DateStarted = DateEnded;
+                            task = Parent.AddNewTask();
+                            task.DateStarted = DateEnded;
                             break;
                         case KeyboardStates.IsControlPressed:
-                            var lastSubTask = Parent.LastSubNode;
-                            node = Parent.AddNewTask();
+                            var lastSubTask = Parent.LastSubTask;
+                            task = Parent.AddNewTask();
                             if (lastSubTask != null)
                             {
-                                node.Type = Type;
-                                node.Title = Title;
-                                node.DateStarted = lastSubTask.DateEnded;
+                                task.Type = Type;
+                                task.Title = Title;
+                                task.DateStarted = lastSubTask.DateEnded;
                             }
 
                             break;
                         default:
-                            node = AddNewTask();
+                            task = AddNewTask();
                             break;
                     }
 
@@ -505,7 +506,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectItem(this);
                     expandItem(this);
                     handled();
-                    _logger.LogDebug($"Added [{node.Title}] to [{Title}]");
+                    _logger.LogDebug($"Added [{task.Title}] to [{Title}]");
                     break;
                 case KeyboardKeys.Delete:
                     if (deleteMessageBox())

@@ -7,15 +7,15 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="300">
     <UserControl.Resources>
-        <viewModels:NodeViewModel
+        <viewModels:TaskViewModel
             x:Key="Model"
             Context="Month"
             Title="May"
             DateStarted="{x:Static system:DateTime.Now}"
             DateEnded="{x:Static system:DateTime.Now}"
-            Type="Node"
+            Type="Task"
             SubType="Testing"
-            Description="Test Node" />
+            Description="Test Task" />
     </UserControl.Resources>
     <Grid d:DataContext="{StaticResource Model}">
         <Grid.ColumnDefinitions>

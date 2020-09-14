@@ -40,7 +40,7 @@ namespace ProjectK.Notebook.ViewModels
         private string _textReport;
         private string _title;
         private NotebookViewModel _selectedNotebook;
-        private NodeViewModel _selectedNode;
+        private TaskViewModel _selectedTask;
 
         #endregion
 
@@ -87,7 +87,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private void OnCurrentNotebookChanged()
         {
-            var noteBookName = SelectedNotebook != null ? SelectedNotebook.RootNode.Title : "";
+            var noteBookName = SelectedNotebook != null ? SelectedNotebook.RootTask.Title : "";
             Title = Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + noteBookName;
         }
 
@@ -153,16 +153,16 @@ namespace ProjectK.Notebook.ViewModels
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
         public ObservableCollection<NotebookViewModel> Notebooks { get; set; } = new ObservableCollection<NotebookViewModel>();
-        public NodeViewModel RootNode { get; set; } = new NodeViewModel {Title = "Root"};
+        public TaskViewModel RootTask { get; set; } = new TaskViewModel {Title = "Root"};
         public NotebookViewModel SelectedNotebook
         {
             get => _selectedNotebook;
             set => Set(ref _selectedNotebook, value);
         }
-        public NodeViewModel SelectedNode
+        public TaskViewModel SelectedTask
         {
-            get => _selectedNode;
-            set => Set(ref _selectedNode, value);
+            get => _selectedTask;
+            set => Set(ref _selectedTask, value);
         }
         public string ExcelCsvText
         {
@@ -198,8 +198,8 @@ namespace ProjectK.Notebook.ViewModels
         {
             await Task.Run(() =>
             {
-                var taskViewModelList = new List<NodeViewModel>();
-                taskViewModelList.AddToList(RootNode);
+                var taskViewModelList = new List<TaskViewModel>();
+                taskViewModelList.AddToList(RootTask);
                 var sortedSet1 = new SortedSet<string>();
                 var sortedSet2 = new SortedSet<string>();
                 var sortedSet3 = new SortedSet<string>();
@@ -229,11 +229,11 @@ namespace ProjectK.Notebook.ViewModels
 
 
 
-        public void OnSelectedTaskChanged(NodeViewModel node)
+        public void OnSelectedTaskChanged(TaskViewModel task)
         {
             SelectedTaskChanged?.Invoke(this, new TaskEventArgs
             {
-                Node = node
+                Task = task
             });
         }
 
@@ -248,44 +248,44 @@ namespace ProjectK.Notebook.ViewModels
                     _worksheetReport.GenerateReport(this);
                     break;
                 case ReportTypes.Notes:
-                    TextReport = _notesReport.GenerateReport(SelectedNode);
+                    TextReport = _notesReport.GenerateReport(SelectedTask);
                     break;
             }
         }
 
         public void PrepareSettings()
         {
-            if (SelectedNode != null)
-                LastListTaskId = SelectedNode.Id;
+            if (SelectedTask != null)
+                LastListTaskId = SelectedTask.Id;
 
-            if (SelectedNotebook?.SelectedTreeNode == null) return;
+            if (SelectedNotebook?.SelectedTreeTask == null) return;
 
-            LastTreeTaskId = SelectedNotebook.SelectedTreeNode.Id;
+            LastTreeTaskId = SelectedNotebook.SelectedTreeTask.Id;
         }
 
-        public void SelectTreeTask(NodeViewModel node)
+        public void SelectTreeTask(TaskViewModel task)
         {
-            node.TypeList = TypeList;
-            node.ContextList = ContextList;
-            node.TaskTitleList = TaskTitleList;
-            SelectedNode = node;
+            task.TypeList = TypeList;
+            task.ContextList = ContextList;
+            task.TaskTitleList = TaskTitleList;
+            SelectedTask = task;
 
-            var notebook = FindNotebook(node);
+            var notebook = FindNotebook(task);
             if (notebook != null)
             {
                 SelectedNotebook = notebook;
-                SelectedNotebook.SelectedNode = node;
+                SelectedNotebook.SelectedTask = task;
                 Logger.LogDebug($"SelectedNotebook selected | {notebook.Title}");
             }
 
-            SelectedNotebook?.SelectTreeTask(node);
+            SelectedNotebook?.SelectTreeTask(task);
             OnGenerateReportChanged();
         }
 
 
-        public NotebookViewModel FindNotebook(NodeViewModel node)
+        public NotebookViewModel FindNotebook(TaskViewModel task)
         {
-            var (ok, notebookNode) = node.FindNode(t => t.Context == "Notebook");
+            var (ok, notebookNode) = task.FindNode(t => t.Context == "Notebook");
             if (!ok)
                 return null;
 
@@ -324,7 +324,7 @@ namespace ProjectK.Notebook.ViewModels
                     if (excelCsvRecord.TryParse(line)) excelCsvRecordList.Add(excelCsvRecord);
                 }
 
-            var selectedTreeTask = SelectedNotebook.SelectedTreeNode;
+            var selectedTreeTask = SelectedNotebook.SelectedTreeTask;
             if (selectedTreeTask.Context != "Week") return;
 
             foreach (var excelCsvRecord in excelCsvRecordList)
@@ -334,7 +334,7 @@ namespace ProjectK.Notebook.ViewModels
                 var taskViewModel1 = selectedTreeTask.Nodes.FirstOrDefault(t => t.Title == dayOfTheWeek);
                 if (taskViewModel1 == null)
                 {
-                    taskViewModel1 = new NodeViewModel(dayOfTheWeek)
+                    taskViewModel1 = new TaskViewModel(dayOfTheWeek)
                     {
                         DateStarted = excelCsvRecord.Day,
                         DateEnded = excelCsvRecord.Day
@@ -342,7 +342,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectedTreeTask.Nodes.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new NodeViewModel(excelCsvRecord.Task) {Context = "Node"};
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) {Context = "Task"};
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;
@@ -380,7 +380,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
-            SelectedNode?.KeyboardAction(
+            SelectedTask?.KeyboardAction(
                 keyboardKeys,
                 () => keyboardState,
                 () => { }, t => t.IsSelected = true,

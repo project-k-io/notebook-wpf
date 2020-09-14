@@ -351,13 +351,13 @@ namespace ProjectK.Notebook
         {
             var notebook = new NotebookViewModel
             {
-                RootNode = { Context = "Notebook" }
+                RootTask = { Context = "Notebook" }
             };
             notebook.PopulateFromModel(model, title);
             SelectedNotebook = notebook;
             Notebooks.Add(notebook);
-            RootNode.Add(notebook.RootNode);
-            // add notebook node to root node
+            RootTask.Add(notebook.RootTask);
+            // add notebook task to root task
             return notebook;
         }
 
@@ -406,7 +406,7 @@ namespace ProjectK.Notebook
 
 
             Notebooks.Add(notebook);
-            RootNode.Add(notebook.RootNode);
+            RootTask.Add(notebook.RootTask);
             SelectedNotebook = notebook;
             CanSave = true;
         }

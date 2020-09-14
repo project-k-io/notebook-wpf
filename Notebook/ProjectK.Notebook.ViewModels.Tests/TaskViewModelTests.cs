@@ -53,8 +53,8 @@ namespace ProjectK.Notebook.ViewModels.Tests
         public void AddTest()
         {
             // Arrange
-            var parent = new NodeViewModel { Model = TaskModel.NetTask() };
-            var child = new NodeViewModel { Model = TaskModel.NetTask() }; ;
+            var parent = new TaskViewModel { Model = TaskModel.NetTask() };
+            var child = new TaskViewModel { Model = TaskModel.NetTask() }; ;
 
             // Act
             parent.Add(child);
@@ -62,8 +62,8 @@ namespace ProjectK.Notebook.ViewModels.Tests
             // Assert
             //AK double actual = account.Balance;
             //AK Assert.AreEqual(expected, actual, 0.001, "Account not debited correctly");
-            Assert.AreEqual(child.Parent.Id, parent.Id, "Node has wrong parent");
-            Assert.IsTrue(parent.Nodes.Contains(child), "Node has wrong child");
+            Assert.AreEqual(child.Parent.Id, parent.Id, "Task has wrong parent");
+            Assert.IsTrue(parent.Nodes.Contains(child), "Task has wrong child");
         }
 
         [TestMethod()]

@@ -19,13 +19,13 @@ namespace ProjectK.Notebook.ViewModels
     {
         private readonly ILogger Logger = LogManager.GetLogger<NotebookViewModel>();
 
-        private NodeViewModel _selectedNode;
-        private NodeViewModel _selectedTreeNode;
+        private TaskViewModel _selectedTask;
+        private TaskViewModel _selectedTreeTask;
         private NotebookModel _notebook;
 
         public NotebookViewModel()
         {
-            RootNode.Add(new NodeViewModel("Time Tracker")
+            RootTask.Add(new TaskViewModel("Time Tracker")
             {
                 Context = "Time Tracker"
             });
@@ -38,7 +38,7 @@ namespace ProjectK.Notebook.ViewModels
         public void LoadFrom(Models.Versions.Version1.DataModel model)
         {
             Clear();
-            RootNode.LoadFrom(model.RootTask);
+            RootTask.LoadFrom(model.RootTask);
         }
 
         #endregion
@@ -47,7 +47,7 @@ namespace ProjectK.Notebook.ViewModels
         public void CopyFromViewModelToModels()
         {
             var tasks = new List<TaskModel>();
-            RootNode.SaveTo(tasks);
+            RootTask.SaveTo(tasks);
 
             foreach (var task in tasks)
             {
@@ -62,9 +62,9 @@ namespace ProjectK.Notebook.ViewModels
 
         public void PopulateFromModel(NotebookModel notebook, string name)
         {
-            // created notebook node
-            RootNode.Model.TaskId = Guid.NewGuid();
-            RootNode.Model.Name = name;
+            // created notebook task
+            RootTask.Model.TaskId = Guid.NewGuid();
+            RootTask.Model.Name = name;
 
             // load notebook 
             _notebook = notebook;
@@ -77,27 +77,27 @@ namespace ProjectK.Notebook.ViewModels
             Clear();
 
             // Build Tree
-            RootNode.BuildTree(tasks);
+            RootTask.BuildTree(tasks);
         }
 
 
 
         #endregion
 
-        public ObservableCollection<NodeViewModel> SelectedTaskList { get; } = new ObservableCollection<NodeViewModel>();
+        public ObservableCollection<TaskViewModel> SelectedTaskList { get; } = new ObservableCollection<TaskViewModel>();
 
-        public NodeViewModel RootNode { get; set; } = new NodeViewModel();
+        public TaskViewModel RootTask { get; set; } = new TaskViewModel();
 
-        public NodeViewModel SelectedTreeNode
+        public TaskViewModel SelectedTreeTask
         {
-            get => _selectedTreeNode;
-            set => Set(ref _selectedTreeNode, value);
+            get => _selectedTreeTask;
+            set => Set(ref _selectedTreeTask, value);
         }
 
-        public NodeViewModel SelectedNode
+        public TaskViewModel SelectedTask
         {
-            get => _selectedNode;
-            set => Set(ref _selectedNode, value);
+            get => _selectedTask;
+            set => Set(ref _selectedTask, value);
         }
 
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
@@ -121,21 +121,21 @@ namespace ProjectK.Notebook.ViewModels
             SelectedDaysChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public NodeViewModel FindTask(Guid id)
+        public TaskViewModel FindTask(Guid id)
         {
-            return RootNode.FindTask(id);
+            return RootTask.FindTask(id);
         }
 
-        public void SelectTreeTask(NodeViewModel node)
+        public void SelectTreeTask(TaskViewModel task)
         {
-            if (node == null)
+            if (task == null)
                 return;
 
-            SelectedTreeNode = node;
+            SelectedTreeTask = task;
             SelectedTaskList.Clear();
-            SelectedTaskList.AddToList(node);
+            SelectedTaskList.AddToList(task);
             OnSelectedDaysChanged();
-            SelectedNode = !SelectedTaskList.IsNullOrEmpty() ? SelectedTaskList[0] : node;
+            SelectedTask = !SelectedTaskList.IsNullOrEmpty() ? SelectedTaskList[0] : task;
             RaisePropertyChanged("SelectedTaskList");
         }
 
@@ -144,11 +144,11 @@ namespace ProjectK.Notebook.ViewModels
             SelectTreeTask(FindTask(id));
         }
 
-        public void SelectTask(NodeViewModel node)
+        public void SelectTask(TaskViewModel task)
         {
-            if (node == null)
+            if (task == null)
                 return;
-            SelectedNode = node;
+            SelectedTask = task;
             RaisePropertyChanged("SelectedTaskList");
         }
 
@@ -167,11 +167,11 @@ namespace ProjectK.Notebook.ViewModels
             return false;
         }
 
-        private static void AddToList(ICollection<NodeViewModel> list, NodeViewModel node, IList dates)
+        private static void AddToList(ICollection<TaskViewModel> list, TaskViewModel task, IList dates)
         {
-            if (ContainDate(dates, node.DateStarted))
-                list.Add(node);
-            foreach (var subTask in node.Nodes)
+            if (ContainDate(dates, task.DateStarted))
+                list.Add(task);
+            foreach (var subTask in task.Nodes)
                 AddToList(list, subTask, dates);
         }
 
@@ -180,40 +180,40 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTime()
         {
-            SelectedTreeNode.FixTime();
+            SelectedTreeTask.FixTime();
         }
 
         public void Clear()
         {
-            RootNode.Nodes.Clear();
+            RootTask.Nodes.Clear();
         }
 
         public void ExtractContext()
         {
             ContextList.Clear();
-            RootNode.ExtractContext(ContextList);
+            RootTask.ExtractContext(ContextList);
             RaisePropertyChanged("ContextList");
         }
 
         public void FixContext()
         {
-            SelectedTreeNode.FixContext();
+            SelectedTreeTask.FixContext();
         }
 
         public void FixTitles()
         {
-            SelectedTreeNode.FixTitles();
+            SelectedTreeTask.FixTitles();
         }
 
         public void FixTypes()
         {
-            SelectedTreeNode.FixTypes();
+            SelectedTreeTask.FixTypes();
         }
 
         public void UpdateSelectDayTasks(IList dates)
         {
             SelectedTaskList.Clear();
-            AddToList(SelectedTaskList, RootNode, dates);
+            AddToList(SelectedTaskList, RootTask, dates);
         }
 
 
@@ -222,7 +222,7 @@ namespace ProjectK.Notebook.ViewModels
         {
 
             var path = Title;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Title, ".txt");
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedTask.Title, ".txt");
             if (!ok)
                 return;
 
@@ -232,11 +232,11 @@ namespace ProjectK.Notebook.ViewModels
         public async Task ExportSelectedAllAsJson()
         {
             var path = Title;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Title);
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedTask.Title);
             if (!ok)
                 return;
 
-            await SelectedNode.ExportToFileAsync(exportPath);
+            await SelectedTask.ExportToFileAsync(exportPath);
         }
 
 
