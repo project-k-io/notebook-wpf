@@ -3,7 +3,29 @@ using System.Text.Json.Serialization;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class TaskModel: NodeModel
+    public class TaskModel : NodeModel<TaskModelBase>
+    {
+
+        public override string ToString()
+        {
+            return $"{Data.Context}:{Data.Type}:{Name}:{Data.DateStarted}:{Data.DateEnded}";
+        }
+
+        public static TaskModel NetTask()
+        {
+            var task = new TaskModel
+            {
+                Id = Guid.NewGuid(), 
+                Data =
+                {
+                    DateStarted = DateTime.Now
+                }
+            };
+            return task;
+        }
+    }
+
+    public class TaskModelBase
     {
 
         public int Level = 0;
@@ -15,16 +37,5 @@ namespace ProjectK.Notebook.Domain
         public string SubType { get; set; }
         public string Description { get; set; }
         public string Context { get; set; }
-
-
-        public override string ToString()
-        {
-            return $"{Context}:{Type}:{Name}:{DateStarted}:{DateEnded}";
-        }
-
-        public static TaskModel NetTask()
-        {
-            return new TaskModel { Id = Guid.NewGuid(), DateStarted = DateTime.Now };
-        }
     }
 }

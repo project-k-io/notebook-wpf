@@ -38,13 +38,13 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
             foreach (var task in tasks)
             {
-                if (!index.ContainsKey(task.ParentId))
+                if (!index.ContainsKey(task.Data.ParentId))
                 {
                     rootTask.Add(index[task.Id]);
                 }
                 else
                 {
-                    index[task.ParentId].Add(index[task.Id]);
+                    index[task.Data.ParentId].Add(index[task.Id]);
                 }
             }
 

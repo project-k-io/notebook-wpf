@@ -67,34 +67,34 @@ namespace ProjectK.Notebook.ViewModels
 
         public Guid ParentId
         {
-            get => Model.ParentId;
-            set => Model.ParentId = value;
+            get => Model.Data.ParentId;
+            set => Model.Data.ParentId = value;
         }
 
         public string Description
         {
-            get => Model.Description;
-            set => this.Set(Description, v => Model.Description = v, value);
+            get => Model.Data.Description;
+            set => this.Set(Description, v => Model.Data.Description = v, value);
         }
 
         public string Type
         {
-            get => Model.Type;
-            set => this.Set(Type, v => Model.Type = v, value);
+            get => Model.Data.Type;
+            set => this.Set(Type, v => Model.Data.Type = v, value);
         }
 
         public string SubType
         {
-            get => Model.SubType;
-            set => this.Set(SubType, v => Model.SubType = v, value);
+            get => Model.Data.SubType;
+            set => this.Set(SubType, v => Model.Data.SubType = v, value);
         }
 
         public DateTime DateStarted
         {
-            get => Model.DateStarted;
+            get => Model.Data.DateStarted;
             set
             {
-                if (!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
+                if (!this.Set(DateStarted, v => Model.Data.DateStarted = v, value)) return;
                 RaisePropertyChanged("TimeStarted");
                 RaisePropertyChanged("Duration");
             }
@@ -102,10 +102,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime DateEnded
         {
-            get => Model.DateEnded;
+            get => Model.Data.DateEnded;
             set
             {
-                if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
+                if (!this.Set(DateEnded, v => Model.Data.DateEnded = v, value)) return;
                 RaisePropertyChanged("TimeEnded");
                 RaisePropertyChanged("Duration");
             }
@@ -116,17 +116,17 @@ namespace ProjectK.Notebook.ViewModels
             get => Model.Name;
             set => this.Set(Model.Name, v =>
             {
-                Model.Level = _globalLevel++;
+                Model.Data.Level = _globalLevel++;
                 Model.Name = v;
             }, value);
         }
 
         public DateTime TimeStarted
         {
-            get => Model.DateStarted;
+            get => Model.Data.DateStarted;
             set
             {
-                var dateStarted = Model.DateStarted;
+                var dateStarted = Model.Data.DateStarted;
                 var dateTime = value;
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
@@ -138,10 +138,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeEnded
         {
-            get => Model.DateEnded;
+            get => Model.Data.DateEnded;
             set
             {
-                var dateEnded = Model.DateEnded;
+                var dateEnded = Model.Data.DateEnded;
                 var dateTime = value;
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
@@ -161,8 +161,8 @@ namespace ProjectK.Notebook.ViewModels
 
         public string Context
         {
-            get => Model.Context;
-            set => this.Set(Context, v => Model.Context = v, value);
+            get => Model.Data.Context;
+            set => this.Set(Context, v => Model.Data.Context = v, value);
         }
 
         public TaskViewModel Parent { get; set; }
