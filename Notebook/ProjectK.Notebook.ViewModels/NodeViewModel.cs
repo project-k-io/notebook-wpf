@@ -19,35 +19,6 @@ namespace ProjectK.Notebook.ViewModels
     {
         private readonly ILogger _logger = LogManager.GetLogger<NodeViewModel<T>>();
 
-        #region Override functions
-
-        public override string ToString()
-        {
-            return Model.ToString();
-        }
-
-        #endregion
-
-        public void SaveTo(List<T> list)
-        {
-            foreach (var node in Nodes)
-            {
-                node.SaveRecursively(list);
-            }
-        }
-
-        private void SaveRecursively(ICollection<T> list)
-        {
-            list.Add(Model);
-            TrySetId();
-
-            foreach (var node in Nodes)
-            {
-                node.SaveRecursively(list);
-                node.ParentId = Model.Id;
-            }
-        }
-
         #region Fields
 
         private bool _isExpanded;
@@ -56,8 +27,9 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-
         #region Properties - Model Wrappers
+
+        public ObservableCollection<NodeViewModel<T>> Nodes { get; set; } = new ObservableCollection<NodeViewModel<T>>();
 
         public T Model { get; set; }
 
@@ -133,9 +105,39 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel<T> LastSubNode => Nodes.LastOrDefault();
         // ToDo: Improve allocation, maybe allocate only when you needed?
-        public ObservableCollection<NodeViewModel<T>> Nodes { get; set; } = new ObservableCollection<NodeViewModel<T>>();
 
         #endregion
+
+        #region Override functions
+
+        public override string ToString()
+        {
+            return Model.ToString();
+        }
+
+        #endregion
+
+        public void SaveTo(List<T> list)
+        {
+            foreach (var node in Nodes)
+            {
+                node.SaveRecursively(list);
+            }
+        }
+
+        private void SaveRecursively(ICollection<T> list)
+        {
+            list.Add(Model);
+            TrySetId();
+
+            foreach (var node in Nodes)
+            {
+                node.SaveRecursively(list);
+                node.ParentId = Model.Id;
+            }
+        }
+
+
 
 
         #region Constructors
