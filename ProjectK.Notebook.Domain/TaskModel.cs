@@ -1,18 +1,14 @@
 ﻿using System;
+using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class TaskModel : NodeModel, IItem
+    public class TaskModel : NodeModel, ITask
     {
-        public int Level { get; set; } = 0;
-        public Guid ParentId { get; set; }
         public int Rating { get; set; }
         public DateTime DateStarted { get; set; }
         public DateTime DateEnded { get; set; }
-        public string Type { get; set; }
         public string SubType { get; set; }
-        public string Description { get; set; }
-        public string Context { get; set; }
 
 
         public override string ToString()

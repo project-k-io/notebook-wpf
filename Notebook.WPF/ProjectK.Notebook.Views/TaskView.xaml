@@ -53,7 +53,7 @@
                   Text="{Binding Context}" />
             <!--Title-->
             <Label Content="Name" Grid.Row="2" Grid.Column="1" />
-            <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TaskTitleList}"
+            <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TitleList}"
                   Text="{Binding Title}" />
             <!--Start-->
             <Label Content="Start" Grid.Row="5" Grid.Column="1" />

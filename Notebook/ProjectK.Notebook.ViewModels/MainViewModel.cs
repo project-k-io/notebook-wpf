@@ -265,7 +265,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             task.TypeList = TypeList;
             task.ContextList = ContextList;
-            task.TaskTitleList = TaskTitleList;
+            task.TitleList = TaskTitleList;
             SelectedTask = task;
 
             var notebook = FindNotebook(task);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProjectK.Notebook.Domain
+namespace ProjectK.Notebook.Domain.Interfaces
 {
     public interface IItem
     {
@@ -9,10 +9,7 @@ namespace ProjectK.Notebook.Domain
         string Name { get; set; }
         string Description { get; set; }
         string Context { get; set; }
+        DateTime Created { get; set; }
         string Type { get; set; }
-        string SubType { get; set; }
-        DateTime DateStarted { get; set; }
-        DateTime DateEnded { get; set; }
-        int Level { get; set; }
     }
 }

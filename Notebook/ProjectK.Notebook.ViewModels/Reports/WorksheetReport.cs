@@ -61,8 +61,8 @@ namespace ProjectK.Notebook.ViewModels.Reports
             if (t.Nodes.IsNullOrEmpty())
                 return;
 
-            var firstTask = t.Nodes.FirstOrDefault();
-            var lastTask = t.Nodes.LastOrDefault();
+            var firstTask = (TaskViewModel) t.Nodes.FirstOrDefault();
+            var lastTask = (TaskViewModel)t.Nodes.LastOrDefault();
 
             var dateStarted1 = firstTask?.DateStarted;
             var dateStarted2 = lastTask?.DateStarted;
@@ -106,7 +106,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 if (notebook.SelectedTask != null && notebook.SelectedTask.Context == "Week")
                 {
                     var subTasks = notebook.SelectedTask.Nodes;
-                    var lastTask = subTasks.LastOrDefault();
+                    var lastTask = (TaskViewModel)subTasks.LastOrDefault();
 
                     if (lastTask != null)
                     {

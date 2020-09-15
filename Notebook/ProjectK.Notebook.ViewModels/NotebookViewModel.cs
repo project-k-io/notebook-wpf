@@ -122,7 +122,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public TaskViewModel FindTask(Guid id)
         {
-            return (TaskViewModel)RootTask.FindTask(id);
+            return (TaskViewModel)RootTask.FindNode(id);
         }
 
         public void SelectTreeTask(TaskViewModel task)
