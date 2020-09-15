@@ -195,7 +195,9 @@ namespace ProjectK.Notebook.ViewModels
             await Task.Run(() =>
             {
                 var taskViewModelList = new List<TaskViewModel>();
+#if AK
                 taskViewModelList.AddToList(RootTask);
+#endif
                 var sortedSet1 = new SortedSet<string>();
                 var sortedSet2 = new SortedSet<string>();
                 var sortedSet3 = new SortedSet<string>();
@@ -292,9 +294,9 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        #endregion
+#endregion
 
-        #region Private functions
+#region Private functions
 
         private void UseSettings()
         {
@@ -396,7 +398,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        #endregion
+#endregion
 
 
         public virtual void ImportNotebook(NotebookModel model, string path)

@@ -2,9 +2,9 @@
 
 namespace ProjectK.Notebook.Domain
 {
-    public class TaskModel : NodeModel
+    public class TaskModel : NodeModel, IItem
     {
-        public int Level = 0;
+        public int Level { get; set; } = 0;
         public Guid ParentId { get; set; }
         public int Rating { get; set; }
         public DateTime DateStarted { get; set; }

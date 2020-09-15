@@ -77,7 +77,11 @@ namespace ProjectK.Notebook.Views
             }
 
             var addDelegate = ViewLib.GetAddDelegate(this);
-            task.KeyboardAction(keyState, () => KeyboardState, () => e.Handled = true, treeView.SelectItem, ExpandItem, DeleteMessageBox, addDelegate);
+            task.KeyboardAction(keyState, () => 
+                KeyboardState, () => e.Handled = true, 
+                treeView.SelectItem, 
+                (a) => ExpandItem((TaskViewModel)a), 
+                DeleteMessageBox, addDelegate);
 
             if (keyState == KeyboardKeys.Delete)
             {

@@ -122,7 +122,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public TaskViewModel FindTask(Guid id)
         {
-            return RootTask.FindTask(id);
+            return (TaskViewModel)RootTask.FindTask(id);
         }
 
         public void SelectTreeTask(TaskViewModel task)
@@ -132,7 +132,9 @@ namespace ProjectK.Notebook.ViewModels
 
             SelectedTreeTask = task;
             SelectedTaskList.Clear();
+#if AK
             SelectedTaskList.AddToList(task);
+#endif
             OnSelectedDaysChanged();
             SelectedTask = !SelectedTaskList.IsNullOrEmpty() ? SelectedTaskList[0] : task;
             RaisePropertyChanged("SelectedTaskList");
@@ -171,7 +173,7 @@ namespace ProjectK.Notebook.ViewModels
             if (ContainDate(dates, task.DateStarted))
                 list.Add(task);
             foreach (var subTask in task.Nodes)
-                AddToList(list, subTask, dates);
+                AddToList(list, (TaskViewModel)subTask, dates);
         }
 
 

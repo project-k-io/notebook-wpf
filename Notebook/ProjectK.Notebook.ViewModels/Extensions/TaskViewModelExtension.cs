@@ -79,7 +79,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 if (check(node))
                     return (true, node);
 
-                node = node.Parent;
+                node = (TaskViewModel)node.Parent;
             }
             return (false, null);
         }
