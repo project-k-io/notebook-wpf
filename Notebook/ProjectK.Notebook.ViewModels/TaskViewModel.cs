@@ -3,36 +3,42 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils.Extensions;
 
 // using ProjectK.Notebook.Models.Versions.Version2;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class TaskViewModel : NodeViewModel<TaskModel>
+    public class TaskViewModel : NodeViewModel
     {
+        public TaskModel TaskModel
+        {
+            get => (TaskModel)Model;
+            set => this.Set(Model, v => Model = v, value);
+        }
 
-        public TaskViewModel()
+        public TaskViewModel(): base(new TaskModel())
         {
         }
 
-        public TaskViewModel(string title) : base(title)
+        public TaskViewModel(string title) : base(new TaskModel(), title)
         {
         }
 
 
         public string SubType
         {
-            get => Model.SubType;
-            set => this.Set(SubType, v => Model.SubType = v, value);
+            get => TaskModel.SubType;
+            set => this.Set(SubType, v => TaskModel.SubType = v, value);
         }
 
         public DateTime DateStarted
         {
-            get => Model.DateStarted;
+            get => TaskModel.DateStarted;
             set
             {
-                if (!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
+                if (!this.Set(DateStarted, v => TaskModel.DateStarted = v, value)) return;
                 RaisePropertyChanged("TimeStarted");
                 RaisePropertyChanged("Duration");
             }
@@ -40,10 +46,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime DateEnded
         {
-            get => Model.DateEnded;
+            get => TaskModel.DateEnded;
             set
             {
-                if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
+                if (!this.Set(DateEnded, v => TaskModel.DateEnded = v, value)) return;
                 RaisePropertyChanged("TimeEnded");
                 RaisePropertyChanged("Duration");
             }
@@ -52,10 +58,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeStarted
         {
-            get => Model.DateStarted;
+            get => TaskModel.DateStarted;
             set
             {
-                var dateStarted = Model.DateStarted;
+                var dateStarted = TaskModel.DateStarted;
                 var dateTime = value;
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
@@ -67,10 +73,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeEnded
         {
-            get => Model.DateEnded;
+            get => TaskModel.DateEnded;
             set
             {
-                var dateEnded = Model.DateEnded;
+                var dateEnded = TaskModel.DateEnded;
                 var dateTime = value;
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
@@ -137,7 +143,7 @@ namespace ProjectK.Notebook.ViewModels
             if (model.SubTasks.IsNullOrEmpty())
                 return;
 
-            Nodes = new ObservableCollection<NodeViewModel<TaskModel>>();
+            Nodes = new ObservableCollection<NodeViewModel>();
             foreach (var subTask in model.SubTasks)
             {
                 var node = new TaskViewModel();
@@ -245,9 +251,9 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        protected override NodeViewModel<TaskModel> AddNew()
+        protected override NodeViewModel AddNew()
         {
-            var subTask = new TaskViewModel{ Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
+            var subTask = new TaskViewModel() { Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
             Add(subTask);
             var ii = Nodes.IndexOf(subTask);
             FixContext(subTask);

@@ -15,9 +15,9 @@ using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class NodeViewModel<T> : ViewModelBase, INode<NodeViewModel<T>> where T : IItem, new()
+    public class NodeViewModel : ViewModelBase, INode<NodeViewModel>
     {
-        private readonly ILogger _logger = LogManager.GetLogger<NodeViewModel<T>>();
+        private readonly ILogger _logger = LogManager.GetLogger<NodeViewModel>();
 
         #region Fields
 
@@ -29,9 +29,9 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Properties - Model Wrappers
 
-        public ObservableCollection<NodeViewModel<T>> Nodes { get; set; } = new ObservableCollection<NodeViewModel<T>>();
+        public ObservableCollection<NodeViewModel> Nodes { get; set; } = new ObservableCollection<NodeViewModel>();
 
-        public T Model { get; set; }
+        public IItem Model { get; set; }
 
         public Guid Id => Model.Id;
         public string Title
@@ -78,7 +78,7 @@ namespace ProjectK.Notebook.ViewModels
             set => this.Set(Context, v => Model.Context = v, value);
         }
 
-        public NodeViewModel<T> Parent { get; set; }
+        public NodeViewModel Parent { get; set; }
 
         public bool IsSelected
         {
@@ -103,7 +103,7 @@ namespace ProjectK.Notebook.ViewModels
             set => this.Set(Type, v => Model.Type = v, value);
         }
 
-        public NodeViewModel<T> LastSubNode => Nodes.LastOrDefault();
+        public NodeViewModel LastSubNode => Nodes.LastOrDefault();
         // ToDo: Improve allocation, maybe allocate only when you needed?
 
         #endregion
@@ -117,7 +117,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        public void SaveTo(List<T> list)
+        public void SaveTo(List<IItem> list)
         {
             foreach (var node in Nodes)
             {
@@ -125,7 +125,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private void SaveRecursively(ICollection<T> list)
+        private void SaveRecursively(ICollection<IItem> list)
         {
             list.Add(Model);
             TrySetId();
@@ -141,23 +141,29 @@ namespace ProjectK.Notebook.ViewModels
 
 
         #region Constructors
-
         public NodeViewModel()
         {
             Parent = null;
-            Model = new T();
+            Model = new NodeModel();
         }
 
-        public NodeViewModel(string title)
+        public NodeViewModel(IItem model)
         {
-            Model = new T();
+            Parent = null;
+            Model = model;
+        }
+
+        public NodeViewModel(IItem model, string title)
+        {
+            Model = model;
             Parent = null;
             Title = title;
         }
 
-        #endregion
 
-        #region Public functions
+#endregion
+
+#region Public functions
 
         public void TrySetId()
         {
@@ -168,15 +174,21 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        protected virtual NodeViewModel<T> AddNew()
+        protected virtual NodeViewModel AddNew()
         {
-            var subNode = new NodeViewModel<T> {Title = "New Node", Created = DateTime.Now};
+            IItem model = CreateModel();
+            var subNode = new NodeViewModel(model) {Title = "New Node", Created = DateTime.Now};
             Add(subNode);
             FixContext(subNode);
             return subNode;
         }
 
-        public void Add(NodeViewModel<T> node)
+        private IItem CreateModel()
+        {
+            return new NodeModel();
+        }
+
+        public void Add(NodeViewModel node)
         {
             if (node.Title == "Time Tracker2")
                 _logger.LogDebug(node.Title);
@@ -185,7 +197,7 @@ namespace ProjectK.Notebook.ViewModels
             Nodes.Add(node);
         }
 
-        private void Insert(int index, NodeViewModel<T> node)
+        private void Insert(int index, NodeViewModel node)
         {
             node.Parent = this;
             Nodes.Insert(index, node);
@@ -209,7 +221,7 @@ namespace ProjectK.Notebook.ViewModels
                 node.ExtractContext(contextList);
         }
 
-        private void FixContext(string parent, string child, NodeViewModel<T> node)
+        private void FixContext(string parent, string child, NodeViewModel node)
         {
             if (!(Context == parent))
 
@@ -217,7 +229,7 @@ namespace ProjectK.Notebook.ViewModels
             node.Context = child;
         }
 
-        protected void FixContext(NodeViewModel<T> node)
+        protected void FixContext(NodeViewModel node)
         {
             FixContext("Time Tracker", "Year", node);
             FixContext("Year", "Month", node);
@@ -238,7 +250,7 @@ namespace ProjectK.Notebook.ViewModels
 
 
 
-        public NodeViewModel<T> FindNode(Guid id)
+        public NodeViewModel FindNode(Guid id)
         {
             if (Id == id)
                 return this;
@@ -257,7 +269,7 @@ namespace ProjectK.Notebook.ViewModels
             KeyboardKeys keyboardKeys,
             Func<KeyboardStates> getState,
             Action handled,
-            Action<NodeViewModel<T>> selectItem, Action<NodeViewModel<T>> expandItem,
+            Action<NodeViewModel> selectItem, Action<NodeViewModel> expandItem,
             Func<bool> deleteMessageBox,
             Action<Action> dispatcher)
         {
@@ -270,7 +282,7 @@ namespace ProjectK.Notebook.ViewModels
             switch (keyboardKeys)
             {
                 case KeyboardKeys.Insert:
-                    NodeViewModel<T> node;
+                    NodeViewModel node;
                     switch (state)
                     {
                         case KeyboardStates.IsShiftPressed:
@@ -396,6 +408,6 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        #endregion
+#endregion
     }
 }

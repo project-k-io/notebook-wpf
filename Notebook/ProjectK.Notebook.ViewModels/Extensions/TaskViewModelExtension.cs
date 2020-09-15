@@ -20,7 +20,9 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         public static async Task ExportToFileAsync(this TaskViewModel rootTask, string path)
         {
             var newData = new NotebookModel();
+#if AK
             rootTask.SaveTo(newData.Tasks);
+#endif
             await FileHelper.SaveToFileAsync(path, newData);
         }
 
@@ -33,7 +35,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             foreach (var task in tasks)
             {
                 if (!index.ContainsKey(task.Id))
-                    index.Add(task.Id, new TaskViewModel { Model = task });
+                    index.Add(task.Id, new TaskViewModel { TaskModel = task });
             }
 
             foreach (var task in tasks)

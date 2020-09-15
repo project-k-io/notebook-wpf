@@ -46,8 +46,9 @@ namespace ProjectK.Notebook.ViewModels
         public void CopyFromViewModelToModels()
         {
             var tasks = new List<TaskModel>();
+#if AK
             RootTask.SaveTo(tasks);
-
+#endif
             foreach (var task in tasks)
             {
                 
@@ -81,7 +82,7 @@ namespace ProjectK.Notebook.ViewModels
 
 
 
-        #endregion
+#endregion
 
         public ObservableCollection<TaskViewModel> SelectedTaskList { get; } = new ObservableCollection<TaskViewModel>();
 
