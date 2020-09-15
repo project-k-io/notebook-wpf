@@ -381,7 +381,7 @@ namespace ProjectK.Notebook
 
         public static void Init(TaskModel task, Models.Versions.Version2.TaskModel task2)
         {
-            task.TaskId = task2.Id;
+            task.Id = task2.Id;
             task.ParentId = task2.ParentId;
             task.Rating = task2.Rating;
             task.DateStarted = task2.DateStarted;

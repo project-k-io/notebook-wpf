@@ -32,19 +32,19 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             // build index
             foreach (var task in tasks)
             {
-                if (!index.ContainsKey(task.TaskId))
-                    index.Add(task.TaskId, new TaskViewModel { Model = task });
+                if (!index.ContainsKey(task.Id))
+                    index.Add(task.Id, new TaskViewModel { Model = task });
             }
 
             foreach (var task in tasks)
             {
                 if (!index.ContainsKey(task.ParentId))
                 {
-                    rootTask.Add(index[task.TaskId]);
+                    rootTask.Add(index[task.Id]);
                 }
                 else
                 {
-                    index[task.ParentId].Add(index[task.TaskId]);
+                    index[task.ParentId].Add(index[task.Id]);
                 }
             }
 

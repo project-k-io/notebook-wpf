@@ -46,7 +46,7 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var subTask in Nodes)
             {
                 subTask.SaveRecursively(tasks);
-                subTask.ParentId = Model.TaskId;
+                subTask.ParentId = Model.Id;
             }
         }
 
@@ -63,7 +63,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public TaskModel Model { get; set; }
 
-        public Guid Id => Model.TaskId;
+        public Guid Id => Model.Id;
 
         public Guid ParentId
         {
@@ -252,10 +252,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public void TrySetId()
         {
-            if (Model.TaskId != Guid.Empty)
+            if (Model.Id != Guid.Empty)
                 return;
 
-            Model.TaskId = Guid.NewGuid();
+            Model.Id = Guid.NewGuid();
         }
 
         public void LoadFrom(Models.Versions.Version1.TaskModel model)

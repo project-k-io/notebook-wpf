@@ -63,7 +63,7 @@ namespace ProjectK.Notebook.ViewModels
         public void PopulateFromModel(NotebookModel notebook, string name)
         {
             // created notebook task
-            RootTask.Model.TaskId = Guid.NewGuid();
+            RootTask.Model.Id = Guid.NewGuid();
             RootTask.Model.Name = name;
 
             // load notebook 

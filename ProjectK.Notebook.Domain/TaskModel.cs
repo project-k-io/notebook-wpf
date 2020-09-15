@@ -3,16 +3,12 @@ using System.Text.Json.Serialization;
 
 namespace ProjectK.Notebook.Domain
 {
-
     public class TaskModel
     {
-        [JsonIgnore]
-        public int Id { get; set; }
-        [JsonPropertyName("Title")]
+        public Guid Id { get; set; }
         public string Name { get; set; }
+
         public int Level = 0;
-        [JsonPropertyName("Id")]
-        public Guid TaskId { get; set; }
         public Guid ParentId { get; set; }
         public int Rating { get; set; }
         public DateTime DateStarted { get; set; }
@@ -26,7 +22,7 @@ namespace ProjectK.Notebook.Domain
         {
             return new TaskModel
             {
-                TaskId = TaskId,
+                Id = Id,
                 ParentId = ParentId,
                 Rating = Rating,
                 DateStarted = DateStarted,
@@ -42,7 +38,7 @@ namespace ProjectK.Notebook.Domain
 
         public static TaskModel NetTask()
         {
-            return new TaskModel {TaskId = Guid.NewGuid(), DateStarted = DateTime.Now};
+            return new TaskModel {Id = Guid.NewGuid(), DateStarted = DateTime.Now};
         }
 
         public override string ToString()
@@ -52,7 +48,7 @@ namespace ProjectK.Notebook.Domain
 
         public bool IsSame(TaskModel m)
         {
-            if (TaskId != m.TaskId) return false;
+            if (Id != m.Id) return false;
             if (ParentId != m.ParentId) return false;
             if (Rating != m.Rating) return false;
             if (DateStarted != m.DateStarted) return false;
