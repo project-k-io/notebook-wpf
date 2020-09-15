@@ -18,47 +18,15 @@ namespace ProjectK.Notebook.Domain
         public string Description { get; set; }
         public string Context { get; set; }
 
-        public TaskModel Copy()
-        {
-            return new TaskModel
-            {
-                Id = Id,
-                ParentId = ParentId,
-                Rating = Rating,
-                DateStarted = DateStarted,
-                DateEnded = DateEnded,
-                Type = Type,
-                SubType = SubType,
-                Name = Name,
-                Description = Description,
-                Context = Context
-            };
-        }
-
-
-        public static TaskModel NetTask()
-        {
-            return new TaskModel {Id = Guid.NewGuid(), DateStarted = DateTime.Now};
-        }
 
         public override string ToString()
         {
             return $"{Context}:{Type}:{Name}:{DateStarted}:{DateEnded}";
         }
 
-        public bool IsSame(TaskModel m)
+        public static TaskModel NetTask()
         {
-            if (Id != m.Id) return false;
-            if (ParentId != m.ParentId) return false;
-            if (Rating != m.Rating) return false;
-            if (DateStarted != m.DateStarted) return false;
-            if (DateEnded != m.DateEnded) return false;
-            if (Type != m.Type) return false;
-            if (SubType != m.SubType) return false;
-            if (Name != m.Name) return false;
-            if (Description != m.Description) return false;
-            if (Context != m.Context) return false;
-            return true;
+            return new TaskModel { Id = Guid.NewGuid(), DateStarted = DateTime.Now };
         }
     }
 }

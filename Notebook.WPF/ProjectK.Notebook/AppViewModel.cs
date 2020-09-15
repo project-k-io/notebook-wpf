@@ -361,37 +361,16 @@ namespace ProjectK.Notebook
             return notebook;
         }
 
-        public override void ImportNotebook(Models.Versions.Version2.DataModel dataModel, string title)
+        public override void ImportNotebook(NotebookModel notebook, string title)
         {
 #if AK
             // 
             _db.Notebooks.Add(model);
             _db.SaveChanges();
 #endif
-            var model = new NotebookModel();
-            foreach (var task2 in dataModel.Tasks)
-            {
-                var task = new TaskModel();
-                Init(task, task2);
-                model.Tasks.Add(task);
-            }
-
-            AddNotebook(model, title);
+            AddNotebook(notebook, title);
         }
 
-        public static void Init(TaskModel task, Models.Versions.Version2.TaskModel task2)
-        {
-            task.Id = task2.Id;
-            task.ParentId = task2.ParentId;
-            task.Rating = task2.Rating;
-            task.DateStarted = task2.DateStarted;
-            task.DateEnded = task2.DateEnded;
-            task.Type = task2.Type;
-            task.SubType = task2.SubType;
-            task.Name = task2.Title;
-            task.Description = task2.Description;
-            task.Context = task2.Context;
-        }
 
 
 

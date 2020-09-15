@@ -70,25 +70,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             return (dialog.FileName, true);
         }
 
-        public static async Task ImportToSelectedAsJson(this TaskViewModel rootTask)
-        {
-            Logger.LogDebug("UserAction_ImportToSelectedAsJson()");
-
-            // Select Import File
-            var dialog = new OpenFileDialog();
-            var r = dialog.SetFileDialog("");
-            if (!r.ok)
-                return;
-
-            // Read Import File
-            var data = await FileHelper.ReadFromFileAsync<NotebookModel>(r.fileName);
-
-            // Get Tasks
-            var tasks = data.Tasks;
-
-            // Build Tree
-            rootTask.BuildTree(tasks);
-        }
 
         public static (bool ok, TaskViewModel task) FindNode(this TaskViewModel task1, Func<TaskViewModel, bool> check)
         {

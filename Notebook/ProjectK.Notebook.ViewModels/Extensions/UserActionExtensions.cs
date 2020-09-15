@@ -46,12 +46,13 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             if (!r.ok)
                 return;
 
-
-            // await notebook.OpenFileAsync(r.fileName); // User clicked open file
             var path = r.fileName;
             Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
+
             var model = await FileHelper.ReadFromFileAsync<Models.Versions.Version2.DataModel>(path);
-            mainViewModel.ImportNotebook(model, path);
+            var notebook = new NotebookModel();
+            notebook.Init(model);
+            mainViewModel.ImportNotebook(notebook, path);
         }
 
 
@@ -62,8 +63,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             var notebook = model.SelectedNotebook;
             if (notebook == null)
                 return;
-
-
 
             await notebook.ExportSelectedAllAsText(model.TextReport);
         }
@@ -77,17 +76,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 return;
 
             await notebook.ExportSelectedAllAsJson();
-        }
-
-        public static async Task UserAction_ImportToSelectedAsJson(this MainViewModel model)
-        {
-            Logger.LogDebug($"{Tag} | ImportToSelectedAsJson()");
-
-            var notebook = model.SelectedNotebook;
-            if (notebook == null)
-                return;
-
-            await notebook.SelectedTask.ImportToSelectedAsJson();
         }
 
         public static void UserAction_ShowReport(this MainViewModel model, ReportTypes reportType)
