@@ -3,10 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class TaskModel
+    public class TaskModel: NodeModel
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
 
         public int Level = 0;
         public Guid ParentId { get; set; }
