@@ -56,7 +56,7 @@ namespace ProjectK.Notebook
         }
 
 
-        protected override async void OnExit(ExitEventArgs e)
+        protected override void OnExit(ExitEventArgs e)
         {
             _logger?.LogDebug("OnExit");
             _appModel.SaveSettings(_mainWindow);

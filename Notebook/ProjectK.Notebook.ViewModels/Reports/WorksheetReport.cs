@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Models;
+using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Reports;
 using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels.Reports

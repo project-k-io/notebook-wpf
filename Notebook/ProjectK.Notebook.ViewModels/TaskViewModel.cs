@@ -67,34 +67,34 @@ namespace ProjectK.Notebook.ViewModels
 
         public Guid ParentId
         {
-            get => Model.Data.ParentId;
-            set => Model.Data.ParentId = value;
+            get => Model.ParentId;
+            set => Model.ParentId = value;
         }
 
         public string Description
         {
-            get => Model.Data.Description;
-            set => this.Set(Description, v => Model.Data.Description = v, value);
+            get => Model.Description;
+            set => this.Set(Description, v => Model.Description = v, value);
         }
 
         public string Type
         {
-            get => Model.Data.Type;
-            set => this.Set(Type, v => Model.Data.Type = v, value);
+            get => Model.Type;
+            set => this.Set(Type, v => Model.Type = v, value);
         }
 
         public string SubType
         {
-            get => Model.Data.SubType;
-            set => this.Set(SubType, v => Model.Data.SubType = v, value);
+            get => Model.SubType;
+            set => this.Set(SubType, v => Model.SubType = v, value);
         }
 
         public DateTime DateStarted
         {
-            get => Model.Data.DateStarted;
+            get => Model.DateStarted;
             set
             {
-                if (!this.Set(DateStarted, v => Model.Data.DateStarted = v, value)) return;
+                if (!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
                 RaisePropertyChanged("TimeStarted");
                 RaisePropertyChanged("Duration");
             }
@@ -102,10 +102,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime DateEnded
         {
-            get => Model.Data.DateEnded;
+            get => Model.DateEnded;
             set
             {
-                if (!this.Set(DateEnded, v => Model.Data.DateEnded = v, value)) return;
+                if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
                 RaisePropertyChanged("TimeEnded");
                 RaisePropertyChanged("Duration");
             }
@@ -116,17 +116,17 @@ namespace ProjectK.Notebook.ViewModels
             get => Model.Name;
             set => this.Set(Model.Name, v =>
             {
-                Model.Data.Level = _globalLevel++;
+                Model.Level = _globalLevel++;
                 Model.Name = v;
             }, value);
         }
 
         public DateTime TimeStarted
         {
-            get => Model.Data.DateStarted;
+            get => Model.DateStarted;
             set
             {
-                var dateStarted = Model.Data.DateStarted;
+                var dateStarted = Model.DateStarted;
                 var dateTime = value;
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
@@ -138,10 +138,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeEnded
         {
-            get => Model.Data.DateEnded;
+            get => Model.DateEnded;
             set
             {
-                var dateEnded = Model.Data.DateEnded;
+                var dateEnded = Model.DateEnded;
                 var dateTime = value;
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
@@ -161,8 +161,8 @@ namespace ProjectK.Notebook.ViewModels
 
         public string Context
         {
-            get => Model.Data.Context;
-            set => this.Set(Context, v => Model.Data.Context = v, value);
+            get => Model.Context;
+            set => this.Set(Context, v => Model.Context = v, value);
         }
 
         public TaskViewModel Parent { get; set; }
@@ -258,7 +258,7 @@ namespace ProjectK.Notebook.ViewModels
             Model.Id = Guid.NewGuid();
         }
 
-        public void LoadFrom(Models.Versions.Version1.TaskModel model)
+        public void LoadFrom(Domain.Versions.Version1.TaskModel model)
         {
             IsSelected = model.IsSelected;
             IsExpanded = model.IsExpanded;

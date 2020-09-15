@@ -8,7 +8,6 @@ using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
-// using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
@@ -35,7 +34,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Storage Functions Ver 1
 
-        public void LoadFrom(Models.Versions.Version1.DataModel model)
+        public void LoadFrom(Notebook.Domain.Versions.Version1.DataModel model)
         {
             Clear();
             RootTask.LoadFrom(model.RootTask);
@@ -101,7 +100,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
-        public string? Title  => _notebook.Name;
+        public string Title  => _notebook.Name;
 
 
         public List<DateTime> GetSelectedDays()
