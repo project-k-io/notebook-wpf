@@ -29,6 +29,19 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
+        public string Description
+        {
+            get => Model.Description;
+            set => this.Set(Description, v => Model.Description = v, value);
+        }
+
+        public string Type
+        {
+            get => Model.Type;
+            set => this.Set(Type, v => Model.Type = v, value);
+        }
+
+
         public string SubType
         {
             get => TaskModel.SubType;

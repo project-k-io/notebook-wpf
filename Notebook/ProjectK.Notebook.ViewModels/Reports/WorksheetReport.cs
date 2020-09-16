@@ -15,22 +15,26 @@ namespace ProjectK.Notebook.ViewModels.Reports
     {
         private static readonly ILogger Logger = LogManager.GetLogger<WorksheetReport>();
 
-        private  ReportModule GenerateReport(IList<NodeViewModel> list)
+        private  ReportModule GenerateReport(IList<NodeViewModel> nodes)
         {
             var sortedList = new SortedList<string, SortedList<string, List<NodeViewModel>>>();
-            foreach (var item in list)
-                if (item.Context == "Task" && !string.IsNullOrEmpty(item.Type)
-#if AK
-                                           && !item.IsSubTypeSleep
-#endif
-                    )
+            foreach (var node in nodes)
+
+                if (node.Context == "Task")
                 {
-                    if (!sortedList.ContainsKey(item.Type))
-                        sortedList.Add(item.Type, new SortedList<string, List<NodeViewModel>>());
-                    var sortedList2 = sortedList[item.Type];
-                    if (!sortedList2.ContainsKey(item.Title))
-                        sortedList2.Add(item.Title, new List<NodeViewModel>());
-                    sortedList2[item.Title].Add(item);
+                    if (node is TaskViewModel task)
+                    {
+                        if (!string.IsNullOrEmpty(task.Type) && !task.IsSubTypeSleep)
+                        {
+                            if (!sortedList.ContainsKey(task.Type))
+                                sortedList.Add(task.Type, new SortedList<string, List<NodeViewModel>>());
+
+                            var sortedList2 = sortedList[task.Type];
+                            if (!sortedList2.ContainsKey(node.Title))
+                                sortedList2.Add(node.Title, new List<NodeViewModel>());
+                            sortedList2[node.Title].Add(node);
+                        }
+                    }
                 }
 
             var reportModule = new ReportModule();

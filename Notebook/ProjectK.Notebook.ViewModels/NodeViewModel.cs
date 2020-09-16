@@ -58,11 +58,6 @@ namespace ProjectK.Notebook.ViewModels
             set => Model.ParentId = value;
         }
 
-        public string Description
-        {
-            get => Model.Description;
-            set => this.Set(Description, v => Model.Description = v, value);
-        }
 
         public string Context
         {
@@ -70,11 +65,6 @@ namespace ProjectK.Notebook.ViewModels
             set => this.Set(Context, v => Model.Context = v, value);
         }
 
-        public string Type
-        {
-            get => Model.Type;
-            set => this.Set(Type, v => Model.Type = v, value);
-        }
 
 
         #endregion
