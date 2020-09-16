@@ -211,9 +211,9 @@ namespace ProjectK.Notebook
                 // model settings
                 LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
                 LastTreeTaskId = appSettings.GetGuid("LastTreeTaskId", Guid.Empty);
-#if AK
-                SelectedNotebook.Name = appSettings.GetString("RecentFile", "New Data");
-#endif
+                if(SelectedNotebook != null)
+                    SelectedNotebook.Title = appSettings.GetString("RecentFile", "New Data");
+
                 // Output
                 Output.OutputButtonErrors.IsChecked = appSettings.GetBool("OutputError", false);
                 Output.OutputButtonDebug.IsChecked = appSettings.GetBool("OutputDebug", false);
@@ -221,10 +221,8 @@ namespace ProjectK.Notebook
                 Output.OutputButtonWarnings.IsChecked = appSettings.GetBool("OutputWarning", false);
 
                 MostRecentFiles.Clear();
-#if AK
-                if (File.Exists(SelectedNotebook.Name))
-                    MostRecentFiles.Add(new FileInfo(SelectedNotebook.Name));
-#endif
+                if (File.Exists(SelectedNotebook?.Title))
+                    MostRecentFiles.Add(new FileInfo(SelectedNotebook?.Title));
             }
             catch (Exception ex)
             {
@@ -363,7 +361,7 @@ namespace ProjectK.Notebook
 
         public override void ImportNotebook(NotebookModel notebook, string title)
         {
-#if AK
+#if AK // db save
             // 
             _db.Notebooks.Add(model);
             _db.SaveChanges();

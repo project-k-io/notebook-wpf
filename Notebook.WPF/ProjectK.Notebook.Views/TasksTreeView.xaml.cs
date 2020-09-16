@@ -42,7 +42,7 @@ namespace ProjectK.Notebook.Views
                 return;
 
             model.RootTask.SetParents();
-            TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeTask);
+            TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeNode);
             TreeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
         }
 

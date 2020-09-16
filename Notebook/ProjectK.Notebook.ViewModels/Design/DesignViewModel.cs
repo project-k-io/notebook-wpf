@@ -26,21 +26,17 @@ namespace ProjectK.Notebook.ViewModels.Design
             // May 2020
             var week1 = new NodeViewModel {Title = "Week1", Context = "Week", IsExpanded = true};
             var thursday = new NodeViewModel {Title = "Thursday", Context = "Day", IsExpanded = true};
-            var task1 = new NodeViewModel
+            var task1 = new TaskViewModel()
             {
                 Title = "Dinner", Context = "Task", IsExpanded = true,
-#if AK
                 DateStarted = new DateTime(2020, 5, 14, 20, 34, 0),
                 DateEnded = new DateTime(2020, 5, 14, 21, 40, 0)
-#endif
             };
-            var task2 = new NodeViewModel
+            var task2 = new TaskViewModel()
             {
                 Title = "Movie", Context = "Task", IsExpanded = true,
-#if AK
                 DateStarted = new DateTime(2020, 5, 14, 21, 50, 0),
                 DateEnded = new DateTime(2020, 5, 14, 23, 20, 0)
-#endif
             };
             thursday.Add(task1);
             thursday.Add(task2);

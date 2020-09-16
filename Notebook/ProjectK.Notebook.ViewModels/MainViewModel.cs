@@ -53,12 +53,10 @@ namespace ProjectK.Notebook.ViewModels
             TaskTitleList = new ObservableCollection<string>();
             ClearCommand = new RelayCommand(this.UserAction_Clear);
             EditCommand = new RelayCommand(this.UserAction_Edit);
-#if AK
-            FixTimeCommand = new RelayCommand(SelectedNotebook.FixTime);
-            ExtractContextCommand = new RelayCommand(SelectedNotebook.FixContext);
-            FixTitlesCommand = new RelayCommand(SelectedNotebook.FixTitles);
-            FixTypesCommand = new RelayCommand(SelectedNotebook.FixTypes);
-#endif
+            FixTimeCommand = new RelayCommand(() => SelectedNotebook?.FixTime());
+            ExtractContextCommand = new RelayCommand(() => SelectedNotebook?.FixContext());
+            FixTitlesCommand = new RelayCommand(() => SelectedNotebook.FixTitles());
+            FixTypesCommand = new RelayCommand(() => SelectedNotebook.FixTypes());
             CopyTaskCommand = new RelayCommand(CopyTask);
             ContinueTaskCommand = new RelayCommand(ContinueTask);
             ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
@@ -155,7 +153,7 @@ namespace ProjectK.Notebook.ViewModels
             get => _selectedNotebook;
             set => Set(ref _selectedNotebook, value);
         }
-        public NodeViewModel SelectedTask
+        public NodeViewModel SelectedNode
         {
             get => _selectedTask;
             set => Set(ref _selectedTask, value);
@@ -195,9 +193,7 @@ namespace ProjectK.Notebook.ViewModels
             await Task.Run(() =>
             {
                 var nodes = new List<NodeViewModel>();
-#if AK
-                taskViewModelList.AddToList(RootTask);
-#endif
+                nodes.AddToList(RootTask);
                 var sortedSet1 = new SortedSet<string>();
                 var sortedSet2 = new SortedSet<string>();
                 var sortedSet3 = new SortedSet<string>();
@@ -249,19 +245,19 @@ namespace ProjectK.Notebook.ViewModels
                     _worksheetReport.GenerateReport(this);
                     break;
                 case ReportTypes.Notes:
-                    TextReport = _notesReport.GenerateReport(SelectedTask);
+                    TextReport = _notesReport.GenerateReport(SelectedNode);
                     break;
             }
         }
 
         public void PrepareSettings()
         {
-            if (SelectedTask != null)
-                LastListTaskId = SelectedTask.Id;
+            if (SelectedNode != null)
+                LastListTaskId = SelectedNode.Id;
 
-            if (SelectedNotebook?.SelectedTreeTask == null) return;
+            if (SelectedNotebook?.SelectedTreeNode == null) return;
 
-            LastTreeTaskId = SelectedNotebook.SelectedTreeTask.Id;
+            LastTreeTaskId = SelectedNotebook.SelectedTreeNode.Id;
         }
 
         public void SelectTreeTask(NodeViewModel task)
@@ -269,13 +265,13 @@ namespace ProjectK.Notebook.ViewModels
             task.TypeList = TypeList;
             task.ContextList = ContextList;
             task.TitleList = TaskTitleList;
-            SelectedTask = task;
+            SelectedNode = task;
 
             var notebook = FindNotebook(task);
             if (notebook != null)
             {
                 SelectedNotebook = notebook;
-                SelectedNotebook.SelectedTask = task;
+                SelectedNotebook.SelectedNode = task;
                 Logger.LogDebug($"SelectedNotebook selected | {notebook.Title}");
             }
 
@@ -325,7 +321,7 @@ namespace ProjectK.Notebook.ViewModels
                     if (excelCsvRecord.TryParse(line)) excelCsvRecordList.Add(excelCsvRecord);
                 }
 
-            var selectedTreeTask = SelectedNotebook.SelectedTreeTask;
+            var selectedTreeTask = SelectedNotebook.SelectedTreeNode;
             if (selectedTreeTask.Context != "Week") return;
 
             foreach (var excelCsvRecord in excelCsvRecordList)
@@ -382,7 +378,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
-            SelectedTask?.KeyboardAction(
+            SelectedNode?.KeyboardAction(
                 keyboardKeys,
                 () => keyboardState,
                 () => { }, t => t.IsSelected = true,

@@ -14,14 +14,12 @@ namespace ProjectK.Notebook.ViewModels
     {
         private TimeSpan _total;
 
-        private Guid _parentId;
         private string _description;
         private string _type;
         private string _subType;
         private DateTime _dateStarted;
         private DateTime _dateEnded;
 
-        public Guid ParentId { get => _parentId; set => Set(ref _parentId, value); }
         public string Description { get => _description; set => Set(ref _description, value); }
         public string Type { get => _type; set => Set(ref _type, value); }
         public string SubType { get => _subType; set => Set(ref _subType, value); }

@@ -19,7 +19,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
         {
             var newData = new NotebookModel();
-#if AK
+#if !AK
             rootTask.SaveTo(newData.Nodes);
 #endif
             await FileHelper.SaveToFileAsync(path, newData);

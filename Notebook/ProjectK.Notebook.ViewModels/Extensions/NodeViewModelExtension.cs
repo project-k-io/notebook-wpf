@@ -51,9 +51,10 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         case KeyboardStates.IsControlPressed:
                             var lastSubNode = item.Parent.LastSubNode;
                             node = item.Parent.AddNew();
+
                             if (lastSubNode != null)
                             {
-#if AK1
+#if AK // AddNew
                                 m.Type = item.Type;
 #endif
                                 node.Title = item.Title;

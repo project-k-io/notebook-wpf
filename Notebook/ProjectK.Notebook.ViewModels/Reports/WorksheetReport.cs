@@ -46,12 +46,14 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 foreach (var kv2 in kv1.Value)
                 {
                     var key2 = kv2.Key;
-                    var tasks = kv2.Value;
+                    var nodes2 = kv2.Value;
                     var timeSpan = new TimeSpan();
-#if AK
-                    foreach (var task in tasks)
-                        timeSpan += task.Duration;
-#endif
+                    foreach (var node2 in nodes2)
+                    {
+                        if (node2 is TaskViewModel task2)
+                            timeSpan += task2.Duration;
+                    }
+
                     var record2 = new ReportRecord { Level = 2, Text = key2, Duration = timeSpan };
                     record2.Type = key1;
                     record.Duration += record2.Duration;
@@ -70,10 +72,9 @@ namespace ProjectK.Notebook.ViewModels.Reports
             if (t.Nodes.IsNullOrEmpty())
                 return;
 
-            var firstTask = (NodeViewModel) t.Nodes.FirstOrDefault();
-            var lastTask = (NodeViewModel)t.Nodes.LastOrDefault();
+            var firstTask = (TaskViewModel) t.Nodes.FirstOrDefault();
+            var lastTask = (TaskViewModel)t.Nodes.LastOrDefault();
 
-#if AK
             var dateStarted1 = firstTask?.DateStarted;
             var dateStarted2 = lastTask?.DateStarted;
             sb.AppendLine("                       Alan Kharebov                                  ");
@@ -88,7 +89,6 @@ namespace ProjectK.Notebook.ViewModels.Reports
             sb.AppendLine();
 
             sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ", dateStarted2?.Year, dateStarted2?.Month, dateStarted2?.Day);
-#endif
             sb.AppendLine();
             sb.AppendLine();
         }
@@ -106,24 +106,22 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 var maxDelta = 40.0 / 5.0 * notebook.GetSelectedDays().Count;
 
                 var sb = new StringBuilder();
-                var report = GenerateReport(notebook.SelectedTaskList).GenerateReport(maxDelta, model.UseTimeOptimization);
-                var selectedTask = notebook.SelectedTask;
+                var report = GenerateReport(notebook.SelectedNodeList).GenerateReport(maxDelta, model.UseTimeOptimization);
+                var selectedTask = notebook.SelectedNode;
 
                 if (selectedTask != null && selectedTask.Context == "Week")
                     AddHeader(selectedTask, sb, Logger);
 
                 sb.Append(report);
-                if (notebook.SelectedTask != null && notebook.SelectedTask.Context == "Week")
+                if (notebook.SelectedNode != null && notebook.SelectedNode.Context == "Week")
                 {
-                    var subTasks = notebook.SelectedTask.Nodes;
-                    var lastTask = (NodeViewModel)subTasks.LastOrDefault();
-#if AK
-                    if (lastTask != null)
+                    var nodes = notebook.SelectedNode.Nodes;
+                    var lastNode = (NodeViewModel)nodes.LastOrDefault();
+                    if (lastNode != null)
                     {
-                        var dateStarted = lastTask.DateStarted;
+                        var dateStarted = lastNode is TaskViewModel lastTask ? lastTask.DateStarted : DateTime.Now;
                         File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", model.TextReport);
                     }
-#endif
                 }
                 model.TextReport = sb.ToString();
             }

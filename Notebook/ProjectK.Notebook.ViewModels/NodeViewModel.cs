@@ -30,6 +30,7 @@ namespace ProjectK.Notebook.ViewModels
         private string _context;
         private string _title;
         private DateTime _created;
+        private Guid _parentId;
 
         #endregion
 
@@ -46,6 +47,7 @@ namespace ProjectK.Notebook.ViewModels
         public string Context { get => _context; set => this.Set(ref _context, value); }
         public string Title { get => _title; set => this.Set(ref _title, value); }
         public DateTime Created { get => _created; set => this.Set(ref _created, value); }
+        public Guid ParentId { get => _parentId; set => Set(ref _parentId, value); }
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }
@@ -97,7 +99,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Public functions
 
-        public void SaveTo(List<INode> list)
+        public void SaveTo(List<NodeModel> list)
         {
             foreach (var node in Nodes)
             {
@@ -105,28 +107,31 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private void SaveRecursively(ICollection<INode> list)
+
+        private void SaveRecursively(ICollection<NodeModel> list)
         {
-#if AK2
-            list.Add(Model);
+            list.Add(GetModel());
             TrySetId();
 
             foreach (var node in Nodes)
             {
                 node.SaveRecursively(list);
-                node.Model.ParentId = Model.Id;
+                node.ParentId = Id;
             }
-#endif
+        }
+
+        private NodeModel GetModel()
+        {
+            var model = new NodeModel();
+            return model;
         }
 
         public void TrySetId()
         {
-#if AK2
-            if (Model.Id != Guid.Empty)
+            if (Id != Guid.Empty)
                 return;
 
-            Model.Id = Guid.NewGuid();
-#endif
+            Id = Guid.NewGuid();
         }
 
 
