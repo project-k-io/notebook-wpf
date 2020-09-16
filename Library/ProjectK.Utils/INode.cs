@@ -2,7 +2,7 @@
 
 namespace ProjectK.Utils
 {
-    public interface INode<T>
+    public interface ITreeNode<T>
     {
         ObservableCollection<T> Nodes { get; }
     }

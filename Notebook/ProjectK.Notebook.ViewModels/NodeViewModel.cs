@@ -15,7 +15,7 @@ using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class NodeViewModel : ViewModelBase, INode<NodeViewModel>
+    public class NodeViewModel : ViewModelBase, ITreeNode<NodeViewModel>
     {
         #region Static Fields
         private readonly ILogger _logger = LogManager.GetLogger<NodeViewModel>();
