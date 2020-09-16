@@ -26,6 +26,11 @@ namespace ProjectK.Notebook.ViewModels
         private bool _isExpanded;
         private bool _isSelected;
 
+        private Guid _id;
+        private string _context;
+        private string _title;
+        private DateTime _created;
+
         #endregion
 
         #region INode - Implementation
@@ -34,38 +39,16 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        #region Model Wrappers
-
-        public IItem Model { get; set; }
-
-        public Guid Id => Model.Id;
-
-        public string Title
-        {
-            get => Model.Name;
-            set => this.Set(Model.Name, v => { Model.Name = v; }, value);
-        }
-
-        public DateTime Created
-        {
-            get => Model.Created;
-            set => this.Set(Model.Created, v => { Model.Created = v; }, value);
-        }
-
-        public string Context
-        {
-            get => Model.Context;
-            set => this.Set(Context, v => Model.Context = v, value);
-        }
-
-        #endregion
-
         #region Properties
 
+         // Model 
+        public Guid Id { get => _id; set => this.Set(ref _id, value); }
+        public string Context { get => _context; set => this.Set(ref _context, value); }
+        public string Title { get => _title; set => this.Set(ref _title, value); }
+        public DateTime Created { get => _created; set => this.Set(ref _created, value); }
+
         public NodeViewModel Parent { get; set; }
-
         public ObservableCollection<string> TypeList { get; set; }
-
         public ObservableCollection<string> ContextList { get; set; }
         public ObservableCollection<string> TitleList { get; set; }
 
@@ -89,34 +72,16 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Constructors
-        public virtual void CreateModel()
-        {
-            Model = new TaskModel();
-        }
 
         public NodeViewModel()
         {
-            Model = new NodeModel();
             Parent = null;
         }
 
-        public NodeViewModel(string title) : this()
+        public NodeViewModel(string title)
         {
             Title = title;
         }
-
-        public NodeViewModel(IItem model)
-        {
-            Model = model;
-            Parent = null;
-        }
-
-        public NodeViewModel(IItem model, string title) : this(model)
-        {
-            Title = title;
-        }
-
-
 
 
         #endregion
@@ -125,7 +90,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public override string ToString()
         {
-            return Model.ToString();
+            return $"{Context}:{Title}";
         }
 
         #endregion
@@ -142,6 +107,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private void SaveRecursively(ICollection<IItem> list)
         {
+#if AK2
             list.Add(Model);
             TrySetId();
 
@@ -150,21 +116,23 @@ namespace ProjectK.Notebook.ViewModels
                 node.SaveRecursively(list);
                 node.Model.ParentId = Model.Id;
             }
+#endif
         }
-
 
         public void TrySetId()
         {
+#if AK2
             if (Model.Id != Guid.Empty)
                 return;
 
             Model.Id = Guid.NewGuid();
+#endif
         }
 
 
         public virtual NodeViewModel AddNew()
         {
-            var subNode = new NodeViewModel{ Title = "New Node", Created = DateTime.Now };
+            var subNode = new NodeViewModel { Title = "New Node", Created = DateTime.Now };
 
             Add(subNode);
             FixContext(subNode);
@@ -248,7 +216,13 @@ namespace ProjectK.Notebook.ViewModels
             return null;
         }
 
-
+        public void Init(NodeModel b)
+        {
+            Id = b.Id;
+            Title = b.Name;
+            Created = b.Created;
+            Context = b.Context;
+        }
 
 
         #endregion

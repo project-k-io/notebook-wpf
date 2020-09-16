@@ -9,7 +9,6 @@ namespace ProjectK.Notebook.Domain
         public string Name { get; set; }
         public List<NodeModel> Nodes { get; set; } = new List<NodeModel>();
 
-
         public  void Init(ProjectK.Notebook.Domain.Versions.Version2.DataModel model)
         {
             foreach (var task in model.Tasks)

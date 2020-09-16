@@ -14,52 +14,23 @@ namespace ProjectK.Notebook.ViewModels
     {
         private TimeSpan _total;
 
-        public TaskModel TaskModel
-        {
-            get => (TaskModel)Model;
-            set => this.Set(Model, v => Model = v, value);
-        }
+        private Guid _parentId;
+        private string _description;
+        private string _type;
+        private string _subType;
+        private DateTime _dateStarted;
+        private DateTime _dateEnded;
 
-        public TaskViewModel(): base(new TaskModel())
-        {
-        }
-
-        public TaskViewModel(string title) : base(new TaskModel(), title)
-        {
-        }
-
-
-        public Guid ParentId
-        {
-            get => Model.ParentId;
-            set => Model.ParentId = value;
-        }
-
-        public string Description
-        {
-            get => Model.Description;
-            set => this.Set(Description, v => Model.Description = v, value);
-        }
-
-        public string Type
-        {
-            get => Model.Type;
-            set => this.Set(Type, v => Model.Type = v, value);
-        }
-
-
-        public string SubType
-        {
-            get => TaskModel.SubType;
-            set => this.Set(SubType, v => TaskModel.SubType = v, value);
-        }
-
+        public Guid ParentId { get => _parentId; set => Set(ref _parentId, value); }
+        public string Description { get => _description; set => Set(ref _description, value); }
+        public string Type { get => _type; set => Set(ref _type, value); }
+        public string SubType { get => _subType; set => Set(ref _subType, value); }
         public DateTime DateStarted
         {
-            get => TaskModel.DateStarted;
+            get => _dateStarted;
             set
             {
-                if (!this.Set(DateStarted, v => TaskModel.DateStarted = v, value)) return;
+                if (!this.Set(ref _dateStarted, value)) return;
                 RaisePropertyChanged("TimeStarted");
                 RaisePropertyChanged("Duration");
             }
@@ -67,10 +38,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime DateEnded
         {
-            get => TaskModel.DateEnded;
+            get => _dateEnded;
             set
             {
-                if (!this.Set(DateEnded, v => TaskModel.DateEnded = v, value)) return;
+                if (!this.Set(DateEnded, v => _dateEnded = v, value)) return;
                 RaisePropertyChanged("TimeEnded");
                 RaisePropertyChanged("Duration");
             }
@@ -79,10 +50,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeStarted
         {
-            get => TaskModel.DateStarted;
+            get => _dateStarted;
             set
             {
-                var dateStarted = TaskModel.DateStarted;
+                var dateStarted = _dateStarted;
                 var dateTime = value;
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
@@ -94,10 +65,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeEnded
         {
-            get => TaskModel.DateEnded;
+            get => _dateEnded;
             set
             {
-                var dateEnded = TaskModel.DateEnded;
+                var dateEnded = _dateEnded;
                 var dateTime = value;
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
@@ -124,6 +95,7 @@ namespace ProjectK.Notebook.ViewModels
             {
                 if (string.IsNullOrEmpty(SubType))
                     return false;
+
                 return SubType.ToUpper().Contains("SLEEP");
             }
         }
@@ -152,6 +124,15 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand CommandSetEndedTime => new RelayCommand(SetEndedTime);
 
         #endregion
+
+        public TaskViewModel()
+        {
+        }
+
+        public TaskViewModel(string title) : base(title)
+        {
+        }
+
 
 
         public void LoadFrom(Domain.Versions.Version1.TaskModel model)
@@ -229,19 +210,19 @@ namespace ProjectK.Notebook.ViewModels
                 var title = Title;
                 var upper = title.ToUpper();
                 if (upper.Contains("LUNCH") || upper.Contains("BREAKFAST"))
-                    this.Type = "Lunch";
+                    Type = "Lunch";
                 else if (upper.Contains("TASK") || upper.Contains("CODE REVIEW") || title.Contains("TA") ||
                          title.Contains("US"))
-                    this.Type = "Dev";
+                    Type = "Dev";
                 else if (upper.Contains("BUILD"))
-                    this.Type = "Build";
+                    Type = "Build";
                 else if (upper.Contains("TIME SHEET") || upper.Contains("TIMESHEET") || upper.Contains("EMAIL") ||
                          upper.Contains("PAPER WORKS"))
-                    this.Type = "Misc";
+                    Type = "Misc";
                 else if (upper.Contains("TALKED") || upper.Contains("MEETING") || upper.Contains("SHOWED"))
-                    this.Type = "Meeting";
+                    Type = "Meeting";
                 else if (upper.Contains("Trouble"))
-                    this.Type = "Support";
+                    Type = "Support";
             }
 
             foreach (var subTask in Nodes)

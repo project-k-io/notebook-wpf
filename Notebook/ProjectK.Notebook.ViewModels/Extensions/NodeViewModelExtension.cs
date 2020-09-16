@@ -5,12 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.ViewModels.Enums;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
+
+
     public static class NodeViewModelExtension
     {
+        public static void Init(this NodeViewModel vm, NodeModel m)
+        {
+            vm.Id = m.Id;
+            vm.Title = m.Name;
+            vm.Created = m.Created;
+            vm.Context = m.Context;
+        }
+
         private static readonly ILogger _logger = LogManager.GetLogger<TaskViewModel>();
         public static void KeyboardAction(
             this NodeViewModel item,
@@ -43,7 +54,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                             if (lastSubNode != null)
                             {
 #if AK1
-                                node.Type = item.Type;
+                                m.Type = item.Type;
 #endif
                                 node.Title = item.Title;
                                 node.Created = DateTime.Now;

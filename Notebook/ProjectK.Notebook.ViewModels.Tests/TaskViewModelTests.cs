@@ -53,8 +53,11 @@ namespace ProjectK.Notebook.ViewModels.Tests
         public void AddTest()
         {
             // Arrange
-            var parent = new NodeViewModel { Model = TaskModel.NewTask() };
-            var child = new NodeViewModel { Model = TaskModel.NewTask() }; ;
+            var parent = new NodeViewModel();
+            var child = new NodeViewModel();
+
+            parent.Init(TaskModel.NewTask());
+            child.Init(TaskModel.NewTask());
 
             // Act
             parent.Add(child);

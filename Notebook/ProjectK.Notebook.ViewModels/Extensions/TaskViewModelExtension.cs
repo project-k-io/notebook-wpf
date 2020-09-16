@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
-// using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
@@ -26,27 +25,31 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             await FileHelper.SaveToFileAsync(path, newData);
         }
 
-        public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> tasks)
+        public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> nodes)
         {
             // 
             var index = new SortedList<Guid, NodeViewModel>();
 
             // build index
-            foreach (var task in tasks)
+            foreach (var node in nodes)
             {
-                if (!index.ContainsKey(task.Id))
-                    index.Add(task.Id, new NodeViewModel { Model = task });
+                if (!index.ContainsKey(node.Id))
+                {
+                    var vm = new NodeViewModel();
+                    vm.Init(node);
+                    index.Add(node.Id, vm);
+                }
             }
 
-            foreach (var task in tasks)
+            foreach (var node in nodes)
             {
-                if (!index.ContainsKey(task.ParentId))
+                if (!index.ContainsKey(node.ParentId))
                 {
-                    rootTask.Add(index[task.Id]);
+                    rootTask.Add(index[node.Id]);
                 }
                 else
                 {
-                    index[task.ParentId].Add(index[task.Id]);
+                    index[node.ParentId].Add(index[node.Id]);
                 }
             }
 

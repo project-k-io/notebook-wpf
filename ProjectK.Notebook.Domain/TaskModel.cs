@@ -9,6 +9,9 @@ namespace ProjectK.Notebook.Domain
         public DateTime DateStarted { get; set; }
         public DateTime DateEnded { get; set; }
         public string SubType { get; set; }
+        public string Description { get; set; }
+        public string Type { get; set; }
+
 
 
         public override string ToString()
@@ -52,6 +55,8 @@ namespace ProjectK.Notebook.Domain
             if (DateStarted != b.DateStarted) return false;
             if (DateEnded != b.DateEnded) return false;
             if (SubType != b.SubType) return false;
+            if (Type != b.Type) return false;
+            if (Description != b.Description) return false;
             return true;
         }
 
@@ -64,6 +69,8 @@ namespace ProjectK.Notebook.Domain
             DateStarted = b.DateStarted;
             DateEnded = b.DateEnded;
             SubType = b.SubType;
+            Type = b.Type;
+            Description = b.Description;
         }
 
         public override NodeModel Copy()
