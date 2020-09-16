@@ -258,7 +258,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        protected override NodeViewModel AddNew()
+        public override NodeViewModel AddNew()
         {
             var subTask = new TaskViewModel() { Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
             Add(subTask);

@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Enums;
+using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.View.Helpers;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.View.Helpers.Misc;

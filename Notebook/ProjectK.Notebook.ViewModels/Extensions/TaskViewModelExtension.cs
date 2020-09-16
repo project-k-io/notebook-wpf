@@ -15,7 +15,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 {
     public static class TaskViewModelExtension
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<NodeViewModel>();
+        private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
 
         public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
         {
@@ -88,3 +88,5 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
     }
 }
+
+

@@ -181,10 +181,9 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        protected virtual NodeViewModel AddNew()
+        public virtual NodeViewModel AddNew()
         {
-            var subNode = new NodeViewModel() { Title = "New Node", Created = DateTime.Now };
-
+            var subNode = new NodeViewModel{ Title = "New Node", Created = DateTime.Now };
 
             Add(subNode);
             FixContext(subNode);
@@ -201,7 +200,7 @@ namespace ProjectK.Notebook.ViewModels
             Nodes.Add(node);
         }
 
-        private void Insert(int index, NodeViewModel node)
+        public void Insert(int index, NodeViewModel node)
         {
             node.Parent = this;
             Nodes.Insert(index, node);
@@ -269,148 +268,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public void KeyboardAction(
-            KeyboardKeys keyboardKeys,
-            Func<KeyboardStates> getState,
-            Action handled,
-            Action<NodeViewModel> selectItem, Action<NodeViewModel> expandItem,
-            Func<bool> deleteMessageBox,
-            Action<Action> dispatcher)
-        {
-            var state = getState();
 
-            // don't show logging ctl, alt, shift or arrow keys
-            if (keyboardKeys != KeyboardKeys.None && state != KeyboardStates.None)
-                _logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
-
-            switch (keyboardKeys)
-            {
-                case KeyboardKeys.Insert:
-                    NodeViewModel node;
-                    switch (state)
-                    {
-                        case KeyboardStates.IsShiftPressed:
-                            node = Parent.AddNew();
-                            node.Created = DateTime.Now;
-                            break;
-                        case KeyboardStates.IsControlPressed:
-                            var lastSubNode = Parent.LastSubNode;
-                            node = Parent.AddNew();
-                            if (lastSubNode != null)
-                            {
-                                node.Type = Type;
-                                node.Title = Title;
-                                node.Created = DateTime.Now;
-                            }
-
-                            break;
-                        default:
-                            node = AddNew();
-                            break;
-                    }
-
-                    IsSelected = true;
-                    selectItem(this);
-                    expandItem(this);
-                    handled();
-                    _logger.LogDebug($"Added [{node.Title}] to [{Title}]");
-                    break;
-                case KeyboardKeys.Delete:
-                    if (deleteMessageBox())
-                        break;
-                    var parent = Parent;
-                    if (parent == null)
-                        break;
-
-                    var num1 = parent.Nodes.IndexOf(this);
-                    dispatcher(() => parent.Nodes.Remove(this));
-
-                    var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
-                    if (parentNode == null)
-                        break;
-
-                    selectItem(parentNode);
-                    handled();
-                    break;
-
-                case KeyboardKeys.Left:
-                    if (state == KeyboardStates.IsCtrlShiftPressed)
-                    {
-                        var parent1 = Parent;
-                        if (parent1 == null)
-                            break;
-                        var parent2 = parent1.Parent;
-                        if (parent2 == null)
-                            break;
-                        parent1.Nodes.Remove(this);
-                        var num2 = parent2.Nodes.IndexOf(parent1);
-                        parent2.Insert(num2 + 1, this);
-                        selectItem(this);
-                        handled();
-                    }
-
-                    break;
-                case KeyboardKeys.Right:
-                    if (state == KeyboardStates.IsCtrlShiftPressed)
-                    {
-                        var parent1 = Parent;
-                        if (parent1 == null)
-                            break;
-                        var num2 = parent1.Nodes.IndexOf(this);
-                        if (num2 <= 0)
-                            break;
-
-                        var parentNode2 = parent1.Nodes[num2 - 1];
-                        if (parentNode2 == null)
-                            break;
-
-                        parent1.Nodes.Remove(this);
-                        parentNode2.Add(this);
-                        selectItem(this);
-                        parent1.IsExpanded = true;
-                        IsSelected = true;
-                        handled();
-                    }
-
-                    break;
-                case KeyboardKeys.Up:
-                    if (state == KeyboardStates.IsCtrlShiftPressed)
-                    {
-                        var parent1 = Parent;
-                        if (parent1 == null)
-                            break;
-                        var num2 = parent1.Nodes.IndexOf(this);
-                        if (num2 <= 0)
-                            break;
-                        parent1.Nodes.Remove(this);
-                        parent1.Insert(num2 - 1, this);
-                        selectItem(this);
-                        parent1.IsExpanded = true;
-                        IsSelected = true;
-                        handled();
-                    }
-
-                    break;
-                case KeyboardKeys.Down:
-                    if (state == KeyboardStates.IsCtrlShiftPressed)
-                    {
-                        var parent1 = Parent;
-                        if (parent1 == null)
-                            break;
-                        var num2 = parent1.Nodes.IndexOf(this);
-                        if (num2 >= parent1.Nodes.Count - 1)
-                            break;
-                        parent1.Nodes.Remove(this);
-                        parent1.Insert(num2 + 1, this);
-                        selectItem(this);
-                        parent1.IsExpanded = true;
-                        IsSelected = true;
-                        handled();
-                    }
-
-                    break;
-            }
-        }
 
         #endregion
 
