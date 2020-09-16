@@ -2,7 +2,7 @@
 
 namespace ProjectK.Notebook.Domain.Interfaces
 {
-    public interface ITask : IItem
+    public interface ITask : INode
     {
         string Description { get; set; }
         string Type { get; set; }

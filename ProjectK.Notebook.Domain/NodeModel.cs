@@ -3,7 +3,7 @@ using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 { 
-    public class NodeModel : IItem 
+    public class NodeModel : INode 
     {
         public Guid Id { get; set; }
         public Guid ParentId { get; set; }

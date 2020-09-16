@@ -49,7 +49,7 @@ namespace ProjectK.Notebook.ViewModels
 #region Storage Functions 
         public void CopyFromViewModelToModels()
         {
-            var nodes = new List<IItem>(); 
+            var nodes = new List<INode>(); 
             RootTask.SaveTo(nodes);
             _notebook.Nodes.Clear();
 

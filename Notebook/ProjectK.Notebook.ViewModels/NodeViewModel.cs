@@ -97,7 +97,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Public functions
 
-        public void SaveTo(List<IItem> list)
+        public void SaveTo(List<INode> list)
         {
             foreach (var node in Nodes)
             {
@@ -105,7 +105,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private void SaveRecursively(ICollection<IItem> list)
+        private void SaveRecursively(ICollection<INode> list)
         {
 #if AK2
             list.Add(Model);

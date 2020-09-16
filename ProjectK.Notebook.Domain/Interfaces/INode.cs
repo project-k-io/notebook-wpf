@@ -2,7 +2,7 @@
 
 namespace ProjectK.Notebook.Domain.Interfaces
 {
-    public interface IItem
+    public interface INode
     {
         Guid Id { get; set; }
         Guid ParentId { get; set; }
