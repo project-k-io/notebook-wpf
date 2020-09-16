@@ -29,6 +29,12 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
+        public Guid ParentId
+        {
+            get => Model.ParentId;
+            set => Model.ParentId = value;
+        }
+
         public string Description
         {
             get => Model.Description;

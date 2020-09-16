@@ -52,20 +52,11 @@ namespace ProjectK.Notebook.ViewModels
             set => this.Set(Model.Created, v => { Model.Created = v; }, value);
         }
 
-        public Guid ParentId
-        {
-            get => Model.ParentId;
-            set => Model.ParentId = value;
-        }
-
-
         public string Context
         {
             get => Model.Context;
             set => this.Set(Context, v => Model.Context = v, value);
         }
-
-
 
         #endregion
 
@@ -157,7 +148,7 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var node in Nodes)
             {
                 node.SaveRecursively(list);
-                node.ParentId = Model.Id;
+                node.Model.ParentId = Model.Id;
             }
         }
 
