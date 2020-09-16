@@ -108,32 +108,34 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Constructors
+        public virtual void CreateModel()
+        {
+            Model = new TaskModel();
+        }
 
         public NodeViewModel()
         {
-            Parent = null;
             Model = new NodeModel();
+            Parent = null;
         }
 
-        public NodeViewModel(string title)
+        public NodeViewModel(string title) : this()
         {
-            Model = new NodeModel();
-            Parent = null;
             Title = title;
         }
 
         public NodeViewModel(IItem model)
         {
-            Parent = null;
             Model = model;
+            Parent = null;
         }
 
-        public NodeViewModel(IItem model, string title)
+        public NodeViewModel(IItem model, string title) : this(model)
         {
-            Model = model;
-            Parent = null;
             Title = title;
         }
+
+
 
 
         #endregion
@@ -181,17 +183,14 @@ namespace ProjectK.Notebook.ViewModels
 
         protected virtual NodeViewModel AddNew()
         {
-            IItem model = CreateModel();
-            var subNode = new NodeViewModel(model) { Title = "New Node", Created = DateTime.Now };
+            var subNode = new NodeViewModel() { Title = "New Node", Created = DateTime.Now };
+
+
             Add(subNode);
             FixContext(subNode);
             return subNode;
         }
 
-        private IItem CreateModel()
-        {
-            return new NodeModel();
-        }
 
         public void Add(NodeViewModel node)
         {

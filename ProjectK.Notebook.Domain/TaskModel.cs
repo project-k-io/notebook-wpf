@@ -40,36 +40,35 @@ namespace ProjectK.Notebook.Domain
             Context = task2.Context;
         }
 
+        public override bool IsSame(NodeModel b)
+        {
+            return IsSame((TaskModel) b);
+        }
+
         public bool IsSame(TaskModel b)
         {
-            if (Id != b.Id) return false;
-            if (Name != b.Name) return false;
-            if (ParentId != b.ParentId) return false;
+            if(!base.IsSame(b)) return false;
             if (Rating != b.Rating) return false;
             if (DateStarted != b.DateStarted) return false;
             if (DateEnded != b.DateEnded) return false;
-            if (Type != b.Type) return false;
             if (SubType != b.SubType) return false;
-            if (Description != b.Description) return false;
-            if (Context != b.Context) return false;
             return true;
         }
 
-        public TaskModel Copy()
+        public TaskModel()
         {
-            return new TaskModel
-            {
-                Id = Id,
-                Name = Name,
-                ParentId = ParentId,
-                Rating = Rating,
-                DateStarted = DateStarted,
-                DateEnded = DateEnded,
-                Type = Type,
-                SubType = SubType,
-                Description = Description,
-                Context = Context
-            };
+        }
+        public TaskModel(TaskModel b) : base(b)
+        {
+            Rating = b.Rating;
+            DateStarted = b.DateStarted;
+            DateEnded = b.DateEnded;
+            SubType = b.SubType;
+        }
+
+        public override NodeModel Copy()
+        {
+            return new TaskModel(this);
         }
     }
 }

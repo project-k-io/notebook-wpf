@@ -21,12 +21,12 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         {
             var newData = new NotebookModel();
 #if AK
-            rootTask.SaveTo(newData.Tasks);
+            rootTask.SaveTo(newData.Nodes);
 #endif
             await FileHelper.SaveToFileAsync(path, newData);
         }
 
-        public static void BuildTree(this NodeViewModel rootTask, List<TaskModel> tasks)
+        public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> tasks)
         {
             // 
             var index = new SortedList<Guid, NodeViewModel>();

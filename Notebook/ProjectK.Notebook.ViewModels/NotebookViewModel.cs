@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
@@ -37,7 +38,7 @@ namespace ProjectK.Notebook.ViewModels
         public void LoadFrom(Notebook.Domain.Versions.Version1.DataModel model)
         {
             Clear();
-#if AK
+#if AK1
             RootTask.LoadFrom(model.RootTask);
 #endif
         }
@@ -48,17 +49,17 @@ namespace ProjectK.Notebook.ViewModels
 #region Storage Functions 
         public void CopyFromViewModelToModels()
         {
-            var tasks = new List<TaskModel>();
-#if AK
-            RootTask.SaveTo(tasks);
-#endif
-            foreach (var task in tasks)
+            var nodes = new List<IItem>(); 
+            RootTask.SaveTo(nodes);
+            _notebook.Nodes.Clear();
+
+            foreach (var node in nodes)
             {
-                
+                if (node is TaskModel task)
+                {
+                    _notebook.Nodes.Add(task);
+                }
             }
-            
-            _notebook.Tasks.Clear();
-            _notebook.Tasks.AddRange(tasks);
         }
 
 
@@ -76,7 +77,7 @@ namespace ProjectK.Notebook.ViewModels
             if (model == null)
                 return;
 
-            var tasks = model.Tasks;
+            var tasks = model.Nodes;
             Clear();
 
             // Build Tree
@@ -110,7 +111,7 @@ namespace ProjectK.Notebook.ViewModels
         public List<DateTime> GetSelectedDays()
         {
             var dateTimeList = new List<DateTime>();
-#if AK
+#if AK1
             foreach (var selectedTask in SelectedTaskList)
                 if (selectedTask.Context == "Day")
                     dateTimeList.Add(selectedTask.DateStarted);
@@ -137,7 +138,7 @@ namespace ProjectK.Notebook.ViewModels
 
             SelectedTreeTask = task;
             SelectedTaskList.Clear();
-#if AK
+#if AK1
             SelectedTaskList.AddToList(task);
 #endif
             OnSelectedDaysChanged();
@@ -175,7 +176,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private static void AddToList(ICollection<NodeViewModel> list, NodeViewModel task, IList dates)
         {
-#if AK
+#if AK1
             if (ContainDate(dates, task.DateStarted))
                 list.Add(task);
 #endif
@@ -188,7 +189,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTime()
         {
-#if AK
+#if AK1
             SelectedTreeTask.FixTime();
 #endif
         }
@@ -212,14 +213,14 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTitles()
         {
-#if AK
+#if AK1
             SelectedTreeTask.FixTitles();
 #endif
         }
 
         public void FixTypes()
         {
-#if AK
+#if AK1
             SelectedTreeTask.FixTypes();
 #endif
         }

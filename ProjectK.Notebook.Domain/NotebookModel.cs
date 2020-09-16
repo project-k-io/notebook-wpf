@@ -7,30 +7,31 @@ namespace ProjectK.Notebook.Domain
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<TaskModel> Tasks { get; set; } = new List<TaskModel>();
+        public List<NodeModel> Nodes { get; set; } = new List<NodeModel>();
 
 
         public  void Init(ProjectK.Notebook.Domain.Versions.Version2.DataModel model)
         {
-            foreach (var task2 in model.Tasks)
+            foreach (var task in model.Tasks)
             {
-                var task = new TaskModel();
-                task.Init(task2);
-                Tasks.Add(task);
+                var node = new TaskModel();
+                node.Init(task);
+                Nodes.Add(node);
             }
         }
 
         public  bool IsSame(NotebookModel target)
         {
-            if (target.Tasks.Count != Tasks.Count)
+            if (target.Nodes.Count != Nodes.Count)
                 return false;
 
-            for (var i = 0; i < Tasks.Count; i++)
+            for (var i = 0; i < Nodes.Count; i++)
             {
-                var a = Tasks[i];
-                var b = target.Tasks[i];
+                var a = Nodes[i];
+                var b = target.Nodes[i];
                 if (b.Name == "XXX")
                     Debug.WriteLine("XXX");
+
                 if (!a.IsSame(b))
                     return false;
             }
@@ -41,22 +42,22 @@ namespace ProjectK.Notebook.Domain
         public  NotebookModel Copy()
         {
             var model = new NotebookModel();
-            foreach (var task in Tasks)
-                model.Tasks.Add(task.Copy());
+            foreach (var node in Nodes)
+                model.Nodes.Add(node.Copy());
 
             return model;
         }
 
         public  void CopyFrom(NotebookModel source)
         {
-            Tasks.Clear();
-            foreach (var task in source.Tasks)
-                Tasks.Add(task.Copy());
+            Nodes.Clear();
+            foreach (var node in source.Nodes)
+                Nodes.Add(node.Copy());
         }
 
         public  void Clear()
         {
-            Tasks.Clear();
+            Nodes.Clear();
         }
 
     }
