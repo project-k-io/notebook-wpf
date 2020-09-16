@@ -12,6 +12,8 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class TaskViewModel : NodeViewModel
     {
+        private TimeSpan _total;
+
         public TaskModel TaskModel
         {
             get => (TaskModel)Model;
@@ -118,6 +120,11 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
+        public TimeSpan Total
+        {
+            get => _total;
+            set => Set(ref _total, value);
+        }
 
         #region Commands
 

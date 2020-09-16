@@ -17,38 +17,39 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class NodeViewModel : ViewModelBase, INode<NodeViewModel>
     {
+        #region Static Fields
         private readonly ILogger _logger = LogManager.GetLogger<NodeViewModel>();
+        #endregion
 
         #region Fields
 
         private bool _isExpanded;
         private bool _isSelected;
-        private TimeSpan _total;
 
         #endregion
 
-        #region Properties - Model Wrappers
+        #region INode - Implementation
 
         public ObservableCollection<NodeViewModel> Nodes { get; set; } = new ObservableCollection<NodeViewModel>();
+
+        #endregion
+
+        #region Model Wrappers
 
         public IItem Model { get; set; }
 
         public Guid Id => Model.Id;
+
         public string Title
         {
             get => Model.Name;
-            set => this.Set(Model.Name, v =>
-            {
-                Model.Name = v;
-            }, value);
+            set => this.Set(Model.Name, v => { Model.Name = v; }, value);
         }
+
         public DateTime Created
         {
             get => Model.Created;
-            set => this.Set(Model.Created, v =>
-            {
-                Model.Created = v;
-            }, value);
+            set => this.Set(Model.Created, v => { Model.Created = v; }, value);
         }
 
         public Guid ParentId
@@ -63,22 +64,30 @@ namespace ProjectK.Notebook.ViewModels
             set => this.Set(Description, v => Model.Description = v, value);
         }
 
-
-        #endregion
-
-        #region Properties
-
-        public ObservableCollection<string> TypeList { get; set; }
-        public ObservableCollection<string> ContextList { get; set; }
-        public ObservableCollection<string> TitleList { get; set; }
-
         public string Context
         {
             get => Model.Context;
             set => this.Set(Context, v => Model.Context = v, value);
         }
 
+        public string Type
+        {
+            get => Model.Type;
+            set => this.Set(Type, v => Model.Type = v, value);
+        }
+
+
+        #endregion
+
+        #region Properties
+
         public NodeViewModel Parent { get; set; }
+
+        public ObservableCollection<string> TypeList { get; set; }
+
+        public ObservableCollection<string> ContextList { get; set; }
+        public ObservableCollection<string> TitleList { get; set; }
+
 
         public bool IsSelected
         {
@@ -92,19 +101,40 @@ namespace ProjectK.Notebook.ViewModels
             set => Set(ref _isExpanded, value);
         }
 
-        public TimeSpan Total
-        {
-            get => _total;
-            set => Set(ref _total, value);
-        }
-        public string Type
-        {
-            get => Model.Type;
-            set => this.Set(Type, v => Model.Type = v, value);
-        }
 
         public NodeViewModel LastSubNode => Nodes.LastOrDefault();
         // ToDo: Improve allocation, maybe allocate only when you needed?
+
+        #endregion
+
+        #region Constructors
+
+        public NodeViewModel()
+        {
+            Parent = null;
+            Model = new NodeModel();
+        }
+
+        public NodeViewModel(string title)
+        {
+            Model = new NodeModel();
+            Parent = null;
+            Title = title;
+        }
+
+        public NodeViewModel(IItem model)
+        {
+            Parent = null;
+            Model = model;
+        }
+
+        public NodeViewModel(IItem model, string title)
+        {
+            Model = model;
+            Parent = null;
+            Title = title;
+        }
+
 
         #endregion
 
@@ -116,6 +146,8 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         #endregion
+
+        #region Public functions
 
         public void SaveTo(List<IItem> list)
         {
@@ -138,39 +170,6 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-
-
-        #region Constructors
-        public NodeViewModel()
-        {
-            Parent = null;
-            Model = new NodeModel();
-        }
-        public NodeViewModel(string title)
-        {
-            Model = new NodeModel();
-            Parent = null;
-            Title = title;
-        }
-
-        public NodeViewModel(IItem model)
-        {
-            Parent = null;
-            Model = model;
-        }
-
-        public NodeViewModel(IItem model, string title)
-        {
-            Model = model;
-            Parent = null;
-            Title = title;
-        }
-
-
-#endregion
-
-#region Public functions
-
         public void TrySetId()
         {
             if (Model.Id != Guid.Empty)
@@ -183,7 +182,7 @@ namespace ProjectK.Notebook.ViewModels
         protected virtual NodeViewModel AddNew()
         {
             IItem model = CreateModel();
-            var subNode = new NodeViewModel(model) {Title = "New Node", Created = DateTime.Now};
+            var subNode = new NodeViewModel(model) { Title = "New Node", Created = DateTime.Now };
             Add(subNode);
             FixContext(subNode);
             return subNode;
@@ -280,9 +279,9 @@ namespace ProjectK.Notebook.ViewModels
             Action<Action> dispatcher)
         {
             var state = getState();
-            
+
             // don't show logging ctl, alt, shift or arrow keys
-            if(keyboardKeys != KeyboardKeys.None && state != KeyboardStates.None)
+            if (keyboardKeys != KeyboardKeys.None && state != KeyboardStates.None)
                 _logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
 
             switch (keyboardKeys)
@@ -323,10 +322,10 @@ namespace ProjectK.Notebook.ViewModels
                     var parent = Parent;
                     if (parent == null)
                         break;
-                    
+
                     var num1 = parent.Nodes.IndexOf(this);
                     dispatcher(() => parent.Nodes.Remove(this));
-                    
+
                     var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
                     if (parentNode == null)
                         break;
@@ -414,6 +413,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-#endregion
+        #endregion
+
     }
 }
