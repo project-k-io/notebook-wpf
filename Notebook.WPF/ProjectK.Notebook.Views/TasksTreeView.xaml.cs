@@ -59,10 +59,10 @@ namespace ProjectK.Notebook.Views
             if (!(treeView.DataContext is MainViewModel mainViewModel))
                 return;
 
-            if (!(treeView.SelectedItem is TaskViewModel task))
+            if (!(treeView.SelectedItem is NodeViewModel task))
                 task = mainViewModel.RootTask;
 
-            void ExpandItem(TaskViewModel t)
+            void ExpandItem(NodeViewModel t)
             {
                 if (!(treeView.ItemContainerGenerator.ContainerFromItem(task) is TreeViewItem treeViewItem))
                     return;
@@ -80,7 +80,7 @@ namespace ProjectK.Notebook.Views
             task.KeyboardAction(keyState, () => 
                 KeyboardState, () => e.Handled = true, 
                 treeView.SelectItem, 
-                (a) => ExpandItem((TaskViewModel)a), 
+                (a) => ExpandItem((NodeViewModel)a), 
                 DeleteMessageBox, addDelegate);
 
             if (keyState == KeyboardKeys.Delete)
@@ -132,7 +132,7 @@ namespace ProjectK.Notebook.Views
             if (!(treeListView.DataContext is MainViewModel model))
                 return;
 
-            var task = treeListView.SelectedItem as TaskViewModel ?? model.RootTask;
+            var task = treeListView.SelectedItem as NodeViewModel ?? model.RootTask;
             model.SelectTreeTask(task);
         }
     }

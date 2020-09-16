@@ -4,11 +4,11 @@ using System.Xml.Serialization;
 
 namespace ProjectK.Notebook.Domain.Versions.Version1
 {
-    [XmlRoot("TaskViewModel")]
+    [XmlRoot("NodeViewModel")]
     public class TaskModel
     {
         public int Rating { get; set; }
-        [XmlArrayItem("TaskViewModel")] public List<TaskModel> SubTasks { get; set; }
+        [XmlArrayItem("NodeViewModel")] public List<TaskModel> SubTasks { get; set; }
 
         public bool IsSelected { get; set; }
         public bool IsExpanded { get; set; }

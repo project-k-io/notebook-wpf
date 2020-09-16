@@ -15,9 +15,9 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 {
     public static class TaskViewModelExtension
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
+        private static readonly ILogger Logger = LogManager.GetLogger<NodeViewModel>();
 
-        public static async Task ExportToFileAsync(this TaskViewModel rootTask, string path)
+        public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
         {
             var newData = new NotebookModel();
 #if AK
@@ -26,16 +26,16 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             await FileHelper.SaveToFileAsync(path, newData);
         }
 
-        public static void BuildTree(this TaskViewModel rootTask, List<TaskModel> tasks)
+        public static void BuildTree(this NodeViewModel rootTask, List<TaskModel> tasks)
         {
             // 
-            var index = new SortedList<Guid, TaskViewModel>();
+            var index = new SortedList<Guid, NodeViewModel>();
 
             // build index
             foreach (var task in tasks)
             {
                 if (!index.ContainsKey(task.Id))
-                    index.Add(task.Id, new TaskViewModel { TaskModel = task });
+                    index.Add(task.Id, new NodeViewModel { Model = task });
             }
 
             foreach (var task in tasks)
@@ -73,7 +73,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         }
 
 
-        public static (bool ok, TaskViewModel task) FindNode(this TaskViewModel task1, Func<TaskViewModel, bool> check)
+        public static (bool ok, NodeViewModel task) FindNode(this NodeViewModel task1, Func<NodeViewModel, bool> check)
         {
             var node = task1;
             while (node != null)
@@ -81,7 +81,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 if (check(node))
                     return (true, node);
 
-                node = (TaskViewModel)node.Parent;
+                node = (NodeViewModel)node.Parent;
             }
             return (false, null);
         }

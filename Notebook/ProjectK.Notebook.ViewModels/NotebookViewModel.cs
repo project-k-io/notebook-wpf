@@ -18,13 +18,13 @@ namespace ProjectK.Notebook.ViewModels
     {
         private readonly ILogger Logger = LogManager.GetLogger<NotebookViewModel>();
 
-        private TaskViewModel _selectedTask;
-        private TaskViewModel _selectedTreeTask;
+        private NodeViewModel _selectedTask;
+        private NodeViewModel _selectedTreeTask;
         private NotebookModel _notebook;
 
         public NotebookViewModel()
         {
-            RootTask.Add(new TaskViewModel("Time Tracker")
+            RootTask.Add(new NodeViewModel("Time Tracker")
             {
                 Context = "Time Tracker"
             });
@@ -37,12 +37,15 @@ namespace ProjectK.Notebook.ViewModels
         public void LoadFrom(Notebook.Domain.Versions.Version1.DataModel model)
         {
             Clear();
+#if AK
             RootTask.LoadFrom(model.RootTask);
+#endif
         }
 
-        #endregion
 
-        #region Storage Functions 
+#endregion
+
+#region Storage Functions 
         public void CopyFromViewModelToModels()
         {
             var tasks = new List<TaskModel>();
@@ -84,17 +87,17 @@ namespace ProjectK.Notebook.ViewModels
 
 #endregion
 
-        public ObservableCollection<TaskViewModel> SelectedTaskList { get; } = new ObservableCollection<TaskViewModel>();
+        public ObservableCollection<NodeViewModel> SelectedTaskList { get; } = new ObservableCollection<NodeViewModel>();
 
-        public TaskViewModel RootTask { get; set; } = new TaskViewModel();
+        public NodeViewModel RootTask { get; set; } = new NodeViewModel();
 
-        public TaskViewModel SelectedTreeTask
+        public NodeViewModel SelectedTreeTask
         {
             get => _selectedTreeTask;
             set => Set(ref _selectedTreeTask, value);
         }
 
-        public TaskViewModel SelectedTask
+        public NodeViewModel SelectedTask
         {
             get => _selectedTask;
             set => Set(ref _selectedTask, value);
@@ -107,10 +110,11 @@ namespace ProjectK.Notebook.ViewModels
         public List<DateTime> GetSelectedDays()
         {
             var dateTimeList = new List<DateTime>();
+#if AK
             foreach (var selectedTask in SelectedTaskList)
                 if (selectedTask.Context == "Day")
                     dateTimeList.Add(selectedTask.DateStarted);
-
+#endif
             return dateTimeList;
         }
 
@@ -121,12 +125,12 @@ namespace ProjectK.Notebook.ViewModels
             SelectedDaysChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public TaskViewModel FindTask(Guid id)
+        public NodeViewModel FindTask(Guid id)
         {
-            return (TaskViewModel)RootTask.FindNode(id);
+            return (NodeViewModel)RootTask.FindNode(id);
         }
 
-        public void SelectTreeTask(TaskViewModel task)
+        public void SelectTreeTask(NodeViewModel task)
         {
             if (task == null)
                 return;
@@ -146,7 +150,7 @@ namespace ProjectK.Notebook.ViewModels
             SelectTreeTask(FindTask(id));
         }
 
-        public void SelectTask(TaskViewModel task)
+        public void SelectTask(NodeViewModel task)
         {
             if (task == null)
                 return;
@@ -169,12 +173,14 @@ namespace ProjectK.Notebook.ViewModels
             return false;
         }
 
-        private static void AddToList(ICollection<TaskViewModel> list, TaskViewModel task, IList dates)
+        private static void AddToList(ICollection<NodeViewModel> list, NodeViewModel task, IList dates)
         {
+#if AK
             if (ContainDate(dates, task.DateStarted))
                 list.Add(task);
+#endif
             foreach (var subTask in task.Nodes)
-                AddToList(list, (TaskViewModel)subTask, dates);
+                AddToList(list, (NodeViewModel)subTask, dates);
         }
 
 
@@ -182,7 +188,9 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTime()
         {
+#if AK
             SelectedTreeTask.FixTime();
+#endif
         }
 
         public void Clear()
@@ -204,12 +212,16 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTitles()
         {
+#if AK
             SelectedTreeTask.FixTitles();
+#endif
         }
 
         public void FixTypes()
         {
+#if AK
             SelectedTreeTask.FixTypes();
+#endif
         }
 
         public void UpdateSelectDayTasks(IList dates)

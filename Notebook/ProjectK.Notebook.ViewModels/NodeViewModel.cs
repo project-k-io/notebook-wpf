@@ -146,6 +146,12 @@ namespace ProjectK.Notebook.ViewModels
             Parent = null;
             Model = new NodeModel();
         }
+        public NodeViewModel(string title)
+        {
+            Model = new NodeModel();
+            Parent = null;
+            Title = title;
+        }
 
         public NodeViewModel(IItem model)
         {
