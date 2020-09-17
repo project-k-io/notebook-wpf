@@ -16,10 +16,10 @@ namespace ProjectK.Utils.Extensions
             return !IsValidIndex(a, 0);
         }
 
-        public static void AddToList<T>(this ICollection<T> list, T task) where T : ITask<T>
+        public static void AddToList<T>(this ICollection<T> list, T task) where T : ITreeNode<T>
         {
             list.Add(task);
-            foreach (var subTask in task.SubTasks)
+            foreach (var subTask in task.Nodes)
                 AddToList(list, subTask);
         }
 

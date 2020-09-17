@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Models;
 using ProjectK.Utils;
 using LoggerExtensions = Microsoft.Extensions.Logging.LoggerExtensions;
 
@@ -14,14 +13,14 @@ namespace ProjectK.Notebook.ViewModels.Reports
     {
         private static readonly ILogger Logger = LogManager.GetLogger<NotesReport>();
 
-        public string GenerateReport(TaskViewModel task)
+        public string GenerateReport(NodeViewModel node)
         {
             Logger.LogDebug("GenerateReport()");
             try
             {
 
                 var sb = new StringBuilder();
-                GenerateReport(task, sb, 0);
+                GenerateReport(node, sb, 0);
                 return sb.ToString();
             }
             catch (Exception ex)
@@ -33,40 +32,45 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
         private const char SpaceChar = ' ';
 
-        private void GenerateReport(TaskViewModel node, StringBuilder sb, int offset)
+        private void GenerateReport(NodeViewModel node, StringBuilder sb, int offset)
         {
             const int max = 80;
             if(node == null)
                 return;
 
-            var description = string.IsNullOrEmpty(node.Description) ? "" : node.Description;
+            if (node is TaskViewModel task)
+            {
+                var description = string.IsNullOrEmpty(task.Description) ? "" : task.Description;
 
-            if (string.IsNullOrEmpty(description))
-            {
-                sb.Append(new string(SpaceChar, offset));
-                sb.AppendLine(node.Title);
-            }
-            else
-            {
-                if (description.Length > max)
+                if (string.IsNullOrEmpty(description))
                 {
-                    var  lines =  StringHelper.ConvertTextInMultipleLines(description, max);
-                    foreach (var line in lines)
-                    {
-                        sb.Append(new string(SpaceChar, offset));
-                        sb.AppendLine(line);
-                    }
+                    sb.Append(new string(SpaceChar, offset));
+                    sb.AppendLine(node.Title);
                 }
                 else
                 {
-                    sb.Append(new string(SpaceChar, offset));
-                    sb.AppendLine(description);
+                    if (description.Length > max)
+                    {
+                        var lines = StringHelper.ConvertTextInMultipleLines(description, max);
+                        foreach (var line in lines)
+                        {
+                            sb.Append(new string(SpaceChar, offset));
+                            sb.AppendLine(line);
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(new string(SpaceChar, offset));
+                        sb.AppendLine(description);
+                    }
                 }
+
             }
 
-            foreach (var subTask in node.SubTasks)
+
+            foreach (var subTask in node.Nodes)
             {
-                GenerateReport(subTask, sb, offset + 2);
+                GenerateReport((NodeViewModel)subTask, sb, offset + 2);
             }
         }
     }

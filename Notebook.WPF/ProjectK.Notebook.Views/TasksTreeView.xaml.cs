@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Enums;
+using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.View.Helpers;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.View.Helpers.Misc;
@@ -41,7 +42,7 @@ namespace ProjectK.Notebook.Views
                 return;
 
             model.RootTask.SetParents();
-            TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeTask);
+            TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeNode);
             TreeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
         }
 
@@ -59,10 +60,10 @@ namespace ProjectK.Notebook.Views
             if (!(treeView.DataContext is MainViewModel mainViewModel))
                 return;
 
-            if (!(treeView.SelectedItem is TaskViewModel task))
+            if (!(treeView.SelectedItem is NodeViewModel task))
                 task = mainViewModel.RootTask;
 
-            void ExpandItem(TaskViewModel t)
+            void ExpandItem(NodeViewModel t)
             {
                 if (!(treeView.ItemContainerGenerator.ContainerFromItem(task) is TreeViewItem treeViewItem))
                     return;
@@ -77,7 +78,11 @@ namespace ProjectK.Notebook.Views
             }
 
             var addDelegate = ViewLib.GetAddDelegate(this);
-            task.KeyboardAction(keyState, () => KeyboardState, () => e.Handled = true, treeView.SelectItem, ExpandItem, DeleteMessageBox, addDelegate);
+            task.KeyboardAction(keyState, () => 
+                KeyboardState, () => e.Handled = true, 
+                treeView.SelectItem, 
+                (a) => ExpandItem((NodeViewModel)a), 
+                DeleteMessageBox, addDelegate);
 
             if (keyState == KeyboardKeys.Delete)
             {
@@ -128,7 +133,7 @@ namespace ProjectK.Notebook.Views
             if (!(treeListView.DataContext is MainViewModel model))
                 return;
 
-            var task = treeListView.SelectedItem as TaskViewModel ?? model.RootTask;
+            var task = treeListView.SelectedItem as NodeViewModel ?? model.RootTask;
             model.SelectTreeTask(task);
         }
     }

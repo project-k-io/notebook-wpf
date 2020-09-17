@@ -2,8 +2,8 @@
 
 namespace ProjectK.Utils
 {
-    public interface ITask<T>
+    public interface ITreeNode<T>
     {
-        ObservableCollection<T> SubTasks { get; }
+        ObservableCollection<T> Nodes { get; }
     }
 }

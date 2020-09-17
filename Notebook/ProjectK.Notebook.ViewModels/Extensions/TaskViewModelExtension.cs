@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
-using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Notebook.Domain;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
@@ -16,34 +16,40 @@ namespace ProjectK.Notebook.ViewModels.Extensions
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
 
-        public static async Task ExportToFileAsync(this TaskViewModel rootTask, string path)
+        public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
         {
-            var newData = new DataModel();
-            rootTask.SaveTo(newData.Tasks);
+            var newData = new NotebookModel();
+#if !AK
+            rootTask.SaveTo(newData.Nodes);
+#endif
             await FileHelper.SaveToFileAsync(path, newData);
         }
 
-        public static void BuildTree(this TaskViewModel rootTask, List<TaskModel> tasks)
+        public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> nodes)
         {
             // 
-            var index = new SortedList<Guid, TaskViewModel>();
+            var index = new SortedList<Guid, NodeViewModel>();
 
             // build index
-            foreach (var task in tasks)
+            foreach (var node in nodes)
             {
-                if (!index.ContainsKey(task.Id))
-                    index.Add(task.Id, new TaskViewModel { Model = task });
+                if (!index.ContainsKey(node.Id))
+                {
+                    var vm = new NodeViewModel();
+                    vm.Init(node);
+                    index.Add(node.Id, vm);
+                }
             }
 
-            foreach (var task in tasks)
+            foreach (var node in nodes)
             {
-                if (!index.ContainsKey(task.ParentId))
+                if (!index.ContainsKey(node.ParentId))
                 {
-                    rootTask.Add(index[task.Id]);
+                    rootTask.Add(index[node.Id]);
                 }
                 else
                 {
-                    index[task.ParentId].Add(index[task.Id]);
+                    index[node.ParentId].Add(index[node.Id]);
                 }
             }
 
@@ -69,27 +75,8 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             return (dialog.FileName, true);
         }
 
-        public static async Task ImportToSelectedAsJson(this TaskViewModel rootTask)
-        {
-            Logger.LogDebug("UserAction_ImportToSelectedAsJson()");
 
-            // Select Import File
-            var dialog = new OpenFileDialog();
-            var r = dialog.SetFileDialog("");
-            if (!r.ok)
-                return;
-
-            // Read Import File
-            var data = await FileHelper.ReadFromFileAsync<DataModel>(r.fileName);
-
-            // Get Tasks
-            var tasks = data.Tasks;
-
-            // Build Tree
-            rootTask.BuildTree(tasks);
-        }
-
-        public static (bool ok, TaskViewModel task) FindNode(this TaskViewModel task1, Func<TaskViewModel, bool> check)
+        public static (bool ok, NodeViewModel task) FindNode(this NodeViewModel task1, Func<NodeViewModel, bool> check)
         {
             var node = task1;
             while (node != null)
@@ -97,10 +84,12 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 if (check(node))
                     return (true, node);
 
-                node = node.Parent;
+                node = (NodeViewModel)node.Parent;
             }
             return (false, null);
         }
 
     }
 }
+
+

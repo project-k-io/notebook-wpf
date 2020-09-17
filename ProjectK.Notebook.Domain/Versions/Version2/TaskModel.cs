@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Text.Json.Serialization;
 
-namespace ProjectK.Notebook.Models.Versions.Version2
+namespace ProjectK.Notebook.Domain.Versions.Version2
 {
     public class TaskModel
     {

@@ -7,75 +7,122 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
-using ProjectK.Notebook.Models.Versions.Version2;
+
 namespace ProjectK.Notebook.ViewModels
 {
     public class NotebookViewModel : ViewModelBase
     {
         private readonly ILogger Logger = LogManager.GetLogger<NotebookViewModel>();
 
-        private TaskViewModel _selectedTask;
-        private TaskViewModel _selectedTreeTask;
-        private DataModel _data;
+        private NodeViewModel _selectedNode;
+        private NodeViewModel _selectedTreeNode;
+        private NotebookModel _notebook;
 
         public NotebookViewModel()
         {
-            RootTask.Add(new TaskViewModel("Time Tracker")
+            RootTask.Add(new NodeViewModel("Time Tracker")
             {
                 Context = "Time Tracker"
             });
 
-            _data = new DataModel();
+            _notebook = new NotebookModel();
         }
 
-        public async Task OpenFileAsync(string path)
+        #region Storage Functions Ver 1
+
+        public void LoadFrom(Notebook.Domain.Versions.Version1.DataModel model)
         {
-            Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
+            Clear();
+#if AK  // Load ver 1
+            RootTask.LoadFrom(model.RootTask);
+#endif
+        }
+
+
+        #endregion
+
+        #region Storage Functions 
+        public void CopyFromViewModelToModels()
+        {
+            var nodes = new List<NodeModel>();
+            RootTask.SaveTo(nodes);
+            _notebook.Nodes.Clear();
+
+            foreach (var node in nodes)
+            {
+                if (node is TaskModel task)
+                {
+                    _notebook.Nodes.Add(task);
+                }
+            }
+        }
+
+
+
+        public void PopulateFromModel(NotebookModel notebook, string name)
+        {
             // created notebook node
-            RootTask.Model.Id = Guid.NewGuid();
-            RootTask.Model.Title = path;
+            RootTask.Id = Guid.NewGuid();
+            RootTask.Title = name;
 
             // load notebook 
-            _data = await FileHelper.ReadFromFileAsync<DataModel>(path);
-            LoadFrom(_data?.Copy());
+            _notebook = notebook;
+
+            var model = _notebook?.Copy();
+            if (model == null)
+                return;
+
+            var tasks = model.Nodes;
+            Clear();
+
+            // Build Tree
+            RootTask.BuildTree(tasks);
         }
 
 
 
-        public ObservableCollection<TaskViewModel> SelectedTaskList { get; } =
-            new ObservableCollection<TaskViewModel>();
+        #endregion
 
-        public TaskViewModel RootTask { get; set; } = new TaskViewModel();
+        public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();
 
-        public TaskViewModel SelectedTreeTask
+        public NodeViewModel RootTask { get; set; } = new NodeViewModel();
+
+        public NodeViewModel SelectedTreeNode
         {
-            get => _selectedTreeTask;
-            set => Set(ref _selectedTreeTask, value);
+            get => _selectedTreeNode;
+            set => Set(ref _selectedTreeNode, value);
         }
 
-        public TaskViewModel SelectedTask
+        public NodeViewModel SelectedNode
         {
-            get => _selectedTask;
-            set => Set(ref _selectedTask, value);
+            get => _selectedNode;
+            set => Set(ref _selectedNode, value);
         }
 
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
-
-        public string DataFile
+        public string Title
         {
-            get => RootTask.Title;
-            set => RootTask.Title = value;
+            get => _notebook.Name;
+            set => _notebook.Name = value;
         }
 
-        public List< DateTime> GetSelectedDays()
+
+        public List<DateTime> GetSelectedDays()
         {
             var dateTimeList = new List<DateTime>();
-            foreach (var selectedTask in SelectedTaskList)
-                if (selectedTask.Context == "Day")
-                    dateTimeList.Add(selectedTask.DateStarted);
+            foreach (var selectedNode in SelectedNodeList)
+            {
+                if (selectedNode.Context == "Day")
+                {
+                    if (selectedNode is TaskViewModel selectedTask)
+                        dateTimeList.Add(selectedTask.DateStarted);
+                }
+            }
 
             return dateTimeList;
         }
@@ -87,22 +134,22 @@ namespace ProjectK.Notebook.ViewModels
             SelectedDaysChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public TaskViewModel FindTask(Guid id)
+        public NodeViewModel FindTask(Guid id)
         {
-            return RootTask.FindTask(id);
+            return (NodeViewModel)RootTask.FindNode(id);
         }
 
-        public void SelectTreeTask(TaskViewModel task)
+        public void SelectTreeTask(NodeViewModel task)
         {
             if (task == null)
                 return;
 
-            SelectedTreeTask = task;
-            SelectedTaskList.Clear();
-            SelectedTaskList.AddToList(task);
+            SelectedTreeNode = task;
+            SelectedNodeList.Clear();
+            SelectedNodeList.AddToList(task);
             OnSelectedDaysChanged();
-            SelectedTask = !SelectedTaskList.IsNullOrEmpty() ? SelectedTaskList[0] : task;
-            RaisePropertyChanged("SelectedTaskList");
+            SelectedNode = !SelectedNodeList.IsNullOrEmpty() ? SelectedNodeList[0] : task;
+            RaisePropertyChanged("SelectedNodeList");
         }
 
         public void SelectTreeTask(Guid id)
@@ -110,12 +157,12 @@ namespace ProjectK.Notebook.ViewModels
             SelectTreeTask(FindTask(id));
         }
 
-        public void SelectTask(TaskViewModel task)
+        public void SelectTask(NodeViewModel task)
         {
             if (task == null)
                 return;
-            SelectedTask = task;
-            RaisePropertyChanged("SelectedTaskList");
+            SelectedNode = task;
+            RaisePropertyChanged("SelectedNodeList");
         }
 
         public void SelectTask(Guid id)
@@ -133,42 +180,30 @@ namespace ProjectK.Notebook.ViewModels
             return false;
         }
 
-        private static void AddToList(ICollection<TaskViewModel> list, TaskViewModel task, IList dates)
+        private static void AddToList(ICollection<NodeViewModel> list, NodeViewModel node, IList dates)
         {
-            if (ContainDate(dates, task.DateStarted))
-                list.Add(task);
-            foreach (var subTask in task.SubTasks)
-                AddToList(list, subTask, dates);
+            if (node is TaskViewModel task)
+            {
+                if (ContainDate(dates, task.DateStarted))
+                    list.Add(node);
+            }
+
+            foreach (var subTask in node.Nodes)
+                AddToList(list, (NodeViewModel)subTask, dates);
         }
 
 
-        public void LoadFrom(Models.Versions.Version1.DataModel model)
-        {
-            Clear();
-            RootTask.LoadFrom(model.RootTask);
-        }
-
-        public void LoadFrom(Models.Versions.Version2.DataModel model)
-        {
-            if (model == null)
-                return;
-
-            var tasks = model.Tasks;
-            Clear();
-
-            // Build Tree
-            RootTask.BuildTree(tasks);
-        }
 
 
         public void FixTime()
         {
-            SelectedTreeTask.FixTime();
+            if(SelectedTreeNode is TaskViewModel task)
+                task.FixTime();
         }
 
         public void Clear()
         {
-            RootTask.SubTasks.Clear();
+            RootTask.Nodes.Clear();
         }
 
         public void ExtractContext()
@@ -180,23 +215,27 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixContext()
         {
-            SelectedTreeTask.FixContext();
+            SelectedTreeNode.FixContext();
         }
 
         public void FixTitles()
         {
-            SelectedTreeTask.FixTitles();
+#if AK1
+            SelectedTreeNode.FixTitles();
+#endif
         }
 
         public void FixTypes()
         {
-            SelectedTreeTask.FixTypes();
+#if AK1
+            SelectedTreeNode.FixTypes();
+#endif
         }
 
         public void UpdateSelectDayTasks(IList dates)
         {
-            SelectedTaskList.Clear();
-            AddToList(SelectedTaskList, RootTask, dates);
+            SelectedNodeList.Clear();
+            AddToList(SelectedNodeList, RootTask, dates);
         }
 
 
@@ -204,8 +243,8 @@ namespace ProjectK.Notebook.ViewModels
         public async Task ExportSelectedAllAsText(string text)
         {
 
-            var path = DataFile;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedTask.Title, ".txt");
+            var path = Title;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Title, ".txt");
             if (!ok)
                 return;
 
@@ -214,29 +253,14 @@ namespace ProjectK.Notebook.ViewModels
 
         public async Task ExportSelectedAllAsJson()
         {
-            var path = DataFile;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedTask.Title);
+            var path = Title;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Title);
             if (!ok)
                 return;
 
-            await SelectedTask.ExportToFileAsync(exportPath);
+            await SelectedNode.ExportToFileAsync(exportPath);
         }
 
-        public async Task SaveFileAsync(Func<DataModel, DataModel, bool> isSame)
-        {
-            var newData = new DataModel();
-            RootTask.SaveTo(newData.Tasks);
-
-            _data ??= new DataModel();
-            if (isSame(_data, newData))
-                return;
-
-            var path = DataFile;
-            FileHelper.SaveFileToLog(path);
-
-            _data.Copy(newData);
-            await FileHelper.SaveToFileAsync(path, _data);
-        }
 
     }
 }

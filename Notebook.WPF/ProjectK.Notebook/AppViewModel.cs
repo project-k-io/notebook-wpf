@@ -13,10 +13,15 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml;
+using GalaSoft.MvvmLight.Command;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Data;
+using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Extensions;
+// using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
@@ -28,13 +33,33 @@ namespace ProjectK.Notebook
 {
     public class AppViewModel: MainViewModel
     {
-        #region SaveDockLayoutCommand
-        private ICommand _saveDockLayoutCommand;
+        #region Consts
+
         private const string DockFileName = "DockStates.xml";
         private const string FileNameRecentFiles = "RecentFiles.json";
 
+        #endregion
+
+        #region Fields
+
+        private readonly NotebookContext _db = new NotebookContext();
+
+        #endregion
+
+        #region Commands
+        public ICommand LoadDockLayoutCommand { get; }
+        public ICommand SaveDockLayoutCommand { get; }
+        public ICommand AddCommand { get; }
+
+        #endregion
+
+        #region Constructors
         public AppViewModel()
         {
+            LoadDockLayoutCommand = new RelayCommand(LoadDockLayout);
+            SaveDockLayoutCommand = new RelayCommand(SaveDockLayout);
+            AddCommand = new RelayCommand(Add);
+
             Assembly = Assembly.GetExecutingAssembly();
             InitLogging();
             InitOutput();
@@ -42,6 +67,118 @@ namespace ProjectK.Notebook
             Logger.LogDebug("Init Logging()");
         }
 
+        #endregion
+
+        #region DockingManager
+
+
+
+        public void SaveDockLayout()
+        {
+            if (!(Application.Current.MainWindow is MainWindow window))
+                return;
+
+            SaveDockLayout(window);
+        }
+
+
+        /// <summary>
+        /// Helps to perform save and load operation of Docking Manager.
+        /// </summary>
+        /// <param name="window"></param>
+        public void SaveDockLayout(MainWindow window)
+        {
+            try
+            {
+                var writer = XmlWriter.Create(DockFileName);
+                window.DockingManager.SaveDockState(writer);
+                writer.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public void LoadDockLayout()
+        {
+            if (!(Application.Current.MainWindow is MainWindow window))
+                return;
+
+            LoadDockLayout(window);
+        }
+
+        /// <summary>
+            /// Helps to perform save and load operation of Docking Manager.
+            /// </summary>
+            /// <param name="window"></param>
+        public void LoadDockLayout(MainWindow window)
+        {
+            if(!File.Exists(DockFileName))
+                return;
+
+            try
+            {
+                var reader = XmlReader.Create(DockFileName);
+                window.DockingManager.LoadDockState(reader);
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.Message);
+                throw;
+            }
+        }
+        #endregion
+
+        #region Override
+
+        public override void OpenDatabase()
+        {
+            // this is for demo purposes only, to make it easier
+            // to get up and running
+            _db.Database.EnsureCreated();
+
+            // load the entities into EF Core
+            // _db.Notebooks.Load();
+
+            // bind to the source
+            var models = _db.Notebooks.Local.ToList();
+
+            // PopulateNotebookViewModels(notebookModels);
+            var count = 0;
+            foreach (var model in models)
+            {
+                var title = $"Notebook_{count++}";
+                var notebook = AddNotebook(model, title);
+                SelectedNotebook = notebook;
+            }
+        }
+        public override void CloseDatabase()
+        {
+            foreach (var notebook in Notebooks)
+            {
+                notebook.CopyFromViewModelToModels();
+            }
+
+            _db.SaveChanges();
+            // clean up database connections
+            _db.Dispose();
+        }
+        public override void ImportNotebook(NotebookModel notebook, string title)
+        {
+#if !AK // db import
+            // 
+            _db.Notebooks.Add(notebook);
+            _db.SaveChanges();
+#endif
+            AddNotebook(notebook, title);
+        }
+
+        #endregion
+
+        #region Private Functions
 
         private void InitLogging()
         {
@@ -61,115 +198,16 @@ namespace ProjectK.Notebook
                 Console.WriteLine(e);
             }
         }
-
         private void InitOutput()
         {
             Output.UpdateFilter = () => CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
         }
 
-
-        public ICommand SaveDockLayoutCommand
-        {
-            get
-            {
-                _saveDockLayoutCommand = new DelegateCommand(SaveDockLayout, CanSelect);
-                return _saveDockLayoutCommand;
-            }
-        }
-
-        private bool CanSelect(object arg)
-        {
-            return true;
-        }
-
         /// <summary>
         /// Helps to perform save and load operation of Docking Manager.
         /// </summary>
         /// <param name="obj"></param>
-        public void SaveDockLayout(object obj)
-        {
-            if (!(Application.Current.MainWindow is MainWindow mainWindow))
-                return;
-
-            try
-            {
-                var writer = XmlWriter.Create(DockFileName);
-                mainWindow.DockingManager.SaveDockState(writer);
-                writer.Close();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-        #endregion
-
-        #region LoadDockLayoutCommand
-        private ICommand _loadDockLayoutCommand;
-
-        public ICommand LoadDockLayoutCommand
-        {
-            get
-            {
-                _loadDockLayoutCommand = new DelegateCommand(LoadDockLayout, CanLoad);
-                return _loadDockLayoutCommand;
-            }
-        }
-
-        private bool CanLoad(object arg)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Helps to perform save and load operation of Docking Manager.
-        /// </summary>
-        /// <param name="obj"></param>
-        public void LoadDockLayout(object obj)
-        {
-            if (!(Application.Current.MainWindow is MainWindow mainWindow))
-                return;
-            
-            if(!File.Exists(DockFileName))
-                return;
-
-            try
-            {
-                var reader = XmlReader.Create(DockFileName);
-                mainWindow.DockingManager.LoadDockState(reader);
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-                throw;
-            }
-        }
-        #endregion
-
-        #region AddCommand
-        private ICommand _addCmd;
-
-        public ICommand AddCommand
-        {
-            get
-            {
-                _addCmd = new DelegateCommand(Add, CanAdd);
-                return _addCmd;
-            }
-        }
-
-        private bool CanAdd(object arg)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Helps to perform save and load operation of Docking Manager.
-        /// </summary>
-        /// <param name="obj"></param>
-        private void Add(object obj)
+        private void Add()
         {
             var count = 1;
             var contentControl = new ContentControl();
@@ -185,50 +223,8 @@ namespace ProjectK.Notebook
 
         #endregion
 
-        public async Task LoadRecentFiles()
-        {
-            Logger.LogDebug($"LoadRecentFiles | {FileNameRecentFiles} | {Path.GetDirectoryName(Path.GetFullPath(FileNameRecentFiles))}");
 
-            var recentFiles = await FileHelper.ReadFromFileAsync<List<string>>(FileNameRecentFiles);
-            if (recentFiles.IsNullOrEmpty())
-                return;
-
-            foreach (var recentFile in recentFiles)
-            {
-                Logger.LogDebug($"{recentFile}");
-                if (!File.Exists(recentFile))
-                {
-                    Logger.LogWarning($"File {recentFile} doesn't exist!");
-                    continue;
-                }
-
-                var notebook = new NotebookViewModel
-                {
-                    DataFile = recentFile, 
-                    RootTask =
-                    {
-                        Context = "Notebook",
-                    }
-                };
-                Notebooks.Add(notebook);
-            }
-        }
-
-        public async Task SaveRecentFiles()
-        {
-            Logger.LogDebug("SaveRecentFiles");
-            var recentFiles = new List<string>();
-            foreach (var notebook in Notebooks)
-            {
-                var recentFile = notebook.DataFile;
-                Logger.LogDebug($"{recentFile}");
-                recentFiles.Add(recentFile);
-            }
-
-            await FileHelper.SaveToFileAsync(FileNameRecentFiles, recentFiles);
-        }
-
-        public void LoadSettings(Window window)
+        public void LoadSettings(MainWindow window)
         {
             Logger.LogDebug("LoadSettings");
             // ISSUE: variable of a compiler-generated type
@@ -244,14 +240,14 @@ namespace ProjectK.Notebook
                 window.Height = appSettings.GetDouble("MainWindowHeight", 400d);
 
                 // dock
-                LoadDockLayout(null);
+                LoadDockLayout(window);
 
                 // model settings
                 LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
                 LastTreeTaskId = appSettings.GetGuid("LastTreeTaskId", Guid.Empty);
-#if AK
-                SelectedNotebook.DataFile = appSettings.GetString("RecentFile", "New Data");
-#endif
+                if(SelectedNotebook != null)
+                    SelectedNotebook.Title = appSettings.GetString("RecentFile", "New Data");
+
                 // Output
                 Output.OutputButtonErrors.IsChecked = appSettings.GetBool("OutputError", false);
                 Output.OutputButtonDebug.IsChecked = appSettings.GetBool("OutputDebug", false);
@@ -259,22 +255,15 @@ namespace ProjectK.Notebook
                 Output.OutputButtonWarnings.IsChecked = appSettings.GetBool("OutputWarning", false);
 
                 MostRecentFiles.Clear();
-#if AK
-                if (File.Exists(SelectedNotebook.DataFile))
-                    MostRecentFiles.Add(new FileInfo(SelectedNotebook.DataFile));
-#endif
+                if (File.Exists(SelectedNotebook?.Title))
+                    MostRecentFiles.Add(new FileInfo(SelectedNotebook?.Title));
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
         }
-
-
-
-
-
-        public void SaveSettings(Window window)
+        public void SaveSettings(MainWindow window)
         {
             Logger.LogDebug("SaveSettings()");
             try
@@ -294,10 +283,10 @@ namespace ProjectK.Notebook
                 }
 
                 // dock
-                SaveDockLayout(null);
+                SaveDockLayout(window);
 
                 // model settings
-                settings.SetValue("RecentFile", SelectedNotebook?.DataFile);
+                settings.SetValue("RecentFile", SelectedNotebook?.Title);
                 settings.SetValue("LastListTaskId", LastListTaskId.ToString());
                 settings.SetValue("LastTreeTaskId", LastTreeTaskId.ToString());
                 settings.SetValue("MainWindowState", window.WindowState.ToString());
@@ -316,54 +305,45 @@ namespace ProjectK.Notebook
                 Logger.LogError(ex);
             }
         }
-
-        public async Task StartSavingAsync()
-        {
-            CanSave = true;
-            while (CanSave)
-            {
-                await SaveModifiedFileAsync();
-                await Task.Run(() => Thread.Sleep(5000));
-            }
-        }
-
-
-        public void StopSaving()
-        {
-            CanSave = false;
-        }
-
-
         public CommandBindingCollection CreateCommandBindings()
         {
             var commandBindings = new CommandBindingCollection
             {
                 new CommandBinding(ApplicationCommands.New, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true),
                 new CommandBinding(ApplicationCommands.Open, async (s, e) =>  await this.UserAction_OpenFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.Save, async (s, e) => await this.UserAction_SaveFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.SaveAs, async (s, e) => await this.UserAction_SaveFileAsAsync(), (s, e) => e.CanExecute = true),
                 new CommandBinding(ApplicationCommands.Close, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true)
             };
             return commandBindings;
         }
 
-        public async Task OpenRecentFilesAsync()
+        private NotebookViewModel AddNotebook(NotebookModel model, string title)
         {
-            Logger.LogDebug("Open Recent Files");
-            foreach (var notebook in Notebooks)
+            var notebook = new NotebookViewModel
             {
-                var path = notebook.DataFile;
-                if (!File.Exists(path))
-                    continue;
-
-                await notebook.OpenFileAsync(path);
-
-                // add notebook node to root node
-                RootTask.Add(notebook.RootTask);
-                SelectedNotebook = notebook;
-            }
+                RootTask = { Context = "Notebook" }
+            };
+            notebook.PopulateFromModel(model, title);
+            SelectedNotebook = notebook;
+            Notebooks.Add(notebook);
+            RootTask.Add(notebook.RootTask);
+            // add notebook task to root task
+            return notebook;
         }
 
+        private async Task UserNewFileAsync()
+        {
+            Logger.LogDebug("UserNewFileAsync");
+            CanSave = false;
+
+            var notebook = new NotebookViewModel();
+            var path = FileHelper.MakeUnique(notebook.Title);
+
+
+            Notebooks.Add(notebook);
+            RootTask.Add(notebook.RootTask);
+            SelectedNotebook = notebook;
+            CanSave = true;
+        }
 
     }
 }

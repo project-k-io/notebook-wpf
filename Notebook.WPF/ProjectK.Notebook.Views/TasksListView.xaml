@@ -30,8 +30,8 @@
                   ButtonBase.Click="ListViewTasks_OnClick"
                   x:Name="listViewTasks"
                   SelectionMode="Extended"
-                  ItemsSource="{Binding Path=SelectedNotebook.SelectedTaskList}"
-                  SelectedItem="{Binding Path=SelectedNotebook.SelectedTask, IsAsync=true}">
+                  ItemsSource="{Binding Path=SelectedNotebook.SelectedNodeList}"
+                  SelectedItem="{Binding Path=SelectedNotebook.SelectedNode, IsAsync=true}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Context" Width="100">
@@ -42,7 +42,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Type}" />
-                    <GridViewColumn Header="Title" Width="200" DisplayMemberBinding="{Binding Title}" />
+                    <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Title}" />
                     <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Description}" />
                     <GridViewColumn Header="Started" Width="120"
                                     DisplayMemberBinding="{Binding DateStarted, StringFormat=g}" />

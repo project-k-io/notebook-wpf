@@ -40,36 +40,33 @@ namespace ProjectK.Notebook
 
             // MainWindow
             _mainWindow = new MainWindow {DataContext = _appModel};
-            _mainWindow.Closing += async (s1,e1) => await MainWindowOnClosing(s1, e1);
 
             // Show MainWindow
-            await _appModel.LoadRecentFiles();
             _appModel.LoadSettings(_mainWindow);
             _mainWindow.Show();
 
-            // Load Data
-            await _appModel.OpenRecentFilesAsync();
+            // Open Database
+#if !AK // db open
+            _appModel.OpenDatabase();
+
+            // PopulateFromModel Data
             await _appModel.UpdateTypeListAsync();
-            await _appModel.StartSavingAsync();
+#endif
         }
-
-
-        private async Task MainWindowOnClosing(object sender, CancelEventArgs e)
-        {
-            _logger?.LogDebug("MainWindowOnClosing");
-            await _appModel.SaveRecentFiles();
-            _appModel.SaveSettings(_mainWindow);
-            _appModel.StopSaving();
-            await _appModel.SaveFileAsync(); // Exit
-        }
-
 
 
         protected override void OnExit(ExitEventArgs e)
         {
-            base.OnExit(e);
+            _logger?.LogDebug("OnExit");
+            _appModel.SaveSettings(_mainWindow);
+
+            // Close Database
+#if !AK // db close
+            _appModel.CloseDatabase();
+#endif
             _mainWindow.Close();
             Shutdown();
+            base.OnExit(e);
         }
     }
 }

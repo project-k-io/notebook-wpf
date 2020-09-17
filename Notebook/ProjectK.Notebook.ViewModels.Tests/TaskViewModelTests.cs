@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.Notebook.Domain;
+// using ProjectK.Notebook.Models.Versions.Version2;
 
 namespace ProjectK.Notebook.ViewModels.Tests
 {
@@ -52,8 +53,11 @@ namespace ProjectK.Notebook.ViewModels.Tests
         public void AddTest()
         {
             // Arrange
-            var parent = new TaskViewModel { Model = TaskModel.NetTask() };
-            var child = new TaskViewModel { Model = TaskModel.NetTask() }; ;
+            var parent = new NodeViewModel();
+            var child = new NodeViewModel();
+
+            parent.Init(TaskModel.NewTask());
+            child.Init(TaskModel.NewTask());
 
             // Act
             parent.Add(child);
@@ -61,8 +65,8 @@ namespace ProjectK.Notebook.ViewModels.Tests
             // Assert
             //AK double actual = account.Balance;
             //AK Assert.AreEqual(expected, actual, 0.001, "Account not debited correctly");
-            Assert.AreEqual(child.Parent.Id, parent.Id, "Node has wrong parent");
-            Assert.IsTrue(parent.SubTasks.Contains(child), "Node has wrong child");
+            Assert.AreEqual(child.Parent.Id, parent.Id, "Task has wrong parent");
+            Assert.IsTrue(parent.Nodes.Contains(child), "Task has wrong child");
         }
 
         [TestMethod()]

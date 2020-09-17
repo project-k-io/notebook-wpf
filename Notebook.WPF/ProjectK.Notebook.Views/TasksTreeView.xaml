@@ -58,7 +58,7 @@
             </DataTemplate.Triggers>
         </DataTemplate>
         <GridViewColumnCollection x:Key="Columns">
-            <GridViewColumn Header="Title" CellTemplate="{StaticResource CellTemplateName}" Width="200" />
+            <GridViewColumn Header="Name" CellTemplate="{StaticResource CellTemplateName}" Width="200" />
             <GridViewColumn Header="Day" Width="60" DisplayMemberBinding="{Binding DateStarted}" />
             <GridViewColumn Header="Start" Width="70">
                 <GridViewColumn.CellTemplate>
@@ -156,9 +156,9 @@
     </FrameworkElement.Resources>
     <Grid>
         <FrameworkElement.Resources>
-            <HierarchicalDataTemplate x:Key="{DataTemplateKey {x:Type viewModels:TaskViewModel}}"
-                                      DataType="{x:Type viewModels:TaskViewModel}"
-                                      ItemsSource="{Binding Path=SubTasks}" />
+            <HierarchicalDataTemplate x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
+                                      DataType="{x:Type viewModels:NodeViewModel}"
+                                      ItemsSource="{Binding Path=Nodes}" />
         </FrameworkElement.Resources>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
                       FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
@@ -167,7 +167,7 @@
                                        SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
                                        ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
                                        Style="{StaticResource TreeListViewStyle}"
-                                       ItemsSource="{Binding Path=RootTask.SubTasks}" />
+                                       ItemsSource="{Binding Path=RootTask.Nodes}" />
         </ScrollViewer>
     </Grid>
 </UserControl>

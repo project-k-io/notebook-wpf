@@ -28,7 +28,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Ribbon x:Name="Ribbon" Title="Ribbon Title">
+        <Ribbon x:Name="Ribbon" Title="Ribbon Name">
             <Ribbon.HelpPaneContent>
                 <RibbonButton SmallImageSource="Images/apple_time_machine_alt.png" />
             </Ribbon.HelpPaneContent>
@@ -45,13 +45,10 @@
                     <RibbonApplicationMenuItem Header="Save As" Command="SaveAs" ImageSource="Images/SaveAs16.png" KeyTip="R" />
                     <RibbonApplicationMenu.AuxiliaryPaneContent>
                         <RibbonGallery CanUserFilter="false" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                            <RibbonGalleryCategory Header="Recent Documents" Background="Transparent"
-                                                   ItemsSource="{Binding MostRecentFiles}">
+                            <RibbonGalleryCategory Header="Recent Documents" Background="Transparent" ItemsSource="{Binding MostRecentFiles}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type io:FileInfo}">
-                                        <RibbonApplicationMenuItem Command="Open" ImageSource="Images/Open16.png"
-                                                                   KeyTip="O" Header="{Binding Name}"
-                                                                   ToolTip="{Binding FullName}" />
+                                        <RibbonApplicationMenuItem Command="Open" ImageSource="Images/Open16.png" KeyTip="O" Header="{Binding Name}" ToolTip="{Binding FullName}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                                 <ItemsControl.ItemsPanel>
@@ -66,18 +63,13 @@
             </Ribbon.ApplicationMenu>
             <RibbonTab Header="Edit">
                 <RibbonGroup Header="Edit">
-                    <RibbonButton Command="{Binding Path=EditCommand}" Label="Edit" ToolTip="Edit"
-                                  SmallImageSource="Images\Modify.png" />
-                    <RibbonButton Command="{Binding Path=ClearCommand}" Label="Clear" ToolTip="Clear"
-                                  SmallImageSource="Images\Clear.png" />
+                    <RibbonButton Command="{Binding Path=EditCommand}" Label="Edit" ToolTip="Edit" SmallImageSource="Images\Modify.png" />
+                    <RibbonButton Command="{Binding Path=ClearCommand}" Label="Clear" ToolTip="Clear" SmallImageSource="Images\Clear.png" />
                 </RibbonGroup>
                 <RibbonGroup Header="Fix">
-                    <RibbonButton Command="{Binding Path=FixTimeCommand}" Label="Fix Time"
-                                  SmallImageSource="Images\FixTime.png" ToolTip="Fix Time" />
-                    <RibbonButton Command="{Binding Path=FixTitlesCommand}" Label="Fix Titles"
-                                  SmallImageSource="Images\FixTitles.png" ToolTip="Fix Titles" />
-                    <RibbonButton Command="{Binding Path=FixTypesCommand}" Label="Fix Types"
-                                  SmallImageSource="Images\FixTypes.png" ToolTip="Fix Types" />
+                    <RibbonButton Command="{Binding Path=FixTimeCommand}" Label="Fix Time" SmallImageSource="Images\FixTime.png" ToolTip="Fix Time" />
+                    <RibbonButton Command="{Binding Path=FixTitlesCommand}" Label="Fix Titles" SmallImageSource="Images\FixTitles.png" ToolTip="Fix Titles" />
+                    <RibbonButton Command="{Binding Path=FixTypesCommand}" Label="Fix Types" SmallImageSource="Images\FixTypes.png" ToolTip="Fix Types" />
                 </RibbonGroup>
                 <RibbonGroup Header="Context">
                     <RibbonButton Command="{Binding Path=ExtractContextCommand}" Label="Extract Context"
@@ -86,28 +78,20 @@
                                   SmallImageSource="Images\Repair.png" ToolTip="Fix Context" />
                 </RibbonGroup>
                 <RibbonGroup Header="Action">
-                    <RibbonButton Command="{Binding Path=CopyTaskCommand}" Label="Copy"
-                                  SmallImageSource="Images\Copy_6524.png" ToolTip="Copy current node. Ctrl+Ins"
-                                  KeyTip="Ctrl+Ins" />
-                    <RibbonButton Command="{Binding Path=ContinueTaskCommand}" Label="Continue"
-                                  SmallImageSource="Images\action_create_16xMD.png"
-                                  ToolTip="Start next task from current task end date. Shift+Ins" />
+                    <RibbonButton Command="{Binding Path=CopyTaskCommand}" Label="Copy" SmallImageSource="Images\Copy_6524.png" ToolTip="Copy current task. Ctrl+Ins" KeyTip="Ctrl+Ins" />
+                    <RibbonButton Command="{Binding Path=ContinueTaskCommand}" Label="Continue" SmallImageSource="Images\action_create_16xMD.png" ToolTip="Start next task from current task end date. Shift+Ins" />
                 </RibbonGroup>
                 <RibbonGroup Header="Layout">
-                    <RibbonButton Command="{Binding Path=SaveDockLayoutCommand}" Label="Save"
-                                      SmallImageSource="Images\save16.png" ToolTip="Save Dock layout"
-                                      />
-                    <RibbonButton Command="{Binding Path=LoadDockLayoutCommand}" Label="Load"
-                                      SmallImageSource="Images\open16.png" ToolTip="LoadDockLayout Dock layout"
-                        />
+                    <RibbonButton Command="{Binding Path=SaveDockLayoutCommand}" Label="Save" SmallImageSource="Images\save16.png" ToolTip="Save Dock layout"/>
+                    <RibbonButton Command="{Binding Path=LoadDockLayoutCommand}" Label="PopulateFromModel" SmallImageSource="Images\open16.png" ToolTip="LoadDockLayout Dock layout"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Export Text">
-                    <RibbonButton Command="{Binding Path=ExportSelectedAllAsTextCommand}" Label="Export Selected as Text"
-                                  SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Text"/>
-                    <RibbonButton Command="{Binding Path=ExportSelectedAllAsJsonCommand}" Label="Export Selected as Json"
-                                  SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Data"/>
-                    <RibbonButton Command="{Binding Path=ImportToSelectedAsJsonCommand}" Label="Import To Selected as Json"
-                                  SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Data"/>
+                    <RibbonButton Command="{Binding Path=ExportSelectedAllAsTextCommand}" Label="Export Selected as Text" SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Text"/>
+                    <RibbonButton Command="{Binding Path=ExportSelectedAllAsJsonCommand}" Label="Export Selected as Json" SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Data"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Database">
+                    <RibbonButton Command="{Binding Path=OpenDatabaseCommand}" Label="Open Database" SmallImageSource="Images\open16.png" ToolTip="Open Database"/>
+                    <RibbonButton Command="{Binding Path=CloseDatabaseCommand}" Label="Close Database" SmallImageSource="Images\save16.png" ToolTip="Close Database"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
@@ -183,7 +167,7 @@
                 syncfusion:DockingManager.DesiredWidthInDockedMode="200"
                 syncfusion:DockingManager.Header="Solution Explorer"
                 syncfusion:DockingManager.SideInDockedMode="Right">
-                <views:TaskView DataContext="{Binding Path=SelectedTask}"/>
+                <views:TaskView DataContext="{Binding Path=SelectedNode}"/>
             </ContentControl>
             <ContentControl
                 x:Name="properties"
