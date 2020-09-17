@@ -168,9 +168,9 @@ namespace ProjectK.Notebook
         }
         public override void ImportNotebook(NotebookModel notebook, string title)
         {
-#if AK // db save
+#if !AK // db import
             // 
-            _db.Notebooks.Add(model);
+            _db.Notebooks.Add(notebook);
             _db.SaveChanges();
 #endif
             AddNotebook(notebook, title);

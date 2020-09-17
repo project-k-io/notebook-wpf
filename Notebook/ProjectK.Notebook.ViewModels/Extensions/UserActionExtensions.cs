@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -41,19 +42,27 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
         public static async Task UserAction_OpenFileAsync(this MainViewModel mainViewModel)
         {
-            Logger.LogDebug("{Tag} | OpenFileAsync()");
-            var dialog = new OpenFileDialog();
-            var r = dialog.SetFileDialog(mainViewModel.SelectedNotebook?.Title);
-            if (!r.ok)
-                return;
+            try
+            {
+                Logger.LogDebug($"{Tag} | OpenFileAsync()");
+                var dialog = new OpenFileDialog();
+                var r = dialog.SetFileDialog(mainViewModel.SelectedNotebook?.Title);
+                if (!r.ok)
+                    return;
 
-            var path = r.fileName;
-            Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
+                var path = r.fileName;
+                Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
 
-            var model = await FileHelper.ReadFromFileAsync<DataModel>(path);
-            var notebook = new NotebookModel();
-            notebook.Init(model);
-            mainViewModel.ImportNotebook(notebook, path);
+                var model = await FileHelper.ReadFromFileAsync<DataModel>(path);
+                var notebook = new NotebookModel();
+                notebook.Init(model);
+                notebook.Name = path;
+                mainViewModel.ImportNotebook(notebook, path);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+            }
         }
 
 
