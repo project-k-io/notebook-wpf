@@ -15,7 +15,9 @@ namespace ProjectK.Notebook.Domain
             {
                 var node = new TaskModel();
                 node.Init(task);
+#if AK
                 Nodes.Add(node);
+#endif
             }
         }
 

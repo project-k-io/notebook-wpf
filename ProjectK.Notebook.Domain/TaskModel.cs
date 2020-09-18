@@ -3,7 +3,7 @@ using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class TaskModel : NodeModel, ITask
+    public class TaskModel : BaseModel, ITask
     {
         public int Rating { get; set; }
         public DateTime DateStarted { get; set; }
@@ -42,7 +42,8 @@ namespace ProjectK.Notebook.Domain
             Description = task2.Description;
             Context = task2.Context;
         }
-
+#if AK
+        
         public override bool IsSame(NodeModel b)
         {
             return IsSame((TaskModel) b);
@@ -77,5 +78,6 @@ namespace ProjectK.Notebook.Domain
         {
             return new TaskModel(this);
         }
+#endif
     }
 }
