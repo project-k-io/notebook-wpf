@@ -143,7 +143,7 @@ namespace ProjectK.Notebook
             // load the entities into EF Core
             _db.Notebooks.Load();
             _db.Tasks.Load();
-            _db.Nodes.Load();
+            _db.Notes.Load();
 
             // bind to the source
             NotebookModels = _db.Notebooks.Local.ToObservableCollection();
