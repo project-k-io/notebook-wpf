@@ -83,7 +83,7 @@
                 </RibbonGroup>
                 <RibbonGroup Header="Layout">
                     <RibbonButton Command="{Binding Path=SaveDockLayoutCommand}" Label="Save" SmallImageSource="Images\save16.png" ToolTip="Save Dock layout"/>
-                    <RibbonButton Command="{Binding Path=LoadDockLayoutCommand}" Label="PopulateFromModel" SmallImageSource="Images\open16.png" ToolTip="LoadDockLayout Dock layout"/>
+                    <RibbonButton Command="{Binding Path=LoadDockLayoutCommand}" Label="ModelToViewModel" SmallImageSource="Images\open16.png" ToolTip="LoadDockLayout Dock layout"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Export Text">
                     <RibbonButton Command="{Binding Path=ExportSelectedAllAsTextCommand}" Label="Export Selected as Text" SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Text"/>

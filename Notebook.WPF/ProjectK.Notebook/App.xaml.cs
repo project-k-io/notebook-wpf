@@ -49,7 +49,7 @@ namespace ProjectK.Notebook
 #if !AK // db open
             _appModel.OpenDatabase();
 
-            // PopulateFromModel Data
+            // ModelToViewModel Data
             await _appModel.UpdateTypeListAsync();
 #endif
         }

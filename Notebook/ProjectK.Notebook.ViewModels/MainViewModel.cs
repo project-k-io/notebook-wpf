@@ -176,6 +176,8 @@ namespace ProjectK.Notebook.ViewModels
         public Action<Action> OnDispatcher { get; set; }
         public OutputViewModel Output { get; set; } = new OutputViewModel();
 
+        public ObservableCollection<NotebookModel> NotebookModels { get; set; }
+
         #endregion
 
         #region Public functions

@@ -16,13 +16,42 @@ namespace ProjectK.Notebook.ViewModels.Extensions
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
 
+        public static void ViewModelToModel(this NotebookModel notebook, NodeViewModel rootTask)
+        {
+            Logger.LogDebug($@"Populate Notebook {notebook.Name} from TreeNode {rootTask.Title}");
+
+            var nodes = new List<NodeModel>();
+            rootTask.SaveTo(nodes);
+            foreach (var node in nodes)
+            {
+                if (node is NoteModel note)
+                    notebook.Notes.Add(note);
+
+                if (node is TaskModel task)
+                    notebook.Tasks.Add(task);
+            }
+        }
+        public static void ModelToViewModel(this NodeViewModel rootTask, NotebookModel notebook)
+        {
+            Logger.LogDebug($@"Populate TreeNode {rootTask.Title} from Notebook {notebook.Name}");
+
+            var nodes = new List<NodeModel>();
+            var notes = notebook.Notes.Cast<NodeModel>().ToList();
+            var tasks2 = notebook.Tasks.ToList();
+
+            var tasks = notebook.Tasks.Cast<NodeModel>();
+            nodes.AddRange(notes);
+            nodes.AddRange(tasks);
+
+            // Build Tree
+            rootTask.BuildTree(nodes);
+        }
+
         public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
         {
-            var newData = new NotebookModel();
-#if !AK
-            rootTask.SaveTo(newData.Nodes);
-#endif
-            await FileHelper.SaveToFileAsync(path, newData);
+            var notebook = new NotebookModel();
+            notebook.ViewModelToModel(rootTask);
+            await FileHelper.SaveToFileAsync(path, notebook);
         }
 
         public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> nodes)

@@ -3,7 +3,7 @@ using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class BaseModel : INode
+    public class NodeModel : INode
     {
         public Guid Id { get; set; }
         public Guid ParentId { get; set; }
@@ -11,10 +11,7 @@ namespace ProjectK.Notebook.Domain
         public string Context { get; set; }
         public DateTime Created { get; set; }
 
-    }
 
-    public class NodeModel : BaseModel
-    {
         public virtual bool IsSame(NodeModel b)
         {
             if (Id != b.Id) return false;
@@ -37,10 +34,9 @@ namespace ProjectK.Notebook.Domain
             ParentId = b.ParentId;
         }
 
-        public virtual NodeModel Copy()
+        public NodeModel Copy()
         {
             return new NodeModel(this);
         }
-
     }
 }

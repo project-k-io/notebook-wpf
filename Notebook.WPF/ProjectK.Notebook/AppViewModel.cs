@@ -141,25 +141,34 @@ namespace ProjectK.Notebook
             _db.Database.EnsureCreated();
 
             // load the entities into EF Core
-            // _db.Notebooks.Load();
+            _db.Notebooks.Load();
+            _db.Tasks.Load();
+            _db.Nodes.Load();
 
             // bind to the source
-            var models = _db.Notebooks.Local.ToList();
+            NotebookModels = _db.Notebooks.Local.ToObservableCollection();
 
-            // PopulateNotebookViewModels(notebookModels);
-            var count = 0;
-            foreach (var model in models)
+            foreach (var model in NotebookModels)
             {
-                var title = $"Notebook_{count++}";
-                var notebook = AddNotebook(model, title);
+                var notebook = AddNotebook(model, model.Name);
                 SelectedNotebook = notebook;
             }
         }
         public override void CloseDatabase()
         {
-            foreach (var notebook in Notebooks)
+            try
             {
-                notebook.CopyFromViewModelToModels();
+                if (!Notebooks.IsNullOrEmpty())
+                {
+                    foreach (var notebook in Notebooks)
+                    {
+                        notebook.ViewModelToModel();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
             }
 
             _db.SaveChanges();
@@ -168,11 +177,9 @@ namespace ProjectK.Notebook
         }
         public override void ImportNotebook(NotebookModel notebook, string title)
         {
-#if !AK // db import
-            // 
-            _db.Notebooks.Add(notebook);
+            Logger.LogDebug($"Import Notebook: {notebook.Name}, title={title}");
             _db.SaveChanges();
-#endif
+            NotebookModels.Add(notebook);
             AddNotebook(notebook, title);
         }
 
@@ -318,11 +325,9 @@ namespace ProjectK.Notebook
 
         private NotebookViewModel AddNotebook(NotebookModel model, string title)
         {
-            var notebook = new NotebookViewModel
-            {
-                RootTask = { Context = "Notebook" }
-            };
-            notebook.PopulateFromModel(model, title);
+            Logger.LogDebug($"AddNotebook: {model.Name}, title={title}");
+            var notebook = new NotebookViewModel(model);
+            notebook.ModelToViewModel();
             SelectedNotebook = notebook;
             Notebooks.Add(notebook);
             RootTask.Add(notebook.RootTask);

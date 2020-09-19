@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
 {
@@ -7,35 +10,26 @@ namespace ProjectK.Notebook.Domain
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<NodeModel> Nodes { get; set; } = new List<NodeModel>();
+        public ObservableCollection<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
+        public ObservableCollection<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
 
-        public  void Init(ProjectK.Notebook.Domain.Versions.Version2.DataModel model)
+        public void Init(ProjectK.Notebook.Domain.Versions.Version2.DataModel model)
         {
-            foreach (var task in model.Tasks)
+            foreach (var task2 in model.Tasks)
             {
-                var node = new TaskModel();
-                node.Init(task);
-#if AK
-                Nodes.Add(node);
-#endif
+                var task = new TaskModel();
+                task.Init(task2);
+                Tasks.Add(task);
             }
         }
 
         public  bool IsSame(NotebookModel target)
         {
-            if (target.Nodes.Count != Nodes.Count)
+            if (!Notes.IsSame(target.Notes, (a, b) => a.IsSame(b)))
                 return false;
 
-            for (var i = 0; i < Nodes.Count; i++)
-            {
-                var a = Nodes[i];
-                var b = target.Nodes[i];
-                if (b.Name == "XXX")
-                    Debug.WriteLine("XXX");
-
-                if (!a.IsSame(b))
-                    return false;
-            }
+            if (!Tasks.IsSame(target.Tasks, (a, b) => a.IsSame(b)))
+                return false;
 
             return true;
         }
@@ -43,23 +37,22 @@ namespace ProjectK.Notebook.Domain
         public  NotebookModel Copy()
         {
             var model = new NotebookModel();
-            foreach (var node in Nodes)
-                model.Nodes.Add(node.Copy());
-
+            model.Notes.Copy(Notes, a => a.Copy());
+            model.Tasks.Copy(Tasks, a => a.Copy());
             return model;
         }
-
-        public  void CopyFrom(NotebookModel source)
+        public void CopyFrom(NotebookModel source)
         {
-            Nodes.Clear();
-            foreach (var node in source.Nodes)
-                Nodes.Add(node.Copy());
+            Notes.Clear();
+            Notes.Copy(source.Notes, a => a.Copy());
+            Tasks.Clear();
+            Tasks.Copy(source.Tasks, a => a.Copy());
         }
 
         public  void Clear()
         {
-            Nodes.Clear();
+            Notes.Clear();
+            Tasks.Clear();
         }
-
     }
 }

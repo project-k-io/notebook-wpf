@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
@@ -17,7 +18,7 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class NotebookViewModel : ViewModelBase
     {
-        private readonly ILogger Logger = LogManager.GetLogger<NotebookViewModel>();
+        private readonly ILogger _logger = LogManager.GetLogger<NotebookViewModel>();
 
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
@@ -33,6 +34,12 @@ namespace ProjectK.Notebook.ViewModels
             _notebook = new NotebookModel();
         }
 
+        public NotebookViewModel(NotebookModel notebook)
+        {
+            _notebook = notebook;
+        }
+
+
         #region Storage Functions Ver 1
 
         public void LoadFrom(Notebook.Domain.Versions.Version1.DataModel model)
@@ -47,41 +54,23 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Storage Functions 
-        public void CopyFromViewModelToModels()
-        {
-            var nodes = new List<NodeModel>();
-            RootTask.SaveTo(nodes);
-            _notebook.Nodes.Clear();
 
-            foreach (var node in nodes)
-            {
-                if (node is TaskModel task)
-                {
-                    _notebook.Nodes.Add(task);
-                }
-            }
+        public void ViewModelToModel()
+        {
+            _logger.LogDebug($"Populate Notebook from TreeNode {RootTask.Title}");
+            _notebook.Clear();
+            _notebook.ViewModelToModel(RootTask);
         }
 
-
-
-        public void PopulateFromModel(NotebookModel notebook, string name)
+        public void ModelToViewModel()
         {
+            _logger.LogDebug($"Populate TreeNode from Notebook {_notebook.Name}");
             // created notebook node
             RootTask.Id = Guid.NewGuid();
-            RootTask.Title = name;
+            RootTask.Title = _notebook.Name;
 
             // load notebook 
-            _notebook = notebook;
-
-            var model = _notebook?.Copy();
-            if (model == null)
-                return;
-
-            var tasks = model.Nodes;
-            Clear();
-
-            // Build Tree
-            RootTask.BuildTree(tasks);
+            RootTask.ModelToViewModel(_notebook);
         }
 
 
