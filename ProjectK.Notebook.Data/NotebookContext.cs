@@ -17,7 +17,7 @@ namespace ProjectK.Notebook.Data
         {
             optionsBuilder.UseSqlite(@"Data Source=c:\\db\\notebooks.db");
             optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
-            //optionsBuilder.UseLazyLoadingProxies();
+            optionsBuilder.UseLazyLoadingProxies();
             // optionsBuilder.EnableSensitiveDataLogging();
         }
     }

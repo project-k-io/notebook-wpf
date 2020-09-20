@@ -10,8 +10,8 @@ namespace ProjectK.Notebook.Domain
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ObservableCollection<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
-        public ObservableCollection<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
+        public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
+        public virtual IList<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
 
         public void Init(ProjectK.Notebook.Domain.Versions.Version2.DataModel model)
         {
