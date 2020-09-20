@@ -20,7 +20,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
             var sortedList = new SortedList<string, SortedList<string, List<NodeViewModel>>>();
             foreach (var node in nodes)
 
-                if (node.Context == "Task")
+                if (node.Context == "TaskModel")
                 {
                     if (node is TaskViewModel task)
                     {

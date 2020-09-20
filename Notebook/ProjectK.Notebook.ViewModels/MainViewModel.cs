@@ -177,7 +177,7 @@ namespace ProjectK.Notebook.ViewModels
         public Action<Action> OnDispatcher { get; set; }
         public OutputViewModel Output { get; set; } = new OutputViewModel();
 
-        public ObservableCollection<Domain.Notebook> NotebookModels { get; set; }
+        public ObservableCollection<Domain.NotebookModel> NotebookModels { get; set; }
 
         #endregion
 
@@ -187,7 +187,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FileOpenOldFormat()
         {
-            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.Notebook.ReadFromFile(Name));
+            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Name));
         }
 
 
@@ -285,7 +285,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public NotebookViewModel FindNotebook(NodeViewModel task)
         {
-            var (ok, notebookNode) = task.FindNode(t => t.Context == "Notebook");
+            var (ok, notebookNode) = task.FindNode(t => t.Context == "NotebookModel");
             if (!ok)
                 return null;
 
@@ -342,7 +342,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectedTreeTask.Nodes.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) {Context = "Task"};
+                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) {Context = "TaskModel"};
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;
@@ -404,7 +404,7 @@ namespace ProjectK.Notebook.ViewModels
 #endregion
 
 
-        public virtual void ImportNotebook(Domain.Notebook model, Notebook.Domain.Versions.Version2.DataModel dataModel)
+        public virtual void ImportNotebook(Domain.NotebookModel model, Notebook.Domain.Versions.Version2.DataModel dataModel)
         {
         }
     }

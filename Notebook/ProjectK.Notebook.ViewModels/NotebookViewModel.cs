@@ -23,7 +23,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
-        private Domain.Notebook _notebook;
+        private Domain.NotebookModel _notebookModel;
 
         public NotebookViewModel()
         {
@@ -32,12 +32,12 @@ namespace ProjectK.Notebook.ViewModels
                 Context = "Time Tracker"
             });
 
-            _notebook = new Domain.Notebook();
+            _notebookModel = new Domain.NotebookModel();
         }
 
-        public NotebookViewModel(Domain.Notebook notebook)
+        public NotebookViewModel(Domain.NotebookModel notebookModel)
         {
-            _notebook = notebook;
+            _notebookModel = notebookModel;
         }
 
 
@@ -58,20 +58,20 @@ namespace ProjectK.Notebook.ViewModels
 
         public void ViewModelToModel()
         {
-            _logger.LogDebug($"Populate Notebook from TreeNode {RootTask.Title}");
-            _notebook.Clear();
-            _notebook.ViewModelToModel(RootTask);
+            _logger.LogDebug($"Populate NotebookModel from TreeNode {RootTask.Title}");
+            _notebookModel.Clear();
+            _notebookModel.ViewModelToModel(RootTask);
         }
 
         public void ModelToViewModel()
         {
-            _logger.LogDebug($"Populate TreeNode from Notebook {_notebook.Name}");
-            // created notebook node
+            _logger.LogDebug($"Populate TreeNode from NotebookModel {_notebookModel.Name}");
+            // created notebookModel node
             RootTask.Id = Guid.NewGuid();
-            RootTask.Title = _notebook.Name;
+            RootTask.Title = _notebookModel.Name;
 
-            // load notebook 
-            RootTask.ModelToViewModel(_notebook);
+            // load notebookModel 
+            RootTask.ModelToViewModel(_notebookModel);
         }
 
 
@@ -97,8 +97,8 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
         public string Title
         {
-            get => _notebook.Name;
-            set => _notebook.Name = value;
+            get => _notebookModel.Name;
+            set => _notebookModel.Name = value;
         }
 
 

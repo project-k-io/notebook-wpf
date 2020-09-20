@@ -13,9 +13,9 @@
             Title="May"
             DateStarted="{x:Static system:DateTime.Now}"
             DateEnded="{x:Static system:DateTime.Now}"
-            Type="Task"
+            Type="TaskModel"
             SubType="Testing"
-            Description="Test Task" />
+            Description="Test TaskModel" />
     </UserControl.Resources>
     <Grid d:DataContext="{StaticResource Model}">
         <Grid.ColumnDefinitions>

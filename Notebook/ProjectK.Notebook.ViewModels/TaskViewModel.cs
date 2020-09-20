@@ -6,7 +6,7 @@ using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils.Extensions;
 
-// using ProjectK.Notebook.Models.Versions.Version2;
+// using ProjectK.NotebookModel.Models.Versions.Version2;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -258,7 +258,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public override NodeViewModel AddNew()
         {
-            var subTask = new TaskViewModel() { Title = "New Task", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
+            var subTask = new TaskViewModel() { Title = "New TaskModel", DateStarted = DateTime.Now, DateEnded = DateTime.Now };
             Add(subTask);
             var ii = Nodes.IndexOf(subTask);
             FixContext(subTask);

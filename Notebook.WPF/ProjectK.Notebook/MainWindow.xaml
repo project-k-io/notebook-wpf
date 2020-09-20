@@ -148,7 +148,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <TabControl Grid.Row="0">
-                        <TabItem Header="Task TreeView">
+                        <TabItem Header="TaskModel TreeView">
                             <views:TasksTreeView x:Name="TasksTreeView" />
                         </TabItem>
                         <TabItem Header="Activity View">

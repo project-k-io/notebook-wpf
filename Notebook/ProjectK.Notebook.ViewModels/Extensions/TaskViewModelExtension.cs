@@ -9,7 +9,6 @@ using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Utils;
-using Task = ProjectK.Notebook.Domain.Task;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
@@ -17,30 +16,30 @@ namespace ProjectK.Notebook.ViewModels.Extensions
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
 
-        public static void ViewModelToModel(this Domain.Notebook notebook, NodeViewModel rootTask)
+        public static void ViewModelToModel(this Domain.NotebookModel notebookModel, NodeViewModel rootTask)
         {
-            Logger.LogDebug($@"Populate Notebook {notebook.Name} from TreeNode {rootTask.Title}");
+            Logger.LogDebug($@"Populate NotebookModel {notebookModel.Name} from TreeNode {rootTask.Title}");
 
-            var nodes = new List<Node>();
+            var nodes = new List<NodeModel>();
             rootTask.SaveTo(nodes);
             foreach (var node in nodes)
             {
-                if (node is Note note)
-                    notebook.Notes.Add(note);
+                if (node is NoteModel note)
+                    notebookModel.Notes.Add(note);
 
-                if (node is Task task)
-                    notebook.Tasks.Add(task);
+                if (node is TaskModel task)
+                    notebookModel.Tasks.Add(task);
             }
         }
-        public static void ModelToViewModel(this NodeViewModel rootTask, Domain.Notebook notebook)
+        public static void ModelToViewModel(this NodeViewModel rootTask, Domain.NotebookModel notebookModel)
         {
-            Logger.LogDebug($@"Populate TreeNode {rootTask.Title} from Notebook {notebook.Name}");
+            Logger.LogDebug($@"Populate TreeNode {rootTask.Title} from NotebookModel {notebookModel.Name}");
 
-            var nodes = new List<Node>();
-            var notes = notebook.Notes.Cast<Node>().ToList();
-            var tasks2 = notebook.Tasks.ToList();
+            var nodes = new List<NodeModel>();
+            var notes = notebookModel.Notes.Cast<NodeModel>().ToList();
+            var tasks2 = notebookModel.Tasks.ToList();
 
-            var tasks = notebook.Tasks.Cast<Node>();
+            var tasks = notebookModel.Tasks.Cast<NodeModel>();
             nodes.AddRange(notes);
             nodes.AddRange(tasks);
 
@@ -50,12 +49,12 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
         public static async System.Threading.Tasks.Task ExportToFileAsync(this NodeViewModel rootTask, string path)
         {
-            var notebook = new Domain.Notebook();
+            var notebook = new Domain.NotebookModel();
             notebook.ViewModelToModel(rootTask);
             await FileHelper.SaveToFileAsync(path, notebook);
         }
 
-        public static void BuildTree(this NodeViewModel rootTask, List<Node> nodes)
+        public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> nodes)
         {
             // 
             var index = new SortedList<Guid, NodeViewModel>();

@@ -7,90 +7,89 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectK.Notebook.Data;
-using ProjectK.Notebook.Domain.Versions.Version2;
+using ProjectK.Notebook.Domain;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ConsoleApp
 {
     class ScenarioTwo
     {
-        private readonly NotebookContext _context;
-        private ObservableCollection<Domain.Notebook> _notebooks;
-        public ScenarioTwo(NotebookContext context)
+        private readonly NotebookContext _context = new NotebookContext();
+        private ObservableCollection<NotebookModel> _notebooks;
+        public async Task Run()
         {
-            this._context = context;
+            // await CreateDatabaseAsync();
+            await ShowDatabaseAsync();
         }
 
-        public async Task  Run()
+        public async Task CreateDatabaseAsync()
         {
-            // Load DataModel
-            var dataModel = await LoadDataModel();
-            
-            // Load
-            _context.Notebooks.Load();
-            _notebooks = _context.Notebooks.Local.ToObservableCollection();
+            const string path = @"C:\Data\Alan.json";
 
-            // Add Notebook
-            var notebook = AddNotebook("One");
+            // Check
+            await _context.Database.EnsureCreatedAsync();
+
+            // Load Database
+            await _context.Notebooks.LoadAsync();
+            _notebooks = _context.Notebooks.Local.ToObservableCollection();
 
             // Show Tasks
             GetTasks("Before Add" + ":");
-            
+
+            // Create Notebook
+            var notebook = new NotebookModel {Name = path};
+            _notebooks.Add(notebook);
+            await _context.SaveChangesAsync();
+
+            // Load DataModel
+            var dataModel = await FileHelper.ReadFromFileAsync<Domain.Versions.Version2.DataModel>(path);
+
             // Add Tasks
-            AddTask(notebook, dataModel);
+            foreach (var task2 in dataModel.Tasks)
+            {
+                var task = new TaskModel();
+                task.Init(task2);
+                notebook.Tasks.Add(task);
+            }
+            await _context.SaveChangesAsync();
 
             // Show Tasks
             GetTasks("After Add:");
         }
-
-        async Task<DataModel> LoadDataModel()
+        public async Task ShowDatabaseAsync()
         {
-            var path = @"C:\Data\Alan.json";
-            var dataModel = await FileHelper.ReadFromFileAsync<DataModel>(path);
-            return dataModel;
+            // Load Database
+            await _context.Notebooks.LoadAsync();
+            _notebooks = _context.Notebooks.Local.ToObservableCollection();
+
+            // Show Tasks
+            GetTasks("Database" + ":");
         }
 
-        Domain.Notebook AddNotebook(string name)
-        {
-            var notebook = new Domain.Notebook();
-            notebook.Name = name;
-            _notebooks.Add(notebook);
-            _context.SaveChanges();
-            return notebook;
-        }
 
-        void AddTask(Domain.Notebook notebook)
+
+        void AddTask(NotebookModel notebookModel)
         {
-            var task = new ProjectK.Notebook.Domain.Task
+            var task = new TaskModel
             {
                 // NodeId = new Guid("00000000-0000-0000-0000-000000000001"),
                  NodeId = Guid.NewGuid(),
                 Name = "Alan", 
                 Context = "Help", 
             };
-            notebook.Tasks.Add(task);
+            notebookModel.Tasks.Add(task);
             _context.SaveChanges();
         }
 
-        void AddTask(Domain.Notebook notebook, DataModel dataModel)
-        {
-            foreach (var task2 in dataModel.Tasks)
-            {
-                var task = new ProjectK.Notebook.Domain.Task();
-                task.Init(task2);
-                notebook.Tasks.Add(task);
-            }
-            _context.SaveChanges();
-        }
 
         void GetTasks(string text)
         {
-            Console.WriteLine($"{text}: Notebook count is {_notebooks.Count}");
+            Console.WriteLine($"{text}: NotebookModel count is {_notebooks.Count}");
             foreach (var notebook in _notebooks)
             {
                 Console.WriteLine(notebook.Name);
                 var tasks = notebook.Tasks;
-                Console.WriteLine($"{text}: Task count is {tasks.Count}");
+                Console.WriteLine($"{text}: TaskModel count is {tasks.Count}");
                 foreach (var task in tasks)
                 {
                     Console.WriteLine(task.Name);

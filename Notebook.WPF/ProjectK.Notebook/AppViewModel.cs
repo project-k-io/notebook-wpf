@@ -21,7 +21,7 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Extensions;
-// using ProjectK.Notebook.Models.Versions.Version2;
+// using ProjectK.NotebookModel.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
@@ -174,19 +174,19 @@ namespace ProjectK.Notebook
             // clean up database connections
             _db.Dispose();
         }
-        public override void ImportNotebook(Domain.Notebook notebook, Notebook.Domain.Versions.Version2.DataModel dataModel)
+        public override void ImportNotebook(Domain.NotebookModel notebookModel, Notebook.Domain.Versions.Version2.DataModel dataModel)
         {
-            Logger.LogDebug($"Import Notebook: {notebook.Name}");
+            Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
 
-            // Add Notebook
-            NotebookModels.Add(notebook);
+            // Add NotebookModel
+            NotebookModels.Add(notebookModel);
             _db.SaveChanges();
 
             // Add Tasks
-            notebook.Init(dataModel);
+            notebookModel.Init(dataModel);
             _db.SaveChanges();
 
-            AddNotebook(notebook);
+            AddNotebook(notebookModel);
         }
 
         #endregion
@@ -329,7 +329,7 @@ namespace ProjectK.Notebook
             return commandBindings;
         }
 
-        private NotebookViewModel AddNotebook(Domain.Notebook model)
+        private NotebookViewModel AddNotebook(Domain.NotebookModel model)
         {
             Logger.LogDebug($"AddNotebook: {model.Name}");
             var notebook = new NotebookViewModel(model);
@@ -337,7 +337,7 @@ namespace ProjectK.Notebook
             SelectedNotebook = notebook;
             Notebooks.Add(notebook);
             RootTask.Add(notebook.RootTask);
-            // add notebook task to root task
+            // add notebookModel task to root task
             return notebook;
         }
 

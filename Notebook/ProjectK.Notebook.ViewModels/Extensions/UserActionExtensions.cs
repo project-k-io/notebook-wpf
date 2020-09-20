@@ -7,7 +7,7 @@ using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Versions.Version2;
-// using ProjectK.Notebook.Models.Versions.Version2;
+// using ProjectK.NotebookModel.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
 using Task = System.Threading.Tasks.Task;
@@ -56,7 +56,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
                 var dataModel = await FileHelper.ReadFromFileAsync<DataModel>(path);
 
-                var notebook = new Domain.Notebook {Name = path};
+                var notebook = new Domain.NotebookModel {Name = path};
                 mainViewModel.ImportNotebook(notebook, dataModel);
 
 

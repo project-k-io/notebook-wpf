@@ -28,13 +28,13 @@ namespace ProjectK.Notebook.ViewModels.Design
             var thursday = new NodeViewModel {Title = "Thursday", Context = "Day", IsExpanded = true};
             var task1 = new TaskViewModel()
             {
-                Title = "Dinner", Context = "Task", IsExpanded = true,
+                Title = "Dinner", Context = "TaskModel", IsExpanded = true,
                 DateStarted = new DateTime(2020, 5, 14, 20, 34, 0),
                 DateEnded = new DateTime(2020, 5, 14, 21, 40, 0)
             };
             var task2 = new TaskViewModel()
             {
-                Title = "Movie", Context = "Task", IsExpanded = true,
+                Title = "Movie", Context = "TaskModel", IsExpanded = true,
                 DateStarted = new DateTime(2020, 5, 14, 21, 50, 0),
                 DateEnded = new DateTime(2020, 5, 14, 23, 20, 0)
             };

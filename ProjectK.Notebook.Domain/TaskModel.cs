@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class Task : Node, ITask
+    public class TaskModel : NodeModel, ITask
     {
         [Key]
         public int Id { get; set; }
@@ -16,9 +17,10 @@ namespace ProjectK.Notebook.Domain
         public string SubType { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
-
+    
+        [ForeignKey("NotebookModel")]
         public int NotebookId { get; set; }
-        public virtual Notebook Notebook { get; set; }
+        public virtual NotebookModel NotebookModel { get; set; }
 
 
 
@@ -28,9 +30,9 @@ namespace ProjectK.Notebook.Domain
             return $"{Context}:{Type}:{Name}:{DateStarted}:{DateEnded}";
         }
 
-        public static Task NewTask()
+        public static TaskModel NewTask()
         {
-            var task = new Task
+            var task = new TaskModel
             {
                 NodeId = Guid.NewGuid(),
                 DateStarted = DateTime.Now
@@ -53,7 +55,7 @@ namespace ProjectK.Notebook.Domain
         }
         
 
-        public bool IsSame(Task b)
+        public bool IsSame(TaskModel b)
         {
             if(!base.IsSame(b)) return false;
 
@@ -66,10 +68,10 @@ namespace ProjectK.Notebook.Domain
             return true;
         }
 
-        public Task()
+        public TaskModel()
         {
         }
-        public Task(Task b) : base(b)
+        public TaskModel(TaskModel b) : base(b)
         {
             Rating = b.Rating;
             DateStarted = b.DateStarted;
@@ -79,9 +81,9 @@ namespace ProjectK.Notebook.Domain
             Description = b.Description;
         }
 
-        public new Task Copy()
+        public new TaskModel Copy()
         {
-            return new Task(this);
+            return new TaskModel(this);
         }
     }
 }
