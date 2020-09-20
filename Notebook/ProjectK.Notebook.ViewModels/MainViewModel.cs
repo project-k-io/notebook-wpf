@@ -404,7 +404,7 @@ namespace ProjectK.Notebook.ViewModels
 #endregion
 
 
-        public virtual void ImportNotebook(Domain.Notebook model, string path)
+        public virtual void ImportNotebook(Domain.Notebook model, Notebook.Domain.Versions.Version2.DataModel dataModel)
         {
         }
     }

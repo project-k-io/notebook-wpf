@@ -223,7 +223,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void Init(Node b)
         {
-            Id = b.Id;
+            Id = b.NodeId;
             Title = b.Name;
             Created = b.Created;
             Context = b.Context;

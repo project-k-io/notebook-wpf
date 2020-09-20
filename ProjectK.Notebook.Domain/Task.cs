@@ -7,7 +7,7 @@ namespace ProjectK.Notebook.Domain
     public class Task : Node, ITask
     {
         [Key]
-        public int TaskId { get; set; }
+        public int Id { get; set; }
 
 
         public int Rating { get; set; }
@@ -32,7 +32,7 @@ namespace ProjectK.Notebook.Domain
         {
             var task = new Task
             {
-                Id = Guid.NewGuid(),
+                NodeId = Guid.NewGuid(),
                 DateStarted = DateTime.Now
             };
             return task;
@@ -40,7 +40,7 @@ namespace ProjectK.Notebook.Domain
 
         public void Init(Versions.Version2.TaskModel  task2)
         {
-            Id = task2.Id;
+            NodeId = task2.Id;
             Name = task2.Title;
             ParentId = task2.ParentId;
             Rating = task2.Rating;

@@ -1,20 +1,18 @@
-﻿using System;
-using System.Linq;
-using ProjectK.Notebook.Data;
-using ProjectK.Notebook.Domain;
+﻿using System.Threading.Tasks;
+
 
 namespace ProjectK.Notebook.ConsoleApp
 {
     class Program
     {
-        private static NotebookContext context = new NotebookContext();
+        private static ProjectK.Notebook.Data.NotebookContext context = new ProjectK.Notebook.Data.NotebookContext();
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             context.Database.EnsureCreated();
             // var scenario = new ScenarioOne(context);
             var scenario = new ScenarioTwo(context);
-            scenario.Run();
+            await scenario.Run();
          }
     }
 }

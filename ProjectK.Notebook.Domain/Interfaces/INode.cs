@@ -4,7 +4,7 @@ namespace ProjectK.Notebook.Domain.Interfaces
 {
     public interface INode
     {
-        Guid Id { get; set; }
+        Guid NodeId { get; set; }
         Guid ParentId { get; set; }
         string Name { get; set; }
         DateTime Created { get; set; }

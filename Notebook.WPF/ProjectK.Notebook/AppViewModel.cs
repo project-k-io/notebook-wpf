@@ -143,15 +143,13 @@ namespace ProjectK.Notebook
 
             // load the entities into EF Core
             _db.Notebooks.Load();
-            _db.Tasks.Load();
-            _db.Notes.Load();
 
             // bind to the source
             NotebookModels = _db.Notebooks.Local.ToObservableCollection();
 
             foreach (var model in NotebookModels)
             {
-                var notebook = AddNotebook(model, model.Name);
+                var notebook = AddNotebook(model);
                 SelectedNotebook = notebook;
             }
         }
@@ -176,12 +174,19 @@ namespace ProjectK.Notebook
             // clean up database connections
             _db.Dispose();
         }
-        public override void ImportNotebook(Domain.Notebook notebook, string title)
+        public override void ImportNotebook(Domain.Notebook notebook, Notebook.Domain.Versions.Version2.DataModel dataModel)
         {
-            Logger.LogDebug($"Import Notebook: {notebook.Name}, title={title}");
+            Logger.LogDebug($"Import Notebook: {notebook.Name}");
+
+            // Add Notebook
             NotebookModels.Add(notebook);
             _db.SaveChanges();
-            AddNotebook(notebook, title);
+
+            // Add Tasks
+            notebook.Init(dataModel);
+            _db.SaveChanges();
+
+            AddNotebook(notebook);
         }
 
         #endregion
@@ -324,9 +329,9 @@ namespace ProjectK.Notebook
             return commandBindings;
         }
 
-        private NotebookViewModel AddNotebook(Domain.Notebook model, string title)
+        private NotebookViewModel AddNotebook(Domain.Notebook model)
         {
-            Logger.LogDebug($"AddNotebook: {model.Name}, title={title}");
+            Logger.LogDebug($"AddNotebook: {model.Name}");
             var notebook = new NotebookViewModel(model);
             notebook.ModelToViewModel();
             SelectedNotebook = notebook;

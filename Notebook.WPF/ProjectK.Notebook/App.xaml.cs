@@ -61,7 +61,7 @@ namespace ProjectK.Notebook
             _appModel.SaveSettings(_mainWindow);
 
             // Close Database
-#if !AK // db close
+#if AK    // db close
             _appModel.CloseDatabase();
 #endif
             _mainWindow.Close();

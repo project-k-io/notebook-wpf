@@ -54,11 +54,12 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 var path = r.fileName;
                 Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
 
-                var model = await FileHelper.ReadFromFileAsync<DataModel>(path);
-                var notebook = new Domain.Notebook();
-                notebook.Init(model);
-                notebook.Name = path;
-                mainViewModel.ImportNotebook(notebook, path);
+                var dataModel = await FileHelper.ReadFromFileAsync<DataModel>(path);
+
+                var notebook = new Domain.Notebook {Name = path};
+                mainViewModel.ImportNotebook(notebook, dataModel);
+
+
             }
             catch (Exception e)
             {

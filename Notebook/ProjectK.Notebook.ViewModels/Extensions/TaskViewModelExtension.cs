@@ -63,11 +63,11 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             // build index
             foreach (var node in nodes)
             {
-                if (!index.ContainsKey(node.Id))
+                if (!index.ContainsKey(node.NodeId))
                 {
                     var vm = new NodeViewModel();
                     vm.Init(node);
-                    index.Add(node.Id, vm);
+                    index.Add(node.NodeId, vm);
                 }
             }
 
@@ -75,11 +75,11 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             {
                 if (!index.ContainsKey(node.ParentId))
                 {
-                    rootTask.Add(index[node.Id]);
+                    rootTask.Add(index[node.NodeId]);
                 }
                 else
                 {
-                    index[node.ParentId].Add(index[node.Id]);
+                    index[node.ParentId].Add(index[node.NodeId]);
                 }
             }
 

@@ -5,7 +5,7 @@ namespace ProjectK.Notebook.Domain
 {
     public class Node : INode
     {
-        public Guid Id { get; set; }
+        public Guid NodeId { get; set; }
         public Guid ParentId { get; set; }
         public string Name { get; set; }
         public string Context { get; set; }
@@ -14,7 +14,7 @@ namespace ProjectK.Notebook.Domain
 
         public virtual bool IsSame(Node b)
         {
-            if (Id != b.Id) return false;
+            if (NodeId != b.NodeId) return false;
             if (ParentId != b.ParentId) return false;
             if (Name != b.Name) return false;
             if (Context != b.Context) return false;
@@ -27,7 +27,7 @@ namespace ProjectK.Notebook.Domain
         }
         public Node(Node b)
         {
-            Id = b.Id;
+            NodeId = b.NodeId;
             Name = b.Name;
             Context = b.Context;
             Created = b.Created;

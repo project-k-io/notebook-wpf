@@ -5,7 +5,7 @@ namespace ProjectK.Notebook.Domain
     public class Note : Node
     {
         [Key]
-        public int NoteId { get; set; }
+        public int Id { get; set; }
 
         public string Text { get; set; }
         public int NotebookId { get; set; }
