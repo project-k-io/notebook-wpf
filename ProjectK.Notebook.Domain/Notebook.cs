@@ -6,24 +6,24 @@ using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NotebookModel
+    public class Notebook
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
-        public virtual IList<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
+        public virtual IList<Note> Notes { get; set; } = new ObservableCollection<Note>();
+        public virtual IList<Task> Tasks { get; set; } = new ObservableCollection<Task>();
 
         public void Init(ProjectK.Notebook.Domain.Versions.Version2.DataModel model)
         {
             foreach (var task2 in model.Tasks)
             {
-                var task = new TaskModel();
+                var task = new Task();
                 task.Init(task2);
                 Tasks.Add(task);
             }
         }
 
-        public  bool IsSame(NotebookModel target)
+        public  bool IsSame(Notebook target)
         {
             if (!Notes.IsSame(target.Notes, (a, b) => a.IsSame(b)))
                 return false;
@@ -34,14 +34,14 @@ namespace ProjectK.Notebook.Domain
             return true;
         }
 
-        public  NotebookModel Copy()
+        public  Notebook Copy()
         {
-            var model = new NotebookModel();
+            var model = new Notebook();
             model.Notes.Copy(Notes, a => a.Copy());
             model.Tasks.Copy(Tasks, a => a.Copy());
             return model;
         }
-        public void CopyFrom(NotebookModel source)
+        public void CopyFrom(Notebook source)
         {
             Notes.Clear();
             Notes.Copy(source.Notes, a => a.Copy());

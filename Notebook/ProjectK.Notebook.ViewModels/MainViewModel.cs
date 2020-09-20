@@ -20,6 +20,7 @@ using ProjectK.Notebook.ViewModels.Reports;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
+using Task = System.Threading.Tasks.Task;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -176,7 +177,7 @@ namespace ProjectK.Notebook.ViewModels
         public Action<Action> OnDispatcher { get; set; }
         public OutputViewModel Output { get; set; } = new OutputViewModel();
 
-        public ObservableCollection<NotebookModel> NotebookModels { get; set; }
+        public ObservableCollection<Domain.Notebook> NotebookModels { get; set; }
 
         #endregion
 
@@ -186,7 +187,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FileOpenOldFormat()
         {
-            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Name));
+            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.Notebook.ReadFromFile(Name));
         }
 
 
@@ -403,7 +404,7 @@ namespace ProjectK.Notebook.ViewModels
 #endregion
 
 
-        public virtual void ImportNotebook(NotebookModel model, string path)
+        public virtual void ImportNotebook(Domain.Notebook model, string path)
         {
         }
     }

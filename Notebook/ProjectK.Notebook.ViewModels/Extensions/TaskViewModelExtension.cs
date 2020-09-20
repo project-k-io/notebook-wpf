@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Utils;
+using Task = ProjectK.Notebook.Domain.Task;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
@@ -16,30 +17,30 @@ namespace ProjectK.Notebook.ViewModels.Extensions
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
 
-        public static void ViewModelToModel(this NotebookModel notebook, NodeViewModel rootTask)
+        public static void ViewModelToModel(this Domain.Notebook notebook, NodeViewModel rootTask)
         {
             Logger.LogDebug($@"Populate Notebook {notebook.Name} from TreeNode {rootTask.Title}");
 
-            var nodes = new List<NodeModel>();
+            var nodes = new List<Node>();
             rootTask.SaveTo(nodes);
             foreach (var node in nodes)
             {
-                if (node is NoteModel note)
+                if (node is Note note)
                     notebook.Notes.Add(note);
 
-                if (node is TaskModel task)
+                if (node is Task task)
                     notebook.Tasks.Add(task);
             }
         }
-        public static void ModelToViewModel(this NodeViewModel rootTask, NotebookModel notebook)
+        public static void ModelToViewModel(this NodeViewModel rootTask, Domain.Notebook notebook)
         {
             Logger.LogDebug($@"Populate TreeNode {rootTask.Title} from Notebook {notebook.Name}");
 
-            var nodes = new List<NodeModel>();
-            var notes = notebook.Notes.Cast<NodeModel>().ToList();
+            var nodes = new List<Node>();
+            var notes = notebook.Notes.Cast<Node>().ToList();
             var tasks2 = notebook.Tasks.ToList();
 
-            var tasks = notebook.Tasks.Cast<NodeModel>();
+            var tasks = notebook.Tasks.Cast<Node>();
             nodes.AddRange(notes);
             nodes.AddRange(tasks);
 
@@ -47,14 +48,14 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             rootTask.BuildTree(nodes);
         }
 
-        public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
+        public static async System.Threading.Tasks.Task ExportToFileAsync(this NodeViewModel rootTask, string path)
         {
-            var notebook = new NotebookModel();
+            var notebook = new Domain.Notebook();
             notebook.ViewModelToModel(rootTask);
             await FileHelper.SaveToFileAsync(path, notebook);
         }
 
-        public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> nodes)
+        public static void BuildTree(this NodeViewModel rootTask, List<Node> nodes)
         {
             // 
             var index = new SortedList<Guid, NodeViewModel>();

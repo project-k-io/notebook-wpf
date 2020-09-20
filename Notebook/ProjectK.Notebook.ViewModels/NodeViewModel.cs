@@ -99,7 +99,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Public functions
 
-        public void SaveTo(List<NodeModel> list)
+        public void SaveTo(List<Node> list)
         {
             foreach (var node in Nodes)
             {
@@ -108,7 +108,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        private void SaveRecursively(ICollection<NodeModel> list)
+        private void SaveRecursively(ICollection<Node> list)
         {
             list.Add(GetModel());
             TrySetId();
@@ -120,9 +120,9 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private NodeModel GetModel()
+        private Node GetModel()
         {
-            var model = new NodeModel();
+            var model = new Node();
             return model;
         }
 
@@ -221,7 +221,7 @@ namespace ProjectK.Notebook.ViewModels
             return null;
         }
 
-        public void Init(NodeModel b)
+        public void Init(Node b)
         {
             Id = b.Id;
             Title = b.Name;

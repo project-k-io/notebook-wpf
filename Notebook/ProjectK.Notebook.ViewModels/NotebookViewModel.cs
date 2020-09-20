@@ -13,6 +13,7 @@ using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
+using Task = System.Threading.Tasks.Task;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -22,7 +23,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
-        private NotebookModel _notebook;
+        private Domain.Notebook _notebook;
 
         public NotebookViewModel()
         {
@@ -31,10 +32,10 @@ namespace ProjectK.Notebook.ViewModels
                 Context = "Time Tracker"
             });
 
-            _notebook = new NotebookModel();
+            _notebook = new Domain.Notebook();
         }
 
-        public NotebookViewModel(NotebookModel notebook)
+        public NotebookViewModel(Domain.Notebook notebook)
         {
             _notebook = notebook;
         }

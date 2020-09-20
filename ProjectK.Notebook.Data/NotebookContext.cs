@@ -9,9 +9,9 @@ namespace ProjectK.Notebook.Data
 {
     public class NotebookContext : DbContext
     {
-        public DbSet<NotebookModel> Notebooks { get; set; }
-        public DbSet<NoteModel> Notes { get; set; }
-        public DbSet<TaskModel> Tasks { get; set; }
+        public DbSet<Domain.Notebook> Notebooks { get; set; }
+        public DbSet<Note> Notes { get; set; }
+        public DbSet<Task> Tasks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

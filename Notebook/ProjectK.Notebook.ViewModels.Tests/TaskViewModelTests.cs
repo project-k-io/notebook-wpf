@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProjectK.Notebook.Domain;
+using Task = ProjectK.Notebook.Domain.Task;
+
 // using ProjectK.Notebook.Models.Versions.Version2;
 
 namespace ProjectK.Notebook.ViewModels.Tests
@@ -56,8 +58,8 @@ namespace ProjectK.Notebook.ViewModels.Tests
             var parent = new NodeViewModel();
             var child = new NodeViewModel();
 
-            parent.Init(TaskModel.NewTask());
-            child.Init(TaskModel.NewTask());
+            parent.Init(Task.NewTask());
+            child.Init(Task.NewTask());
 
             // Act
             parent.Add(child);

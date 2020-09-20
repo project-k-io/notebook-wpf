@@ -14,7 +14,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
     public static class NodeViewModelExtension
     {
-        public static void Init(this NodeViewModel vm, NodeModel m)
+        public static void Init(this NodeViewModel vm, Node m)
         {
             vm.Id = m.Id;
             vm.Title = m.Name;

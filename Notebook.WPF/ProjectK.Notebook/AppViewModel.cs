@@ -28,6 +28,7 @@ using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using Syncfusion.Windows.Shared;
 using Syncfusion.Windows.Tools.Controls;
+using Task = System.Threading.Tasks.Task;
 
 namespace ProjectK.Notebook
 {
@@ -175,11 +176,11 @@ namespace ProjectK.Notebook
             // clean up database connections
             _db.Dispose();
         }
-        public override void ImportNotebook(NotebookModel notebook, string title)
+        public override void ImportNotebook(Domain.Notebook notebook, string title)
         {
             Logger.LogDebug($"Import Notebook: {notebook.Name}, title={title}");
-            _db.SaveChanges();
             NotebookModels.Add(notebook);
+            _db.SaveChanges();
             AddNotebook(notebook, title);
         }
 
@@ -323,7 +324,7 @@ namespace ProjectK.Notebook
             return commandBindings;
         }
 
-        private NotebookViewModel AddNotebook(NotebookModel model, string title)
+        private NotebookViewModel AddNotebook(Domain.Notebook model, string title)
         {
             Logger.LogDebug($"AddNotebook: {model.Name}, title={title}");
             var notebook = new NotebookViewModel(model);
