@@ -64,7 +64,7 @@ namespace ProjectK.Notebook
             Assembly = Assembly.GetExecutingAssembly();
             InitLogging();
             InitOutput();
-            Logger = LogManager.GetLogger<ViewModels.MainViewModel>();
+            Logger = LogManager.GetLogger<MainViewModel>();
             Logger.LogDebug("Init Logging()");
         }
 
@@ -174,7 +174,7 @@ namespace ProjectK.Notebook
             // clean up database connections
             _db.Dispose();
         }
-        public override void ImportNotebook(Domain.NotebookModel notebookModel, Notebook.Domain.Versions.Version2.DataModel dataModel)
+        public override void ImportNotebook(NotebookModel notebookModel, Domain.Versions.Version2.DataModel dataModel)
         {
             Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
 
@@ -329,7 +329,7 @@ namespace ProjectK.Notebook
             return commandBindings;
         }
 
-        private NotebookViewModel AddNotebook(Domain.NotebookModel model)
+        private NotebookViewModel AddNotebook(NotebookModel model)
         {
             Logger.LogDebug($"AddNotebook: {model.Name}");
             var notebook = new NotebookViewModel(model);

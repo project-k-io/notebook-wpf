@@ -63,8 +63,8 @@ namespace ProjectK.Notebook.ViewModels
             ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
             ExportSelectedAllAsTextCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
             ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
-            OpenDatabaseCommand = new RelayCommand(this.OpenDatabase);
-            CloseDatabaseCommand = new RelayCommand(this.CloseDatabase);
+            OpenDatabaseCommand = new RelayCommand(OpenDatabase);
+            CloseDatabaseCommand = new RelayCommand(CloseDatabase);
 
         CurrentNotebookChanged += OnCurrentNotebookChanged;
 
@@ -177,7 +177,7 @@ namespace ProjectK.Notebook.ViewModels
         public Action<Action> OnDispatcher { get; set; }
         public OutputViewModel Output { get; set; } = new OutputViewModel();
 
-        public ObservableCollection<Domain.NotebookModel> NotebookModels { get; set; }
+        public ObservableCollection<NotebookModel> NotebookModels { get; set; }
 
         #endregion
 
@@ -404,7 +404,7 @@ namespace ProjectK.Notebook.ViewModels
 #endregion
 
 
-        public virtual void ImportNotebook(Domain.NotebookModel model, Notebook.Domain.Versions.Version2.DataModel dataModel)
+        public virtual void ImportNotebook(NotebookModel model, Domain.Versions.Version2.DataModel dataModel)
         {
         }
     }

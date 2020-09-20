@@ -43,10 +43,10 @@ namespace ProjectK.Notebook.ViewModels
         #region Properties
 
          // Model 
-        public Guid Id { get => _id; set => this.Set(ref _id, value); }
-        public string Context { get => _context; set => this.Set(ref _context, value); }
-        public string Title { get => _title; set => this.Set(ref _title, value); }
-        public DateTime Created { get => _created; set => this.Set(ref _created, value); }
+        public Guid Id { get => _id; set => Set(ref _id, value); }
+        public string Context { get => _context; set => Set(ref _context, value); }
+        public string Title { get => _title; set => Set(ref _title, value); }
+        public DateTime Created { get => _created; set => Set(ref _created, value); }
         public Guid ParentId { get => _parentId; set => Set(ref _parentId, value); }
 
         public NodeViewModel Parent { get; set; }

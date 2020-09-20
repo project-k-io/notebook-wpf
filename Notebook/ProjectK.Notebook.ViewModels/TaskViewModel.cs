@@ -28,7 +28,7 @@ namespace ProjectK.Notebook.ViewModels
             get => _dateStarted;
             set
             {
-                if (!this.Set(ref _dateStarted, value)) return;
+                if (!Set(ref _dateStarted, value)) return;
                 RaisePropertyChanged("TimeStarted");
                 RaisePropertyChanged("Duration");
             }

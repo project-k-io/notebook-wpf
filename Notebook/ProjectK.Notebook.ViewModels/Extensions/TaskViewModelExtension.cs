@@ -16,7 +16,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
     {
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
 
-        public static void ViewModelToModel(this Domain.NotebookModel notebookModel, NodeViewModel rootTask)
+        public static void ViewModelToModel(this NotebookModel notebookModel, NodeViewModel rootTask)
         {
             Logger.LogDebug($@"Populate NotebookModel {notebookModel.Name} from TreeNode {rootTask.Title}");
 
@@ -31,7 +31,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     notebookModel.Tasks.Add(task);
             }
         }
-        public static void ModelToViewModel(this NodeViewModel rootTask, Domain.NotebookModel notebookModel)
+        public static void ModelToViewModel(this NodeViewModel rootTask, NotebookModel notebookModel)
         {
             Logger.LogDebug($@"Populate TreeNode {rootTask.Title} from NotebookModel {notebookModel.Name}");
 
@@ -47,9 +47,9 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             rootTask.BuildTree(nodes);
         }
 
-        public static async System.Threading.Tasks.Task ExportToFileAsync(this NodeViewModel rootTask, string path)
+        public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
         {
-            var notebook = new Domain.NotebookModel();
+            var notebook = new NotebookModel();
             notebook.ViewModelToModel(rootTask);
             await FileHelper.SaveToFileAsync(path, notebook);
         }

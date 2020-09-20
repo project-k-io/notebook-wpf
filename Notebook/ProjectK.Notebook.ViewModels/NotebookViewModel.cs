@@ -23,7 +23,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
-        private Domain.NotebookModel _notebookModel;
+        private NotebookModel _notebookModel;
 
         public NotebookViewModel()
         {
@@ -32,10 +32,10 @@ namespace ProjectK.Notebook.ViewModels
                 Context = "Time Tracker"
             });
 
-            _notebookModel = new Domain.NotebookModel();
+            _notebookModel = new NotebookModel();
         }
 
-        public NotebookViewModel(Domain.NotebookModel notebookModel)
+        public NotebookViewModel(NotebookModel notebookModel)
         {
             _notebookModel = notebookModel;
         }
@@ -43,7 +43,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Storage Functions Ver 1
 
-        public void LoadFrom(Notebook.Domain.Versions.Version1.DataModel model)
+        public void LoadFrom(Domain.Versions.Version1.DataModel model)
         {
             Clear();
 #if AK  // Load ver 1
