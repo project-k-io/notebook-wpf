@@ -12,6 +12,10 @@ namespace ProjectK.Notebook.Domain
         public string Description { get; set; }
         public string Type { get; set; }
 
+        public int NotebookId { get; set; }
+        public virtual NotebookModel Notebook { get; set; }
+
+
 
 
         public override string ToString()

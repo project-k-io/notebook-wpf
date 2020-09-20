@@ -3,6 +3,8 @@
     public class NoteModel : NodeModel
     {
         public string Text { get; set; }
+        public int NotebookId { get; set; }
+        public virtual NotebookModel Notebook { get; set; }
 
         public NoteModel()
         {
