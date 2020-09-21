@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Utils;
-using LoggerExtensions = Microsoft.Extensions.Logging.LoggerExtensions;
 
 namespace ProjectK.Notebook.ViewModels.Reports
 {

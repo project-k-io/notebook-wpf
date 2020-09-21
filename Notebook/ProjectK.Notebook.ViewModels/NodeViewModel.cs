@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Interfaces;
-using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
-using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {

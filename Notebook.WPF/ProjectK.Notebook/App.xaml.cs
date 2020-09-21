@@ -1,16 +1,7 @@
-﻿using System;
-using System.ComponentModel;
-using System.Configuration;
-using System.Globalization;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Extensions;
-using ProjectK.Notebook.ViewModels;
 using Syncfusion.Licensing;
 
 namespace ProjectK.Notebook

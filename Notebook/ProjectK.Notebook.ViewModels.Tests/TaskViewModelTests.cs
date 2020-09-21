@@ -1,10 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ProjectK.Notebook.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ProjectK.Notebook.Domain;
 
 // using ProjectK.NotebookModel.Models.Versions.Version2;

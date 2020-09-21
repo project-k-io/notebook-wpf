@@ -2,8 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
-using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils.Extensions;
 
 // using ProjectK.NotebookModel.Models.Versions.Version2;
