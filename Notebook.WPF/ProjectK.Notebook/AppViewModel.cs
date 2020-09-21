@@ -332,8 +332,10 @@ namespace ProjectK.Notebook
         private NotebookViewModel AddNotebook(NotebookModel model)
         {
             Logger.LogDebug($"AddNotebook: {model.Name}");
+            
             var notebook = new NotebookViewModel(model);
             notebook.ModelToViewModel();
+
             SelectedNotebook = notebook;
             Notebooks.Add(notebook);
             RootTask.Add(notebook.RootTask);

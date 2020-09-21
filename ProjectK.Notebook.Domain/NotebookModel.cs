@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NotebookModel
+    public class NotebookModel: NodeModel
     {
+        [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
+
         public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
         public virtual IList<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
 

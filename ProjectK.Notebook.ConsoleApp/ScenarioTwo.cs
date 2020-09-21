@@ -37,7 +37,14 @@ namespace ProjectK.Notebook.ConsoleApp
             GetTasks("Before Add" + ":");
 
             // Create Notebook
-            var notebook = new NotebookModel {Name = path};
+            var notebook = new NotebookModel
+            {
+                NodeId = Guid.NewGuid(),
+                Name = path,
+                Created = DateTime.Now,
+                Context = "Notebook",
+            };
+
             _notebooks.Add(notebook);
             await _context.SaveChangesAsync();
 
