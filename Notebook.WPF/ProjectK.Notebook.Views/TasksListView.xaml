@@ -5,20 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              xmlns:views="clr-namespace:ProjectK.Notebook.Views"
+             xmlns:converters="clr-namespace:ProjectK.Notebook.Views.Converters"
              d:DesignWidth="1000"
              d:DesignHeight="600">
     <UserControl.Resources>
+        <converters:IndexConverter x:Key="IndexConverter"/>
         <Style x:Key="TextStyle" TargetType="{x:Type TextBlock}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=Model.Context}" Value="Month">
+                <DataTrigger Binding="{Binding Path=Context}" Value="Month">
                     <Setter Property="TextBlock.FontSize" Value="18" />
                     <Setter Property="TextBlock.Foreground" Value="DarkOrange" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Path=Model.Context}" Value="Week">
+                <DataTrigger Binding="{Binding Path=Context}" Value="Week">
                     <Setter Property="TextBlock.FontSize" Value="18" />
                     <Setter Property="TextBlock.Foreground" Value="DarkGreen" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Path=Model.Context}" Value="Day">
+                <DataTrigger Binding="{Binding Path=Context}" Value="Day">
                     <Setter Property="TextBlock.FontSize" Value="18" />
                     <Setter Property="TextBlock.Foreground" Value="DarkViolet" />
                 </DataTrigger>
@@ -30,22 +32,25 @@
                   ButtonBase.Click="ListViewTasks_OnClick"
                   x:Name="listViewTasks"
                   SelectionMode="Extended"
-                  ItemsSource="{Binding Path=SelectedNotebook.SelectedNodeList}"
+                  ItemsSource="{Binding Path=SelectedNotebook.SelectedNodeView}"
                   SelectedItem="{Binding Path=SelectedNotebook.SelectedNode, IsAsync=true}">
             <ListView.View>
                 <GridView>
+                    <GridViewColumn
+                        Header="Number"
+                        DisplayMemberBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}},   Converter={StaticResource IndexConverter}}" />
                     <GridViewColumn Header="Context" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Model.Context}" Style="{StaticResource TextStyle}" />
+                                <TextBlock Text="{Binding Path=Context}" Style="{StaticResource TextStyle}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Path=Model.Type}" />
-                    <GridViewColumn Header="Title" Width="200" DisplayMemberBinding="{Binding Path=Model.Title}" />
-                    <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Path=Model.Description}" />
-                    <GridViewColumn Header="Started" Width="120" DisplayMemberBinding="{Binding Path=Model.DateStarted, StringFormat=g}" />
-                    <GridViewColumn Header="Ended" Width="120" DisplayMemberBinding="{Binding Path=Model.DateEnded, StringFormat=g}" />
+                    <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Path=Type}" />
+                    <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Path=Name}" />
+                    <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Path=Description}" />
+                    <GridViewColumn Header="Started" Width="120" DisplayMemberBinding="{Binding Path=DateStarted, StringFormat=g}" />
+                    <GridViewColumn Header="Ended" Width="120" DisplayMemberBinding="{Binding Path=DateEnded, StringFormat=g}" />
                     <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration, StringFormat=d\:hh\:mm}" />
                     <GridViewColumn Header="Total" Width="100"> 
                         <GridViewColumn.DisplayMemberBinding>
