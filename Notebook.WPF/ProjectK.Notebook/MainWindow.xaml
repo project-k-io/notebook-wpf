@@ -28,7 +28,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Ribbon x:Name="Ribbon" Title="Ribbon Name">
+        <Ribbon x:Name="Ribbon" Title="Ribbon Title">
             <Ribbon.HelpPaneContent>
                 <RibbonButton SmallImageSource="Images/apple_time_machine_alt.png" />
             </Ribbon.HelpPaneContent>

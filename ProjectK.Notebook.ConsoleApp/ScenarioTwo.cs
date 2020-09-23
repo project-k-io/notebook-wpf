@@ -77,7 +77,7 @@ namespace ProjectK.Notebook.ConsoleApp
             {
                 // NodeId = new Guid("00000000-0000-0000-0000-000000000001"),
                  NodeId = Guid.NewGuid(),
-                Name = "Alan", 
+                 Name = "Alan", 
                 Context = "Help", 
             };
             notebookModel.Tasks.Add(task);

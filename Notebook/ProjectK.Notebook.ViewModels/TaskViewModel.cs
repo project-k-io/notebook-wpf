@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
+using ProjectK.Notebook.Domain;
 using ProjectK.Utils.Extensions;
 
 // using ProjectK.NotebookModel.Models.Versions.Version2;
@@ -9,10 +10,10 @@ using ProjectK.Utils.Extensions;
 namespace ProjectK.Notebook.ViewModels
 {
     public class TaskViewModel : NodeViewModel
-    {
+    { 
         private TimeSpan _total;
 
-        private string _description;
+        private string _description;       
         private string _type;
         private string _subType;
         private DateTime _dateStarted;
@@ -123,12 +124,12 @@ namespace ProjectK.Notebook.ViewModels
 
         public TaskViewModel()
         {
+            Model = new TaskModel();
         }
 
-        public TaskViewModel(string title) : base(title)
+        public TaskViewModel(NodeModel model) : base(model)
         {
         }
-
 
 
         public void LoadFrom(Domain.Versions.Version1.TaskModel model)

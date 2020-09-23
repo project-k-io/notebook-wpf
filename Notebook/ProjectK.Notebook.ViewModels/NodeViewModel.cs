@@ -21,12 +21,6 @@ namespace ProjectK.Notebook.ViewModels
         private bool _isExpanded;
         private bool _isSelected;
 
-        private Guid _id;
-        private string _context;
-        private string _title;
-        private DateTime _created;
-        private Guid _parentId;
-
         #endregion
 
         #region INode - Implementation
@@ -37,12 +31,15 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Properties
 
-         // Model 
-        public Guid Id { get => _id; set => Set(ref _id, value); }
-        public string Context { get => _context; set => Set(ref _context, value); }
-        public string Title { get => _title; set => Set(ref _title, value); }
-        public DateTime Created { get => _created; set => Set(ref _created, value); }
-        public Guid ParentId { get => _parentId; set => Set(ref _parentId, value); }
+        // Model 
+        public NodeModel Model { get; set; }
+
+        // Model Wrapper
+        public Guid Id { get => Model.NodeId; set => this.Set(Model.NodeId, v => Model.NodeId = v, value); }
+        public string Context { get => Model.Context; set => this.Set(Model.Context, v => Model.Context = v, value); }
+        public string Title { get => Model.Name; set => this.Set(Model.Name, v => Model.Name = v, value); }
+        public DateTime Created { get => Model.Created; set => this.Set(Model.Created, v => Model.Created = v, value); }
+        public Guid ParentId { get => Model.ParentId; set => this.Set(Model.ParentId, v => Model.ParentId = v, value); }
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }
@@ -69,17 +66,16 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Constructors
-
         public NodeViewModel()
         {
-            Parent = null;
+            Model = new NodeModel();
         }
 
-        public NodeViewModel(string title)
+        public NodeViewModel(NodeModel model)
         {
-            Title = title;
+            Model = model;
         }
-
+        
 
         #endregion
 
@@ -90,9 +86,9 @@ namespace ProjectK.Notebook.ViewModels
             return $"{Context}:{Title}";
         }
 
-        #endregion
+#endregion
 
-        #region Public functions
+#region Public functions
 
         public void SaveTo(List<NodeModel> list)
         {
@@ -216,16 +212,8 @@ namespace ProjectK.Notebook.ViewModels
             return null;
         }
 
-        public void Init(NodeModel b)
-        {
-            Id = b.NodeId;
-            Title = b.Name;
-            Created = b.Created;
-            Context = b.Context;
-        }
 
-
-        #endregion
+#endregion
 
     }
 }

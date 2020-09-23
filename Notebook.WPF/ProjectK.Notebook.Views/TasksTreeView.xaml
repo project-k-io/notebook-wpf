@@ -58,7 +58,7 @@
             </DataTemplate.Triggers>
         </DataTemplate>
         <GridViewColumnCollection x:Key="Columns">
-            <GridViewColumn Header="Name" CellTemplate="{StaticResource CellTemplateName}" Width="200" />
+            <GridViewColumn Header="Title" CellTemplate="{StaticResource CellTemplateName}" Width="200" />
             <GridViewColumn Header="Day" Width="60" DisplayMemberBinding="{Binding DateStarted}" />
             <GridViewColumn Header="Start" Width="70">
                 <GridViewColumn.CellTemplate>

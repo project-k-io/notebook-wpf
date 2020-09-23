@@ -42,8 +42,23 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Consuctors
 
+        private NodeModel _rootModel;
+
         public MainViewModel()
         {
+            _rootModel = new NodeModel
+            {
+                Context = "Root",
+                Created = DateTime.Now,
+                Description = "Root Node",
+                Name = "Root",
+                NodeId = Guid.Empty,
+                ParentId = Guid.Empty
+            };
+
+            RootTask = new NodeViewModel(_rootModel);
+
+
             CanSave = true;
             TypeList = new ObservableCollection<string>();
             ContextList = new ObservableCollection<string>();
@@ -62,7 +77,7 @@ namespace ProjectK.Notebook.ViewModels
             OpenDatabaseCommand = new RelayCommand(OpenDatabase);
             CloseDatabaseCommand = new RelayCommand(CloseDatabase);
 
-        CurrentNotebookChanged += OnCurrentNotebookChanged;
+            CurrentNotebookChanged += OnCurrentNotebookChanged;
 
         }
 
@@ -144,7 +159,9 @@ namespace ProjectK.Notebook.ViewModels
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
         public ObservableCollection<NotebookViewModel> Notebooks { get; set; } = new ObservableCollection<NotebookViewModel>();
-        public NodeViewModel RootTask { get; set; } = new NodeViewModel {Title = "Root"};
+
+
+        public NodeViewModel RootTask { get; set; }
         public NotebookViewModel SelectedNotebook
         {
             get => _selectedNotebook;
@@ -183,7 +200,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FileOpenOldFormat()
         {
-            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Name));
+            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Title));
         }
 
 
@@ -292,9 +309,9 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-#endregion
+        #endregion
 
-#region Private functions
+        #region Private functions
 
         private void UseSettings()
         {
@@ -330,15 +347,21 @@ namespace ProjectK.Notebook.ViewModels
                 var taskViewModel1 = selectedTreeTask.Nodes.FirstOrDefault(t => t.Title == dayOfTheWeek);
                 if (taskViewModel1 == null)
                 {
-                    taskViewModel1 = new TaskViewModel(dayOfTheWeek)
+                    taskViewModel1 = new TaskViewModel()
                     {
+                        Title = dayOfTheWeek,
                         DateStarted = excelCsvRecord.Day,
                         DateEnded = excelCsvRecord.Day
                     };
                     selectedTreeTask.Nodes.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) {Context = "TaskModel"};
+                var taskViewModel2 = new TaskViewModel()
+                {
+                    Title = excelCsvRecord.Task,
+                    Context = "TaskModel"
+                };
+
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;
@@ -397,7 +420,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-#endregion
+        #endregion
 
 
         public virtual void ImportNotebook(NotebookModel model, Domain.Versions.Version2.DataModel dataModel)

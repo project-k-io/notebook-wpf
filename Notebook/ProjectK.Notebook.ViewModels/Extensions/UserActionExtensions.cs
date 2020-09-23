@@ -55,7 +55,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
                 var dataModel = await FileHelper.ReadFromFileAsync<DataModel>(path);
 
-                var notebook = new NotebookModel {Name = path};
+                var notebook = new NotebookModel { Name = path};
                 mainViewModel.ImportNotebook(notebook, dataModel);
 
 

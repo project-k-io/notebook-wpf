@@ -53,23 +53,23 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             await FileHelper.SaveToFileAsync(path, notebook);
         }
 
-        public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> nodes)
+        public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> models)
         {
             // 
             var index = new SortedList<Guid, NodeViewModel>();
 
             // build index
-            foreach (var node in nodes)
+            foreach (var model in models)
             {
-                if (!index.ContainsKey(node.NodeId))
+                if (!index.ContainsKey(model.NodeId))
                 {
-                    var vm = new NodeViewModel();
-                    vm.Init(node);
-                    index.Add(node.NodeId, vm);
+                    var vm = new NodeViewModel(model);
+                    vm.Init(model);
+                    index.Add(model.NodeId, vm);
                 }
             }
 
-            foreach (var node in nodes)
+            foreach (var node in models)
             {
                 if (!index.ContainsKey(node.ParentId))
                 {

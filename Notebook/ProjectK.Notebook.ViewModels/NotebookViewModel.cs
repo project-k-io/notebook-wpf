@@ -21,11 +21,25 @@ namespace ProjectK.Notebook.ViewModels
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
         private NotebookModel _notebookModel;
+        private NodeModel _rootTask;
 
         public NotebookViewModel()
         {
-            RootTask.Add(new NodeViewModel("Time Tracker")
+            _rootTask = new NodeModel
             {
+                Context = "Notebook",
+                Created = DateTime.Now,
+                Description = "Notebook",
+                Name = "New Notebook",
+                NodeId = Guid.NewGuid(),
+                ParentId = Guid.Empty
+            };
+
+            RootTask = new NodeViewModel { Model = _rootTask };
+
+            RootTask.Add(new NodeViewModel()
+            {
+                Title = "Time Tracker",
                 Context = "Time Tracker"
             });
 
@@ -35,6 +49,7 @@ namespace ProjectK.Notebook.ViewModels
         public NotebookViewModel(NotebookModel notebookModel)
         {
             _notebookModel = notebookModel;
+            RootTask = new NodeViewModel { Model = notebookModel };
         }
 
 
@@ -184,7 +199,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTime()
         {
-            if(SelectedTreeNode is TaskViewModel task)
+            if (SelectedTreeNode is TaskViewModel task)
                 task.FixTime();
         }
 
