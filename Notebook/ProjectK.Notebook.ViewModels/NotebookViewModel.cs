@@ -20,12 +20,11 @@ namespace ProjectK.Notebook.ViewModels
 
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
-        private NotebookModel _notebookModel;
-        private NodeModel _rootTask;
+        private readonly NotebookModel _notebookModel;
 
         public NotebookViewModel()
         {
-            _rootTask = new NodeModel
+            var rootTask = new NodeModel
             {
                 Context = "Notebook",
                 Created = DateTime.Now,
@@ -35,7 +34,7 @@ namespace ProjectK.Notebook.ViewModels
                 ParentId = Guid.Empty
             };
 
-            RootTask = new NodeViewModel(_rootTask);
+            RootTask = new NodeViewModel(rootTask);
 
             RootTask.Add(new NodeViewModel()
             {
@@ -91,7 +90,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();
 
-        public NodeViewModel RootTask { get; set; } = new NodeViewModel();
+        public NodeViewModel RootTask { get; set; }
 
         public NodeViewModel SelectedTreeNode
         {
