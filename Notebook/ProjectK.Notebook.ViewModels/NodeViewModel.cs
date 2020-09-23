@@ -73,7 +73,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel(NodeModel model)
         {
-            Model = new NodeModel(model);
+            Model = model;
         }
         
 
