@@ -2,6 +2,7 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Domain;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Reports
@@ -35,14 +36,14 @@ namespace ProjectK.Notebook.ViewModels.Reports
             if(node == null)
                 return;
 
-            if (node is TaskViewModel task)
+            if (node.Model is TaskModel task)
             {
                 var description = string.IsNullOrEmpty(task.Description) ? "" : task.Description;
 
                 if (string.IsNullOrEmpty(description))
                 {
                     sb.Append(new string(SpaceChar, offset));
-                    sb.AppendLine(node.Title);
+                    sb.AppendLine(node.Model.Name);
                 }
                 else
                 {

@@ -13,32 +13,12 @@ namespace ProjectK.Notebook.ViewModels
     {
         private TimeSpan _total;
 
-        public TaskModel TaskModel { get; set; }
-
-        public string Description
-        {
-            get => TaskModel.Description;
-            set => this.Set(TaskModel.Description, v => TaskModel.Description = v, value);
-        }
-
-        public string Type
-        {
-            get => TaskModel.Type;
-            set => this.Set(TaskModel.Type, v => TaskModel.Type = v, value);
-        }
-
-        public string SubType
-        {
-            get => TaskModel.SubType;
-            set => this.Set(TaskModel.SubType, v => TaskModel.SubType = v, value);
-        }
-
         public DateTime DateStarted
         {
-            get => TaskModel.DateStarted;
+            get => Model.DateStarted;
             set
             {
-                if (!this.Set(TaskModel.DateStarted, v => TaskModel.DateStarted = v, value)) return;
+                if (!this.Set((DateTime)Model.DateStarted, v => Model.DateStarted = v, value)) return;
                 RaisePropertyChanged("TimeStarted");
                 RaisePropertyChanged("Duration");
             }
@@ -46,10 +26,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime DateEnded
         {
-            get => TaskModel.DateEnded;
+            get => Model.DateEnded;
             set
             {
-                if (!this.Set(DateEnded, v => TaskModel.DateEnded = v, value)) return;
+                if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
                 RaisePropertyChanged("TimeEnded");
                 RaisePropertyChanged("Duration");
             }
@@ -58,10 +38,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeStarted
         {
-            get => TaskModel.DateStarted;
+            get => (DateTime)Model.DateStarted;
             set
             {
-                var dateStarted = TaskModel.DateStarted;
+                var dateStarted = Model.DateStarted;
                 var dateTime = value;
                 DateStarted = new DateTime(dateStarted.Year, dateStarted.Month, dateStarted.Day, dateTime.Hour,
                     dateTime.Minute, dateTime.Second, dateTime.Millisecond);
@@ -73,10 +53,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public DateTime TimeEnded
         {
-            get => TaskModel.DateEnded;
+            get => (DateTime)Model.DateEnded;
             set
             {
-                var dateEnded = TaskModel.DateEnded;
+                var dateEnded = Model.DateEnded;
                 var dateTime = value;
                 DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
@@ -90,23 +70,13 @@ namespace ProjectK.Notebook.ViewModels
         {
             get
             {
-                if (string.IsNullOrEmpty(Type))
+                if (string.IsNullOrEmpty(Model.Type))
                     return false;
-                var upper = Type.ToUpper();
+                var upper = Model.Type.ToUpper();
                 return upper.Contains("LUNCH") || upper.Contains("PERSONAL");
             }
         }
 
-        public bool IsSubTypeSleep
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(SubType))
-                    return false;
-
-                return SubType.ToUpper().Contains("SLEEP");
-            }
-        }
 
         public TimeSpan Duration
         {
@@ -133,30 +103,23 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        public TaskViewModel()
+        public TaskViewModel() : base(new TaskModel())
         {
-            TaskModel = new TaskModel();
-            Model = TaskModel;
         }
 
-        public TaskViewModel(NodeModel model) : base(model)
-        {
-            if (model is TaskModel task)
-                TaskModel = task;
-        }
 
 
         public void LoadFrom(Domain.Versions.Version1.TaskModel model)
         {
             IsSelected = model.IsSelected;
             IsExpanded = model.IsExpanded;
-            Description = model.Description;
+            Model.Description = model.Description;
 
-            Type = model.Type;
+            Model.Type = model.Type;
             DateStarted = model.DateStarted;
             DateEnded = model.DateEnded;
 
-            Title = model.Title;
+            Model.Name = model.Title;
 
             if (model.SubTasks.IsNullOrEmpty())
                 return;
@@ -217,24 +180,25 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTypes()
         {
-            if (string.IsNullOrEmpty(Type))
+            var type = Model.Type;
+            if (string.IsNullOrEmpty(type))
             {
-                var title = Title;
+                var title = Model.Name;
                 var upper = title.ToUpper();
                 if (upper.Contains("LUNCH") || upper.Contains("BREAKFAST"))
-                    Type = "Lunch";
+                    type = "Lunch";
                 else if (upper.Contains("TASK") || upper.Contains("CODE REVIEW") || title.Contains("TA") ||
                          title.Contains("US"))
-                    Type = "Dev";
+                    type = "Dev";
                 else if (upper.Contains("BUILD"))
-                    Type = "Build";
+                    type = "Build";
                 else if (upper.Contains("TIME SHEET") || upper.Contains("TIMESHEET") || upper.Contains("EMAIL") ||
                          upper.Contains("PAPER WORKS"))
-                    Type = "Misc";
+                    type = "Misc";
                 else if (upper.Contains("TALKED") || upper.Contains("MEETING") || upper.Contains("SHOWED"))
-                    Type = "Meeting";
+                    type = "Meeting";
                 else if (upper.Contains("Trouble"))
-                    Type = "Support";
+                    type = "Support";
             }
 
             foreach (var subTask in Nodes)
@@ -243,9 +207,9 @@ namespace ProjectK.Notebook.ViewModels
 
         protected void FixTitles(string parent, Func<int, TaskViewModel, string> getTitle, TaskViewModel subTask, int ii)
         {
-            if (!(Context == parent))
+            if (Model.Context != parent)
                 return;
-            subTask.Title = getTitle(ii, subTask);
+            subTask.Model.Name = getTitle(ii, subTask);
         }
 
         private void FixTitles(TaskViewModel subTask, int ii)
@@ -272,7 +236,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public override NodeViewModel AddNew()
         {
-            var subTask = new TaskViewModel() {Title = "New TaskModel", DateStarted = DateTime.Now, DateEnded = DateTime.Now};
+            var subTask = new TaskViewModel() { Model = { Name = "New Model"}, DateStarted = DateTime.Now, DateEnded = DateTime.Now};
             Add(subTask);
             var ii = Nodes.IndexOf(subTask);
             FixContext(subTask);

@@ -10,15 +10,15 @@
     <UserControl.Resources>
         <Style x:Key="TextStyle" TargetType="{x:Type TextBlock}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Context}" Value="Month">
+                <DataTrigger Binding="{Binding Path=Model.Context}" Value="Month">
                     <Setter Property="TextBlock.FontSize" Value="18" />
                     <Setter Property="TextBlock.Foreground" Value="DarkOrange" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Context}" Value="Week">
+                <DataTrigger Binding="{Binding Path=Model.Context}" Value="Week">
                     <Setter Property="TextBlock.FontSize" Value="18" />
                     <Setter Property="TextBlock.Foreground" Value="DarkGreen" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Context}" Value="Day">
+                <DataTrigger Binding="{Binding Path=Model.Context}" Value="Day">
                     <Setter Property="TextBlock.FontSize" Value="18" />
                     <Setter Property="TextBlock.Foreground" Value="DarkViolet" />
                 </DataTrigger>
@@ -37,20 +37,17 @@
                     <GridViewColumn Header="Context" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Context}" Style="{StaticResource TextStyle}" />
+                                <TextBlock Text="{Binding Path=Model.Context}" Style="{StaticResource TextStyle}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Type}" />
-                    <GridViewColumn Header="Title" Width="200" DisplayMemberBinding="{Binding Title}" />
-                    <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Description}" />
-                    <GridViewColumn Header="Started" Width="120"
-                                    DisplayMemberBinding="{Binding DateStarted, StringFormat=g}" />
-                    <GridViewColumn Header="Ended" Width="120"
-                                    DisplayMemberBinding="{Binding DateEnded, StringFormat=g}" />
-                    <GridViewColumn Header="Duration" Width="100"
-                                    DisplayMemberBinding="{Binding Duration, StringFormat=d\:hh\:mm}" />
-                    <GridViewColumn Header="Total" Width="100">
+                    <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Path=Model.Type}" />
+                    <GridViewColumn Header="Title" Width="200" DisplayMemberBinding="{Binding Path=Model.Title}" />
+                    <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Path=Model.Description}" />
+                    <GridViewColumn Header="Started" Width="120" DisplayMemberBinding="{Binding Path=Model.DateStarted, StringFormat=g}" />
+                    <GridViewColumn Header="Ended" Width="120" DisplayMemberBinding="{Binding Path=Model.DateEnded, StringFormat=g}" />
+                    <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration, StringFormat=d\:hh\:mm}" />
+                    <GridViewColumn Header="Total" Width="100"> 
                         <GridViewColumn.DisplayMemberBinding>
                             <MultiBinding StringFormat="{}{0:D1} days {1:D1} hrs {2:D1} min" Mode="OneWay">
                                 <Binding Path="Total.Days" />

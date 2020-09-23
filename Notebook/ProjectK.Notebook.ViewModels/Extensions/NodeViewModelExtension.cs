@@ -12,10 +12,10 @@ namespace ProjectK.Notebook.ViewModels.Extensions
     {
         public static void Init(this NodeViewModel vm, NodeModel m)
         {
-            vm.Id = m.NodeId;
-            vm.Title = m.Name;
-            vm.Created = m.Created;
-            vm.Context = m.Context;
+            vm.Model.NodeId = m.NodeId;
+            vm.Model.Name = m.Name;
+            vm.Model.Created = m.Created;
+            vm.Model.Context = m.Context;
         }
 
         private static readonly ILogger _logger = LogManager.GetLogger<TaskViewModel>();
@@ -42,7 +42,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     {
                         case KeyboardStates.IsShiftPressed:
                             node = item.Parent.AddNew();
-                            node.Created = DateTime.Now;
+                            node.Model.Created = DateTime.Now;
                             break;
                         case KeyboardStates.IsControlPressed:
                             var lastSubNode = item.Parent.LastSubNode;
@@ -53,8 +53,8 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 #if AK // AddNew
                                 m.Type = item.Type;
 #endif
-                                node.Title = item.Title;
-                                node.Created = DateTime.Now;
+                                node.Model.Name = item.Model.Name;
+                                node.Model.Created = DateTime.Now;
                             }
 
                             break;
@@ -67,7 +67,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     selectItem(item);
                     expandItem(item);
                     handled();
-                    _logger.LogDebug($"Added [{node.Title}] to [{item.Title}]");
+                    _logger.LogDebug($"Added [{node.Model.Name}] to [{item.Model.Name}]");
                     break;
                 case KeyboardKeys.Delete:
                     if (deleteMessageBox())

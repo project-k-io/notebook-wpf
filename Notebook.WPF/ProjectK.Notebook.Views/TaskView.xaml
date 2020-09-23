@@ -5,18 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:domain="clr-namespace:ProjectK.Notebook.Domain;assembly=ProjectK.Notebook.Domain"
+             xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="300">
     <UserControl.Resources>
         <viewModels:TaskViewModel
             x:Key="Model"
-            Context="Month"
-            Title="May"
             DateStarted="{x:Static system:DateTime.Now}"
             DateEnded="{x:Static system:DateTime.Now}"
-            Type="TaskModel"
-            SubType="Testing"
-            Description="Test TaskModel" />
+            >
+            <viewModels:TaskViewModel.Model>
+                <domain:TaskModel 
+                    Name="May"
+                    Context="Month"
+                    Type="TaskModel"
+                    SubType="Testing"
+                    Description="Test TaskModel"
+                    >
+                </domain:TaskModel>
+            </viewModels:TaskViewModel.Model>
+        </viewModels:TaskViewModel>
     </UserControl.Resources>
+
     <Grid d:DataContext="{StaticResource Model}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5"/>
@@ -50,11 +60,11 @@
             <!--Context-->
             <Label Content="Context" Grid.Row="1" Grid.Column="1" />
             <ComboBox Grid.Row="1" Grid.Column="3" IsEditable="true" IsReadOnly="true" ItemsSource="{Binding ContextList}"
-                  Text="{Binding Context}" />
+                  Text="{Binding Path=Model.Context}" />
             <!--Title-->
             <Label Content="Title" Grid.Row="2" Grid.Column="1" />
             <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TitleList}"
-                  Text="{Binding Title}" />
+                  Text="{Binding Path=Model.Name}" />
             <!--Start-->
             <Label Content="Start" Grid.Row="5" Grid.Column="1" />
             <Grid Row="5" Column="3">
@@ -64,9 +74,13 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <DatePicker Margin="2" Grid.Column="0" SelectedDate="{Binding DateStarted}" />
-                <TextBox Margin="2" Grid.Column="2" Text="{Binding TimeStarted, StringFormat=t}" />
-                <Button Margin="4" Grid.Column="3" Width="40" Content="Now" Command="{Binding CommandSetStartedTime}" />
+                <DatePicker Grid.Column="0" 
+                             SelectedDate="{Binding Path=Model.DateStarted}" />
+                <TextBox Margin="2" Grid.Column="2" 
+                         Text="{Binding Path=TimeStarted, StringFormat=t}" />
+                <Button Margin="2" Grid.Column="3" Width="40" 
+                        Content="Now" 
+                        Command="{Binding CommandSetStartedTime}" />
             </Grid>
             <!--End-->
             <Label Content="End" Grid.Row="6" Grid.Column="1" />
@@ -74,12 +88,19 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <DatePicker Margin="2" Grid.Column="0" SelectedDate="{Binding DateEnded}" />
-                <TextBox Grid.Column="2" Margin="2" Text="{Binding TimeEnded, StringFormat=t}" />
-                <Button Grid.Column="3" Margin="4" Width="40" Content="Now" Command="{Binding CommandSetEndedTime}" />
+                <DatePicker 
+                    Grid.Column="0" 
+                    SelectedDate="{Binding Path= Model.DateEnded}" />
+
+                <TextBox 
+                    Grid.Column="2" Margin="2"
+                    Text="{Binding Path=TimeStarted, StringFormat=t}"  
+                    />
+                <Button Grid.Column="3" Width="40" Content="Now" 
+                        Command="{Binding CommandSetEndedTime}" />
             </Grid>
             <!--Duration-->
             <Label Content="Duration" Grid.Row="7" Grid.Column="1" />
@@ -93,10 +114,13 @@
             </TextBox>
             <!--Type-->
             <Label Content="Type" Grid.Row="8" Grid.Column="1" />
-            <ComboBox Grid.Row="8" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TypeList}" Text="{Binding Type}" />
+            <ComboBox Grid.Row="8" Grid.Column="3" IsEditable="true" 
+                      ItemsSource="{Binding TypeList}" 
+                      Text="{Binding  Path=Model.Type}" />
             <!--SubType-->
             <Label Content="SubType" Grid.Row="9" Grid.Column="1" />
-            <TextBox Grid.Row="9" Grid.Column="3" Text="{Binding SubType}" />
+            <TextBox Grid.Row="9" Grid.Column="3" 
+                     Text="{Binding Path=Model.SubType}" />
         </Grid>
 
         <!--Description-->
@@ -109,7 +133,7 @@
             <Label Grid.Row="0" Content="Description" />
             <TextBox Grid.Row="1" 
                      MinHeight="60" 
-                     Text="{Binding Description}" 
+                     Text="{Binding Path=TimeStarted}" 
                      TextWrapping="Wrap"
                      AcceptsReturn="True" 
                      SpellCheck.IsEnabled="True"

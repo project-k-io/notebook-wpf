@@ -32,14 +32,14 @@ namespace ProjectK.Notebook.ViewModels
         #region Properties
 
         // Model 
-        public NodeModel Model { get; set; }
+        public dynamic Model { get; set; }
 
         // Model Wrapper
-        public Guid Id { get => Model.NodeId; set => this.Set(Model.NodeId, v => Model.NodeId = v, value); }
-        public string Context { get => Model.Context; set => this.Set(Model.Context, v => Model.Context = v, value); }
-        public string Title { get => Model.Name; set => this.Set(Model.Name, v => Model.Name = v, value); }
-        public DateTime Created { get => Model.Created; set => this.Set(Model.Created, v => Model.Created = v, value); }
-        public Guid ParentId { get => Model.ParentId; set => this.Set(Model.ParentId, v => Model.ParentId = v, value); }
+        //public Guid Id { get => Model.NodeId; set => this.Set(Model.NodeId, v => Model.NodeId = v, value); }
+        //public string Context { get => Model.Context; set => this.Set(Model.Context, v => Model.Context = v, value); }
+        //// public string Title { get => Model.Name; set => this.Set(Model.Name, v => Model.Name = v, value); }
+        //public DateTime Created { get => Model.Created; set => this.Set(Model.Created, v => Model.Created = v, value); }
+        //public Guid ParentId { get => Model.ParentId; set => this.Set(Model.ParentId, v => Model.ParentId = v, value); }
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }
@@ -73,7 +73,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel(NodeModel model)
         {
-            Model = model;
+            Model = new NodeModel(model);
         }
         
 
@@ -83,7 +83,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public override string ToString()
         {
-            return $"{Context}:{Title}";
+            return $"{Model.Context}:{Model.Name}";
         }
 
 #endregion
@@ -107,7 +107,7 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var node in Nodes)
             {
                 node.SaveRecursively(list);
-                node.ParentId = Id;
+                node.Model.ParentId = Model.NodeId;
             }
         }
 
@@ -119,16 +119,16 @@ namespace ProjectK.Notebook.ViewModels
 
         public void TrySetId()
         {
-            if (Id != Guid.Empty)
+            if (Model.NodeId != Guid.Empty)
                 return;
 
-            Id = Guid.NewGuid();
+            Model.NodeId = Guid.NewGuid();
         }
 
 
         public virtual NodeViewModel AddNew()
         {
-            var subNode = new NodeViewModel { Title = "New Node", Created = DateTime.Now };
+            var subNode = new NodeViewModel { Model = { Name = "New Node",  Created = DateTime.Now} };
 
             Add(subNode);
             FixContext(subNode);
@@ -138,8 +138,8 @@ namespace ProjectK.Notebook.ViewModels
 
         public void Add(NodeViewModel node)
         {
-            if (node.Title == "Time Tracker2")
-                _logger.LogDebug(node.Title);
+            if (node.Model.Name == "Time Tracker2")
+                _logger.LogDebug((string)node.Model.Name);
 
             node.Parent = this;
             Nodes.Add(node);
@@ -163,18 +163,19 @@ namespace ProjectK.Notebook.ViewModels
 
         public void ExtractContext(ObservableCollection<string> contextList)
         {
-            if (!string.IsNullOrEmpty(Context) && !contextList.Contains(Context))
-                contextList.Add(Context);
+            if (!string.IsNullOrEmpty(Model.Context) && !contextList.Contains(Model.Context))
+                contextList.Add(Model.Context);
+
             foreach (var node in Nodes)
                 node.ExtractContext(contextList);
         }
 
         private void FixContext(string parent, string child, NodeViewModel node)
         {
-            if (!(Context == parent))
-
+            if (Model.Context != parent)
                 return;
-            node.Context = child;
+
+            node.Model.Context = child;
         }
 
         protected void FixContext(NodeViewModel node)
@@ -200,7 +201,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel FindNode(Guid id)
         {
-            if (Id == id)
+            if (Model.NodeId == id)
                 return this;
             foreach (var node in Nodes)
             {
