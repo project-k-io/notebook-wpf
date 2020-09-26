@@ -85,9 +85,9 @@ namespace ProjectK.Notebook.Views
 
             if (keyState == KeyboardKeys.Delete)
             {
-                if (task.Model.Context == "NotebookModel")
+                if (task.Context == "NotebookModel")
                 {
-                    var notebook =  mainViewModel.Notebooks.First(n => n.RootTask.Model.NodeId == task.Model.NodeId);
+                    var notebook =  mainViewModel.Notebooks.First(n => n.RootTask.Id == task.Id);
                     if(notebook == null)
                         return;
 

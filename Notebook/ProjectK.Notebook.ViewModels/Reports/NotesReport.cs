@@ -36,14 +36,14 @@ namespace ProjectK.Notebook.ViewModels.Reports
             if(node == null)
                 return;
 
-            if (node.Model is TaskModel task)
+            if (node is TaskViewModel task)
             {
                 var description = string.IsNullOrEmpty(task.Description) ? "" : task.Description;
 
                 if (string.IsNullOrEmpty(description))
                 {
                     sb.Append(new string(SpaceChar, offset));
-                    sb.AppendLine(node.Model.Name);
+                    sb.AppendLine(node.Name);
                 }
                 else
                 {

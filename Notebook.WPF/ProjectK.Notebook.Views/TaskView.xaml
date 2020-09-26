@@ -9,9 +9,7 @@
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="300">
     <UserControl.Resources>
-        <viewModels:TaskViewModel x:Key="Model">
-            <viewModels:TaskViewModel.Model>
-                <domain:TaskModel 
+        <viewModels:TaskViewModel x:Key="Model"
                     Name="May"
                     Context="Month"
                     Type="TaskModel"
@@ -20,8 +18,6 @@
                     DateStarted="{x:Static system:DateTime.Now}"
                     DateEnded="{x:Static system:DateTime.Now}"
                     >
-                </domain:TaskModel>
-            </viewModels:TaskViewModel.Model>
         </viewModels:TaskViewModel>
     </UserControl.Resources>
 
@@ -58,11 +54,11 @@
             <!--Context-->
             <Label Content="Context" Grid.Row="1" Grid.Column="1" />
             <ComboBox Grid.Row="1" Grid.Column="3" IsEditable="true" IsReadOnly="true" ItemsSource="{Binding ContextList}"
-                  Text="{Binding Path=Model.Context}" />
+                  Text="{Binding Path=Context}" />
             <!--Title-->
             <Label Content="Title" Grid.Row="2" Grid.Column="1" />
             <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TitleList}"
-                  Text="{Binding Path=Model.Name}" />
+                  Text="{Binding Path=Name}" />
             <!--Start-->
             <Label Content="Start" Grid.Row="5" Grid.Column="1" />
             <Grid Row="5" Column="3" >
@@ -108,11 +104,11 @@
             <Label Content="Type" Grid.Row="8" Grid.Column="1" />
             <ComboBox Grid.Row="8" Grid.Column="3" IsEditable="true" 
                       ItemsSource="{Binding TypeList}" 
-                      Text="{Binding  Path=Model.Type}" />
+                      Text="{Binding  Path=Type}" />
             <!--SubType-->
             <Label Content="SubType" Grid.Row="9" Grid.Column="1" />
             <TextBox Grid.Row="9" Grid.Column="3" 
-                     Text="{Binding Path=Model.SubType}" />
+                     Text="{Binding Path=SubType}" />
         </Grid>
 
         <!--Description-->

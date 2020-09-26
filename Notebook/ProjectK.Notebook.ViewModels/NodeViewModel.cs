@@ -20,6 +20,11 @@ namespace ProjectK.Notebook.ViewModels
 
         private bool _isExpanded;
         private bool _isSelected;
+        private Guid _id;
+        private string _context;
+        private string _name;
+        private DateTime _created;
+        private Guid _parentId;
 
         #endregion
 
@@ -32,14 +37,38 @@ namespace ProjectK.Notebook.ViewModels
         #region Properties
 
         // Model 
-        public dynamic Model { get; set; }
+        public virtual dynamic ModelA
+        {
+            get
+            {
+                var model = new NodeModel
+                {
+                    NodeId = this.Id,
+                    ParentId = ParentId,
+                    Name = Name,
+                    Created = Created,
+                    Context = Context,
+                };
+                return model;
+            }
+            set
+            {
+                if (!(value is NodeModel node)) return;
+                Id = node.NodeId;
+                ParentId = node.ParentId;
+                Name = node.Name;
+                Created = node.Created;
+                Context = node.Context;
+
+            }
+        }
 
         // Model Wrapper
-        //public Guid Id { get => Model.NodeId; set => this.Set(Model.NodeId, v => Model.NodeId = v, value); }
-        //public string Context { get => Model.Context; set => this.Set(Model.Context, v => Model.Context = v, value); }
-        //// public string Title { get => Model.Name; set => this.Set(Model.Name, v => Model.Name = v, value); }
-        //public DateTime Created { get => Model.Created; set => this.Set(Model.Created, v => Model.Created = v, value); }
-        //public Guid ParentId { get => Model.ParentId; set => this.Set(Model.ParentId, v => Model.ParentId = v, value); }
+        public Guid Id { get => _id; set => Set(ref _id, value); }
+        public Guid ParentId { get => _parentId; set => Set(ref _parentId, value); }
+        public string Name { get => _name; set => Set(ref _name, value); }
+        public DateTime Created { get => _created; set => Set(ref _created, value); }
+        public string Context { get => _context; set => Set(ref _context, value); }
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }
@@ -47,11 +76,7 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> TitleList { get; set; }
 
 
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set => Set(ref _isSelected, value);
-        }
+        public bool IsSelected { get => _isSelected; set => Set(ref _isSelected, value); }
 
         public bool IsExpanded
         {
@@ -73,7 +98,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public override string ToString()
         {
-            return $"{Model.Context}:{Model.Name}";
+            return $"{Context}:{Name}";
         }
 
         #endregion
@@ -97,7 +122,7 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var node in Nodes)
             {
                 node.SaveRecursively(list);
-                node.Model.ParentId = Model.NodeId;
+                node.ParentId = Id;
             }
         }
 
@@ -109,16 +134,16 @@ namespace ProjectK.Notebook.ViewModels
 
         public void TrySetId()
         {
-            if (Model.NodeId != Guid.Empty)
+            if (Id != Guid.Empty)
                 return;
 
-            Model.NodeId = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
 
         public virtual NodeViewModel AddNew()
         {
-            var subNode = new NodeViewModel { Model = { Name = "New Node", Created = DateTime.Now } };
+            var subNode = new NodeViewModel { Name = "New Node", Created = DateTime.Now };
 
             Add(subNode);
             FixContext(subNode);
@@ -128,8 +153,8 @@ namespace ProjectK.Notebook.ViewModels
 
         public void Add(NodeViewModel node)
         {
-            if (node.Model.Name == "Time Tracker2")
-                _logger.LogDebug((string)node.Model.Name);
+            if (node.Name == "Time Tracker2")
+                _logger.LogDebug((string)node.Name);
 
             node.Parent = this;
             Nodes.Add(node);
@@ -153,19 +178,19 @@ namespace ProjectK.Notebook.ViewModels
 
         public void ExtractContext(ObservableCollection<string> contextList)
         {
-            if (!string.IsNullOrEmpty(Model.Context) && !contextList.Contains(Model.Context))
-                contextList.Add(Model.Context);
+            if (!string.IsNullOrEmpty(Context) && !contextList.Contains(Context))
+                contextList.Add(Context);
 
             foreach (var node in Nodes)
                 node.ExtractContext(contextList);
         }
 
-        private void FixContext(string parent, string child, NodeViewModel node)
+        private void FixContext(string context, string child, NodeViewModel node)
         {
-            if (Model.Context != parent)
+            if (Context != context)
                 return;
 
-            node.Model.Context = child;
+            node.Context = child;
         }
 
         protected void FixContext(NodeViewModel node)
@@ -191,7 +216,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel FindNode(Guid id)
         {
-            if (Model.NodeId == id)
+            if (Id == id)
                 return this;
             foreach (var node in Nodes)
             {

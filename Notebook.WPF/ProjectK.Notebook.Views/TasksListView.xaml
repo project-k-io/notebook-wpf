@@ -45,15 +45,15 @@
                     <GridViewColumn Header="Context" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Model.Context}" Style="{StaticResource TextStyle}" />
+                                <TextBlock Text="{Binding Path=Context}" Style="{StaticResource TextStyle}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Path=Model.Type}" />
-                    <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Path=Model.Name}" />
-                    <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Path=Model.Description}" />
-                    <GridViewColumn Header="Started" Width="{StaticResource DateWidth}" DisplayMemberBinding="{Binding Path=Model.DateStarted, StringFormat={StaticResource DateFormatF}}" />
-                    <GridViewColumn Header="Ended" Width="{StaticResource DateWidth}" DisplayMemberBinding="{Binding Path=Model.DateEnded, StringFormat={StaticResource DateFormatF}}" />
+                    <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Path=Type}" />
+                    <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Path=Name}" />
+                    <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Path=Description}" />
+                    <GridViewColumn Header="Started" Width="{StaticResource DateWidth}" DisplayMemberBinding="{Binding Path=DateStarted, StringFormat={StaticResource DateFormatF}}" />
+                    <GridViewColumn Header="Ended" Width="{StaticResource DateWidth}" DisplayMemberBinding="{Binding Path=DateEnded, StringFormat={StaticResource DateFormatF}}" />
                     <GridViewColumn Header="Duration" Width="100"> 
                         <GridViewColumn.DisplayMemberBinding>
                             <MultiBinding StringFormat="{}{0:D1} hrs {1:D1} min" Mode="OneWay">

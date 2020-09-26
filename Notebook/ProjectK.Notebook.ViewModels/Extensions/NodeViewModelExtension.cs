@@ -35,7 +35,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     {
                         case KeyboardStates.IsShiftPressed:
                             node = item.Parent.AddNew();
-                            node.Model.Created = DateTime.Now;
+                            node.Created = DateTime.Now;
                             break;
                         case KeyboardStates.IsControlPressed:
                             var lastSubNode = item.Parent.LastSubNode;
@@ -46,8 +46,8 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 #if AK // AddNew
                                 m.Type = item.Type;
 #endif
-                                node.Model.Name = item.Model.Name;
-                                node.Model.Created = DateTime.Now;
+                                node.Name = item.Name;
+                                node.Created = DateTime.Now;
                             }
 
                             break;
@@ -60,7 +60,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     selectItem(item);
                     expandItem(item);
                     handled();
-                    _logger.LogDebug($"Added [{node.Model.Name}] to [{item.Model.Name}]");
+                    _logger.LogDebug($"Added [{node.Name}] to [{item.Name}]");
                     break;
                 case KeyboardKeys.Delete:
                     if (deleteMessageBox())

@@ -12,5 +12,12 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
             return model.SubType.ToUpper().Contains("SLEEP");
         }
+        public static bool IsSubTypeSleep(this TaskViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.SubType))
+                return false;
+
+            return model.SubType.ToUpper().Contains("SLEEP");
+        }
     }
 }

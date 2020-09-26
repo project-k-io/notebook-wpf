@@ -17,7 +17,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
         public static void ViewModelToModel(this NotebookModel notebookModel, NodeViewModel rootTask)
         {
-            Logger.LogDebug($@"Populate NotebookModel {notebookModel.Name} from TreeNode {rootTask.Model.Name}");
+            Logger.LogDebug($@"Populate NotebookModel {notebookModel.Name} from TreeNode {rootTask.Name}");
 
             var nodes = new List<NodeModel>();
             rootTask.SaveTo(nodes);
@@ -32,7 +32,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         }
         public static void ModelToViewModel(this NodeViewModel rootTask, NotebookModel notebookModel)
         {
-            Logger.LogDebug($@"Populate TreeNode {rootTask.Model.Name} from NotebookModel {notebookModel.Name}");
+            Logger.LogDebug($@"Populate TreeNode {rootTask.Name} from NotebookModel {notebookModel.Name}");
 
             var nodes = new List<NodeModel>();
             var notes = notebookModel.Notes.Cast<NodeModel>().ToList();
@@ -65,13 +65,13 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 {
                     if (model is TaskModel task)
                     {
-                        var vm = new TaskViewModel { Model = task };
+                        var vm = new TaskViewModel { ModelA = task };
                         index.Add(task.NodeId, vm);
                     }
                     else
                     {
 
-                        var vm = new NodeViewModel { Model = model };
+                        var vm = new NodeViewModel { ModelA = model };
                         index.Add(model.NodeId, vm);
                     }
                 }
