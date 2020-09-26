@@ -66,16 +66,6 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Constructors
-        public NodeViewModel()
-        {
-            Model = new NodeModel();
-        }
-
-        public NodeViewModel(NodeModel model)
-        {
-            Model = model;
-        }
-        
 
         #endregion
 
@@ -86,9 +76,9 @@ namespace ProjectK.Notebook.ViewModels
             return $"{Model.Context}:{Model.Name}";
         }
 
-#endregion
+        #endregion
 
-#region Public functions
+        #region Public functions
 
         public void SaveTo(List<NodeModel> list)
         {
@@ -128,7 +118,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public virtual NodeViewModel AddNew()
         {
-            var subNode = new NodeViewModel { Model = { Name = "New Node",  Created = DateTime.Now} };
+            var subNode = new NodeViewModel { Model = { Name = "New Node", Created = DateTime.Now } };
 
             Add(subNode);
             FixContext(subNode);
@@ -214,7 +204,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-#endregion
+        #endregion
 
     }
 }

@@ -50,7 +50,7 @@ namespace ProjectK.View.Helpers.Misc
                 view.SortDescriptions.Clear();
                 var sortDescription = new SortDescription(sortBy, direction);
                 view.SortDescriptions.Add(sortDescription);
-                view.Refresh();
+                view.DeferRefresh();
             }
             catch (Exception ex)
             {

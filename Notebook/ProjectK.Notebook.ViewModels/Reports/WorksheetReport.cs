@@ -74,8 +74,8 @@ namespace ProjectK.Notebook.ViewModels.Reports
             var firstTask = (TaskViewModel)t.Nodes.FirstOrDefault();
             var lastTask = (TaskViewModel)t.Nodes.LastOrDefault();
 
-            var dateStarted1 = firstTask?.DateStarted;
-            var dateStarted2 = lastTask?.DateStarted;
+            var dateStarted1 = firstTask?.Model.DateStarted;
+            var dateStarted2 = lastTask?.Model.DateStarted;
             sb.AppendLine("                       Alan Kharebov                                  ");
             sb.AppendLine();
             sb.AppendLine("                        Worksheet                                     ");
@@ -118,7 +118,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                     var lastNode = (NodeViewModel)nodes.LastOrDefault();
                     if (lastNode != null)
                     {
-                        var dateStarted = lastNode is TaskViewModel lastTask ? lastTask.DateStarted : DateTime.Now;
+                        var dateStarted = lastNode is TaskViewModel lastTask ? lastTask.Model.DateStarted : DateTime.Now;
                         File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", model.TextReport);
                     }
                 }

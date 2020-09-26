@@ -58,7 +58,7 @@ namespace ProjectK.Notebook.ViewModels
             {
                 var dateEnded = Model.DateEnded;
                 var dateTime = value;
-                DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
+                Model.DateEnded = new DateTime(dateEnded.Year, dateEnded.Month, dateEnded.Day, dateTime.Hour, dateTime.Minute,
                     dateTime.Second, dateTime.Millisecond);
                 RaisePropertyChanged(); //MC
                 RaisePropertyChanged("DateEnded");
@@ -82,10 +82,10 @@ namespace ProjectK.Notebook.ViewModels
         {
             get
             {
-                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
+                if (Model.DateStarted == DateTime.MinValue || Model.DateEnded == DateTime.MinValue)
                     return TimeSpan.Zero;
 
-                return DateEnded - DateStarted;
+                return Model.DateEnded - Model.DateStarted;
             }
         }
 
@@ -103,22 +103,15 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        public TaskViewModel() : base(new TaskModel())
-        {
-        }
-
-
 
         public void LoadFrom(Domain.Versions.Version1.TaskModel model)
         {
             IsSelected = model.IsSelected;
             IsExpanded = model.IsExpanded;
             Model.Description = model.Description;
-
             Model.Type = model.Type;
             DateStarted = model.DateStarted;
             DateEnded = model.DateEnded;
-
             Model.Name = model.Title;
 
             if (model.SubTasks.IsNullOrEmpty())
@@ -157,8 +150,8 @@ namespace ProjectK.Notebook.ViewModels
                 for (var index = 0; index < Nodes.Count; ++index)
                 {
                     var subTask = (TaskViewModel) Nodes[index];
-                    if (subTask.DateEnded == DateTime.MinValue && index < Nodes.Count - 1)
-                        subTask.DateEnded = ((TaskViewModel) Nodes[index + 1]).DateStarted;
+                    if (subTask.Model.DateEnded == DateTime.MinValue && index < Nodes.Count - 1)
+                        subTask.Model.DateEnded = ((TaskViewModel) Nodes[index + 1]).Model.DateStarted;
                 }
 
                 Total = TimeSpan.Zero;
@@ -170,11 +163,11 @@ namespace ProjectK.Notebook.ViewModels
                 }
 
                 var subTask1 = (TaskViewModel) Nodes[Nodes.Count - 1];
-                if (subTask1.DateEnded != DateTime.MinValue)
-                    DateEnded = subTask1.DateEnded;
+                if (subTask1.Model.DateEnded != DateTime.MinValue)
+                    DateEnded = subTask1.Model.DateEnded;
                 var subTask2 = (TaskViewModel) Nodes[0];
-                if (subTask2.DateStarted != DateTime.MinValue)
-                    DateStarted = subTask2.DateStarted;
+                if (subTask2.Model.DateStarted != DateTime.MinValue)
+                    DateStarted = subTask2.Model.DateStarted;
             }
         }
 
@@ -214,10 +207,10 @@ namespace ProjectK.Notebook.ViewModels
 
         private void FixTitles(TaskViewModel subTask, int ii)
         {
-            var getTitle1 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("yyyy"));
-            var getTitle2 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.ToString("MMMM"));
+            var getTitle1 = (Func<int, TaskViewModel, string>) ((i, t) => t.Model.DateStarted.ToString("yyyy"));
+            var getTitle2 = (Func<int, TaskViewModel, string>) ((i, t) => t.Model.DateStarted.ToString("MMMM"));
             var getTitle3 = (Func<int, TaskViewModel, string>) ((i, t) => "Week" + (i + 1));
-            var getTitle4 = (Func<int, TaskViewModel, string>) ((i, t) => t.DateStarted.DayOfWeek.ToString());
+            var getTitle4 = (Func<int, TaskViewModel, string>) ((i, t) => t.Model.DateStarted.DayOfWeek.ToString());
             FixTitles("Time Tracker", getTitle1, subTask, ii);
             FixTitles("Year", getTitle2, subTask, ii);
             FixTitles("Month", getTitle3, subTask, ii);
@@ -236,12 +229,13 @@ namespace ProjectK.Notebook.ViewModels
 
         public override NodeViewModel AddNew()
         {
-            var subTask = new TaskViewModel() { Model = { Name = "New Model"}, DateStarted = DateTime.Now, DateEnded = DateTime.Now};
+            var subTask = new TaskViewModel() { Model = { Name = "New Model", DateStarted = DateTime.Now, DateEnded = DateTime.Now}};
             Add(subTask);
             var ii = Nodes.IndexOf(subTask);
             FixContext(subTask);
             FixTitles(subTask, ii);
             return subTask;
         }
+
     }
 }

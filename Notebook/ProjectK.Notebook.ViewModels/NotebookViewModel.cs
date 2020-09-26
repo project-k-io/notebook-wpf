@@ -34,7 +34,7 @@ namespace ProjectK.Notebook.ViewModels
                 ParentId = Guid.Empty
             };
 
-            RootTask = new NodeViewModel(rootTask);
+            RootTask = new NodeViewModel { Model = rootTask };
 
             RootTask.Add(new NodeViewModel()
             {
@@ -47,7 +47,7 @@ namespace ProjectK.Notebook.ViewModels
         public NotebookViewModel(NotebookModel notebookModel)
         {
             _notebookModel = notebookModel;
-            RootTask = new NodeViewModel(notebookModel);
+            RootTask = new NodeViewModel { Model = notebookModel };
         }
 
 
@@ -89,7 +89,6 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();
-        public ObservableCollection<NodeModel> SelectedNodeView { get; } = new ObservableCollection<NodeModel>();
 
         public NodeViewModel RootTask { get; set; }
 
@@ -148,12 +147,6 @@ namespace ProjectK.Notebook.ViewModels
             SelectedTreeNode = task;
             SelectedNodeList.Clear();
             SelectedNodeList.AddToList(task);
-            SelectedNodeView.Clear();
-            foreach (var nodeViewModel in SelectedNodeList)
-            {
-                SelectedNodeView.Add(nodeViewModel.Model);
-            }
-
             OnSelectedDaysChanged();
             SelectedNode = !SelectedNodeList.IsNullOrEmpty() ? SelectedNodeList[0] : task;
             RaisePropertyChanged("SelectedNodeList");

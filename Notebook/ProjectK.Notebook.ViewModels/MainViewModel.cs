@@ -56,7 +56,7 @@ namespace ProjectK.Notebook.ViewModels
                 ParentId = Guid.Empty
             };
 
-            RootTask = new NodeViewModel(_rootModel);
+            RootTask = new NodeViewModel {Model = _rootModel};
 
 
             CanSave = true;
@@ -167,11 +167,6 @@ namespace ProjectK.Notebook.ViewModels
             get => _selectedNotebook;
             set => Set(ref _selectedNotebook, value);
         }
-        public NodeViewModel SelectedNode
-        {
-            get => _selectedTask;
-            set => Set(ref _selectedTask, value);
-        }
         public string ExcelCsvText
         {
             get => _excelCsvText;
@@ -261,15 +256,15 @@ namespace ProjectK.Notebook.ViewModels
                     _worksheetReport.GenerateReport(this);
                     break;
                 case ReportTypes.Notes:
-                    TextReport = _notesReport.GenerateReport(SelectedNode);
+                    TextReport = _notesReport.GenerateReport(SelectedNotebook.SelectedNode);
                     break;
             }
         }
 
         public void PrepareSettings()
         {
-            if (SelectedNode != null)
-                LastListTaskId = SelectedNode.Model.NodeId;
+            if (SelectedNotebook.SelectedNode != null)
+                LastListTaskId = SelectedNotebook.SelectedNode.Model.NodeId;
 
             if (SelectedNotebook?.SelectedTreeNode == null) return;
 
@@ -281,8 +276,6 @@ namespace ProjectK.Notebook.ViewModels
             task.TypeList = TypeList;
             task.ContextList = ContextList;
             task.TitleList = TaskTitleList;
-            SelectedNode = task;
-
             var notebook = FindNotebook(task);
             if (notebook != null)
             {
@@ -349,10 +342,10 @@ namespace ProjectK.Notebook.ViewModels
                 {
                     taskViewModel1 = new TaskViewModel()
                     {
-                        Model= { Name = dayOfTheWeek},
+                        Model= { Name = dayOfTheWeek,
                         DateStarted = excelCsvRecord.Day,
                         DateEnded = excelCsvRecord.Day
-                    };
+                    }};
                     selectedTreeTask.Nodes.Add(taskViewModel1);
                 }
 
@@ -391,7 +384,7 @@ namespace ProjectK.Notebook.ViewModels
                 dateTime1 = excelCsvRecord.End;
                 var second2 = dateTime1.Second;
                 var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
-                taskViewModel4.DateEnded = dateTime3;
+                taskViewModel4.Model.DateEnded = dateTime3;
                 taskViewModel2.Model.Description = $"{excelCsvRecord.Type1}:{excelCsvRecord.Type2}:{excelCsvRecord.SubTask}";
                 taskViewModel1.Nodes.Add(taskViewModel2);
             }
@@ -399,7 +392,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
-            SelectedNode?.KeyboardAction(
+            SelectedNotebook.SelectedNode?.KeyboardAction(
                 keyboardKeys,
                 () => keyboardState,
                 () => { }, t => t.IsSelected = true,

@@ -10,13 +10,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
     public static class NodeViewModelExtension
     {
-        public static void Init(this NodeViewModel vm, NodeModel m)
-        {
-            vm.Model.NodeId = m.NodeId;
-            vm.Model.Name = m.Name;
-            vm.Model.Created = m.Created;
-            vm.Model.Context = m.Context;
-        }
 
         private static readonly ILogger _logger = LogManager.GetLogger<TaskViewModel>();
         public static void KeyboardAction(

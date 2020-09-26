@@ -6,10 +6,13 @@
              mc:Ignorable="d"
              xmlns:views="clr-namespace:ProjectK.Notebook.Views"
              xmlns:converters="clr-namespace:ProjectK.Notebook.Views.Converters"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              d:DesignWidth="1000"
              d:DesignHeight="600">
     <UserControl.Resources>
         <converters:IndexConverter x:Key="IndexConverter"/>
+        <system:String x:Key="DateFormatF">{0:MM-dd-yyyy HH:mm:ss tt}</system:String>
+        <system:Double x:Key="DateWidth">150</system:Double>
         <Style x:Key="TextStyle" TargetType="{x:Type TextBlock}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Path=Context}" Value="Month">
@@ -32,8 +35,8 @@
                   ButtonBase.Click="ListViewTasks_OnClick"
                   x:Name="listViewTasks"
                   SelectionMode="Extended"
-                  ItemsSource="{Binding Path=SelectedNotebook.SelectedNodeView}"
-                  SelectedItem="{Binding Path=SelectedNotebook.SelectedNode, IsAsync=true}">
+                  ItemsSource="{Binding Path=SelectedNotebook.SelectedNodeList}"
+                  SelectedItem="{Binding Path=SelectedNotebook.SelectedNode, IsAsync=true, Mode=TwoWay}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn
@@ -42,16 +45,23 @@
                     <GridViewColumn Header="Context" Width="100">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Context}" Style="{StaticResource TextStyle}" />
+                                <TextBlock Text="{Binding Path=Model.Context}" Style="{StaticResource TextStyle}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Path=Type}" />
-                    <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Path=Name}" />
-                    <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Path=Description}" />
-                    <GridViewColumn Header="Started" Width="120" DisplayMemberBinding="{Binding Path=DateStarted, StringFormat=g}" />
-                    <GridViewColumn Header="Ended" Width="120" DisplayMemberBinding="{Binding Path=DateEnded, StringFormat=g}" />
-                    <GridViewColumn Header="Duration" Width="100" DisplayMemberBinding="{Binding Duration, StringFormat=d\:hh\:mm}" />
+                    <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Path=Model.Type}" />
+                    <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Path=Model.Name}" />
+                    <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Path=Model.Description}" />
+                    <GridViewColumn Header="Started" Width="{StaticResource DateWidth}" DisplayMemberBinding="{Binding Path=Model.DateStarted, StringFormat={StaticResource DateFormatF}}" />
+                    <GridViewColumn Header="Ended" Width="{StaticResource DateWidth}" DisplayMemberBinding="{Binding Path=Model.DateEnded, StringFormat={StaticResource DateFormatF}}" />
+                    <GridViewColumn Header="Duration" Width="100"> 
+                        <GridViewColumn.DisplayMemberBinding>
+                            <MultiBinding StringFormat="{}{0:D1} hrs {1:D1} min" Mode="OneWay">
+                                <Binding Path="Duration.Hours" />
+                                <Binding Path="Duration.Minutes" />
+                            </MultiBinding>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
                     <GridViewColumn Header="Total" Width="100"> 
                         <GridViewColumn.DisplayMemberBinding>
                             <MultiBinding StringFormat="{}{0:D1} days {1:D1} hrs {2:D1} min" Mode="OneWay">

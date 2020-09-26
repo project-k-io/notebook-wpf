@@ -167,7 +167,7 @@
                 syncfusion:DockingManager.DesiredWidthInDockedMode="200"
                 syncfusion:DockingManager.Header="Solution Explorer"
                 syncfusion:DockingManager.SideInDockedMode="Right">
-                <views:TaskView DataContext="{Binding Path=SelectedNode}"/>
+                <views:TaskView DataContext="{Binding Path= SelectedNotebook.SelectedNode}"/>
             </ContentControl>
             <ContentControl
                 x:Name="properties"

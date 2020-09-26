@@ -31,17 +31,17 @@ namespace ProjectK.Notebook.ViewModels.Design
             var thursday = new NodeViewModel { Model = { Name = "Thursday", Context = "Day" }, IsExpanded = true };
             var task1 = new TaskViewModel()
             {
-                Model = { Name = "Dinner", Context = "TaskModel" },
-                IsExpanded = true,
+                Model = { Name = "Dinner", Context = "TaskModel" ,
                 DateStarted = new DateTime(2020, 5, 14, 20, 34, 0),
-                DateEnded = new DateTime(2020, 5, 14, 21, 40, 0)
+                DateEnded = new DateTime(2020, 5, 14, 21, 40, 0)},
+                IsExpanded = true,
             };
             var task2 = new TaskViewModel()
             {
-                Model = { Name = "Movie", Context = "TaskModel" },
-                IsExpanded = true,
+                Model = { Name = "Movie", Context = "TaskModel" ,
                 DateStarted = new DateTime(2020, 5, 14, 21, 50, 0),
-                DateEnded = new DateTime(2020, 5, 14, 23, 20, 0)
+                DateEnded = new DateTime(2020, 5, 14, 23, 20, 0)},
+                IsExpanded = true,
             };
             thursday.Add(task1);
             thursday.Add(task2);
