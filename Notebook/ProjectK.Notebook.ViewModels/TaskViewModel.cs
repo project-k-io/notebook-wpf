@@ -13,44 +13,19 @@ namespace ProjectK.Notebook.ViewModels
     public class TaskViewModel : NodeViewModel
     {
         #region Fields
-        
+
+        // Model wrappers
         private string _type;
         private string _subType;
         private DateTime _dateStarted;
         private DateTime _dateEnded;
+
+        // Misc
         private TimeSpan _total;
 
         #endregion
 
-#region Properties
-#if AK
-        public override dynamic ModelA
-        {
-            get
-            {
-                var model = new TaskModel
-                {
-                    NodeId = this.Id,
-                    ParentId = ParentId,
-                    Name = Name,
-                    DateStarted = DateStarted,
-                    DateEnded = DateEnded,
-                    Description = Description,
-                    Type = Type,
-                    SubType = SubType,
-                };
-                return model;
-            }
-            set
-            {
-                if (!(value is TaskModel m)) return;
-                SetKind("Task");
-                base.Set(m);
-                Set(m);
-            }
-        }
-        // Model Properties
-#endif
+        #region Properties
         public TaskViewModel()
         {
             SetKind("Task");
@@ -63,6 +38,7 @@ namespace ProjectK.Notebook.ViewModels
             _type = model.Type;
             _subType = model.SubType;
         }
+
         public void ViewModelToModel(TaskModel model)
         {
             base.ViewModelToModel(model);
@@ -147,16 +123,16 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-#endregion
+        #endregion
 
-#region Commands
+        #region Commands
 
         public ICommand CommandSetStartedTime => new RelayCommand(SetStartedTime);
         public ICommand CommandSetEndedTime => new RelayCommand(SetEndedTime);
 
-#endregion
+        #endregion
 
-#region Private Funtions
+        #region Private Funtions
         private void SetStartedTime()
         {
             DateStarted = DateTime.Now;
@@ -234,7 +210,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-#endregion
+        #endregion
 
         protected void FixTitles(string parent, Func<int, TaskViewModel, string> getTitle, TaskViewModel subTask, int ii)
         {
@@ -282,8 +258,8 @@ namespace ProjectK.Notebook.ViewModels
             var subTask = new TaskViewModel
             {
                 Kind = "Task",
-                Name = "New Model", 
-                DateStarted = DateTime.Now, 
+                Name = "New Model",
+                DateStarted = DateTime.Now,
                 DateEnded = DateTime.Now
             };
             Add(subTask);

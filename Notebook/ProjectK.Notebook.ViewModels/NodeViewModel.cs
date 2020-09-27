@@ -18,15 +18,18 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Fields
 
-        private string _kind;
-        private bool _isExpanded;
-        private bool _isSelected;
+        // Model Wrappers
         private Guid _id;
+        private Guid _parentId;
         private string _context;
         private string _name;
         private DateTime _created;
-        private Guid _parentId;
         private string _description;
+
+        // Misc
+        private string _kind;
+        private bool _isExpanded;
+        private bool _isSelected;
 
         #endregion
 
