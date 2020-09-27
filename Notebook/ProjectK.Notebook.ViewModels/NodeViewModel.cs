@@ -147,7 +147,12 @@ namespace ProjectK.Notebook.ViewModels
 
         public virtual NodeViewModel AddNew()
         {
-            var subNode = new NodeViewModel { Name = "New Node", Created = DateTime.Now };
+            var subNode = new NodeViewModel
+            {
+                Kind = "Node",
+                Name = "New Node", 
+                Created = DateTime.Now
+            };
 
             Add(subNode);
             FixContext(subNode);

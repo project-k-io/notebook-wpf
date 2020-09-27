@@ -7,9 +7,21 @@
              xmlns:views="clr-namespace:ProjectK.Notebook.Views"
              xmlns:items="clr-namespace:ProjectK.Notebook.Views.Items"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="350" d:DesignWidth="400">
     <UserControl.Resources>
+        <viewModels:TaskViewModel x:Key="Model"
+                                  Kind="Task"
+                                  Name="May"
+                                  Context="Month"
+                                  Type="TaskModel"
+                                  SubType="Testing"
+                                  Description="Task Description"
+                                  DateStarted="{x:Static system:DateTime.Now}"
+                                  DateEnded="{x:Static system:DateTime.Now}"
+        >
+        </viewModels:TaskViewModel>
 
         <!--Create two DataTemplate objects to be   selected by the DataTemplateSelector.-->
         <DataTemplate x:Key="NodeView">
@@ -29,11 +41,9 @@
                                                         NoteTemplate="{StaticResource NoteView}"/>
 
     </UserControl.Resources>
-    <Grid>
+    <Grid d:DataContext="{StaticResource Model}">
         <StackPanel>
-            <Label Content="{Binding Kind}"></Label>
-            <!--Bind the content of the Label to the selected item   in the ComboBox.-->
-            <ComboBox Name="itemViewList" SelectedValue="{Binding Path=Kind, Mode=TwoWay}">
+            <ComboBox Name="itemViewList" SelectedValue="{Binding Path=Kind, Mode=TwoWay}" >
                 <system:String>Node</system:String>
                 <system:String>Note</system:String>
                 <system:String>Task</system:String>

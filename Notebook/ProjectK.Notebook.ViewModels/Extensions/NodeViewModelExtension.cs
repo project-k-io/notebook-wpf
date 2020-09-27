@@ -44,7 +44,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                             if (lastSubNode != null)
                             {
 #if AK // AddNew
-                                m.Type = item.Type;
+                                node.Type = item.Type;
 #endif
                                 node.Name = item.Name;
                                 node.Created = DateTime.Now;
