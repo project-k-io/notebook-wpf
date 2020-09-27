@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using ProjectK.Notebook.Domain;
@@ -13,7 +14,6 @@ namespace ProjectK.Notebook.ViewModels
     {
         #region Fields
         
-        private string _description;
         private string _type;
         private string _subType;
         private DateTime _dateStarted;
@@ -22,8 +22,8 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        #region Properties
-
+#region Properties
+#if AK
         public override dynamic ModelA
         {
             get
@@ -44,20 +44,33 @@ namespace ProjectK.Notebook.ViewModels
             set
             {
                 if (!(value is TaskModel m)) return;
-                Kind = "Task";
-                Id = m.NodeId;
-                ParentId = m.ParentId;
-                Name = m.Name;
-                DateStarted = m.DateStarted;
-                DateEnded = m.DateEnded;
-                Context = m.Context;
-                Description = m.Description;
-                Type = m.Type;
-                SubType = m.SubType;
+                SetKind("Task");
+                base.Set(m);
+                Set(m);
             }
         }
         // Model Properties
-        public string Description { get => _description; set => Set(ref _description, value); }
+#endif
+        public TaskViewModel()
+        {
+            SetKind("Task");
+        }
+        public TaskViewModel(TaskModel model) : base(model)
+        {
+            SetKind("Task");
+            _dateStarted = model.DateStarted;
+            _dateEnded = model.DateEnded;
+            _type = model.Type;
+            _subType = model.SubType;
+        }
+        public void ViewModelToModel(TaskModel model)
+        {
+            base.ViewModelToModel(model);
+            model.DateStarted = DateStarted;
+            model.DateEnded = DateEnded;
+            model.Type = Type;
+            model.SubType = SubType;
+        }
         public string Type { get => _type; set => Set(ref _type, value); }
         public string SubType { get => _subType; set => Set(ref _subType, value); }
         public DateTime DateStarted
@@ -134,16 +147,16 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        #endregion
+#endregion
 
-        #region Commands
+#region Commands
 
         public ICommand CommandSetStartedTime => new RelayCommand(SetStartedTime);
         public ICommand CommandSetEndedTime => new RelayCommand(SetEndedTime);
 
-        #endregion
+#endregion
 
-        #region Private Funtions
+#region Private Funtions
         private void SetStartedTime()
         {
             DateStarted = DateTime.Now;
@@ -221,7 +234,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        #endregion
+#endregion
 
         protected void FixTitles(string parent, Func<int, TaskViewModel, string> getTitle, TaskViewModel subTask, int ii)
         {

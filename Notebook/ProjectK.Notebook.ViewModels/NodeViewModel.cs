@@ -26,6 +26,7 @@ namespace ProjectK.Notebook.ViewModels
         private string _name;
         private DateTime _created;
         private Guid _parentId;
+        private string _description;
 
         #endregion
 
@@ -38,33 +39,35 @@ namespace ProjectK.Notebook.ViewModels
         #region Properties
 
         // Model 
-        public virtual dynamic ModelA
+
+        public NodeViewModel()
         {
-            get
-            {
-                var model = new NodeModel
-                {
-                    NodeId = this.Id,
-                    ParentId = ParentId,
-                    Name = Name,
-                    Created = Created,
-                    Context = Context,
-                };
-                return model;
-            }
-            set
-            {
-
-                if (!(value is NodeModel node)) return;
-                Kind = "Node";
-                Id = node.NodeId;
-                ParentId = node.ParentId;
-                Name = node.Name;
-                Created = node.Created;
-                Context = node.Context;
-
-            }
+            SetKind("Node");
         }
+        public NodeViewModel(NodeModel model): this()
+        {
+            SetKind("Node");
+            _id = model.NodeId;
+            _parentId = model.ParentId;
+            _name = model.Name;
+            _created = model.Created;
+            _context = model.Context;
+        }
+
+        public void SetKind(string kind)
+        {
+            _kind = kind;
+        }
+
+        public void ViewModelToModel(NodeModel model)
+        {
+            model.NodeId = Id;
+            model.ParentId = ParentId;
+            model.Name = Name;
+            model.Created = Created;
+            model.Context = Context;
+        }
+
 
         // Model Wrapper
         public string Kind { get => _kind; set => Set(ref _kind, value); }
@@ -73,6 +76,7 @@ namespace ProjectK.Notebook.ViewModels
         public string Name { get => _name; set => Set(ref _name, value); }
         public DateTime Created { get => _created; set => Set(ref _created, value); }
         public string Context { get => _context; set => Set(ref _context, value); }
+        public string Description { get => _description; set => Set(ref _description, value); }
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }

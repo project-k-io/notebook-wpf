@@ -56,7 +56,7 @@ namespace ProjectK.Notebook.ViewModels
                 ParentId = Guid.Empty
             };
 
-            RootTask = new NodeViewModel { ModelA = _rootModel};
+            RootTask = new NodeViewModel(_rootModel);
 
 
             CanSave = true;

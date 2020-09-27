@@ -65,13 +65,12 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 {
                     if (model is TaskModel task)
                     {
-                        var vm = new TaskViewModel { ModelA = task };
+                        var vm = new TaskViewModel(task);
                         index.Add(task.NodeId, vm);
                     }
                     else
                     {
-
-                        var vm = new NodeViewModel { ModelA = model };
+                        var vm = new NodeViewModel(model);
                         index.Add(model.NodeId, vm);
                     }
                 }

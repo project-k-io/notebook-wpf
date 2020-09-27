@@ -34,7 +34,7 @@ namespace ProjectK.Notebook.ViewModels
                 ParentId = Guid.Empty
             };
 
-            RootTask = new NodeViewModel { ModelA = rootTask };
+            RootTask = new NodeViewModel(rootTask);
 
             RootTask.Add(new NodeViewModel()
             {
@@ -47,7 +47,7 @@ namespace ProjectK.Notebook.ViewModels
         public NotebookViewModel(NotebookModel notebookModel)
         {
             _notebookModel = notebookModel;
-            RootTask = new NodeViewModel { ModelA = notebookModel };
+            RootTask = new NodeViewModel(notebookModel);
         }
 
 
