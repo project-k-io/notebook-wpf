@@ -18,6 +18,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Fields
 
+        private string _kind;
         private bool _isExpanded;
         private bool _isSelected;
         private Guid _id;
@@ -53,7 +54,9 @@ namespace ProjectK.Notebook.ViewModels
             }
             set
             {
+
                 if (!(value is NodeModel node)) return;
+                Kind = "Node";
                 Id = node.NodeId;
                 ParentId = node.ParentId;
                 Name = node.Name;
@@ -64,6 +67,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         // Model Wrapper
+        public string Kind { get => _kind; set => Set(ref _kind, value); }
         public Guid Id { get => _id; set => Set(ref _id, value); }
         public Guid ParentId { get => _parentId; set => Set(ref _parentId, value); }
         public string Name { get => _name; set => Set(ref _name, value); }

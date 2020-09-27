@@ -9,6 +9,7 @@
         xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
         xmlns:output="clr-namespace:ProjectK.Views.Output;assembly=ProjectK.Views"
         xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+        xmlns:items="clr-namespace:ProjectK.Notebook.Views.Items;assembly=ProjectK.Notebook.Views"
         MinWidth="800" MinHeight="600" WindowStartupLocation="CenterOwner"
         Icon="/Images/apple_time_machine_alt.png"
         Title="{Binding Path=Title}"
@@ -167,7 +168,7 @@
                 syncfusion:DockingManager.DesiredWidthInDockedMode="200"
                 syncfusion:DockingManager.Header="Solution Explorer"
                 syncfusion:DockingManager.SideInDockedMode="Right">
-                <views:TaskView DataContext="{Binding Path= SelectedNotebook.SelectedNode}"/>
+                <items:ItemView DataContext="{Binding Path= SelectedNotebook.SelectedNode}"/>
             </ContentControl>
             <ContentControl
                 x:Name="properties"

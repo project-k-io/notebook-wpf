@@ -43,6 +43,7 @@ namespace ProjectK.Notebook.ViewModels
             set
             {
                 if (!(value is TaskModel m)) return;
+                Kind = "Task";
                 Id = m.NodeId;
                 ParentId = m.ParentId;
                 Name = m.Name;
