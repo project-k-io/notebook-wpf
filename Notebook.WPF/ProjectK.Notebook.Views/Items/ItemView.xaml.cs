@@ -11,17 +11,6 @@ namespace ProjectK.Notebook.Views.Items
         public ItemView()
         {
             InitializeComponent();
-            DataContextChanged += OnDataContextChanged;
-        }
-
-        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            
-        }
-
-        private void ItemViewList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
         }
     }
 }

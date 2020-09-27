@@ -13,7 +13,7 @@
 
         <!--Create two DataTemplate objects to be   selected by the DataTemplateSelector.-->
         <DataTemplate x:Key="NodeView">
-            <Label>Node View</Label>
+            <items:NodeView DataContext="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=DataContext}"/>
         </DataTemplate>
         <DataTemplate x:Key="NoteView">
             <Label>Note View</Label>
@@ -33,7 +33,7 @@
         <StackPanel>
             <Label Content="{Binding Kind}"></Label>
             <!--Bind the content of the Label to the selected item   in the ComboBox.-->
-            <ComboBox Name="itemViewList" SelectionChanged="ItemViewList_OnSelectionChanged" SelectedValue="{Binding Path=Kind, Mode=TwoWay}">
+            <ComboBox Name="itemViewList" SelectedValue="{Binding Path=Kind, Mode=TwoWay}">
                 <system:String>Node</system:String>
                 <system:String>Note</system:String>
                 <system:String>Task</system:String>
