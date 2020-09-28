@@ -21,10 +21,10 @@ namespace ProjectK.Notebook.ViewModels
         #region Fields
 
         // Model wrappers
-        private string _type;
-        private string _subType;
-        private DateTime _dateStarted;
-        private DateTime _dateEnded;
+        //private string _type;
+        //private string _subType;
+        //private DateTime _dateStarted;
+        //private DateTime _dateEnded;
 
         // Misc
         private TimeSpan _total;
@@ -35,14 +35,11 @@ namespace ProjectK.Notebook.ViewModels
         public TaskViewModel()
         {
             SetKind("Task");
+            Model = new TaskModel();
         }
-        public TaskViewModel(TaskModel model) : base(model)
+        public TaskViewModel(TaskModel model): base(model)
         {
             SetKind("Task");
-            _dateStarted = model.DateStarted;
-            _dateEnded = model.DateEnded;
-            _type = model.Type;
-            _subType = model.SubType;
         }
 
         public void ViewModelToModel(TaskModel model)
@@ -53,24 +50,24 @@ namespace ProjectK.Notebook.ViewModels
             model.Type = Type;
             model.SubType = SubType;
         }
-        public string Type { get => _type; set => Set(ref _type, value); }
-        public string SubType { get => _subType; set => Set(ref _subType, value); }
+        public string Type { get => Model.Type; set => this.Set(Type, v => Model.Type = v, value); }
+        public string SubType { get => Model.SubType; set => this.Set(SubType, v => Model.SubType = v, value); }
         public DateTime DateStarted
         {
-            get => _dateStarted;
+            get => Model.DateStarted;
             set
             {
-                if (!this.Set(ref _dateStarted, value)) return;
+                if (!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
                 RaisePropertyChanged("TimeStarted");
                 RaisePropertyChanged("Duration");
             }
         }
         public DateTime DateEnded
         {
-            get => _dateEnded;
+            get => Model.DateEnded;
             set
             {
-                if (!this.Set(ref _dateEnded, value)) return;
+                if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
                 RaisePropertyChanged("TimeEnded");
                 RaisePropertyChanged("Duration");
             }

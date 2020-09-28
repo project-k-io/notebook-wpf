@@ -19,12 +19,13 @@ namespace ProjectK.Notebook.ViewModels
         #region Fields
 
         // Model Wrappers
-        private Guid _id;
-        private Guid _parentId;
-        private string _context;
-        private string _name;
-        private DateTime _created;
-        private string _description;
+        //private Guid _id;
+        //private Guid _parentId;
+        //private string _context;
+        //private string _name;
+        //private DateTime _created;
+        //private string _description;
+        protected dynamic Model;
 
         // Misc
         private string _kind;
@@ -47,15 +48,12 @@ namespace ProjectK.Notebook.ViewModels
         public NodeViewModel()
         {
             SetKind("Node");
+            Model = new NodeModel();
         }
         public NodeViewModel(NodeModel model): this()
         {
             SetKind("Node");
-            _id = model.NodeId;
-            _parentId = model.ParentId;
-            _name = model.Name;
-            _created = model.Created;
-            _context = model.Context;
+            Model = model;
         }
 
         public void SetKind(string kind)
@@ -65,6 +63,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void ViewModelToModel(NodeModel model)
         {
+            SetKind("Node");
             model.NodeId = Id;
             model.ParentId = ParentId;
             model.Name = Name;
@@ -75,12 +74,12 @@ namespace ProjectK.Notebook.ViewModels
 
         // Model Wrapper
         public string Kind { get => _kind; set => Set(ref _kind, value); }
-        public Guid Id { get => _id; set => Set(ref _id, value); }
-        public Guid ParentId { get => _parentId; set => Set(ref _parentId, value); }
-        public string Name { get => _name; set => Set(ref _name, value); }
-        public DateTime Created { get => _created; set => Set(ref _created, value); }
-        public string Context { get => _context; set => Set(ref _context, value); }
-        public string Description { get => _description; set => Set(ref _description, value); }
+        public Guid Id { get => Model.NodeId; set => this.Set(Id, v => Model.NodeId = v, value); }
+        public Guid ParentId { get => Model.ParentId; set => this.Set(ParentId, v => Model.ParentId = v, value); }
+        public string Name { get => Model.Name; set => this.Set(Name, v => Model.Name = v, value); }
+        public DateTime Created { get => Model.Created; set => this.Set(Created, v => Model.Created = v, value); }
+        public string Context { get => Model.Context; set => this.Set(Context, v => Model.Context = v, value); }
+        public string Description { get => Model.Description; set => this.Set(Description, v => Model.Description = v, value); }
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }
