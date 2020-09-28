@@ -282,6 +282,7 @@ namespace ProjectK.Notebook.ViewModels
                 return;
 
             Logger?.LogDebug($@"[Task] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+            IsModified = true;
         }
     }
 }

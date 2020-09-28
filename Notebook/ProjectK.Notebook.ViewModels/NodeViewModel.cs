@@ -30,6 +30,7 @@ namespace ProjectK.Notebook.ViewModels
         private string _kind;
         private bool _isExpanded;
         private bool _isSelected;
+        private bool _isModified;
 
         #endregion
 
@@ -88,6 +89,7 @@ namespace ProjectK.Notebook.ViewModels
 
 
         public bool IsSelected { get => _isSelected; set => Set(ref _isSelected, value); }
+        public bool IsModified { get => _isModified; set => Set(ref _isModified, value); }
 
         public bool IsExpanded
         {
@@ -119,6 +121,7 @@ namespace ProjectK.Notebook.ViewModels
                 return;
 
             Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+            IsModified = true;
         }
 
         #endregion

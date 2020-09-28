@@ -11,6 +11,7 @@
              d:DesignWidth="450" d:DesignHeight="200">
     <UserControl.Resources>
         <design:DesignViewModel x:Key="Model"/>
+        <converters:LevelToIndentConverter x:Key="LevelIndentConverter" />
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Focusable" Value="false" />
             <Setter Property="Width" Value="19" />
@@ -41,13 +42,20 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <converters:LevelToIndentConverter x:Key="LevelIndentConverter" />
-        <DataTemplate x:Key="CellTemplateName">
+
+        <DataTemplate x:Key="CellTemplateName" DataType="viewModels:NodeViewModel">
             <DockPanel>
-                <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" ClickMode="Press"
-                              Margin="{Binding Level, Converter={StaticResource LevelIndentConverter}, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}"
-                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}" />
-                <TextBlock Text="{Binding Path=Name}" />
+                <ToggleButton 
+                    x:Name="Expander" 
+                    Style="{StaticResource ExpandCollapseToggleStyle}" 
+                    ClickMode="Press"
+                    Margin="{Binding Level, 
+                        Converter={StaticResource LevelIndentConverter}, 
+                        RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}"
+                    IsChecked="{Binding Path=IsExpanded, 
+                        RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}" />
+
+                <TextBlock Text="{Binding Path=Name}"/>
             </DockPanel>
             <DataTemplate.Triggers>
                 <DataTrigger Value="False"
@@ -58,6 +66,27 @@
         </DataTemplate>
         <GridViewColumnCollection x:Key="Columns">
             <GridViewColumn Header="Title" CellTemplate="{StaticResource CellTemplateName}" Width="200" />
+            <GridViewColumn Header="M">
+                <GridViewColumn.CellTemplate>
+                    <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
+                        <Image Width="16" Height="16" Margin="3,0">
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsModified }" Value="false">
+                                            <Setter Property="Source" Value="Images\icons8_cloud_checked_32px.png"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=IsModified}" Value="true">
+                                            <Setter Property="Source" Value="Images\icons8_no_synchronize_32px_1.png"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <!--<Image Source="/ProjectK.Notebook.Views;component/icons8-no-synchronize-32.png" Width="16"/>-->
+                    </DataTemplate>
+                </GridViewColumn.CellTemplate>
+            </GridViewColumn>
             <GridViewColumn Header="Day" Width="60" DisplayMemberBinding="{Binding DateStarted}" />
             <GridViewColumn Header="Start" Width="70">
                 <GridViewColumn.CellTemplate>

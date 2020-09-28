@@ -41,6 +41,7 @@ namespace ProjectK.Notebook.ViewModels.Design
             };
             var task2 = new TaskViewModel()
             {
+                IsModified = true,
                 Name = "Movie",
                 Context = "TaskModel",
                 DateStarted = new DateTime(2020, 5, 14, 21, 50, 0),

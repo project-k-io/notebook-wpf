@@ -6,6 +6,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="icons8-no-synchronize-32.png" />
+	  <None Remove="Images\CloudOK_16x.png" />
+	  <None Remove="Images\CloudRefresh_16x.png" />
+	  <None Remove="Images\icons8-cloud-sync-32.png" />
+	  <None Remove="Images\icons8-no-synchronize-32.png" />
+	  <None Remove="Images\icons8_cloud_checked_32px.png" />
+	  <None Remove="Images\icons8_no_synchronize_32px_1.png" />
+	  <None Remove="Images\modify.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
 	  <PackageReference Include="Syncfusion.SfInput.WPF" Version="18.2.0.59" />
 	</ItemGroup>
@@ -20,6 +31,12 @@
 	  <Reference Include="Syncfusion.Shared.WPF">
 	    <HintPath>..\..\..\..\..\.nuget\packages\syncfusion.shared.wpf\18.2.0.58\lib\netcoreapp5.0\Syncfusion.Shared.WPF.dll</HintPath>
 	  </Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="icons8-no-synchronize-32.png" />
+	  <Resource Include="Images\icons8_cloud_checked_32px.png" />
+	  <Resource Include="Images\icons8_no_synchronize_32px_1.png" />
 	</ItemGroup>
 
 </Project>
