@@ -198,12 +198,11 @@ namespace ProjectK.Notebook.ViewModels
 
         public void Add(NodeViewModel node)
         {
-            if (node.Name == "Time Tracker2")
-                Logger?.LogDebug((string)node.Name);
-
-            node.Parent = this;
+            node.SetParent(this);
             Nodes.Add(node);
         }
+
+
 
         public void Remove(NodeViewModel node)
         {
@@ -211,18 +210,23 @@ namespace ProjectK.Notebook.ViewModels
             Nodes.Remove(node);
         }
 
-
         public void Insert(int index, NodeViewModel node)
         {
-            node.Parent = this;
+            node.SetParent(this);
             Nodes.Insert(index, node);
+        }
+
+        public void SetParent(NodeViewModel node)
+        {
+            Parent = node;
+            ParentId = node.Id;
         }
 
         public void SetParents()
         {
             foreach (var node in Nodes)
             {
-                node.Parent = this;
+                node.SetParent(this);
                 node.SetParents();
             }
         }
