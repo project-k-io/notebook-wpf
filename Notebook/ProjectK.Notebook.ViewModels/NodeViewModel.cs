@@ -205,6 +205,13 @@ namespace ProjectK.Notebook.ViewModels
             Nodes.Add(node);
         }
 
+        public void Remove(NodeViewModel node)
+        {
+            node.ParentId = Guid.Empty;
+            Nodes.Remove(node);
+        }
+
+
         public void Insert(int index, NodeViewModel node)
         {
             node.Parent = this;

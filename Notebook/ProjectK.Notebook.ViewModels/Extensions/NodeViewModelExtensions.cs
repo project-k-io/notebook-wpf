@@ -71,7 +71,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         break;
 
                     var num1 = parent.Nodes.IndexOf(item);
-                    dispatcher(() => parent.Nodes.Remove(item));
+                    dispatcher(() => parent.Remove(item));
 
                     var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
                     if (parentNode == null)
@@ -90,7 +90,9 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         var parent2 = parent1.Parent;
                         if (parent2 == null)
                             break;
-                        parent1.Nodes.Remove(item);
+
+                        parent1.Remove(item);
+
                         var num2 = parent2.Nodes.IndexOf(parent1);
                         parent2.Insert(num2 + 1, item);
                         selectItem(item);
@@ -112,7 +114,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         if (parentNode2 == null)
                             break;
 
-                        parent1.Nodes.Remove(item);
+                        parent1.Remove(item);
                         parentNode2.Add(item);
                         selectItem(item);
                         parent1.IsExpanded = true;
@@ -130,7 +132,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         var num2 = parent1.Nodes.IndexOf(item);
                         if (num2 <= 0)
                             break;
-                        parent1.Nodes.Remove(item);
+                        parent1.Remove(item);
                         parent1.Insert(num2 - 1, item);
                         selectItem(item);
                         parent1.IsExpanded = true;
@@ -148,7 +150,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         var num2 = parent1.Nodes.IndexOf(item);
                         if (num2 >= parent1.Nodes.Count - 1)
                             break;
-                        parent1.Nodes.Remove(item);
+                        parent1.Remove(item);
                         parent1.Insert(num2 + 1, item);
                         selectItem(item);
                         parent1.IsExpanded = true;
