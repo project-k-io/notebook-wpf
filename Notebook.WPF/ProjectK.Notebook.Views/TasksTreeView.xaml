@@ -8,10 +8,9 @@
              xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
              xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
              xmlns:treeViewList="clr-namespace:ProjectK.Views.TreeViewList;assembly=ProjectK.Views"
-             d:DataContext="{d:DesignInstance Type=design:DesignViewModel, IsDesignTimeCreatable=true}"
-             d:DesignWidth="545.465" d:DesignHeight="248.282">
-    <FrameworkElement.Resources>
-
+             d:DesignWidth="450" d:DesignHeight="200">
+    <UserControl.Resources>
+        <design:DesignViewModel x:Key="Model"/>
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Focusable" Value="false" />
             <Setter Property="Width" Value="19" />
@@ -153,8 +152,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-    </FrameworkElement.Resources>
-    <Grid>
+    </UserControl.Resources>
+    <Grid d:DataContext="{StaticResource Model}">
         <FrameworkElement.Resources>
             <HierarchicalDataTemplate x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
                                       DataType="{x:Type viewModels:NodeViewModel}"
