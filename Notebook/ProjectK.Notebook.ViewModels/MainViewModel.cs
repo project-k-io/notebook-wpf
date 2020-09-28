@@ -75,13 +75,13 @@ namespace ProjectK.Notebook.ViewModels
             ExportSelectedAllAsTextCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
             ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
             OpenDatabaseCommand = new RelayCommand(OpenDatabase);
-            CloseDatabaseCommand = new RelayCommand(CloseDatabase);
+            SyncDatabaseCommand = new RelayCommand(SyncDatabase);
 
             CurrentNotebookChanged += OnCurrentNotebookChanged;
 
         }
 
-        public virtual void CloseDatabase()
+        public virtual void SyncDatabase()
         {
             throw new NotImplementedException();
         }
@@ -122,7 +122,7 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand ExportSelectedAllAsTextCommand { get; }
         public ICommand ExportSelectedAllAsJsonCommand { get; }
         public ICommand OpenDatabaseCommand { get; }
-        public ICommand CloseDatabaseCommand { get; }
+        public ICommand SyncDatabaseCommand { get; }
 
 
 

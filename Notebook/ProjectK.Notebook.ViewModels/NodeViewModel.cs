@@ -3,13 +3,22 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels
 {
+    public enum ModifiedStatus
+    {
+        None,
+        Modified,
+        ChildModified
+    }
+
     public class NodeViewModel : ViewModelBase, ITreeNode<NodeViewModel>
     {
         #region Static Fields
@@ -31,7 +40,7 @@ namespace ProjectK.Notebook.ViewModels
         private string _kind;
         private bool _isExpanded;
         private bool _isSelected;
-        private bool _isModified;
+        private ModifiedStatus _modified;
 
         #endregion
 
@@ -88,7 +97,7 @@ namespace ProjectK.Notebook.ViewModels
 
 
         public bool IsSelected { get => _isSelected; set => Set(ref _isSelected, value); }
-        public bool IsModified { get => _isModified; set => Set(ref _isModified, value); }
+        public ModifiedStatus Modified { get => _modified; set => Set(ref _modified, value); }
 
         public bool IsExpanded
         {
@@ -116,14 +125,23 @@ namespace ProjectK.Notebook.ViewModels
         public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default(T), T newValue = default(T), bool broadcast = false)
         {
             base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
-            if (propertyName == "IsSelected")
-                return;
+            if (!IsNodeModelProperty(propertyName)) return;
 
             Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
-            IsModified = true;
+            Modified = ModifiedStatus.Modified;
+            SetParentChildModified();
+            MessengerInstance.Send(new NotificationMessage<NodeModel>(Model, "Modified"));
         }
 
         #endregion
+
+        private static bool IsNodeModelProperty(string n) => 
+            n == "Id" || 
+            n == "ParentId" || 
+            n == "Name" || 
+            n == "Created" || 
+            n == "Context" || 
+            n == "Description";
 
         #region Public functions
 
@@ -202,6 +220,32 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
+        public void ResetModified()
+        {
+            this.Execute(a =>
+            {
+                if (a.Modified == ModifiedStatus.Modified)
+                    a.Modified = ModifiedStatus.None;
+            });
+        }
+        public void SetParentChildModified()
+        {
+            this.UpAction(a =>
+            {
+                 a.Modified = ModifiedStatus.ChildModified;
+            });
+        }
+
+        public void ResetParentChildModified()
+        {
+            this.Execute(a =>
+            {
+                if (a.Modified == ModifiedStatus.ChildModified)
+                    a.Modified = ModifiedStatus.None;
+            });
+        }
+
+
 
         public void ExtractContext(ObservableCollection<string> contextList)
         {
@@ -245,6 +289,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             if (Id == id)
                 return this;
+
             foreach (var node in Nodes)
             {
                 var findNode = node.FindNode(id);

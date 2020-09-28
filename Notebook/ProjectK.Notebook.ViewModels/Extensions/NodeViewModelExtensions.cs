@@ -3,12 +3,13 @@ using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.ViewModels.Enums;
+using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
 
 
-    public static class NodeViewModelExtension
+    public static class NodeViewModelExtensions
     {
 
         private static readonly ILogger _logger = LogManager.GetLogger<TaskViewModel>();
@@ -159,5 +160,25 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             }
         }
 
+        public static void Execute(this NodeViewModel model,  Action<NodeViewModel> action)
+        {
+            action(model);
+            foreach (var node in model.Nodes)
+            {
+                node.Execute(action);
+            }
+        }
+
+        public static void UpAction(this NodeViewModel model, Action<NodeViewModel> action)
+        {
+            if(model.Parent == null)
+                return;
+
+            action(model.Parent);
+            model.Parent.UpAction(action);
+        }
+
     }
+
+
 }

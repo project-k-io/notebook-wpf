@@ -11,8 +11,17 @@
 	  <None Remove="Images\CloudRefresh_16x.png" />
 	  <None Remove="Images\icons8-cloud-sync-32.png" />
 	  <None Remove="Images\icons8-no-synchronize-32.png" />
+	  <None Remove="Images\icons8_checkmark_48px.png" />
 	  <None Remove="Images\icons8_cloud_checked_32px.png" />
+	  <None Remove="Images\icons8_cloud_sync_48px.png" />
+	  <None Remove="Images\icons8_documents_folder_48px.png" />
+	  <None Remove="Images\icons8_double_tick_48px.png" />
+	  <None Remove="Images\icons8_expand_arrow_48px.png" />
+	  <None Remove="Images\icons8_file_48px.png" />
+	  <None Remove="Images\icons8_folder_tree_48px.png" />
 	  <None Remove="Images\icons8_no_synchronize_32px_1.png" />
+	  <None Remove="Images\icons8_storm_32px.png" />
+	  <None Remove="Images\icons8_synchronize_48px.png" />
 	  <None Remove="Images\modify.png" />
 	</ItemGroup>
 
@@ -35,8 +44,17 @@
 
 	<ItemGroup>
 	  <Resource Include="icons8-no-synchronize-32.png" />
+	  <Resource Include="Images\icons8_checkmark_48px.png" />
 	  <Resource Include="Images\icons8_cloud_checked_32px.png" />
+	  <Resource Include="Images\icons8_cloud_sync_48px.png" />
+	  <Resource Include="Images\icons8_documents_folder_48px.png" />
+	  <Resource Include="Images\icons8_double_tick_48px.png" />
+	  <Resource Include="Images\icons8_expand_arrow_48px.png" />
+	  <Resource Include="Images\icons8_file_48px.png" />
+	  <Resource Include="Images\icons8_folder_tree_48px.png" />
 	  <Resource Include="Images\icons8_no_synchronize_32px_1.png" />
+	  <Resource Include="Images\icons8_storm_32px.png" />
+	  <Resource Include="Images\icons8_synchronize_48px.png" />
 	</ItemGroup>
 
 </Project>

@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,7 @@ using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
+using SQLitePCL;
 using Syncfusion.Windows.Tools.Controls;
 using Task = System.Threading.Tasks.Task;
 
@@ -60,6 +62,26 @@ namespace ProjectK.Notebook
             InitOutput();
             Logger = LogManager.GetLogger<MainViewModel>();
             Logger.LogDebug("Init Logging()");
+            MessengerInstance.Register<NotificationMessage<NodeModel>>(this, NotifyMe);
+        }
+
+        private void NotifyMe(NotificationMessage<NodeModel> notificationMessage)
+        {
+            var notification = notificationMessage.Notification;
+            var model = notificationMessage.Content;
+            if (notification == "Modified")
+            {
+                Logger.LogDebug($"Model={model.Name} {notification}");
+                // _db.SaveChanges();
+            }
+        }
+
+
+        public void NotifyMe(NotificationMessageAction<NodeModel> notificationMessageAction)
+        {
+            string notification = notificationMessageAction.Notification;
+            //do your work
+            notificationMessageAction.Execute("callback parameter"); //Execute the callback
         }
 
         #endregion
@@ -147,27 +169,13 @@ namespace ProjectK.Notebook
                 SelectedNotebook = notebook;
             }
         }
-        public override void CloseDatabase()
+        public override void SyncDatabase()
         {
-            try
-            {
-                if (!Notebooks.IsNullOrEmpty())
-                {
-                    foreach (var notebook in Notebooks)
-                    {
-                        notebook.ViewModelToModel();
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e);
-            }
-
             _db.SaveChanges();
-            // clean up database connections
-            _db.Dispose();
+            RootTask.ResetParentChildModified();
+            RootTask.ResetModified();
         }
+
         public override void ImportNotebook(NotebookModel notebookModel, Domain.Versions.Version2.DataModel dataModel)
         {
             Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");

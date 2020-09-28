@@ -73,11 +73,14 @@
                             <Image.Style>
                                 <Style TargetType="{x:Type Image}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=IsModified }" Value="false">
-                                            <Setter Property="Source" Value="Images\icons8_cloud_checked_32px.png"/>
+                                        <!--<DataTrigger Binding="{Binding Path=Modified }" Value="{x:Static viewModels:ModifiedStatus.None}">
+                                            <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png"/>
+                                        </DataTrigger>-->
+                                        <DataTrigger Binding="{Binding Path=Modified}" Value="{x:Static viewModels:ModifiedStatus.Modified}">
+                                            <Setter Property="Source" Value="Images\icons8_checkmark_48px.png"/>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Path=IsModified}" Value="true">
-                                            <Setter Property="Source" Value="Images\icons8_no_synchronize_32px_1.png"/>
+                                        <DataTrigger Binding="{Binding Path=Modified }" Value="{x:Static viewModels:ModifiedStatus.ChildModified}">
+                                            <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

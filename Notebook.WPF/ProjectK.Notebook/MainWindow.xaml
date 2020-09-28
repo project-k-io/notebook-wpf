@@ -92,7 +92,7 @@
                 </RibbonGroup>
                 <RibbonGroup Header="Database">
                     <RibbonButton Command="{Binding Path=OpenDatabaseCommand}" Label="Open Database" SmallImageSource="Images\open16.png" ToolTip="Open Database"/>
-                    <RibbonButton Command="{Binding Path=CloseDatabaseCommand}" Label="Close Database" SmallImageSource="Images\save16.png" ToolTip="Close Database"/>
+                    <RibbonButton Command="{Binding Path=SyncDatabaseCommand}" Label="Sync" SmallImageSource="Images\icons8_upload_to_cloud_48px.png" ToolTip="Sync Database"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

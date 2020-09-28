@@ -25,6 +25,8 @@
     <None Remove="images\fixtitles.png" />
     <None Remove="images\fixtypes.png" />
     <None Remove="images\icn_edit.png" />
+    <None Remove="images\icons8_download_from_cloud_48px.png" />
+    <None Remove="images\icons8_upload_to_cloud_48px.png" />
     <None Remove="images\largeicon.png" />
     <None Remove="images\modify.png" />
     <None Remove="images\new_document.png" />
@@ -70,6 +72,8 @@
     <Resource Include="images\fixtitles.png" />
     <Resource Include="images\fixtypes.png" />
     <Resource Include="images\icn_edit.png" />
+    <Resource Include="images\icons8_download_from_cloud_48px.png" />
+    <Resource Include="images\icons8_upload_to_cloud_48px.png" />
     <Resource Include="images\largeicon.png" />
     <Resource Include="images\modify.png" />
     <Resource Include="images\new_document.png" />

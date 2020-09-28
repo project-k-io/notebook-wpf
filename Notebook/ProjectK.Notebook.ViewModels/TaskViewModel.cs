@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
@@ -275,11 +276,18 @@ namespace ProjectK.Notebook.ViewModels
         public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default(T), T newValue = default(T), bool broadcast = false)
         {
             base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
-            if(propertyName == "IsSelected")
-                return;
+            if (!IsTaskModelProperty(propertyName)) return;
 
-            Logger?.LogDebug($@"[Task] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
-            IsModified = true;
+            Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+             Modified = ModifiedStatus.Modified;
+            SetParentChildModified();
+            MessengerInstance.Send(new NotificationMessage<TaskModel>(Model, "Modified"));
         }
+
+        private static bool IsTaskModelProperty(string n) => 
+            n == "Type" || 
+            n == "SubType" || 
+            n == "DataStarted" || 
+            n == "DateEnded";
     }
 }

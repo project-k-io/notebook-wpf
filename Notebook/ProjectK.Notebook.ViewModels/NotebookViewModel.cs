@@ -76,10 +76,6 @@ namespace ProjectK.Notebook.ViewModels
         public void ModelToViewModel()
         {
             _logger.LogDebug($"Populate TreeNode from NotebookModel {_notebookModel.Name}");
-            // created notebookModel node
-            RootTask.Id = Guid.NewGuid();
-            RootTask.Name = _notebookModel.Name;
-
             // load notebookModel 
             RootTask.ModelToViewModel(_notebookModel);
         }
