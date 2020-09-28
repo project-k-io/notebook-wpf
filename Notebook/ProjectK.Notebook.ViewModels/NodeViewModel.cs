@@ -13,7 +13,7 @@ namespace ProjectK.Notebook.ViewModels
     public class NodeViewModel : ViewModelBase, ITreeNode<NodeViewModel>
     {
         #region Static Fields
-        private readonly ILogger _logger = LogManager.GetLogger<NodeViewModel>();
+        private static readonly ILogger Logger = LogManager.GetLogger<NodeViewModel>();
         #endregion
 
         #region Fields
@@ -112,6 +112,15 @@ namespace ProjectK.Notebook.ViewModels
             return $"{Context}:{Name}";
         }
 
+        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default(T), T newValue = default(T), bool broadcast = false)
+        {
+            base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
+            if (propertyName == "IsSelected")
+                return;
+
+            Logger.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+        }
+
         #endregion
 
         #region Public functions
@@ -170,7 +179,7 @@ namespace ProjectK.Notebook.ViewModels
         public void Add(NodeViewModel node)
         {
             if (node.Name == "Time Tracker2")
-                _logger.LogDebug((string)node.Name);
+                Logger.LogDebug((string)node.Name);
 
             node.Parent = this;
             Nodes.Add(node);

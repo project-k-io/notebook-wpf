@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Utils.Extensions;
 
@@ -12,6 +14,10 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class TaskViewModel : NodeViewModel
     {
+        #region Static Fields
+        private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
+        #endregion
+
         #region Fields
 
         // Model wrappers
@@ -269,5 +275,13 @@ namespace ProjectK.Notebook.ViewModels
             return subTask;
         }
 
+        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default(T), T newValue = default(T), bool broadcast = false)
+        {
+            base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
+            if(propertyName == "IsSelected")
+                return;
+
+            Logger.LogDebug($@"[Task] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+        }
     }
 }
