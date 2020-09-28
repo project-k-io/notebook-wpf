@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -86,7 +85,7 @@ namespace ProjectK.Notebook.Views
 
             if (keyState == KeyboardKeys.Delete)
             {
-                if (task.Context == "Notebook")
+                if (task.Context == "NotebookModel")
                 {
                     var notebook =  mainViewModel.Notebooks.First(n => n.RootTask.Id == task.Id);
                     if(notebook == null)

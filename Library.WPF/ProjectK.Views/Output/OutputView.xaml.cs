@@ -22,6 +22,7 @@ namespace ProjectK.Views.Output
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             ListViewMessages.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, CopyCmdExecuted, CopyCmdCanExecute));
+
             if (!(ListViewMessages.Items is INotifyCollectionChanged collectionChanged))
                 return;
 
@@ -34,7 +35,7 @@ namespace ProjectK.Views.Output
                     var item = args.NewItems[0];
                     if (item == null)
                         return;
-
+                    
                     ListViewMessages.ScrollIntoView(item);
                 }
             };

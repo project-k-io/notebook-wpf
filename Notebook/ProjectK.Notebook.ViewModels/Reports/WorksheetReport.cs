@@ -7,35 +7,34 @@ using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Reports;
+using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels.Reports
 {
-    public  class WorksheetReport
+    public class WorksheetReport
     {
         private static readonly ILogger Logger = LogManager.GetLogger<WorksheetReport>();
 
-        private  ReportModule GenerateReport(IList<NodeViewModel> nodes)
+        private ReportModule GenerateReport(IList<NodeViewModel> nodes)
         {
             var sortedList = new SortedList<string, SortedList<string, List<NodeViewModel>>>();
             foreach (var node in nodes)
-
-                if (node.Context == "Task")
+            {
+                if (node is TaskViewModel task)
                 {
-                    if (node is TaskViewModel task)
+                    if (!string.IsNullOrEmpty(task.Type) && !task.IsSubTypeSleep())
                     {
-                        if (!string.IsNullOrEmpty(task.Type) && !task.IsSubTypeSleep)
-                        {
-                            if (!sortedList.ContainsKey(task.Type))
-                                sortedList.Add(task.Type, new SortedList<string, List<NodeViewModel>>());
+                        if (!sortedList.ContainsKey(task.Type))
+                            sortedList.Add(task.Type, new SortedList<string, List<NodeViewModel>>());
 
-                            var sortedList2 = sortedList[task.Type];
-                            if (!sortedList2.ContainsKey(node.Title))
-                                sortedList2.Add(node.Title, new List<NodeViewModel>());
-                            sortedList2[node.Title].Add(node);
-                        }
+                        var sortedList2 = sortedList[task.Type];
+                        if (!sortedList2.ContainsKey(node.Name))
+                            sortedList2.Add(node.Name, new List<NodeViewModel>());
+                        sortedList2[node.Name].Add(node);
                     }
                 }
+            }
 
             var reportModule = new ReportModule();
             foreach (var kv1 in sortedList)
@@ -66,13 +65,13 @@ namespace ProjectK.Notebook.ViewModels.Reports
             return reportModule;
         }
 
-        private  void AddHeader(NodeViewModel t, StringBuilder sb, ILogger logger)
+        private void AddHeader(NodeViewModel t, StringBuilder sb, ILogger logger)
         {
             logger.LogDebug("GenerateReport()");
             if (t.Nodes.IsNullOrEmpty())
                 return;
 
-            var firstTask = (TaskViewModel) t.Nodes.FirstOrDefault();
+            var firstTask = (TaskViewModel)t.Nodes.FirstOrDefault();
             var lastTask = (TaskViewModel)t.Nodes.LastOrDefault();
 
             var dateStarted1 = firstTask?.DateStarted;
@@ -93,13 +92,13 @@ namespace ProjectK.Notebook.ViewModels.Reports
             sb.AppendLine();
         }
 
-        public  void GenerateReport(MainViewModel model)
+        public void GenerateReport(MainViewModel model)
         {
             Logger.LogDebug("GenerateReport()");
             try
             {
                 var notebook = model.SelectedNotebook;
-                if(notebook == null)
+                if (notebook == null)
                     return;
 
 

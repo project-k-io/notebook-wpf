@@ -2,35 +2,45 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Interfaces;
-using ProjectK.Notebook.ViewModels.Enums;
+using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
-using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
+    public enum ModifiedStatus
+    {
+        None,
+        Modified,
+        ChildModified
+    }
+
     public class NodeViewModel : ViewModelBase, ITreeNode<NodeViewModel>
     {
         #region Static Fields
-        private readonly ILogger _logger = LogManager.GetLogger<NodeViewModel>();
+        private static readonly ILogger Logger = LogManager.GetLogger<NodeViewModel>();
         #endregion
 
         #region Fields
 
+        // Model Wrappers
+        //private Guid _id;
+        //private Guid _parentId;
+        //private string _context;
+        //private string _name;
+        //private DateTime _created;
+        //private string _description;
+        protected dynamic Model;
+
+        // Misc
+        private string _kind;
         private bool _isExpanded;
         private bool _isSelected;
-
-        private Guid _id;
-        private string _context;
-        private string _title;
-        private DateTime _created;
-        private Guid _parentId;
+        private ModifiedStatus _modified;
 
         #endregion
 
@@ -42,12 +52,43 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Properties
 
-         // Model 
-        public Guid Id { get => _id; set => this.Set(ref _id, value); }
-        public string Context { get => _context; set => this.Set(ref _context, value); }
-        public string Title { get => _title; set => this.Set(ref _title, value); }
-        public DateTime Created { get => _created; set => this.Set(ref _created, value); }
-        public Guid ParentId { get => _parentId; set => Set(ref _parentId, value); }
+        // Model 
+
+        public NodeViewModel()
+        {
+            SetKind("Node");
+            Model = new NodeModel();
+        }
+        public NodeViewModel(NodeModel model): this()
+        {
+            SetKind("Node");
+            Model = model;
+        }
+
+        public void SetKind(string kind)
+        {
+            _kind = kind;
+        }
+
+        public void ViewModelToModel(NodeModel model)
+        {
+            SetKind("Node");
+            model.NodeId = Id;
+            model.ParentId = ParentId;
+            model.Name = Name;
+            model.Created = Created;
+            model.Context = Context;
+        }
+
+
+        // Model Wrapper
+        public string Kind { get => _kind; set => Set(ref _kind, value); }
+        public Guid Id { get => Model.NodeId; set => this.Set(Id, v => Model.NodeId = v, value); }
+        public Guid ParentId { get => Model.ParentId; set => this.Set(ParentId, v => Model.ParentId = v, value); }
+        public string Name { get => Model.Name; set => this.Set(Name, v => Model.Name = v, value); }
+        public DateTime Created { get => Model.Created; set => this.Set(Created, v => Model.Created = v, value); }
+        public string Context { get => Model.Context; set => this.Set(Context, v => Model.Context = v, value); }
+        public string Description { get => Model.Description; set => this.Set(Description, v => Model.Description = v, value); }
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }
@@ -55,11 +96,8 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> TitleList { get; set; }
 
 
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set => Set(ref _isSelected, value);
-        }
+        public bool IsSelected { get => _isSelected; set => Set(ref _isSelected, value); }
+        public ModifiedStatus Modified { get => _modified; set => Set(ref _modified, value); }
 
         public bool IsExpanded
         {
@@ -75,27 +113,35 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Constructors
 
-        public NodeViewModel()
-        {
-            Parent = null;
-        }
-
-        public NodeViewModel(string title)
-        {
-            Title = title;
-        }
-
-
         #endregion
 
         #region Override functions
 
         public override string ToString()
         {
-            return $"{Context}:{Title}";
+            return $"{Context}:{Name}";
+        }
+
+        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default(T), T newValue = default(T), bool broadcast = false)
+        {
+            base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
+            if (!IsNodeModelProperty(propertyName)) return;
+
+            Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+            Modified = ModifiedStatus.Modified;
+            SetParentChildModified();
+            MessengerInstance.Send(new NotificationMessage<NodeModel>(Model, "Modified"));
         }
 
         #endregion
+
+        private static bool IsNodeModelProperty(string n) => 
+            n == "Id" || 
+            n == "ParentId" || 
+            n == "Name" || 
+            n == "Created" || 
+            n == "Context" || 
+            n == "Description";
 
         #region Public functions
 
@@ -137,7 +183,12 @@ namespace ProjectK.Notebook.ViewModels
 
         public virtual NodeViewModel AddNew()
         {
-            var subNode = new NodeViewModel { Title = "New Node", Created = DateTime.Now };
+            var subNode = new NodeViewModel
+            {
+                Kind = "Node",
+                Name = "New Node", 
+                Created = DateTime.Now
+            };
 
             Add(subNode);
             FixContext(subNode);
@@ -147,12 +198,19 @@ namespace ProjectK.Notebook.ViewModels
 
         public void Add(NodeViewModel node)
         {
-            if (node.Title == "Time Tracker2")
-                _logger.LogDebug(node.Title);
+            if (node.Name == "Time Tracker2")
+                Logger?.LogDebug((string)node.Name);
 
             node.Parent = this;
             Nodes.Add(node);
         }
+
+        public void Remove(NodeViewModel node)
+        {
+            node.ParentId = Guid.Empty;
+            Nodes.Remove(node);
+        }
+
 
         public void Insert(int index, NodeViewModel node)
         {
@@ -169,20 +227,47 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
+        public void ResetModified()
+        {
+            this.Execute(a =>
+            {
+                if (a.Modified == ModifiedStatus.Modified)
+                    a.Modified = ModifiedStatus.None;
+            });
+        }
+        public void SetParentChildModified()
+        {
+            this.UpAction(a =>
+            {
+                 a.Modified = ModifiedStatus.ChildModified;
+            });
+        }
+
+        public void ResetParentChildModified()
+        {
+            this.Execute(a =>
+            {
+                if (a.Modified == ModifiedStatus.ChildModified)
+                    a.Modified = ModifiedStatus.None;
+            });
+        }
+
+
 
         public void ExtractContext(ObservableCollection<string> contextList)
         {
             if (!string.IsNullOrEmpty(Context) && !contextList.Contains(Context))
                 contextList.Add(Context);
+
             foreach (var node in Nodes)
                 node.ExtractContext(contextList);
         }
 
-        private void FixContext(string parent, string child, NodeViewModel node)
+        private void FixContext(string context, string child, NodeViewModel node)
         {
-            if (!(Context == parent))
-
+            if (Context != context)
                 return;
+
             node.Context = child;
         }
 
@@ -211,6 +296,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             if (Id == id)
                 return this;
+
             foreach (var node in Nodes)
             {
                 var findNode = node.FindNode(id);
@@ -219,14 +305,6 @@ namespace ProjectK.Notebook.ViewModels
             }
 
             return null;
-        }
-
-        public void Init(NodeModel b)
-        {
-            Id = b.Id;
-            Title = b.Name;
-            Created = b.Created;
-            Context = b.Context;
         }
 
 

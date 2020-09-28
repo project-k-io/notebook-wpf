@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Versions.Version2;
-// using ProjectK.Notebook.Models.Versions.Version2;
+// using ProjectK.NotebookModel.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils;
+using Task = System.Threading.Tasks.Task;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
@@ -53,11 +53,12 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 var path = r.fileName;
                 Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
 
-                var model = await FileHelper.ReadFromFileAsync<DataModel>(path);
-                var notebook = new NotebookModel();
-                notebook.Init(model);
-                notebook.Name = path;
-                mainViewModel.ImportNotebook(notebook, path);
+                var dataModel = await FileHelper.ReadFromFileAsync<DataModel>(path);
+
+                var notebook = new NotebookModel { Name = path};
+                mainViewModel.ImportNotebook(notebook, dataModel);
+
+
             }
             catch (Exception e)
             {

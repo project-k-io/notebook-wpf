@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Domain;
 using ProjectK.Utils;
-using LoggerExtensions = Microsoft.Extensions.Logging.LoggerExtensions;
 
 namespace ProjectK.Notebook.ViewModels.Reports
 {
@@ -45,7 +43,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 if (string.IsNullOrEmpty(description))
                 {
                     sb.Append(new string(SpaceChar, offset));
-                    sb.AppendLine(node.Title);
+                    sb.AppendLine(node.Name);
                 }
                 else
                 {

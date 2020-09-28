@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="ProjectK.Notebook.Views.Items.NodeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ProjectK.Notebook.Views.Items"
+             xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="400">
+    <UserControl.Resources>
+        <viewModels:NodeViewModel 
+            x:Key="Model"
+            Name="May"
+            Context="Month"
+            Created="{x:Static system:DateTime.Now}"
+            >
+        </viewModels:NodeViewModel>
+    </UserControl.Resources>
+
+    <Grid d:DataContext="{StaticResource Model}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" /> <!-- 1 Context-->
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" /> <!-- 3 Title-->
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" /> <!-- 5 Created-->
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <!--Context-->
+            <Label Content="Context" Grid.Row="1" Grid.Column="1" />
+            <ComboBox Grid.Row="1" Grid.Column="3" IsEditable="true" IsReadOnly="true" ItemsSource="{Binding ContextList}"
+                  Text="{Binding Path=Context}" />
+            <!--Title-->
+            <Label Content="Title" Grid.Row="2" Grid.Column="1" />
+            <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TitleList}"
+                  Text="{Binding Path=Name}" />
+            <!--Start-->
+            <Label Content="Created" Grid.Row="5" Grid.Column="1" />
+            <Grid Row="5" Column="3" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <DatePicker Grid.Column="0" SelectedDate="{Binding Path=DateCreated}" />
+                <TextBox Grid.Column="2" Text="{Binding Path=TimeCreated, StringFormat=t}" />
+                <Button Grid.Column="4" Width="40" Content="Now" Command="{Binding CommandSetCreatedTime}" />
+            </Grid>
+            <!--Duration-->
+        </Grid>
+    </Grid></UserControl>

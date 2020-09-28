@@ -6,13 +6,55 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="icons8-no-synchronize-32.png" />
+	  <None Remove="Images\CloudOK_16x.png" />
+	  <None Remove="Images\CloudRefresh_16x.png" />
+	  <None Remove="Images\icons8-cloud-sync-32.png" />
+	  <None Remove="Images\icons8-no-synchronize-32.png" />
+	  <None Remove="Images\icons8_checkmark_48px.png" />
+	  <None Remove="Images\icons8_cloud_checked_32px.png" />
+	  <None Remove="Images\icons8_cloud_sync_48px.png" />
+	  <None Remove="Images\icons8_documents_folder_48px.png" />
+	  <None Remove="Images\icons8_double_tick_48px.png" />
+	  <None Remove="Images\icons8_expand_arrow_48px.png" />
+	  <None Remove="Images\icons8_file_48px.png" />
+	  <None Remove="Images\icons8_folder_tree_48px.png" />
+	  <None Remove="Images\icons8_no_synchronize_32px_1.png" />
+	  <None Remove="Images\icons8_storm_32px.png" />
+	  <None Remove="Images\icons8_synchronize_48px.png" />
+	  <None Remove="Images\modify.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+	  <PackageReference Include="Syncfusion.SfInput.WPF" Version="18.2.0.59" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Library.WPF\ProjectK.View.Helpers\ProjectK.View.Helpers.csproj" />
 	  <ProjectReference Include="..\..\Library.WPF\ProjectK.Views\ProjectK.Views.csproj" />
 	  <ProjectReference Include="..\..\Notebook\ProjectK.Notebook.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="Syncfusion.Shared.WPF">
+	    <HintPath>..\..\..\..\..\.nuget\packages\syncfusion.shared.wpf\18.2.0.58\lib\netcoreapp5.0\Syncfusion.Shared.WPF.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="icons8-no-synchronize-32.png" />
+	  <Resource Include="Images\icons8_checkmark_48px.png" />
+	  <Resource Include="Images\icons8_cloud_checked_32px.png" />
+	  <Resource Include="Images\icons8_cloud_sync_48px.png" />
+	  <Resource Include="Images\icons8_documents_folder_48px.png" />
+	  <Resource Include="Images\icons8_double_tick_48px.png" />
+	  <Resource Include="Images\icons8_expand_arrow_48px.png" />
+	  <Resource Include="Images\icons8_file_48px.png" />
+	  <Resource Include="Images\icons8_folder_tree_48px.png" />
+	  <Resource Include="Images\icons8_no_synchronize_32px_1.png" />
+	  <Resource Include="Images\icons8_storm_32px.png" />
+	  <Resource Include="Images\icons8_synchronize_48px.png" />
 	</ItemGroup>
 
 </Project>

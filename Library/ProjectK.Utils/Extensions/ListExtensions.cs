@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ProjectK.Utils.Extensions
 {
@@ -21,6 +22,27 @@ namespace ProjectK.Utils.Extensions
             list.Add(task);
             foreach (var subTask in task.Nodes)
                 AddToList(list, subTask);
+        }
+
+        public static bool IsSame<T>(this IList<T> listA, IList<T> listB, Func<T,T, bool> isSame)
+        {
+            if (listA.Count != listB.Count)
+                return false;
+
+            for (var i = 0; i < listA.Count; i++)
+            {
+                var a = listB[i];
+                var b = listA[i];
+
+                if (!isSame(a,b))
+                    return false;
+            }
+            return true;
+        }
+        public static void Copy<T>(this IList<T> listA, IList<T> listB, Func<T, T> copy)
+        {
+            foreach (var nodeB in listB)
+                listA.Add(copy(nodeB));
         }
 
     }

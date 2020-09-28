@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,13 +17,14 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Extensions;
-// using ProjectK.Notebook.Models.Versions.Version2;
+// using ProjectK.NotebookModel.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
-using Syncfusion.Windows.Shared;
+using SQLitePCL;
 using Syncfusion.Windows.Tools.Controls;
+using Task = System.Threading.Tasks.Task;
 
 namespace ProjectK.Notebook
 {
@@ -63,8 +60,28 @@ namespace ProjectK.Notebook
             Assembly = Assembly.GetExecutingAssembly();
             InitLogging();
             InitOutput();
-            Logger = LogManager.GetLogger<ViewModels.MainViewModel>();
+            Logger = LogManager.GetLogger<MainViewModel>();
             Logger.LogDebug("Init Logging()");
+            MessengerInstance.Register<NotificationMessage<NodeModel>>(this, NotifyMe);
+        }
+
+        private void NotifyMe(NotificationMessage<NodeModel> notificationMessage)
+        {
+            var notification = notificationMessage.Notification;
+            var model = notificationMessage.Content;
+            if (notification == "Modified")
+            {
+                Logger.LogDebug($"Model={model.Name} {notification}");
+                // _db.SaveChanges();
+            }
+        }
+
+
+        public void NotifyMe(NotificationMessageAction<NodeModel> notificationMessageAction)
+        {
+            string notification = notificationMessageAction.Notification;
+            //do your work
+            notificationMessageAction.Execute("callback parameter"); //Execute the callback
         }
 
         #endregion
@@ -141,39 +158,37 @@ namespace ProjectK.Notebook
             _db.Database.EnsureCreated();
 
             // load the entities into EF Core
-            // _db.Notebooks.Load();
+            _db.Notebooks.Load();
 
             // bind to the source
-            var models = _db.Notebooks.Local.ToList();
+            NotebookModels = _db.Notebooks.Local.ToObservableCollection();
 
-            // PopulateNotebookViewModels(notebookModels);
-            var count = 0;
-            foreach (var model in models)
+            foreach (var model in NotebookModels)
             {
-                var title = $"Notebook_{count++}";
-                var notebook = AddNotebook(model, title);
+                var notebook = AddNotebook(model);
                 SelectedNotebook = notebook;
             }
         }
-        public override void CloseDatabase()
+        public override void SyncDatabase()
         {
-            foreach (var notebook in Notebooks)
-            {
-                notebook.CopyFromViewModelToModels();
-            }
-
             _db.SaveChanges();
-            // clean up database connections
-            _db.Dispose();
+            RootTask.ResetParentChildModified();
+            RootTask.ResetModified();
         }
-        public override void ImportNotebook(NotebookModel notebook, string title)
+
+        public override void ImportNotebook(NotebookModel notebookModel, Domain.Versions.Version2.DataModel dataModel)
         {
-#if !AK // db import
-            // 
-            _db.Notebooks.Add(notebook);
+            Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
+
+            // Add NotebookModel
+            NotebookModels.Add(notebookModel);
             _db.SaveChanges();
-#endif
-            AddNotebook(notebook, title);
+
+            // Add Tasks
+            notebookModel.Init(dataModel);
+            _db.SaveChanges();
+
+            AddNotebook(notebookModel);
         }
 
         #endregion
@@ -316,17 +331,17 @@ namespace ProjectK.Notebook
             return commandBindings;
         }
 
-        private NotebookViewModel AddNotebook(NotebookModel model, string title)
+        private NotebookViewModel AddNotebook(NotebookModel model)
         {
-            var notebook = new NotebookViewModel
-            {
-                RootTask = { Context = "Notebook" }
-            };
-            notebook.PopulateFromModel(model, title);
+            Logger.LogDebug($"AddNotebook: {model.Name}");
+            
+            var notebook = new NotebookViewModel(model);
+            notebook.ModelToViewModel();
+
             SelectedNotebook = notebook;
             Notebooks.Add(notebook);
             RootTask.Add(notebook.RootTask);
-            // add notebook task to root task
+            // add notebookModel task to root task
             return notebook;
         }
 

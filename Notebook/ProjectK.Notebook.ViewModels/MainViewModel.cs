@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Reports;
 using ProjectK.Notebook.ViewModels.Enums;
@@ -20,6 +16,7 @@ using ProjectK.Notebook.ViewModels.Reports;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
+using Task = System.Threading.Tasks.Task;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -45,8 +42,23 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Consuctors
 
+        private NodeModel _rootModel;
+
         public MainViewModel()
         {
+            _rootModel = new NodeModel
+            {
+                Context = "Root",
+                Created = DateTime.Now,
+                Description = "Root Node",
+                Name = "Root",
+                NodeId = Guid.Empty,
+                ParentId = Guid.Empty
+            };
+
+            RootTask = new NodeViewModel(_rootModel);
+
+
             CanSave = true;
             TypeList = new ObservableCollection<string>();
             ContextList = new ObservableCollection<string>();
@@ -62,14 +74,14 @@ namespace ProjectK.Notebook.ViewModels
             ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
             ExportSelectedAllAsTextCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
             ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
-            OpenDatabaseCommand = new RelayCommand(this.OpenDatabase);
-            CloseDatabaseCommand = new RelayCommand(this.CloseDatabase);
+            OpenDatabaseCommand = new RelayCommand(OpenDatabase);
+            SyncDatabaseCommand = new RelayCommand(SyncDatabase);
 
-        CurrentNotebookChanged += OnCurrentNotebookChanged;
+            CurrentNotebookChanged += OnCurrentNotebookChanged;
 
         }
 
-        public virtual void CloseDatabase()
+        public virtual void SyncDatabase()
         {
             throw new NotImplementedException();
         }
@@ -82,7 +94,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private void OnCurrentNotebookChanged()
         {
-            var noteBookName = SelectedNotebook != null ? SelectedNotebook.RootTask.Title : "";
+            var noteBookName = SelectedNotebook != null ? SelectedNotebook.RootTask.Name : "";
             Title = Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + noteBookName;
         }
 
@@ -110,7 +122,7 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand ExportSelectedAllAsTextCommand { get; }
         public ICommand ExportSelectedAllAsJsonCommand { get; }
         public ICommand OpenDatabaseCommand { get; }
-        public ICommand CloseDatabaseCommand { get; }
+        public ICommand SyncDatabaseCommand { get; }
 
 
 
@@ -147,16 +159,13 @@ namespace ProjectK.Notebook.ViewModels
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
         public ObservableCollection<NotebookViewModel> Notebooks { get; set; } = new ObservableCollection<NotebookViewModel>();
-        public NodeViewModel RootTask { get; set; } = new NodeViewModel {Title = "Root"};
+
+
+        public NodeViewModel RootTask { get; set; }
         public NotebookViewModel SelectedNotebook
         {
             get => _selectedNotebook;
             set => Set(ref _selectedNotebook, value);
-        }
-        public NodeViewModel SelectedNode
-        {
-            get => _selectedTask;
-            set => Set(ref _selectedTask, value);
         }
         public string ExcelCsvText
         {
@@ -176,6 +185,8 @@ namespace ProjectK.Notebook.ViewModels
         public Action<Action> OnDispatcher { get; set; }
         public OutputViewModel Output { get; set; } = new OutputViewModel();
 
+        public ObservableCollection<NotebookModel> NotebookModels { get; set; }
+
         #endregion
 
         #region Public functions
@@ -184,7 +195,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FileOpenOldFormat()
         {
-            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Name));
+            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Title));
         }
 
 
@@ -208,7 +219,7 @@ namespace ProjectK.Notebook.ViewModels
                     var context = node.Context;
                     if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
 
-                    var title = node.Title;
+                    var title = node.Name;
                     if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
                 }
 
@@ -245,15 +256,15 @@ namespace ProjectK.Notebook.ViewModels
                     _worksheetReport.GenerateReport(this);
                     break;
                 case ReportTypes.Notes:
-                    TextReport = _notesReport.GenerateReport(SelectedNode);
+                    TextReport = _notesReport.GenerateReport(SelectedNotebook.SelectedNode);
                     break;
             }
         }
 
         public void PrepareSettings()
         {
-            if (SelectedNode != null)
-                LastListTaskId = SelectedNode.Id;
+            if (SelectedNotebook.SelectedNode != null)
+                LastListTaskId = SelectedNotebook.SelectedNode.Id;
 
             if (SelectedNotebook?.SelectedTreeNode == null) return;
 
@@ -265,8 +276,6 @@ namespace ProjectK.Notebook.ViewModels
             task.TypeList = TypeList;
             task.ContextList = ContextList;
             task.TitleList = TaskTitleList;
-            SelectedNode = task;
-
             var notebook = FindNotebook(task);
             if (notebook != null)
             {
@@ -282,20 +291,20 @@ namespace ProjectK.Notebook.ViewModels
 
         public NotebookViewModel FindNotebook(NodeViewModel task)
         {
-            var (ok, notebookNode) = task.FindNode(t => t.Context == "Notebook");
+            var (ok, notebookNode) = task.FindNode(t => t.Context == "NotebookModel");
             if (!ok)
                 return null;
 
-            var path = notebookNode.Title;
+            var path = notebookNode.Name;
 
             var notebook = Notebooks.FirstOrDefault(n => n.Title == path);
             return notebook;
         }
 
 
-#endregion
+        #endregion
 
-#region Private functions
+        #region Private functions
 
         private void UseSettings()
         {
@@ -328,18 +337,23 @@ namespace ProjectK.Notebook.ViewModels
             {
                 var dateTime1 = excelCsvRecord.Day;
                 var dayOfTheWeek = dateTime1.DayOfWeek.ToString();
-                var taskViewModel1 = selectedTreeTask.Nodes.FirstOrDefault(t => t.Title == dayOfTheWeek);
+                var taskViewModel1 = selectedTreeTask.Nodes.FirstOrDefault(t => t.Name == dayOfTheWeek);
                 if (taskViewModel1 == null)
                 {
-                    taskViewModel1 = new TaskViewModel(dayOfTheWeek)
+                    taskViewModel1 = new TaskViewModel()
                     {
+                        Name = dayOfTheWeek,
                         DateStarted = excelCsvRecord.Day,
                         DateEnded = excelCsvRecord.Day
                     };
                     selectedTreeTask.Nodes.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel(excelCsvRecord.Task) {Context = "Task"};
+                var taskViewModel2 = new TaskViewModel()
+                {
+                    Name = excelCsvRecord.Task, Context = "TaskModel"
+                };
+
                 var taskViewModel3 = taskViewModel2;
                 dateTime1 = excelCsvRecord.Day;
                 var year1 = dateTime1.Year;
@@ -378,7 +392,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
-            SelectedNode?.KeyboardAction(
+            SelectedNotebook.SelectedNode?.KeyboardAction(
                 keyboardKeys,
                 () => keyboardState,
                 () => { }, t => t.IsSelected = true,
@@ -398,10 +412,10 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-#endregion
+        #endregion
 
 
-        public virtual void ImportNotebook(NotebookModel model, string path)
+        public virtual void ImportNotebook(NotebookModel model, Domain.Versions.Version2.DataModel dataModel)
         {
         }
     }

@@ -3,39 +3,57 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
+using Task = System.Threading.Tasks.Task;
 
 namespace ProjectK.Notebook.ViewModels
 {
     public class NotebookViewModel : ViewModelBase
     {
-        private readonly ILogger Logger = LogManager.GetLogger<NotebookViewModel>();
+        private readonly ILogger _logger = LogManager.GetLogger<NotebookViewModel>();
 
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
-        private NotebookModel _notebook;
+        private readonly NotebookModel _notebookModel;
 
         public NotebookViewModel()
         {
-            RootTask.Add(new NodeViewModel("Time Tracker")
+            var rootTask = new NodeModel
             {
-                Context = "Time Tracker"
+                Context = "Notebook",
+                Created = DateTime.Now,
+                Description = "Notebook",
+                Name = "New Notebook",
+                NodeId = Guid.NewGuid(),
+                ParentId = Guid.Empty
+            };
+
+            RootTask = new NodeViewModel(rootTask);
+
+            RootTask.Add(new NodeViewModel()
+            {
+                 Name = "Time Tracker", Context = "Time Tracker" 
             });
 
-            _notebook = new NotebookModel();
+            _notebookModel = new NotebookModel();
         }
+
+        public NotebookViewModel(NotebookModel notebookModel)
+        {
+            _notebookModel = notebookModel;
+            RootTask = new NodeViewModel(notebookModel);
+        }
+
 
         #region Storage Functions Ver 1
 
-        public void LoadFrom(Notebook.Domain.Versions.Version1.DataModel model)
+        public void LoadFrom(Domain.Versions.Version1.DataModel model)
         {
             Clear();
 #if AK  // Load ver 1
@@ -47,41 +65,19 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Storage Functions 
-        public void CopyFromViewModelToModels()
-        {
-            var nodes = new List<NodeModel>();
-            RootTask.SaveTo(nodes);
-            _notebook.Nodes.Clear();
 
-            foreach (var node in nodes)
-            {
-                if (node is TaskModel task)
-                {
-                    _notebook.Nodes.Add(task);
-                }
-            }
+        public void ViewModelToModel()
+        {
+            _logger.LogDebug($"Populate NotebookModel from TreeNode {RootTask.Name}");
+            _notebookModel.Clear();
+            _notebookModel.ViewModelToModel(RootTask);
         }
 
-
-
-        public void PopulateFromModel(NotebookModel notebook, string name)
+        public void ModelToViewModel()
         {
-            // created notebook node
-            RootTask.Id = Guid.NewGuid();
-            RootTask.Title = name;
-
-            // load notebook 
-            _notebook = notebook;
-
-            var model = _notebook?.Copy();
-            if (model == null)
-                return;
-
-            var tasks = model.Nodes;
-            Clear();
-
-            // Build Tree
-            RootTask.BuildTree(tasks);
+            _logger.LogDebug($"Populate TreeNode from NotebookModel {_notebookModel.Name}");
+            // load notebookModel 
+            RootTask.ModelToViewModel(_notebookModel);
         }
 
 
@@ -90,7 +86,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();
 
-        public NodeViewModel RootTask { get; set; } = new NodeViewModel();
+        public NodeViewModel RootTask { get; set; }
 
         public NodeViewModel SelectedTreeNode
         {
@@ -107,8 +103,8 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
         public string Title
         {
-            get => _notebook.Name;
-            set => _notebook.Name = value;
+            get => _notebookModel.Name;
+            set => _notebookModel.Name = value;
         }
 
 
@@ -197,7 +193,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTime()
         {
-            if(SelectedTreeNode is TaskViewModel task)
+            if (SelectedTreeNode is TaskViewModel task)
                 task.FixTime();
         }
 
@@ -244,7 +240,8 @@ namespace ProjectK.Notebook.ViewModels
         {
 
             var path = Title;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Title, ".txt");
+            var name = SelectedNode.Name;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", (string)SelectedNode.Name, ".txt");
             if (!ok)
                 return;
 
@@ -254,7 +251,7 @@ namespace ProjectK.Notebook.ViewModels
         public async Task ExportSelectedAllAsJson()
         {
             var path = Title;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Title);
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", (string)SelectedNode.Name);
             if (!ok)
                 return;
 

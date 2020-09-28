@@ -1,16 +1,7 @@
-﻿using System;
-using System.ComponentModel;
-using System.Configuration;
-using System.Globalization;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Extensions;
-using ProjectK.Notebook.ViewModels;
 using Syncfusion.Licensing;
 
 namespace ProjectK.Notebook
@@ -49,7 +40,7 @@ namespace ProjectK.Notebook
 #if !AK // db open
             _appModel.OpenDatabase();
 
-            // PopulateFromModel Data
+            // ModelToViewModel Data
             await _appModel.UpdateTypeListAsync();
 #endif
         }
@@ -61,7 +52,7 @@ namespace ProjectK.Notebook
             _appModel.SaveSettings(_mainWindow);
 
             // Close Database
-#if !AK // db close
+#if AK    // db close
             _appModel.CloseDatabase();
 #endif
             _mainWindow.Close();

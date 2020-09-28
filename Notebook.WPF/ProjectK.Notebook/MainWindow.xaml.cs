@@ -1,14 +1,9 @@
 ﻿ using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Xml;
-using Microsoft.Extensions.Logging;
+ using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Extensions;
-using ProjectK.Notebook.ViewModels;
-using ProjectK.View.Helpers.Misc;
-using Syncfusion.Windows.Shared;
-using Syncfusion.Windows.Tools.Controls;
+ using ProjectK.View.Helpers.Misc;
+ using Syncfusion.Windows.Tools.Controls;
 
 namespace ProjectK.Notebook
 {

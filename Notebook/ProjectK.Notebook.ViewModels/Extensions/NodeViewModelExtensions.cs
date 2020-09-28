@@ -1,26 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.ViewModels.Enums;
+using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
 
 
-    public static class NodeViewModelExtension
+    public static class NodeViewModelExtensions
     {
-        public static void Init(this NodeViewModel vm, NodeModel m)
-        {
-            vm.Id = m.Id;
-            vm.Title = m.Name;
-            vm.Created = m.Created;
-            vm.Context = m.Context;
-        }
 
         private static readonly ILogger _logger = LogManager.GetLogger<TaskViewModel>();
         public static void KeyboardAction(
@@ -55,9 +45,9 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                             if (lastSubNode != null)
                             {
 #if AK // AddNew
-                                m.Type = item.Type;
+                                node.Type = item.Type;
 #endif
-                                node.Title = item.Title;
+                                node.Name = item.Name;
                                 node.Created = DateTime.Now;
                             }
 
@@ -71,7 +61,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     selectItem(item);
                     expandItem(item);
                     handled();
-                    _logger.LogDebug($"Added [{node.Title}] to [{item.Title}]");
+                    _logger.LogDebug($"Added [{node.Name}] to [{item.Name}]");
                     break;
                 case KeyboardKeys.Delete:
                     if (deleteMessageBox())
@@ -81,7 +71,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         break;
 
                     var num1 = parent.Nodes.IndexOf(item);
-                    dispatcher(() => parent.Nodes.Remove(item));
+                    dispatcher(() => parent.Remove(item));
 
                     var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
                     if (parentNode == null)
@@ -100,7 +90,9 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         var parent2 = parent1.Parent;
                         if (parent2 == null)
                             break;
-                        parent1.Nodes.Remove(item);
+
+                        parent1.Remove(item);
+
                         var num2 = parent2.Nodes.IndexOf(parent1);
                         parent2.Insert(num2 + 1, item);
                         selectItem(item);
@@ -122,7 +114,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         if (parentNode2 == null)
                             break;
 
-                        parent1.Nodes.Remove(item);
+                        parent1.Remove(item);
                         parentNode2.Add(item);
                         selectItem(item);
                         parent1.IsExpanded = true;
@@ -140,7 +132,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         var num2 = parent1.Nodes.IndexOf(item);
                         if (num2 <= 0)
                             break;
-                        parent1.Nodes.Remove(item);
+                        parent1.Remove(item);
                         parent1.Insert(num2 - 1, item);
                         selectItem(item);
                         parent1.IsExpanded = true;
@@ -158,7 +150,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                         var num2 = parent1.Nodes.IndexOf(item);
                         if (num2 >= parent1.Nodes.Count - 1)
                             break;
-                        parent1.Nodes.Remove(item);
+                        parent1.Remove(item);
                         parent1.Insert(num2 + 1, item);
                         selectItem(item);
                         parent1.IsExpanded = true;
@@ -170,5 +162,25 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             }
         }
 
+        public static void Execute(this NodeViewModel model,  Action<NodeViewModel> action)
+        {
+            action(model);
+            foreach (var node in model.Nodes)
+            {
+                node.Execute(action);
+            }
+        }
+
+        public static void UpAction(this NodeViewModel model, Action<NodeViewModel> action)
+        {
+            if(model.Parent == null)
+                return;
+
+            action(model.Parent);
+            model.Parent.UpAction(action);
+        }
+
     }
+
+
 }

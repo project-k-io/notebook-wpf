@@ -9,6 +9,7 @@
         xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
         xmlns:output="clr-namespace:ProjectK.Views.Output;assembly=ProjectK.Views"
         xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+        xmlns:items="clr-namespace:ProjectK.Notebook.Views.Items;assembly=ProjectK.Notebook.Views"
         MinWidth="800" MinHeight="600" WindowStartupLocation="CenterOwner"
         Icon="/Images/apple_time_machine_alt.png"
         Title="{Binding Path=Title}"
@@ -28,7 +29,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Ribbon x:Name="Ribbon" Title="Ribbon Name">
+        <Ribbon x:Name="Ribbon" Title="Ribbon Title">
             <Ribbon.HelpPaneContent>
                 <RibbonButton SmallImageSource="Images/apple_time_machine_alt.png" />
             </Ribbon.HelpPaneContent>
@@ -83,7 +84,7 @@
                 </RibbonGroup>
                 <RibbonGroup Header="Layout">
                     <RibbonButton Command="{Binding Path=SaveDockLayoutCommand}" Label="Save" SmallImageSource="Images\save16.png" ToolTip="Save Dock layout"/>
-                    <RibbonButton Command="{Binding Path=LoadDockLayoutCommand}" Label="PopulateFromModel" SmallImageSource="Images\open16.png" ToolTip="LoadDockLayout Dock layout"/>
+                    <RibbonButton Command="{Binding Path=LoadDockLayoutCommand}" Label="ModelToViewModel" SmallImageSource="Images\open16.png" ToolTip="LoadDockLayout Dock layout"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Export Text">
                     <RibbonButton Command="{Binding Path=ExportSelectedAllAsTextCommand}" Label="Export Selected as Text" SmallImageSource="Images\saveas16.png" ToolTip="Export Selected All As Text"/>
@@ -91,7 +92,7 @@
                 </RibbonGroup>
                 <RibbonGroup Header="Database">
                     <RibbonButton Command="{Binding Path=OpenDatabaseCommand}" Label="Open Database" SmallImageSource="Images\open16.png" ToolTip="Open Database"/>
-                    <RibbonButton Command="{Binding Path=CloseDatabaseCommand}" Label="Close Database" SmallImageSource="Images\save16.png" ToolTip="Close Database"/>
+                    <RibbonButton Command="{Binding Path=SyncDatabaseCommand}" Label="Sync" SmallImageSource="Images\icons8_upload_to_cloud_48px.png" ToolTip="Sync Database"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
@@ -148,7 +149,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <TabControl Grid.Row="0">
-                        <TabItem Header="Task TreeView">
+                        <TabItem Header="TaskModel TreeView">
                             <views:TasksTreeView x:Name="TasksTreeView" />
                         </TabItem>
                         <TabItem Header="Activity View">
@@ -167,7 +168,7 @@
                 syncfusion:DockingManager.DesiredWidthInDockedMode="200"
                 syncfusion:DockingManager.Header="Solution Explorer"
                 syncfusion:DockingManager.SideInDockedMode="Right">
-                <views:TaskView DataContext="{Binding Path=SelectedNode}"/>
+                <items:ItemView DataContext="{Binding Path= SelectedNotebook.SelectedNode}"/>
             </ContentControl>
             <ContentControl
                 x:Name="properties"
