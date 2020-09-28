@@ -281,7 +281,7 @@ namespace ProjectK.Notebook.ViewModels
             if(propertyName == "IsSelected")
                 return;
 
-            Logger.LogDebug($@"[Task] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+            Logger?.LogDebug($@"[Task] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
         }
     }
 }

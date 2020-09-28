@@ -118,7 +118,7 @@ namespace ProjectK.Notebook.ViewModels
             if (propertyName == "IsSelected")
                 return;
 
-            Logger.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+            Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
         }
 
         #endregion
@@ -179,7 +179,7 @@ namespace ProjectK.Notebook.ViewModels
         public void Add(NodeViewModel node)
         {
             if (node.Name == "Time Tracker2")
-                Logger.LogDebug((string)node.Name);
+                Logger?.LogDebug((string)node.Name);
 
             node.Parent = this;
             Nodes.Add(node);
