@@ -73,7 +73,7 @@ namespace ProjectK.Notebook.ViewModels
         public void ViewModelToModel(NodeModel model)
         {
             SetKind("Node");
-            model.NodeId = Id;
+            model.Id = Id;
             model.ParentId = ParentId;
             model.Name = Name;
             model.Created = Created;

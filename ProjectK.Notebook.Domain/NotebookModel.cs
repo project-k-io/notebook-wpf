@@ -1,18 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NotebookModel: NodeModel
+    public class NotebookModel: INode
     {
-        [Key]
-        public int Id { get; set; }
 
+        [Key]
+        public int ItemId { get; set; }
+
+        // INode
+        public Guid Id { get; set; }
+        public Guid ParentId { get; set; }
+        public string Name { get; set; }
+        public DateTime Created { get; set; }
+        public string Context { get; set; }
+
+        public virtual IList<NodeModel> Nodes { get; set; } = new ObservableCollection<NodeModel>();
         public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
         public virtual IList<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
+
+#if AK
 
         public void Init(Versions.Version2.DataModel model)
         {
@@ -34,7 +47,6 @@ namespace ProjectK.Notebook.Domain
 
             return true;
         }
-
         public  NotebookModel Copy()
         {
             var model = new NotebookModel();
@@ -49,7 +61,6 @@ namespace ProjectK.Notebook.Domain
             Tasks.Clear();
             Tasks.Copy(source.Tasks, a => a.Copy());
         }
-
         public  void Clear()
         {
             Notes.Clear();
@@ -65,6 +76,7 @@ namespace ProjectK.Notebook.Domain
             nodes.AddRange(tasks);
             return nodes;
         }
+#endif
 
     }
 }

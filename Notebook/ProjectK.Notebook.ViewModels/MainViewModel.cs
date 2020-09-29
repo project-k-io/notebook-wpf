@@ -31,6 +31,22 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
+        static List<string> GlobalContextList = new List<string>
+        {
+            "Notebook",
+            "Company",
+            "Contact",
+            "Node",
+            "Task",
+            "Note",
+            "Task Manager",
+            "Year",
+            "Month",
+            "Day",
+            "Week"
+        };
+
+
         #region Fields
 
         private readonly NotebookContext _db = new NotebookContext();
@@ -79,7 +95,7 @@ namespace ProjectK.Notebook.ViewModels
                 Created = DateTime.Now,
                 Description = "Root Node",
                 Name = "Root",
-                NodeId = Guid.Empty,
+                Id = Guid.Empty,
                 ParentId = Guid.Empty
             };
 
@@ -104,6 +120,12 @@ namespace ProjectK.Notebook.ViewModels
             OpenDatabaseCommand = new RelayCommand(OpenDatabase);
             SyncDatabaseCommand = new RelayCommand(SyncDatabase);
             AddNotebookCommand = new RelayCommand(AddNotebook);
+
+            // Add Context 
+            foreach (var context in GlobalContextList)
+            {
+                ContextList.Add(context);
+            }
         }
 
 
@@ -145,7 +167,7 @@ namespace ProjectK.Notebook.ViewModels
             var model = new NotebookModel
             {
                 Name = "Notebook",
-                NodeId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 Context = "Notebook",
                 Created = DateTime.Now,
                 Description = "Generic Notebook"

@@ -30,7 +30,7 @@ namespace ProjectK.Notebook.ViewModels
                 Created = DateTime.Now,
                 Description = "Notebook",
                 Name = "New Notebook",
-                NodeId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 ParentId = Guid.Empty
             };
 

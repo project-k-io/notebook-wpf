@@ -95,7 +95,7 @@
                     <RibbonButton Command="{Binding Path=SyncDatabaseCommand}" Label="Sync" SmallImageSource="Images\icons8_upload_to_cloud_48px.png" ToolTip="Sync Database"/>
                 </RibbonGroup>
                 <RibbonGroup Header="Notebook">
-                    <RibbonButton Command="{Binding Path=AddNotebookCommand}" Label="Open Database" SmallImageSource="Images\open16.png" ToolTip="Add Notebook"/>
+                    <RibbonButton Command="{Binding Path=AddNotebookCommand}" Label="Add Notebook" SmallImageSource="Images\open16.png" ToolTip="Add Notebook"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
