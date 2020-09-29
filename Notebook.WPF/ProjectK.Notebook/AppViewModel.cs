@@ -63,27 +63,8 @@ namespace ProjectK.Notebook
             InitOutput();
             Logger = LogManager.GetLogger<MainViewModel>();
             Logger.LogDebug("Import Logging()");
-            MessengerInstance.Register<NotificationMessage<NodeModel>>(this, NotifyMe);
         }
 
-        private void NotifyMe(NotificationMessage<NodeModel> notificationMessage)
-        {
-            var notification = notificationMessage.Notification;
-            var model = notificationMessage.Content;
-            if (notification == "Modified")
-            {
-                Logger.LogDebug($"Model={model.Name} {notification}");
-                // _db.SaveChanges();
-            }
-        }
-
-
-        public void NotifyMe(NotificationMessageAction<NodeModel> notificationMessageAction)
-        {
-            string notification = notificationMessageAction.Notification;
-            //do your work
-            notificationMessageAction.Execute("callback parameter"); //Execute the callback
-        }
 
         #endregion
 

@@ -282,7 +282,7 @@ namespace ProjectK.Notebook.ViewModels
             if (!IsTaskModelProperty(propertyName)) return;
 
             Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
-             Modified = ModifiedStatus.Modified;
+            Modified = ModifiedStatus.Modified;
             SetParentChildModified();
             MessengerInstance.Send(new NotificationMessage<TaskModel>(Model, "Modified"));
         }

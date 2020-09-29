@@ -373,6 +373,8 @@ namespace ProjectK.Notebook.ViewModels
 
                     service.SelectItem(parentNode);
                     service.Handled();
+
+                    MessengerInstance.Send(new NotificationMessage<NodeViewModel>(item, "Delete"));
                     break;
 
                 case KeyboardKeys.Left:

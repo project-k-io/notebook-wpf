@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectK.Notebook.Data;
@@ -125,8 +126,20 @@ namespace ProjectK.Notebook.ViewModels
             {
                 ContextList.Add(context);
             }
+
+            MessengerInstance.Register<NotificationMessage<NodeModel>>(this, NotifyMe);
         }
 
+        private void NotifyMe(NotificationMessage<NodeModel> notificationMessage)
+        {
+            var notification = notificationMessage.Notification;
+            var model = notificationMessage.Content;
+            if (notification == "Modified")
+            {
+                Logger.LogDebug($"Model={model.Name} {notification}");
+                // _db.SaveChanges();
+            }
+        }
 
         public void SyncDatabase()
         {
