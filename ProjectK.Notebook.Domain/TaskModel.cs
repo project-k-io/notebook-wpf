@@ -5,19 +5,13 @@ using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class TaskModel : ITask
+    public class TaskModel : NodeModel, ITask
     {
         // Primary Key
         [Key] public int ItemId { get; set;}
 
-        // INode
-        public Guid Id { get; set; }
-        public Guid ParentId { get; set; }
-        public string Name { get; set; }
-        public DateTime Created { get; set; }
-        public string Context { get; set; }
-        public string Description { get; set; }
         // ITask
+        public string Description { get; set; }
         public string Type { get; set; }
         public string SubType { get; set; }
         public int Rating { get; set; }
@@ -32,21 +26,16 @@ namespace ProjectK.Notebook.Domain
         public bool IsSame(TaskModel b)
         {
             // INode
-            if (Id != b.Id) return false;
-            if (ParentId != b.ParentId) return false;
-            if (Name != b.Name) return false;
-            if (Context != b.Context) return false;
-            if (Created != b.Created) return false;
+            if (!base.IsSame(b)) return false;
             // ITask
+            if (Description != b.Description) return false;
             if (DateEnded != b.DateEnded) return false;
             if (DateStarted != b.DateStarted) return false;
-            if (Description != b.Description) return false;
             if (SubType != b.SubType) return false;
             if (Type != b.Type) return false;
             if (Rating != b.Rating) return false;
             return true;
         }
-#if AK
 
         public void Init(Versions.Version2.TaskModel task2)
         {
@@ -62,6 +51,7 @@ namespace ProjectK.Notebook.Domain
             SubType = task2.SubType;
         }
 
+#if AK
 
         public override string ToString()
         {

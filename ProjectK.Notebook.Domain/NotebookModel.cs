@@ -8,26 +8,16 @@ using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NotebookModel: INode
+    public class NotebookModel: NodeModel
     {
-
         [Key]
         public int ItemId { get; set; }
 
-        // INode
-        public Guid Id { get; set; }
-        public Guid ParentId { get; set; }
-        public string Name { get; set; }
-        public DateTime Created { get; set; }
-        public string Context { get; set; }
-
-        public virtual IList<NodeModel> Nodes { get; set; } = new ObservableCollection<NodeModel>();
         public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
         public virtual IList<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
 
         public void Clear()
         {
-            Nodes.Clear();
             Notes.Clear();
             Tasks.Clear();
         }
