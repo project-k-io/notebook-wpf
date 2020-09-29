@@ -71,18 +71,6 @@ namespace ProjectK.Notebook.Views
             };
 
             task.KeyboardAction(keyState, service);
-
-            if (keyState == KeyboardKeys.Delete)
-            {
-                if (task.Context == "NotebookModel")
-                {
-                    var notebook =  mainViewModel.Notebooks.First(n => n.RootTask.Id == task.Id);
-                    if(notebook == null)
-                        return;
-
-                    mainViewModel.Notebooks.Remove(notebook);
-                }
-            }
         }
 
 

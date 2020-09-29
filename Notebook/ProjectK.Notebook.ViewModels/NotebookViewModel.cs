@@ -20,8 +20,9 @@ namespace ProjectK.Notebook.ViewModels
 
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
-        private readonly NotebookModel _notebookModel;
+        public  NotebookModel Model { get; }
 
+        /*
         public NotebookViewModel()
         {
             var rootTask = new NodeModel
@@ -40,13 +41,14 @@ namespace ProjectK.Notebook.ViewModels
                  Name = "Time Tracker", Context = "Time Tracker" 
             });
 
-            _notebookModel = new NotebookModel();
+            Model = new NotebookModel();
         }
+        */
 
-        public NotebookViewModel(NotebookModel notebookModel)
+        public NotebookViewModel(NotebookModel model)
         {
-            _notebookModel = notebookModel;
-            var rootModel = new NodeModel(notebookModel);
+            Model = model;
+            var rootModel = new NodeModel(model);
             RootTask = new NodeViewModel(rootModel);
         }
 
@@ -69,8 +71,8 @@ namespace ProjectK.Notebook.ViewModels
         public void ViewModelToModel()
         {
             _logger.LogDebug($"Populate NotebookModel from TreeNode {RootTask.Name}");
-            _notebookModel.Clear();
-            _notebookModel.ViewModelToModel(RootTask);
+            Model.Clear();
+            Model.ViewModelToModel(RootTask);
         }
 
 
@@ -96,8 +98,8 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
         public string Title
         {
-            get => _notebookModel.Name;
-            set => _notebookModel.Name = value;
+            get => Model.Name;
+            set => Model.Name = value;
         }
 
 

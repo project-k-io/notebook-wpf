@@ -357,24 +357,7 @@ namespace ProjectK.Notebook.ViewModels
                     Logger.LogDebug($"Added [{node.Name}] to [{item.Name}]");
                     break;
                 case KeyboardKeys.Delete:
-                    if (service.DeleteMessageBox())
-                        break;
-
-                    var parent = item.Parent;
-                    if (parent == null)
-                        break;
-
-                    var num1 = parent.Nodes.IndexOf(item);
-                    service.Dispatcher(() => parent.Remove(item));
-
-                    var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
-                    if (parentNode == null)
-                        break;
-
-                    service.SelectItem(parentNode);
-                    service.Handled();
-
-                    MessengerInstance.Send(new NotificationMessage<NodeViewModel>(item, "Delete"));
+                    DeleteNode(service);
                     break;
 
                 case KeyboardKeys.Left:
@@ -458,6 +441,29 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
+        public void DeleteNode(IActionService service)
+        {
+            Logger.LogDebug($"Delete Node : {Name}");
+            var item = this;
+            if (service.DeleteMessageBox())
+                return;
+
+            var parent = item.Parent;
+            if (parent == null)
+                return;
+
+            var num1 = parent.Nodes.IndexOf(item);
+            service.Dispatcher(() => parent.Remove(item));
+
+            var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
+            if (parentNode == null)
+                return;
+
+            service.SelectItem(parentNode);
+            service.Handled();
+
+            MessengerInstance.Send(new NotificationMessage<NodeViewModel>(item, "Delete"));
+        }
 
     }
 }

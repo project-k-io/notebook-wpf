@@ -30,9 +30,7 @@ namespace ProjectK.Notebook.ViewModels
 
         protected ILogger Logger;
 
-        #endregion
-
-        static List<string> GlobalContextList = new List<string>
+        static readonly List<string> GlobalContextList = new List<string>
         {
             "Notebook",
             "Company",
@@ -47,18 +45,88 @@ namespace ProjectK.Notebook.ViewModels
             "Week"
         };
 
+        #endregion
 
         #region Fields
 
         private readonly NotebookContext _db = new NotebookContext();
-
-        private string _excelCsvText;
-        private bool _useTimeOptimization;
+        private NotebookViewModel _selectedNotebook;
         private ReportTypes _reportType = ReportTypes.Notes;
+        private string _excelCsvText;
         private string _textReport;
         private string _title;
-        private NotebookViewModel _selectedNotebook;
-        private NodeViewModel _selectedTask;
+        private bool _useTimeOptimization;
+
+        #endregion
+
+        #region Properties
+
+        public ObservableCollection<NotebookViewModel> Notebooks { get; set; } =
+            new ObservableCollection<NotebookViewModel>();
+
+        public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
+        public ObservableCollection<string> TypeList { get; set; }
+        public ObservableCollection<string> ContextList { get; set; }
+        public ObservableCollection<string> TaskTitleList { get; set; }
+        public ObservableCollection<NotebookModel> NotebookModels { get; set; }
+
+        public ReportTypes ReportType
+        {
+            get => _reportType;
+            set
+            {
+                if (!Set(ref _reportType, value)) return;
+            }
+        }
+
+        public Assembly Assembly { get; set; }
+
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                if (_title == null)
+                    return;
+
+                _title = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string TextReport
+        {
+            get => _textReport;
+            set => Set(ref _textReport, value);
+        }
+
+        public Guid LastListTaskId { get; set; }
+        public Guid LastTreeTaskId { get; set; }
+
+
+        public NodeViewModel RootTask { get; set; }
+
+        public NotebookViewModel SelectedNotebook
+        {
+            get => _selectedNotebook;
+            set => Set(ref _selectedNotebook, value);
+        }
+
+        public string ExcelCsvText
+        {
+            get => _excelCsvText;
+            set => Set(ref _excelCsvText, value);
+        }
+
+        public bool UseTimeOptimization
+        {
+            get => _useTimeOptimization;
+            set => Set(ref _useTimeOptimization, value);
+        }
+
+        public bool CanSave { get; set; }
+        public Action<Action> OnDispatcher { get; set; }
+        public OutputViewModel Output { get; set; } = new OutputViewModel();
 
 
         #endregion
@@ -83,14 +151,11 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-
         #region Consuctors
-
-        private NodeModel _rootModel;
 
         public MainViewModel()
         {
-            _rootModel = new NodeModel
+            var rootModel = new NodeModel
             {
                 Context = "Root",
                 Created = DateTime.Now,
@@ -99,7 +164,7 @@ namespace ProjectK.Notebook.ViewModels
                 ParentId = Guid.Empty
             };
 
-            RootTask = new NodeViewModel(_rootModel);
+            RootTask = new NodeViewModel(rootModel);
 
 
             CanSave = true;
@@ -115,8 +180,10 @@ namespace ProjectK.Notebook.ViewModels
             CopyTaskCommand = new RelayCommand(CopyTask);
             ContinueTaskCommand = new RelayCommand(ContinueTask);
             ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
-            ExportSelectedAllAsTextCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
-            ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
+            ExportSelectedAllAsTextCommand =
+                new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
+            ExportSelectedAllAsJsonCommand =
+                new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
             OpenDatabaseCommand = new RelayCommand(OpenDatabase);
             SyncDatabaseCommand = new RelayCommand(SyncDatabase);
             AddNotebookCommand = new RelayCommand(AddNotebook);
@@ -127,17 +194,36 @@ namespace ProjectK.Notebook.ViewModels
                 ContextList.Add(context);
             }
 
-            MessengerInstance.Register<NotificationMessage<NodeModel>>(this, NotifyMe);
+            MessengerInstance.Register<NotificationMessage<NodeViewModel>>(this, NotifyMe);
         }
 
-        private void NotifyMe(NotificationMessage<NodeModel> notificationMessage)
+        private void NotifyMe(NotificationMessage<NodeViewModel> notificationMessage)
         {
             var notification = notificationMessage.Notification;
-            var model = notificationMessage.Content;
+            var node = notificationMessage.Content;
             if (notification == "Modified")
             {
-                Logger.LogDebug($"Model={model.Name} {notification}");
+                Logger.LogDebug($"Model={node.Name} {notification}");
                 // _db.SaveChanges();
+            }
+            else if (notification == "Delete")
+            {
+                DeleteNode(node);
+                Logger.LogDebug($"Model={node.Name} {notification}");
+                // _db.SaveChanges();
+            }
+        }
+        private void DeleteNode(NodeViewModel node)
+        {
+            if (node.Context == "Notebook")
+            {
+                var notebook = Notebooks.First(n => n.RootTask.Id == node.Id);
+                if (notebook == null)
+                    return;
+
+                Notebooks.Remove(notebook);
+                NotebookModels.Remove(notebook.Model);
+                // _db.Notebooks.Remove(notebook.Model);
             }
         }
 
@@ -147,7 +233,6 @@ namespace ProjectK.Notebook.ViewModels
             RootTask.ResetParentChildModified();
             RootTask.ResetModified();
         }
-
         public void OpenDatabase()
         {
             // this is for demo purposes only, to make it easier
@@ -171,7 +256,6 @@ namespace ProjectK.Notebook.ViewModels
             // ModelToViewModel Data
             UpdateTypeListAsync(nodes);
         }
-
         private void AddNotebook()
         {
             Logger.LogDebug("AddNotebook");
@@ -186,19 +270,17 @@ namespace ProjectK.Notebook.ViewModels
 
             ImportNotebook(model);
         }
-
         public void ImportNotebook(NotebookModel notebookModel)
         {
             Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
 
             // Add NotebookModel
             NotebookModels.Add(notebookModel);
-            // Save to Databvase
+            // Save to Database
             _db.SaveChanges();
 
             AddNotebook(notebookModel);
         }
-
         private (NotebookViewModel, List<NodeModel>) AddNotebook(NotebookModel model)
         {
             Logger.LogDebug($"AddNotebook: {model.Name}");
@@ -213,8 +295,6 @@ namespace ProjectK.Notebook.ViewModels
 
             return (notebook, nodes);
         }
-
-
         private void OnCurrentNotebookChanged()
         {
             var noteBookName = SelectedNotebook != null ? SelectedNotebook.RootTask.Name : "";
@@ -227,68 +307,6 @@ namespace ProjectK.Notebook.ViewModels
 
         public event EventHandler<TaskEventArgs> SelectedTaskChanged;
         public Action CurrentNotebookChanged { get; set; }
-
-        #endregion
-
-
-        #region Properties
-
-        public ReportTypes ReportType
-        {
-            get => _reportType;
-            set
-            {
-                if (!Set(ref _reportType, value)) return;
-            }
-        }
-        public Assembly Assembly { get; set; }
-        public string Title
-        {
-            get => _title;
-            set
-            {
-                if (_title == null)
-                    return;
-
-                _title = value;
-                RaisePropertyChanged();
-            }
-        }
-        public string TextReport
-        {
-            get => _textReport;
-            set => Set(ref _textReport, value);
-        }
-        public Guid LastListTaskId { get; set; }
-        public Guid LastTreeTaskId { get; set; }
-        public ObservableCollection<NotebookViewModel> Notebooks { get; set; } = new ObservableCollection<NotebookViewModel>();
-
-
-        public NodeViewModel RootTask { get; set; }
-        public NotebookViewModel SelectedNotebook
-        {
-            get => _selectedNotebook;
-            set => Set(ref _selectedNotebook, value);
-        }
-        public string ExcelCsvText
-        {
-            get => _excelCsvText;
-            set => Set(ref _excelCsvText, value);
-        }
-        public bool UseTimeOptimization
-        {
-            get => _useTimeOptimization;
-            set => Set(ref _useTimeOptimization, value);
-        }
-        public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
-        public ObservableCollection<string> TypeList { get; set; }
-        public ObservableCollection<string> ContextList { get; set; }
-        public ObservableCollection<string> TaskTitleList { get; set; }
-        public bool CanSave { get; set; }
-        public Action<Action> OnDispatcher { get; set; }
-        public OutputViewModel Output { get; set; } = new OutputViewModel();
-
-        public ObservableCollection<NotebookModel> NotebookModels { get; set; }
 
         #endregion
 
@@ -497,7 +515,7 @@ namespace ProjectK.Notebook.ViewModels
                 DeleteMessageBox = () => true,
                 Dispatcher = OnDispatcher
             };
-            SelectedNotebook.SelectedNode?.KeyboardAction(keyboardKeys,service);
+            SelectedNotebook.SelectedNode?.KeyboardAction(keyboardKeys, service);
         }
 
         private void CopyTask()

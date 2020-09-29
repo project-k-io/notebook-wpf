@@ -269,9 +269,7 @@ namespace ProjectK.Notebook
         {
             var commandBindings = new CommandBindingCollection
             {
-                new CommandBinding(ApplicationCommands.New, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true),
                 new CommandBinding(ApplicationCommands.Open, async (s, e) =>  await this.UserAction_OpenFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.Close, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true)
             };
             return commandBindings;
         }
@@ -282,23 +280,5 @@ namespace ProjectK.Notebook
             // load notebookModel 
             
         }
-
-
-
-        private async Task UserNewFileAsync()
-        {
-            Logger.LogDebug("UserNewFileAsync");
-            CanSave = false;
-
-            var notebook = new NotebookViewModel();
-            var path = FileHelper.MakeUnique(notebook.Title);
-
-
-            Notebooks.Add(notebook);
-            RootTask.Add(notebook.RootTask);
-            SelectedNotebook = notebook;
-            CanSave = true;
-        }
-
     }
 }
