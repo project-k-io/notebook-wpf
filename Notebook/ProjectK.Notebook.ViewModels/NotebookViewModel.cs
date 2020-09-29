@@ -28,7 +28,6 @@ namespace ProjectK.Notebook.ViewModels
             {
                 Context = "Notebook",
                 Created = DateTime.Now,
-                Description = "Notebook",
                 Name = "New Notebook",
                 Id = Guid.NewGuid(),
                 ParentId = Guid.Empty
@@ -47,7 +46,8 @@ namespace ProjectK.Notebook.ViewModels
         public NotebookViewModel(NotebookModel notebookModel)
         {
             _notebookModel = notebookModel;
-            RootTask = new NodeViewModel(notebookModel);
+            var rootModel = new NodeModel(notebookModel);
+            RootTask = new NodeViewModel(rootModel);
         }
 
 

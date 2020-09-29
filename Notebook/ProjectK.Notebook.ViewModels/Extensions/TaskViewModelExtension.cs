@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
@@ -18,17 +19,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         public static void ViewModelToModel(this NotebookModel notebookModel, NodeViewModel rootTask)
         {
             Logger.LogDebug($@"Populate NotebookModel {notebookModel.Name} from TreeNode {rootTask.Name}");
-
-            var nodes = new List<NodeModel>();
-            rootTask.SaveTo(nodes);
-            foreach (var node in nodes)
-            {
-                if (node is NoteModel note)
-                    notebookModel.Notes.Add(note);
-
-                if (node is TaskModel task)
-                    notebookModel.Tasks.Add(task);
-            }
+            rootTask.SaveTo(notebookModel);
         }
 
         public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
@@ -48,7 +39,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             {
                 if (!index.ContainsKey(model.Id))
                 {
-                    if (model is TaskModel task)
+                    if (model is ITask task)
                     {
                         var vm = new TaskViewModel(task);
                         index.Add(((NodeModel) task).Id, vm);

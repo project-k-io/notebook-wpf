@@ -25,6 +25,13 @@ namespace ProjectK.Notebook.Domain
         public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
         public virtual IList<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
 
+        public void Clear()
+        {
+            Nodes.Clear();
+            Notes.Clear();
+            Tasks.Clear();
+        }
+
 #if AK
 
         public void Init(Versions.Version2.DataModel model)
@@ -60,11 +67,6 @@ namespace ProjectK.Notebook.Domain
             Notes.Copy(source.Notes, a => a.Copy());
             Tasks.Clear();
             Tasks.Copy(source.Tasks, a => a.Copy());
-        }
-        public  void Clear()
-        {
-            Notes.Clear();
-            Tasks.Clear();
         }
 
         public List<NodeModel> GetNodes()

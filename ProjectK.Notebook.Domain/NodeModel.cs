@@ -33,6 +33,18 @@ namespace ProjectK.Notebook.Domain
             return true;
         }
 
+        public NodeModel()
+        {
+        }
+
+        public NodeModel(INode b)
+        {
+            Id = b.Id;
+            Name = b.Name;
+            Context = b.Context;
+            Created = b.Created;
+            ParentId = b.ParentId;
+        }
 #if AK
         public override string ToString()
         {
@@ -46,15 +58,6 @@ namespace ProjectK.Notebook.Domain
 
         public NodeModel()
         {
-        }
-        public NodeModel(NodeModel b)
-        {
-            Id = b.Id;
-            Name = b.Name;
-            Context = b.Context;
-            Created = b.Created;
-            ParentId = b.ParentId;
-            Description = b.Description;
         }
 
         public NodeModel Copy()

@@ -59,7 +59,7 @@ namespace ProjectK.Notebook.ViewModels
             SetKind("Node");
             Model = new NodeModel();
         }
-        public NodeViewModel(NodeModel model): this()
+        public NodeViewModel(dynamic model): this()
         {
             SetKind("Node");
             Model = model;
@@ -145,32 +145,34 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Public functions
 
-        public void SaveTo(List<NodeModel> list)
+        public void SaveTo(NotebookModel model)
         {
             foreach (var node in Nodes)
             {
-                node.SaveRecursively(list);
+                node.SaveRecursively(model);
             }
         }
 
 
-        private void SaveRecursively(ICollection<NodeModel> list)
+        private void SaveRecursively(NotebookModel notebook)
         {
-            list.Add(GetModel());
+            var model = this.Model;
+            if(model is TaskModel)
+                notebook.Nodes.Add(model);
+            else if (model is NoteModel)
+                notebook.Notes.Add(model);
+            else
+                notebook.Nodes.Add(model);
+
             TrySetId();
 
             foreach (var node in Nodes)
             {
-                node.SaveRecursively(list);
+                node.SaveRecursively(notebook);
                 node.ParentId = Id;
             }
         }
 
-        private NodeModel GetModel()
-        {
-            var model = new NodeModel();
-            return model;
-        }
 
         public void TrySetId()
         {

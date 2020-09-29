@@ -46,6 +46,7 @@ namespace ProjectK.Notebook.Domain
             if (Rating != b.Rating) return false;
             return true;
         }
+#if AK
 
         public void Init(Versions.Version2.TaskModel task2)
         {
@@ -61,7 +62,6 @@ namespace ProjectK.Notebook.Domain
             SubType = task2.SubType;
         }
 
-#if AK
 
         public override string ToString()
         {

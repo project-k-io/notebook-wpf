@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils.Extensions;
 
 // using ProjectK.NotebookModel.Models.Versions.Version2;
@@ -38,7 +39,7 @@ namespace ProjectK.Notebook.ViewModels
             SetKind("Task");
             Model = new TaskModel();
         }
-        public TaskViewModel(TaskModel model): base(model)
+        public TaskViewModel(ITask model): base(model)
         {
             SetKind("Task");
         }

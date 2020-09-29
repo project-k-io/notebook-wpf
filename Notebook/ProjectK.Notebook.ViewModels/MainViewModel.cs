@@ -93,7 +93,6 @@ namespace ProjectK.Notebook.ViewModels
             {
                 Context = "Root",
                 Created = DateTime.Now,
-                Description = "Root Node",
                 Name = "Root",
                 Id = Guid.Empty,
                 ParentId = Guid.Empty
@@ -170,7 +169,6 @@ namespace ProjectK.Notebook.ViewModels
                 Id = Guid.NewGuid(),
                 Context = "Notebook",
                 Created = DateTime.Now,
-                Description = "Generic Notebook"
             };
 
             ImportNotebook(model);
