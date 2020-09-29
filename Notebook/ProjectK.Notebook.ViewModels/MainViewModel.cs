@@ -13,6 +13,7 @@ using ProjectK.Notebook.Domain.Reports;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Reports;
+using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
@@ -387,13 +388,16 @@ namespace ProjectK.Notebook.ViewModels
 
         private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
-            SelectedNotebook.SelectedNode?.KeyboardAction(
-                keyboardKeys,
-                () => keyboardState,
-                () => { }, t => t.IsSelected = true,
-                t => t.IsExpanded = true,
-                () => true,
-                OnDispatcher);
+            var service = new ActionService
+            {
+                GetState = () => keyboardState,
+                Handled = () => { },
+                SelectItem = t => t.IsSelected = true,
+                ExpandItem = t => t.IsExpanded = true,
+                DeleteMessageBox = () => true,
+                Dispatcher = OnDispatcher
+            };
+            SelectedNotebook.SelectedNode?.KeyboardAction(keyboardKeys,service);
         }
 
         private void CopyTask()

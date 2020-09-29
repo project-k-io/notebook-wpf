@@ -5,6 +5,8 @@ using System.Windows.Input;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
+using ProjectK.Notebook.ViewModels.Services;
+using ProjectK.Notebook.Views.Helpers;
 using ProjectK.View.Helpers;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.View.Helpers.Misc;
@@ -20,21 +22,6 @@ namespace ProjectK.Notebook.Views
             Loaded += TasksTreeView_Loaded;
         }
 
-        private static KeyboardStates KeyboardState
-        {
-            get
-            {
-                var keyboardStates = KeyboardStates.None;
-                if (XKeyboard.IsCtrlShiftPressed)
-                    keyboardStates = KeyboardStates.IsCtrlShiftPressed;
-                else if (XKeyboard.IsShiftPressed)
-                    keyboardStates = KeyboardStates.IsShiftPressed;
-                else if (XKeyboard.IsControlPressed)
-                    keyboardStates = KeyboardStates.IsControlPressed;
-                return keyboardStates;
-            }
-        }
-
         private void TasksTreeView_Loaded(object sender, RoutedEventArgs e)
         {
             if (!(DataContext is MainViewModel model))
@@ -45,14 +32,15 @@ namespace ProjectK.Notebook.Views
             TreeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
         }
 
-        private void TreeViewTasksOnPreviewKeyDown(object sender, KeyEventArgs e)
+        static bool DeleteMessageBox()
         {
-            OnTreeViewKeyDown(sender, e);
+            return MessageBox.Show("Are you sure you would like to delete this?", "Delete", MessageBoxButton.OKCancel) ==
+                   MessageBoxResult.Cancel;
         }
 
-        private void OnTreeViewKeyDown(object sender, KeyEventArgs e)
+        private void TreeViewTasksOnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var keyState = GetKeyState(e.Key);
+            var keyState = KeyboardHelper.GetKeyState(e.Key);
             if (!(sender is TreeListView treeView))
                 return;
 
@@ -70,18 +58,19 @@ namespace ProjectK.Notebook.Views
                 treeViewItem.IsExpanded = true;
             }
 
-            static bool DeleteMessageBox()
-            {
-                return MessageBox.Show("Are you sure you would like to delete this?", "Delete", MessageBoxButton.OKCancel) ==
-                       MessageBoxResult.Cancel;
-            }
-
             var addDelegate = ViewLib.GetAddDelegate(this);
-            task.KeyboardAction(keyState, () => 
-                KeyboardState, () => e.Handled = true, 
-                treeView.SelectItem, 
-                (a) => ExpandItem((NodeViewModel)a), 
-                DeleteMessageBox, addDelegate);
+
+            var service = new ActionService
+            {
+                GetState = () => KeyboardHelper.KeyboardState,
+                Handled = () => e.Handled = true,
+                SelectItem = treeView.SelectItem,
+                ExpandItem = (a) => ExpandItem((NodeViewModel)a),
+                DeleteMessageBox = DeleteMessageBox,
+                Dispatcher = addDelegate
+            };
+
+            task.KeyboardAction(keyState, service);
 
             if (keyState == KeyboardKeys.Delete)
             {
@@ -96,33 +85,6 @@ namespace ProjectK.Notebook.Views
             }
         }
 
-        private static KeyboardKeys GetKeyState(Key key)
-        {
-            var keyStates = KeyboardKeys.None;
-            switch (key)
-            {
-                case Key.Left:
-                    keyStates = KeyboardKeys.Left;
-                    break;
-                case Key.Up:
-                    keyStates = KeyboardKeys.Up;
-                    break;
-                case Key.Right:
-                    keyStates = KeyboardKeys.Right;
-                    break;
-                case Key.Down:
-                    keyStates = KeyboardKeys.Down;
-                    break;
-                case Key.Insert:
-                    keyStates = KeyboardKeys.Insert;
-                    break;
-                case Key.Delete:
-                    keyStates = KeyboardKeys.Delete;
-                    break;
-            }
-
-            return keyStates;
-        }
 
         private void TreeViewTasks_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {

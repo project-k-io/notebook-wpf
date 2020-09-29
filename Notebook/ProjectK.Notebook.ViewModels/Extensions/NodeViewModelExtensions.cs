@@ -3,30 +3,22 @@ using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.ViewModels.Enums;
+using ProjectK.Notebook.ViewModels.Interfaces;
+using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
-
-
     public static class NodeViewModelExtensions
     {
-
-        private static readonly ILogger _logger = LogManager.GetLogger<TaskViewModel>();
-        public static void KeyboardAction(
-            this NodeViewModel item,
-            KeyboardKeys keyboardKeys,
-            Func<KeyboardStates> getState,
-            Action handled,
-            Action<NodeViewModel> selectItem, Action<NodeViewModel> expandItem,
-            Func<bool> deleteMessageBox,
-            Action<Action> dispatcher)
+        private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
+        public static void KeyboardAction(this NodeViewModel item, KeyboardKeys keyboardKeys, IActionService service)
         {
-            var state = getState();
+            var state = service.GetState();
 
             // don't show logging ctl, alt, shift or arrow keys
             if (keyboardKeys != KeyboardKeys.None && state != KeyboardStates.None)
-                _logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
+                Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
 
             switch (keyboardKeys)
             {
@@ -55,27 +47,27 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     }
 
                     item.IsSelected = true;
-                    selectItem(item);
-                    expandItem(item);
-                    handled();
-                    _logger.LogDebug($"Added [{node.Name}] to [{item.Name}]");
+                    service.SelectItem(item);
+                    service.ExpandItem(item);
+                    service.Handled();
+                    Logger.LogDebug($"Added [{node.Name}] to [{item.Name}]");
                     break;
                 case KeyboardKeys.Delete:
-                    if (deleteMessageBox())
+                    if (service.DeleteMessageBox())
                         break;
                     var parent = item.Parent;
                     if (parent == null)
                         break;
 
                     var num1 = parent.Nodes.IndexOf(item);
-                    dispatcher(() => parent.Remove(item));
+                    service.Dispatcher(() => parent.Remove(item));
 
                     var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
                     if (parentNode == null)
                         break;
 
-                    selectItem(parentNode);
-                    handled();
+                    service.SelectItem(parentNode);
+                    service.Handled();
                     break;
 
                 case KeyboardKeys.Left:
@@ -92,8 +84,8 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
                         var num2 = parent2.Nodes.IndexOf(parent1);
                         parent2.Insert(num2 + 1, item);
-                        selectItem(item);
-                        handled();
+                        service.SelectItem(item);
+                        service.Handled();
                     }
 
                     break;
@@ -113,10 +105,10 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
                         parent1.Remove(item);
                         parentNode2.Add(item);
-                        selectItem(item);
+                        service.SelectItem(item);
                         parent1.IsExpanded = true;
                         item.IsSelected = true;
-                        handled();
+                        service.Handled();
                     }
 
                     break;
@@ -131,10 +123,10 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                             break;
                         parent1.Remove(item);
                         parent1.Insert(num2 - 1, item);
-                        selectItem(item);
+                        service.SelectItem(item);
                         parent1.IsExpanded = true;
                         item.IsSelected = true;
-                        handled();
+                        service.Handled();
                     }
 
                     break;
@@ -149,10 +141,10 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                             break;
                         parent1.Remove(item);
                         parent1.Insert(num2 + 1, item);
-                        selectItem(item);
+                        service.SelectItem(item);
                         parent1.IsExpanded = true;
                         item.IsSelected = true;
-                        handled();
+                        service.Handled();
                     }
 
                     break;
