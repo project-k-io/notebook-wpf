@@ -73,13 +73,6 @@ namespace ProjectK.Notebook.ViewModels
             _notebookModel.ViewModelToModel(RootTask);
         }
 
-        public void ModelToViewModel()
-        {
-            _logger.LogDebug($"Populate TreeNode from NotebookModel {_notebookModel.Name}");
-            // load notebookModel 
-            RootTask.ModelToViewModel(_notebookModel);
-        }
-
 
 
         #endregion

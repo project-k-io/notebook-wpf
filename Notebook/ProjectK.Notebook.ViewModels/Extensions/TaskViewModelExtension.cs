@@ -30,21 +30,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     notebookModel.Tasks.Add(task);
             }
         }
-        public static void ModelToViewModel(this NodeViewModel rootTask, NotebookModel notebookModel)
-        {
-            Logger.LogDebug($@"Populate TreeNode {rootTask.Name} from NotebookModel {notebookModel.Name}");
-
-            var nodes = new List<NodeModel>();
-            var notes = notebookModel.Notes.Cast<NodeModel>().ToList();
-            var tasks2 = notebookModel.Tasks.ToList();
-
-            var tasks = notebookModel.Tasks.Cast<NodeModel>();
-            nodes.AddRange(notes);
-            nodes.AddRange(tasks);
-
-            // Build Tree
-            rootTask.BuildTree(nodes);
-        }
 
         public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
         {

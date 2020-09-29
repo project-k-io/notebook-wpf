@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
@@ -54,5 +55,16 @@ namespace ProjectK.Notebook.Domain
             Notes.Clear();
             Tasks.Clear();
         }
+
+        public List<NodeModel> GetNodes()
+        {
+            var nodes = new List<NodeModel>();
+            var notes = Notes.Cast<NodeModel>().ToList();
+            var tasks = Tasks.Cast<NodeModel>();
+            nodes.AddRange(notes);
+            nodes.AddRange(tasks);
+            return nodes;
+        }
+
     }
 }

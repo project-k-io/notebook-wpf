@@ -1,7 +1,10 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.Utils.Extensions;
 using Syncfusion.Licensing;
 
 namespace ProjectK.Notebook
@@ -37,12 +40,7 @@ namespace ProjectK.Notebook
             _mainWindow.Show();
 
             // Open Database
-#if !AK // db open
             _appModel.OpenDatabase();
-
-            // ModelToViewModel Data
-            await _appModel.UpdateTypeListAsync();
-#endif
         }
 
 

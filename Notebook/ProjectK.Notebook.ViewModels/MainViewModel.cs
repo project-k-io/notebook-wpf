@@ -199,39 +199,34 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public async Task UpdateTypeListAsync()
+        public void UpdateTypeListAsync(List<NodeModel> nodes)
         {
-            await Task.Run(() =>
+            var sortedSet1 = new SortedSet<string>();
+            var sortedSet2 = new SortedSet<string>();
+            var sortedSet3 = new SortedSet<string>();
+            foreach (var node in nodes)
             {
-                var nodes = new List<NodeViewModel>();
-                nodes.AddToList(RootTask);
-                var sortedSet1 = new SortedSet<string>();
-                var sortedSet2 = new SortedSet<string>();
-                var sortedSet3 = new SortedSet<string>();
-                foreach (var node in nodes)
+                if (node is TaskModel task)
                 {
-                    if (node is TaskViewModel task)
-                    {
-                        var type = task.Type;
-                        if (!sortedSet1.Contains(type)) sortedSet1.Add(type);
-                    }
-
-                    var context = node.Context;
-                    if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
-
-                    var title = node.Name;
-                    if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
+                    var type = task.Type;
+                    if (!sortedSet1.Contains(type)) sortedSet1.Add(type);
                 }
 
-                TypeList.Clear();
-                foreach (var str in sortedSet1) TypeList.Add(str);
+                var context = node.Context;
+                if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
 
-                ContextList.Clear();
-                foreach (var str in sortedSet2) ContextList.Add(str);
+                var title = node.Name;
+                if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
+            }
 
-                TaskTitleList.Clear();
-                foreach (var str in sortedSet3) TaskTitleList.Add(str);
-            });
+            TypeList.Clear();
+            foreach (var str in sortedSet1) TypeList.Add(str);
+
+            ContextList.Clear();
+            foreach (var str in sortedSet2) ContextList.Add(str);
+
+            TaskTitleList.Clear();
+            foreach (var str in sortedSet3) TaskTitleList.Add(str);
         }
 
 

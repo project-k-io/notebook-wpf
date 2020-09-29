@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -163,12 +165,19 @@ namespace ProjectK.Notebook
             // bind to the source
             NotebookModels = _db.Notebooks.Local.ToObservableCollection();
 
+            var nodes  = new List<NodeModel>(); 
             foreach (var model in NotebookModels)
             {
-                var notebook = AddNotebook(model);
+                var (notebook, nodes2) = AddNotebook(model);
                 SelectedNotebook = notebook;
+                nodes.AddRange(nodes2);
             }
+
+            // ModelToViewModel Data
+            UpdateTypeListAsync(nodes);
         }
+
+
         public override void SyncDatabase()
         {
             _db.SaveChanges();
@@ -331,19 +340,29 @@ namespace ProjectK.Notebook
             return commandBindings;
         }
 
-        private NotebookViewModel AddNotebook(NotebookModel model)
+        private (NotebookViewModel, List<NodeModel>) AddNotebook(NotebookModel model)
         {
             Logger.LogDebug($"AddNotebook: {model.Name}");
             
+            var nodes = model.GetNodes();
             var notebook = new NotebookViewModel(model);
-            notebook.ModelToViewModel();
+            notebook.RootTask.BuildTree(nodes);
 
             SelectedNotebook = notebook;
             Notebooks.Add(notebook);
             RootTask.Add(notebook.RootTask);
-            // add notebookModel task to root task
-            return notebook;
+
+            return (notebook, nodes);
         }
+
+
+        public void ModelToViewModel()
+        {
+            // load notebookModel 
+            
+        }
+
+
 
         private async Task UserNewFileAsync()
         {
