@@ -57,7 +57,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
                 var notebook = new NotebookModel { Name = path};
                 // Populate Notebook model from DataModel
-                notebook.Init(dataModel);
+                notebook.Import(dataModel);
                 mainViewModel.ImportNotebook(notebook);
             }
             catch (Exception e)

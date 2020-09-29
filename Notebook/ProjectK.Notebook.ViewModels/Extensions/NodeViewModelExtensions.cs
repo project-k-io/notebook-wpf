@@ -55,6 +55,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 case KeyboardKeys.Delete:
                     if (service.DeleteMessageBox())
                         break;
+
                     var parent = item.Parent;
                     if (parent == null)
                         break;

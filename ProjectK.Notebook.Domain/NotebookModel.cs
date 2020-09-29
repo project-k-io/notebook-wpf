@@ -22,9 +22,7 @@ namespace ProjectK.Notebook.Domain
             Tasks.Clear();
         }
 
-#if AK
-
-        public void Init(Versions.Version2.DataModel model)
+        public void Import(Versions.Version2.DataModel model)
         {
             foreach (var task2 in model.Tasks)
             {
@@ -33,6 +31,9 @@ namespace ProjectK.Notebook.Domain
                 Tasks.Add(task);
             }
         }
+
+#if AK
+
 
         public  bool IsSame(NotebookModel target)
         {
@@ -59,6 +60,7 @@ namespace ProjectK.Notebook.Domain
             Tasks.Copy(source.Tasks, a => a.Copy());
         }
 
+#endif
         public List<NodeModel> GetNodes()
         {
             var nodes = new List<NodeModel>();
@@ -68,7 +70,6 @@ namespace ProjectK.Notebook.Domain
             nodes.AddRange(tasks);
             return nodes;
         }
-#endif
 
     }
 }

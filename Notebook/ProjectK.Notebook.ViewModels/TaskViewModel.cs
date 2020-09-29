@@ -52,6 +52,8 @@ namespace ProjectK.Notebook.ViewModels
             model.Type = Type;
             model.SubType = SubType;
         }
+
+        public string Description { get => Model.Description; set => this.Set(Description, v => Model.Description = v, value); }
         public string Type { get => Model.Type; set => this.Set(Type, v => Model.Type = v, value); }
         public string SubType { get => Model.SubType; set => this.Set(SubType, v => Model.SubType = v, value); }
         public DateTime DateStarted

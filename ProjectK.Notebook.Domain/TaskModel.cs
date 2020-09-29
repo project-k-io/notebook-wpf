@@ -51,13 +51,6 @@ namespace ProjectK.Notebook.Domain
             SubType = task2.SubType;
         }
 
-#if AK
-
-        public override string ToString()
-        {
-            return $"{base.ToString()}:{Type}:{SubType}: {Rating}: {DateStarted}:{DateEnded}";
-        }
-
         public static TaskModel NewTask()
         {
             var task = new TaskModel
@@ -67,6 +60,14 @@ namespace ProjectK.Notebook.Domain
             };
             return task;
         }
+
+#if AK
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}:{Type}:{SubType}: {Rating}: {DateStarted}:{DateEnded}";
+        }
+
 
 
 

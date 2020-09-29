@@ -83,12 +83,11 @@ namespace ProjectK.Notebook.ViewModels
 
         // Model Wrapper
         public string Kind { get => _kind; set => Set(ref _kind, value); }
-        public Guid Id { get => Model.NodeId; set => this.Set(Id, v => Model.NodeId = v, value); }
+        public Guid Id { get => Model.Id; set => this.Set(Id, v => Model.Id = v, value); }
         public Guid ParentId { get => Model.ParentId; set => this.Set(ParentId, v => Model.ParentId = v, value); }
         public string Name { get => Model.Name; set => this.Set(Name, v => Model.Name = v, value); }
         public DateTime Created { get => Model.Created; set => this.Set(Created, v => Model.Created = v, value); }
         public string Context { get => Model.Context; set => this.Set(Context, v => Model.Context = v, value); }
-        public string Description { get => Model.Description; set => this.Set(Description, v => Model.Description = v, value); }
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }
@@ -158,11 +157,9 @@ namespace ProjectK.Notebook.ViewModels
         {
             var model = this.Model;
             if(model is TaskModel)
-                notebook.Nodes.Add(model);
+                notebook.Tasks.Add(model);
             else if (model is NoteModel)
                 notebook.Notes.Add(model);
-            else
-                notebook.Nodes.Add(model);
 
             TrySetId();
 

@@ -62,7 +62,7 @@ namespace ProjectK.Notebook
             InitLogging();
             InitOutput();
             Logger = LogManager.GetLogger<MainViewModel>();
-            Logger.LogDebug("Init Logging()");
+            Logger.LogDebug("Import Logging()");
             MessengerInstance.Register<NotificationMessage<NodeModel>>(this, NotifyMe);
         }
 

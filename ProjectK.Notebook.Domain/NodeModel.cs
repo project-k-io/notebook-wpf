@@ -42,7 +42,7 @@ namespace ProjectK.Notebook.Domain
             return $"{Context}:{Name}:{Created}: {Description}";
         }
 
-        public void Init(Versions.Version2.TaskModel task2)
+        public void Import(Versions.Version2.TaskModel task2)
         {
         }
 
