@@ -7,7 +7,9 @@ using System.Reflection;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Reports;
 using ProjectK.Notebook.ViewModels.Enums;
@@ -31,6 +33,8 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Fields
 
+        private readonly NotebookContext _db = new NotebookContext();
+
         private string _excelCsvText;
         private bool _useTimeOptimization;
         private ReportTypes _reportType = ReportTypes.Notes;
@@ -39,7 +43,29 @@ namespace ProjectK.Notebook.ViewModels
         private NotebookViewModel _selectedNotebook;
         private NodeViewModel _selectedTask;
 
+
         #endregion
+
+        #region Commands
+
+        public ICommand ClearCommand { get; }
+        public ICommand EditCommand { get; }
+        public ICommand FixTimeCommand { get; }
+        public ICommand ExtractContextCommand { get; }
+        public ICommand FixContextCommand { get; private set; }
+        public ICommand FixTitlesCommand { get; }
+        public ICommand FixTypesCommand { get; }
+        public ICommand CopyTaskCommand { get; }
+        public ICommand ContinueTaskCommand { get; }
+        public ICommand ShowReportCommand { get; }
+        public ICommand ExportSelectedAllAsTextCommand { get; }
+        public ICommand ExportSelectedAllAsJsonCommand { get; }
+        public ICommand OpenDatabaseCommand { get; }
+        public ICommand SyncDatabaseCommand { get; }
+        public ICommand AddNotebookCommand { get; }
+
+        #endregion
+
 
         #region Consuctors
 
@@ -77,19 +103,82 @@ namespace ProjectK.Notebook.ViewModels
             ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
             OpenDatabaseCommand = new RelayCommand(OpenDatabase);
             SyncDatabaseCommand = new RelayCommand(SyncDatabase);
-
-            CurrentNotebookChanged += OnCurrentNotebookChanged;
-
+            AddNotebookCommand = new RelayCommand(AddNotebook);
         }
 
-        public virtual void SyncDatabase()
+
+        public void SyncDatabase()
         {
-            throw new NotImplementedException();
+            _db.SaveChanges();
+            RootTask.ResetParentChildModified();
+            RootTask.ResetModified();
         }
 
-        public virtual void OpenDatabase()
+        public void OpenDatabase()
         {
-            throw new NotImplementedException();
+            // this is for demo purposes only, to make it easier
+            // to get up and running
+            _db.Database.EnsureCreated();
+
+            // load the entities into EF Core
+            _db.Notebooks.Load();
+
+            // bind to the source
+            NotebookModels = _db.Notebooks.Local.ToObservableCollection();
+
+            var nodes = new List<NodeModel>();
+            foreach (var model in NotebookModels)
+            {
+                var (notebook, nodes2) = AddNotebook(model);
+                SelectedNotebook = notebook;
+                nodes.AddRange(nodes2);
+            }
+
+            // ModelToViewModel Data
+            UpdateTypeListAsync(nodes);
+        }
+
+        private void AddNotebook()
+        {
+            Logger.LogDebug("AddNotebook");
+            // Create Notebook
+            var model = new NotebookModel
+            {
+                Name = "Notebook",
+                NodeId = Guid.NewGuid(),
+                Context = "Notebook",
+                Created = DateTime.Now,
+                Description = "Generic Notebook"
+            };
+
+            ImportNotebook(model);
+        }
+
+        public void ImportNotebook(NotebookModel notebookModel)
+        {
+            Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
+
+            // Add NotebookModel
+            NotebookModels.Add(notebookModel);
+            // Save to Databvase
+            _db.SaveChanges();
+
+            AddNotebook(notebookModel);
+        }
+
+        private (NotebookViewModel, List<NodeModel>) AddNotebook(NotebookModel model)
+        {
+            Logger.LogDebug($"AddNotebook: {model.Name}");
+
+            var nodes = model.GetNodes();
+            var notebook = new NotebookViewModel(model);
+            notebook.RootTask.BuildTree(nodes);
+
+            SelectedNotebook = notebook;
+            Notebooks.Add(notebook);
+            RootTask.Add(notebook.RootTask);
+
+            return (notebook, nodes);
         }
 
 
@@ -108,26 +197,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        #region Commands
-
-        public ICommand ClearCommand { get; }
-        public ICommand EditCommand { get; }
-        public ICommand FixTimeCommand { get; }
-        public ICommand ExtractContextCommand { get; }
-        public ICommand FixContextCommand { get; private set; }
-        public ICommand FixTitlesCommand { get; }
-        public ICommand FixTypesCommand { get; }
-        public ICommand CopyTaskCommand { get; }
-        public ICommand ContinueTaskCommand { get; }
-        public ICommand ShowReportCommand { get; }
-        public ICommand ExportSelectedAllAsTextCommand { get; }
-        public ICommand ExportSelectedAllAsJsonCommand { get; }
-        public ICommand OpenDatabaseCommand { get; }
-        public ICommand SyncDatabaseCommand { get; }
-
-
-
-        #endregion
 
         #region Properties
 
@@ -192,8 +261,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Public functions
 
-
-
         public void FileOpenOldFormat()
         {
             //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Title));
@@ -252,14 +319,14 @@ namespace ProjectK.Notebook.ViewModels
                     _worksheetReport.GenerateReport(this);
                     break;
                 case ReportTypes.Notes:
-                    TextReport = _notesReport.GenerateReport(SelectedNotebook.SelectedNode);
+                    TextReport = _notesReport.GenerateReport(SelectedNotebook?.SelectedNode);
                     break;
             }
         }
 
         public void PrepareSettings()
         {
-            if (SelectedNotebook.SelectedNode != null)
+            if (SelectedNotebook?.SelectedNode != null)
                 LastListTaskId = SelectedNotebook.SelectedNode.Id;
 
             if (SelectedNotebook?.SelectedTreeNode == null) return;
@@ -413,10 +480,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-
-        public virtual void ImportNotebook(NotebookModel model, Domain.Versions.Version2.DataModel dataModel)
-        {
-        }
     }
 
 }

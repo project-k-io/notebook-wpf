@@ -13,7 +13,7 @@ namespace ProjectK.Notebook.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(@"Data Source=c:\\db\\notebooks.db");
+            optionsBuilder.UseSqlite(@"Data Source=D:\\db\\notebooks.db");
             optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
             optionsBuilder.UseLazyLoadingProxies();
             // optionsBuilder.EnableSensitiveDataLogging();

@@ -41,7 +41,6 @@ namespace ProjectK.Notebook
 
         #region Fields
 
-        private readonly NotebookContext _db = new NotebookContext();
 
         #endregion
 
@@ -153,52 +152,8 @@ namespace ProjectK.Notebook
 
         #region Override
 
-        public override void OpenDatabase()
-        {
-            // this is for demo purposes only, to make it easier
-            // to get up and running
-            _db.Database.EnsureCreated();
-
-            // load the entities into EF Core
-            _db.Notebooks.Load();
-
-            // bind to the source
-            NotebookModels = _db.Notebooks.Local.ToObservableCollection();
-
-            var nodes  = new List<NodeModel>(); 
-            foreach (var model in NotebookModels)
-            {
-                var (notebook, nodes2) = AddNotebook(model);
-                SelectedNotebook = notebook;
-                nodes.AddRange(nodes2);
-            }
-
-            // ModelToViewModel Data
-            UpdateTypeListAsync(nodes);
-        }
 
 
-        public override void SyncDatabase()
-        {
-            _db.SaveChanges();
-            RootTask.ResetParentChildModified();
-            RootTask.ResetModified();
-        }
-
-        public override void ImportNotebook(NotebookModel notebookModel, Domain.Versions.Version2.DataModel dataModel)
-        {
-            Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
-
-            // Add NotebookModel
-            NotebookModels.Add(notebookModel);
-            _db.SaveChanges();
-
-            // Add Tasks
-            notebookModel.Init(dataModel);
-            _db.SaveChanges();
-
-            AddNotebook(notebookModel);
-        }
 
         #endregion
 
@@ -338,21 +293,6 @@ namespace ProjectK.Notebook
                 new CommandBinding(ApplicationCommands.Close, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true)
             };
             return commandBindings;
-        }
-
-        private (NotebookViewModel, List<NodeModel>) AddNotebook(NotebookModel model)
-        {
-            Logger.LogDebug($"AddNotebook: {model.Name}");
-            
-            var nodes = model.GetNodes();
-            var notebook = new NotebookViewModel(model);
-            notebook.RootTask.BuildTree(nodes);
-
-            SelectedNotebook = notebook;
-            Notebooks.Add(notebook);
-            RootTask.Add(notebook.RootTask);
-
-            return (notebook, nodes);
         }
 
 
