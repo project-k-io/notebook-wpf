@@ -225,6 +225,12 @@ namespace ProjectK.Notebook.ViewModels
                 NotebookModels.Remove(notebook.Model);
                 // _db.Notebooks.Remove(notebook.Model);
             }
+            else
+            {
+                var list = new List<dynamic>();
+                node.SaveTo(list);
+                _db.RemoveRange(list);
+            }
         }
 
         public void SyncDatabase()

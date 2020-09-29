@@ -19,7 +19,15 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         public static void ViewModelToModel(this NotebookModel notebookModel, NodeViewModel rootTask)
         {
             Logger.LogDebug($@"Populate NotebookModel {notebookModel.Name} from TreeNode {rootTask.Name}");
-            rootTask.SaveTo(notebookModel);
+            var list = new List<dynamic>();
+            rootTask.SaveTo(list);
+            foreach (var item in list)
+            {
+                if(item is TaskModel task)
+                    notebookModel.Tasks.Add(task);
+                else if (item is NoteModel note)
+                    notebookModel.Notes.Add(note);
+            }
         }
 
         public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)

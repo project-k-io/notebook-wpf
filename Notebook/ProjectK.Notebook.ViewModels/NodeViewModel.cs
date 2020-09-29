@@ -146,28 +146,23 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Public functions
 
-        public void SaveTo(NotebookModel model)
+        public void SaveTo(List<dynamic> list)
         {
             foreach (var node in Nodes)
             {
-                node.SaveRecursively(model);
+                node.SaveRecursively(list);
             }
         }
 
-
-        private void SaveRecursively(NotebookModel notebook)
+        private void SaveRecursively(List<dynamic> list)
         {
-            var model = this.Model;
-            if(model is TaskModel)
-                notebook.Tasks.Add(model);
-            else if (model is NoteModel)
-                notebook.Notes.Add(model);
+            list.Add(Model);
 
             TrySetId();
 
             foreach (var node in Nodes)
             {
-                node.SaveRecursively(notebook);
+                node.SaveRecursively(list);
                 node.ParentId = Id;
             }
         }
