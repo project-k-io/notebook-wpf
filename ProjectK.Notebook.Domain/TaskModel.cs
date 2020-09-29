@@ -11,7 +11,6 @@ namespace ProjectK.Notebook.Domain
         [Key] public int ItemId { get; set;}
 
         // ITask
-        public string Description { get; set; }
         public string Type { get; set; }
         public string SubType { get; set; }
         public int Rating { get; set; }

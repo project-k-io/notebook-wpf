@@ -14,8 +14,8 @@ namespace ProjectK.Notebook.ConsoleApp
         private ObservableCollection<NotebookModel> _notebooks;
         public async Task Run()
         {
-            await CreateDatabaseAsync();
-            // await ShowDatabaseAsync();
+            // await CreateDatabaseAsync();
+            await ShowDatabaseAsync();
         }
 
         public async Task CreateDatabaseAsync()

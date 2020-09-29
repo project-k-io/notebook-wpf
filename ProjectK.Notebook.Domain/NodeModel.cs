@@ -12,6 +12,7 @@ namespace ProjectK.Notebook.Domain
         public string Name { get; set; }
         public DateTime Created { get; set; }
         public string Context { get; set; }
+        public string Description { get; set; }
 
         public bool IsSame(NodeModel b)
         {
