@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
+using System.Xml;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -45,6 +46,8 @@ namespace ProjectK.Notebook.ViewModels
             "Week"
         };
 
+        public static Guid RootGuid = new Guid("98601237-050a-4915-860c-5a820b361910");
+
         #endregion
 
         #region Fields
@@ -68,7 +71,7 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
         public ObservableCollection<string> TaskTitleList { get; set; }
-        public ObservableCollection<NotebookModel> NotebookModels { get; set; }
+        // public ObservableCollection<NotebookModel> NotebookModels { get; set; }
 
         public ReportTypes ReportType
         {
@@ -157,11 +160,11 @@ namespace ProjectK.Notebook.ViewModels
         {
             var rootModel = new NodeModel
             {
+                Id = RootGuid,
+                ParentId = Guid.Empty,
                 Context = "Root",
                 Created = DateTime.Now,
                 Name = "Root",
-                Id = Guid.Empty,
-                ParentId = Guid.Empty
             };
 
             RootTask = new NodeViewModel(rootModel);
@@ -201,18 +204,35 @@ namespace ProjectK.Notebook.ViewModels
         {
             var notification = notificationMessage.Notification;
             var node = notificationMessage.Content;
-            if (notification == "Modified")
+            Logger.LogDebug($"Model={node.Name} {notification}");
+            switch (notification)
             {
-                Logger.LogDebug($"Model={node.Name} {notification}");
-                // _db.SaveChanges();
-            }
-            else if (notification == "Delete")
-            {
-                DeleteNode(node);
-                Logger.LogDebug($"Model={node.Name} {notification}");
-                // _db.SaveChanges();
+                case "Modified":
+                    // _db.SaveChanges();
+                    break;
+                case "Delete":
+                    DeleteNode(node);
+                    // _db.SaveChanges();
+                    break;
+                case "Add":
+                    AddNode(node);
+                    // _db.SaveChanges();
+                    break;
             }
         }
+
+        private void AddNode(NodeViewModel vm)
+        {
+            var model = vm.Model;
+            var notebook = SelectedNotebook.Model;
+            if (model is TaskModel task)
+                notebook.Tasks.Add(task);
+            else if (model is NoteModel note)
+                notebook.Notes.Add(note);
+            else if (model is NodeModel node)
+                notebook.Nodes.Add(node);
+        }
+
         private void DeleteNode(NodeViewModel node)
         {
             if (node.Context == "Notebook")
@@ -222,8 +242,7 @@ namespace ProjectK.Notebook.ViewModels
                     return;
 
                 Notebooks.Remove(notebook);
-                NotebookModels.Remove(notebook.Model);
-                // _db.Notebooks.Remove(notebook.Model);
+                _db.Notebooks.Remove(notebook.Model);
             }
             else
             {
@@ -249,10 +268,10 @@ namespace ProjectK.Notebook.ViewModels
             _db.Notebooks.Load();
 
             // bind to the source
-            NotebookModels = _db.Notebooks.Local.ToObservableCollection();
+            var notebookModels = _db.Notebooks.Local.ToObservableCollection();
 
             var nodes = new List<ItemModel>();
-            foreach (var model in NotebookModels)
+            foreach (var model in notebookModels)
             {
                 var (notebook, nodes2) = AddNotebook(model);
                 SelectedNotebook = notebook;
@@ -275,18 +294,18 @@ namespace ProjectK.Notebook.ViewModels
             };
 
             ImportNotebook(model);
+            SyncDatabase();
         }
         public void ImportNotebook(NotebookModel notebookModel)
         {
             Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
 
             // Add NotebookModel
-            NotebookModels.Add(notebookModel);
-            // Save to Database
-            _db.SaveChanges();
-
+            var a = _db.Notebooks.Add(notebookModel);
+            // this will create Primary Key for notebook
             AddNotebook(notebookModel);
         }
+
         private (NotebookViewModel, List<ItemModel>) AddNotebook(NotebookModel model)
         {
             Logger.LogDebug($"AddNotebook: {model.Name}");
@@ -298,7 +317,6 @@ namespace ProjectK.Notebook.ViewModels
             SelectedNotebook = notebook;
             Notebooks.Add(notebook);
             RootTask.Add(notebook.RootTask);
-
             return (notebook, items);
         }
         private void OnCurrentNotebookChanged()

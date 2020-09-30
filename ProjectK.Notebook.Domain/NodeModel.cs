@@ -4,7 +4,7 @@ using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
-    [Table("Nodes")]
+    // [Table("Nodes")]
     public class NodeModel :  ItemModel, INode
     {
         [Key]

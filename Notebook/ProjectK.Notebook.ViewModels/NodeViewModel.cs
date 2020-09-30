@@ -36,7 +36,7 @@ namespace ProjectK.Notebook.ViewModels
         //private string _name;
         //private DateTime _created;
         //private string _description;
-        protected dynamic Model;
+        public dynamic Model;
 
         // Misc
         private string _kind;
@@ -182,11 +182,16 @@ namespace ProjectK.Notebook.ViewModels
 
         public virtual NodeViewModel AddNew()
         {
-            var subNode = new NodeViewModel
+
+            var model = new NodeModel
             {
-                Kind = "Node",
+                Id = Guid.NewGuid(),
                 Name = "New Node", 
                 Created = DateTime.Now
+            };
+            var subNode = new NodeViewModel(model)
+            {
+                Kind = "Node",
             };
 
             Add(subNode);
@@ -205,7 +210,6 @@ namespace ProjectK.Notebook.ViewModels
 
         public void Remove(NodeViewModel node)
         {
-            node.ParentId = Guid.Empty;
             Nodes.Remove(node);
         }
 
@@ -215,10 +219,10 @@ namespace ProjectK.Notebook.ViewModels
             Nodes.Insert(index, node);
         }
 
-        public void SetParent(NodeViewModel node)
+        public void SetParent(NodeViewModel parent)
         {
-            Parent = node;
-            ParentId = node.Id;
+            Parent = parent;
+            ParentId = parent.Id;
         }
 
         public void SetParents()
@@ -325,34 +329,7 @@ namespace ProjectK.Notebook.ViewModels
             switch (keyboardKeys)
             {
                 case KeyboardKeys.Insert:
-                    NodeViewModel node;
-                    switch (state)
-                    {
-                        case KeyboardStates.IsShiftPressed:
-                            node = item.Parent.AddNew();
-                            node.Created = DateTime.Now;
-                            break;
-                        case KeyboardStates.IsControlPressed:
-                            var lastSubNode = item.Parent.LastSubNode;
-                            node = item.Parent.AddNew();
-
-                            if (lastSubNode != null)
-                            {
-                                node.Name = item.Name;
-                                node.Created = DateTime.Now;
-                            }
-
-                            break;
-                        default:
-                            node = item.AddNew();
-                            break;
-                    }
-
-                    item.IsSelected = true;
-                    service.SelectItem(item);
-                    service.ExpandItem(item);
-                    service.Handled();
-                    Logger.LogDebug($"Added [{node.Name}] to [{item.Name}]");
+                    AddNode(state, service);
                     break;
                 case KeyboardKeys.Delete:
                     DeleteNode(service);
@@ -461,6 +438,40 @@ namespace ProjectK.Notebook.ViewModels
             service.Handled();
 
             MessengerInstance.Send(new NotificationMessage<NodeViewModel>(item, "Delete"));
+        }
+
+        public void AddNode(KeyboardStates state, IActionService service)
+        {
+            // var item = this;
+            NodeViewModel node = null;
+            switch (state)
+            {
+                case KeyboardStates.IsShiftPressed:
+                    node = Parent.AddNew();
+                    break;
+                case KeyboardStates.IsControlPressed:
+                    var lastSubNode = Parent.LastSubNode;
+                    node = Parent.AddNew();
+
+                    if (lastSubNode != null)
+                    {
+                        node.Name = Name;
+                    }
+
+                    break;
+                default:
+                    node = AddNew();
+                    break;
+            }
+
+            IsSelected = true;
+            service.SelectItem(this);
+            service.ExpandItem(this);
+            service.Handled();
+            if(node != null)
+                MessengerInstance.Send(new NotificationMessage<NodeViewModel>(node, "Add"));
+
+            Logger.LogDebug($"Added [{node.Name}] to [{Name}]");
         }
 
     }
