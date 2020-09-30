@@ -64,9 +64,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Properties
 
-        public ObservableCollection<NotebookViewModel> Notebooks { get; set; } =
-            new ObservableCollection<NotebookViewModel>();
-
+        public ObservableCollection<NotebookViewModel> Notebooks { get; set; } = new ObservableCollection<NotebookViewModel>();
         public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
@@ -429,7 +427,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public NotebookViewModel FindNotebook(NodeViewModel task)
         {
-            var (ok, notebookNode) = task.FindNode(t => t.Context == "NotebookModel");
+            var (ok, notebookNode) = task.FindNode(t => t.Context == "Notebook");
             if (!ok)
                 return null;
 
@@ -489,7 +487,8 @@ namespace ProjectK.Notebook.ViewModels
 
                 var taskViewModel2 = new TaskViewModel()
                 {
-                    Name = excelCsvRecord.Task, Context = "TaskModel"
+                    Name = excelCsvRecord.Task,
+                    Context = "TaskModel"
                 };
 
                 var taskViewModel3 = taskViewModel2;
