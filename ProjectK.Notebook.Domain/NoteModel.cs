@@ -5,7 +5,7 @@ using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NoteModel : NodeModel, INote
+    public class NoteModel : ItemModel, INote
     {
         [Key]
         public int ItemId { get; set; }

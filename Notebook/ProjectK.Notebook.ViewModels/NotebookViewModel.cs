@@ -48,7 +48,7 @@ namespace ProjectK.Notebook.ViewModels
         public NotebookViewModel(NotebookModel model)
         {
             Model = model;
-            var rootModel = new NodeModel(model);
+            var rootModel = new ItemModel(model);
             RootTask = new NodeViewModel(rootModel);
         }
 

@@ -251,7 +251,7 @@ namespace ProjectK.Notebook.ViewModels
             // bind to the source
             NotebookModels = _db.Notebooks.Local.ToObservableCollection();
 
-            var nodes = new List<NodeModel>();
+            var nodes = new List<ItemModel>();
             foreach (var model in NotebookModels)
             {
                 var (notebook, nodes2) = AddNotebook(model);
@@ -287,19 +287,19 @@ namespace ProjectK.Notebook.ViewModels
 
             AddNotebook(notebookModel);
         }
-        private (NotebookViewModel, List<NodeModel>) AddNotebook(NotebookModel model)
+        private (NotebookViewModel, List<ItemModel>) AddNotebook(NotebookModel model)
         {
             Logger.LogDebug($"AddNotebook: {model.Name}");
 
-            var nodes = model.GetNodes();
+            var items = model.GetItems();
             var notebook = new NotebookViewModel(model);
-            notebook.RootTask.BuildTree(nodes);
+            notebook.RootTask.BuildTree(items);
 
             SelectedNotebook = notebook;
             Notebooks.Add(notebook);
             RootTask.Add(notebook.RootTask);
 
-            return (notebook, nodes);
+            return (notebook, items);
         }
         private void OnCurrentNotebookChanged()
         {
@@ -324,7 +324,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public void UpdateTypeListAsync(List<NodeModel> nodes)
+        public void UpdateTypeListAsync(List<ItemModel> nodes)
         {
             var sortedSet1 = new SortedSet<string>();
             var sortedSet2 = new SortedSet<string>();

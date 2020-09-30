@@ -37,7 +37,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             await FileHelper.SaveToFileAsync(path, notebook);
         }
 
-        public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> modes)
+        public static void BuildTree(this NodeViewModel rootTask, List<ItemModel> modes)
         {
             // 
             var index = new SortedList<Guid, NodeViewModel>();
@@ -50,7 +50,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     if (model is ITask task)
                     {
                         var vm = new TaskViewModel(task);
-                        index.Add(((NodeModel) task).Id, vm);
+                        index.Add(task.Id, vm);
                     }
                     else
                     {

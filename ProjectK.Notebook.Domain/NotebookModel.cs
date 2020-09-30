@@ -8,26 +8,19 @@ using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NotebookModel: INotebook
+    public class NotebookModel: ItemModel, INode
     {
         [Key]
         public int ItemId { get; set; }
 
-        // INode
-        public Guid Id { get; set; }
-        public Guid ParentId { get; set; }
-        public string Name { get; set; }
-        public string Context { get; set; }
-        public DateTime Created { get; set; }
-        // INotebook
-        public string Description { get; set; }
 
-
+        public virtual IList<NodeModel> Nodes { get; set; } = new ObservableCollection<NodeModel>();
         public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
         public virtual IList<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
 
         public void Clear()
         {
+            Nodes.Clear();
             Notes.Clear();
             Tasks.Clear();
         }
@@ -71,14 +64,19 @@ namespace ProjectK.Notebook.Domain
         }
 
 #endif
-        public List<NodeModel> GetNodes()
+        public List<ItemModel> GetItems()
         {
-            var nodes = new List<NodeModel>();
-            var notes = Notes.Cast<NodeModel>().ToList();
-            var tasks = Tasks.Cast<NodeModel>();
-            nodes.AddRange(notes);
-            nodes.AddRange(tasks);
-            return nodes;
+            var items = new List<ItemModel>();
+
+            var nodes = Nodes.Cast<NodeModel>();
+            var notes = Notes.Cast<ItemModel>();
+            var tasks = Tasks.Cast<TaskModel>();
+
+            items.AddRange(nodes);
+            items.AddRange(notes);
+            items.AddRange(tasks);
+
+            return items;
         }
     }
 }

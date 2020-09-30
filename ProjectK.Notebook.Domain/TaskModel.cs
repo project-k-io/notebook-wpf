@@ -5,7 +5,7 @@ using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class TaskModel : NodeModel, ITask
+    public class TaskModel : ItemModel, ITask
     {
         // Primary Key
         [Key] public int ItemId { get; set;}
@@ -28,7 +28,6 @@ namespace ProjectK.Notebook.Domain
             // INode
             if (!base.IsSame(b)) return false;
             // ITask
-            if (Description != b.Description) return false;
             if (DateEnded != b.DateEnded) return false;
             if (DateStarted != b.DateStarted) return false;
             if (SubType != b.SubType) return false;

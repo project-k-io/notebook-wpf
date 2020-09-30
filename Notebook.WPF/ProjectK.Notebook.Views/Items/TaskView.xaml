@@ -12,9 +12,9 @@
         <viewModels:TaskViewModel x:Key="Model"
                     Name="May"
                     Context="Month"
+                    Description="Task Description"
                     Type="TaskModel"
                     SubType="Testing"
-                    Description="Task Description"
                     DateStarted="{x:Static system:DateTime.Now}"
                     DateEnded="{x:Static system:DateTime.Now}"
                     >

@@ -61,6 +61,7 @@ namespace ProjectK.Notebook.ViewModels
             SetKind("Node");
             Model = new NodeModel();
         }
+
         public NodeViewModel(dynamic model): this()
         {
             SetKind("Node");
@@ -72,7 +73,7 @@ namespace ProjectK.Notebook.ViewModels
             _kind = kind;
         }
 
-        public void ViewModelToModel(NodeModel model)
+        public void ViewModelToModel(ItemModel model)
         {
             SetKind("Node");
             model.Id = Id;
@@ -85,6 +86,8 @@ namespace ProjectK.Notebook.ViewModels
 
         // Model Wrapper
         public string Kind { get => _kind; set => Set(ref _kind, value); }
+
+        public string Description { get => Model.Description; set => this.Set(Description, v => Model.Description = v, value); }
         public Guid Id { get => Model.Id; set => this.Set(Id, v => Model.Id = v, value); }
         public Guid ParentId { get => Model.ParentId; set => this.Set(ParentId, v => Model.ParentId = v, value); }
         public string Name { get => Model.Name; set => this.Set(Name, v => Model.Name = v, value); }
