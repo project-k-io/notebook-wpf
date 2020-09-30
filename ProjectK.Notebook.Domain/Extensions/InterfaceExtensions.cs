@@ -16,7 +16,6 @@ namespace ProjectK.Notebook.Domain.Extensions
             if (a.Name != b.Name) return false;
             if (a.Context != b.Context) return false;
             if (a.Created != b.Created) return false;
-            if (a.Description != b.Description) return false;
             return true;
         }
 
@@ -39,6 +38,7 @@ namespace ProjectK.Notebook.Domain.Extensions
             if (a.SubType != b.SubType) return false;
             if (a.Type != b.Type) return false;
             if (a.Rating != b.Rating) return false;
+            if (a.Description != b.Description) return false;
             return true;
         }
 
@@ -49,7 +49,6 @@ namespace ProjectK.Notebook.Domain.Extensions
             a.Name = b.Name;
             a.Created = b.Created;
             a.Context = b.Context;
-            a.Description = b.Description;
         }
 
     }

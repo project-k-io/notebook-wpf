@@ -14,8 +14,8 @@ namespace ProjectK.Notebook.ConsoleApp
         private ObservableCollection<NotebookModel> _notebooks;
         public async Task Run()
         {
-            // await CreateDatabaseAsync();
-            await ShowDatabaseAsync();
+            await CreateDatabaseAsync();
+            // await ShowDatabaseAsync();
         }
 
         public async Task CreateDatabaseAsync()
@@ -39,6 +39,7 @@ namespace ProjectK.Notebook.ConsoleApp
                 Name = path,
                 Created = DateTime.Now,
                 Context = "Notebook",
+                Description = "Create from Console App"
             };
 
             _notebooks.Add(notebook);

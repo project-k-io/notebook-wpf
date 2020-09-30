@@ -8,10 +8,20 @@ using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NotebookModel: NodeModel
+    public class NotebookModel: INotebook
     {
         [Key]
         public int ItemId { get; set; }
+
+        // INode
+        public Guid Id { get; set; }
+        public Guid ParentId { get; set; }
+        public string Name { get; set; }
+        public string Context { get; set; }
+        public DateTime Created { get; set; }
+        // INotebook
+        public string Description { get; set; }
+
 
         public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
         public virtual IList<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
@@ -70,6 +80,5 @@ namespace ProjectK.Notebook.Domain
             nodes.AddRange(tasks);
             return nodes;
         }
-
     }
 }

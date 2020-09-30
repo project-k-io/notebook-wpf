@@ -9,6 +9,5 @@ namespace ProjectK.Notebook.Domain.Interfaces
         string Name { get; set; }
         string Context { get; set; }
         DateTime Created { get; set; }
-        string Description { get; set; }
     }
 }

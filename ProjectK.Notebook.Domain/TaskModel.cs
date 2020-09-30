@@ -16,6 +16,7 @@ namespace ProjectK.Notebook.Domain
         public int Rating { get; set; }
         public DateTime DateStarted { get; set; }
         public DateTime DateEnded { get; set; }
+        public string Description { get; set; }
 
         // Foreign Key
         [ForeignKey("NotebookModel")]
@@ -81,7 +82,8 @@ namespace ProjectK.Notebook.Domain
             DateEnded = b.DateEnded;
             SubType = b.SubType;
             Type = b.Type;
-        }
+            Description = b.Description;
+         }
 
         public new TaskModel Copy()
         {
