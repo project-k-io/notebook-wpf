@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
 using System.Xml;
+using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -156,7 +157,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public MainViewModel()
         {
-            var rootModel = new NodeModel
+            var rootModel = new 
             {
                 Id = RootGuid,
                 ParentId = Guid.Empty,
@@ -223,13 +224,9 @@ namespace ProjectK.Notebook.ViewModels
         {
             var model = vm.Model;
             var notebook = SelectedNotebook.Model;
-            if (model is TaskModel task)
-                notebook.Tasks.Add(task);
-            else if (model is NoteModel note)
-                notebook.Notes.Add(note);
-            else if (model is NodeModel node)
-                notebook.Nodes.Add(node);
+            notebook.AddNode(model);
         }
+
 
         private void DeleteNode(NodeViewModel node)
         {
@@ -252,10 +249,54 @@ namespace ProjectK.Notebook.ViewModels
 
         public void SyncDatabase()
         {
+            SaveNonRootNodes();
             _db.SaveChanges();
             RootTask.ResetParentChildModified();
             RootTask.ResetModified();
         }
+
+        private void SaveNonRootNodes()
+        {
+            // find root nodes not in notebooks
+            var nodes = RootTask.Nodes.Where(n => n.ParentId == RootTask.Id && n.Context != "Notebook").ToList();
+            if(nodes.IsNullOrEmpty())
+                return;
+
+            // find non root notebook
+            var notebooks = _db.Notebooks.Where(n => n.NonRoot).ToArray();
+            
+            NotebookModel notebook;
+            if (!notebooks.IsNullOrEmpty())
+                notebook = notebooks[0];
+            else
+            {
+                notebook = new NotebookModel
+                {
+                    NonRoot = true,
+                    Created = DateTime.Now,
+                    Context = "Notebook",
+                    Description = "Notebook for nodes outside of notebooks",
+                    Name = "Non Root Notebook",
+                    Id = Guid.NewGuid()
+                };
+                _db.Notebooks.Add(notebook);
+            }
+
+            // Add top nodes to notebook
+            // Get all nodes
+            var models = new List<dynamic>();
+            foreach (var node in nodes)
+            {
+                node.Execute(n => models.Add(n.Model));
+            }
+
+            // Add modes to notebook
+            foreach (var model in models)
+            {
+                notebook.AddNode(model);
+            }
+        }
+
         public void OpenDatabase()
         {
             // this is for demo purposes only, to make it easier
@@ -279,6 +320,14 @@ namespace ProjectK.Notebook.ViewModels
             // ModelToViewModel Data
             UpdateTypeListAsync(nodes);
         }
+
+        public void CloseDatabase()
+        {
+            _db.SaveChangesAsync();
+            _db.Database.CloseConnectionAsync();
+            _db.DisposeAsync();
+        }
+
         private void AddNotebook()
         {
             Logger.LogDebug("AddNotebook");
@@ -310,11 +359,20 @@ namespace ProjectK.Notebook.ViewModels
 
             var items = model.GetItems();
             var notebook = new NotebookViewModel(model);
-            notebook.RootTask.BuildTree(items);
-
             SelectedNotebook = notebook;
             Notebooks.Add(notebook);
-            RootTask.Add(notebook.RootTask);
+            notebook.RootTask.BuildTree(items);
+            if (notebook.Model.NonRoot)
+            {
+                foreach (var node in notebook.RootTask.Nodes)
+                {
+                    RootTask.Add(node);
+                }
+            }
+            else
+            {
+                RootTask.Add(notebook.RootTask);
+            }
             return (notebook, items);
         }
         private void OnCurrentNotebookChanged()

@@ -12,7 +12,7 @@ namespace ProjectK.Notebook.Domain
     {
         [Key]
         public int ItemId { get; set; }
-        public string NonRoot { get; set; }
+        public bool NonRoot { get; set; }
 
         public virtual IList<NodeModel> Nodes { get; set; } = new ObservableCollection<NodeModel>();
         public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
@@ -34,6 +34,17 @@ namespace ProjectK.Notebook.Domain
                 Tasks.Add(task);
             }
         }
+
+        public void AddNode(dynamic model)
+        {
+            if (model is TaskModel task)
+                Tasks.Add(task);
+            else if (model is NoteModel note)
+                Notes.Add(note);
+            else if (model is NodeModel node)
+                Nodes.Add(node);
+        }
+
 
 #if AK
 
