@@ -35,12 +35,6 @@ namespace ProjectK.Notebook
         #region Consts
 
         private const string DockFileName = "DockStates.xml";
-        private const string FileNameRecentFiles = "RecentFiles.json";
-
-        #endregion
-
-        #region Fields
-
 
         #endregion
 
@@ -65,12 +59,9 @@ namespace ProjectK.Notebook
             Logger.LogDebug("Import Logging()");
         }
 
-
         #endregion
 
         #region DockingManager
-
-
 
         public void SaveDockLayout()
         {
@@ -131,13 +122,6 @@ namespace ProjectK.Notebook
         }
         #endregion
 
-        #region Override
-
-
-
-
-        #endregion
-
         #region Private Functions
 
         private void InitLogging()
@@ -182,7 +166,6 @@ namespace ProjectK.Notebook
         }
 
         #endregion
-
 
         public void LoadSettings(MainWindow window)
         {
@@ -272,13 +255,6 @@ namespace ProjectK.Notebook
                 new CommandBinding(ApplicationCommands.Open, async (s, e) =>  await this.UserAction_OpenFileAsync(), (s, e) => e.CanExecute = true),
             };
             return commandBindings;
-        }
-
-
-        public void ModelToViewModel()
-        {
-            // load notebookModel 
-            
         }
     }
 }

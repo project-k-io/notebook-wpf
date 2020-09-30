@@ -12,7 +12,7 @@ namespace ProjectK.Notebook.Domain
     {
         [Key]
         public int ItemId { get; set; }
-
+        public string NonRoot { get; set; }
 
         public virtual IList<NodeModel> Nodes { get; set; } = new ObservableCollection<NodeModel>();
         public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
