@@ -35,7 +35,7 @@ namespace ProjectK.Notebook.Domain
             }
         }
 
-        public void AddNode(dynamic model)
+        public void AddModel(dynamic model)
         {
             if (model is TaskModel task)
                 Tasks.Add(task);
@@ -44,7 +44,13 @@ namespace ProjectK.Notebook.Domain
             else if (model is NodeModel node)
                 Nodes.Add(node);
         }
-
+        public void AddModels(List<dynamic> models)
+        {
+            foreach (var model in models)
+            {
+                AddModel(model);
+            }
+        }
 
 #if AK
 

@@ -297,8 +297,6 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-
-
         public NodeViewModel FindNode(Guid id)
         {
             if (Id == id)
@@ -312,6 +310,11 @@ namespace ProjectK.Notebook.ViewModels
             }
 
             return null;
+        }
+
+        public List<dynamic> GetModels()
+        {
+            return Nodes.GetModels();
         }
 
 
@@ -473,6 +476,9 @@ namespace ProjectK.Notebook.ViewModels
 
             Logger.LogDebug($"Added [{node.Name}] to [{Name}]");
         }
+
+
+
 
     }
 }

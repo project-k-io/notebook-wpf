@@ -224,7 +224,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             var model = vm.Model;
             var notebook = SelectedNotebook.Model;
-            notebook.AddNode(model);
+            notebook.AddModel(model);
         }
 
 
@@ -249,10 +249,22 @@ namespace ProjectK.Notebook.ViewModels
 
         public void SyncDatabase()
         {
+            SaveRootNodes();
             SaveNonRootNodes();
             _db.SaveChanges();
             RootTask.ResetParentChildModified();
             RootTask.ResetModified();
+        }
+
+        private void SaveRootNodes()
+        {
+            // find root nodes not in notebooks
+            foreach (var notebook in Notebooks)
+            {
+                // Get Notebook nodes
+                var models = notebook.RootTask.GetModels();
+                notebook.Model.AddModels(models);
+            }
         }
 
         private void SaveNonRootNodes()
@@ -284,17 +296,10 @@ namespace ProjectK.Notebook.ViewModels
 
             // Add top nodes to notebook
             // Get all nodes
-            var models = new List<dynamic>();
-            foreach (var node in nodes)
-            {
-                node.Execute(n => models.Add(n.Model));
-            }
+            var models = nodes.GetModels();
 
             // Add modes to notebook
-            foreach (var model in models)
-            {
-                notebook.AddNode(model);
-            }
+            notebook.AddModels(models);
         }
 
         public void OpenDatabase()
@@ -309,16 +314,18 @@ namespace ProjectK.Notebook.ViewModels
             // bind to the source
             var notebookModels = _db.Notebooks.Local.ToObservableCollection();
 
-            var nodes = new List<ItemModel>();
+            var models = new List<ItemModel>();
             foreach (var model in notebookModels)
             {
-                var (notebook, nodes2) = AddNotebook(model);
-                SelectedNotebook = notebook;
-                nodes.AddRange(nodes2);
+                var (notebook, nodes) = AddNotebook(model);
+                if(notebook != null)
+                    SelectedNotebook = notebook;
+
+                models.AddRange(nodes);
             }
 
             // ModelToViewModel Data
-            UpdateTypeListAsync(nodes);
+            UpdateTypeListAsync(models);
         }
 
         public void CloseDatabase()
@@ -350,7 +357,11 @@ namespace ProjectK.Notebook.ViewModels
             // Add NotebookModel
             var a = _db.Notebooks.Add(notebookModel);
             // this will create Primary Key for notebook
-            AddNotebook(notebookModel);
+            var (notebook, nodes) = AddNotebook(notebookModel);
+            if (notebook != null)
+                SelectedNotebook = notebook;
+
+            UpdateTypeListAsync(nodes);
         }
 
         private (NotebookViewModel, List<ItemModel>) AddNotebook(NotebookModel model)
@@ -358,22 +369,19 @@ namespace ProjectK.Notebook.ViewModels
             Logger.LogDebug($"AddNotebook: {model.Name}");
 
             var items = model.GetItems();
-            var notebook = new NotebookViewModel(model);
-            SelectedNotebook = notebook;
-            Notebooks.Add(notebook);
-            notebook.RootTask.BuildTree(items);
-            if (notebook.Model.NonRoot)
+            if (model.NonRoot)
             {
-                foreach (var node in notebook.RootTask.Nodes)
-                {
-                    RootTask.Add(node);
-                }
+                RootTask.BuildTree(items);
+                return (null, items);
             }
             else
             {
+                var notebook = new NotebookViewModel(model);
+                Notebooks.Add(notebook);
+                notebook.RootTask.BuildTree(items);
                 RootTask.Add(notebook.RootTask);
+                return (notebook, items);
             }
-            return (notebook, items);
         }
         private void OnCurrentNotebookChanged()
         {
