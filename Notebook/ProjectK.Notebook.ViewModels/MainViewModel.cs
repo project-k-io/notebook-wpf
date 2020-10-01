@@ -233,6 +233,19 @@ namespace ProjectK.Notebook.ViewModels
                     return;
 
                 Notebooks.Remove(notebook);
+
+                // Selected Notebook
+                if(Notebooks.Count == 0)
+                {
+                    SelectedNotebook = null;
+                }
+                else
+                {
+                    if (notebook.Model.Id == SelectedNotebook.Model.Id)
+                    {
+                        SelectedNotebook = Notebooks.FirstOrDefault();
+                    }
+                }
                 _db.Notebooks.Remove(notebook.Model);
             }
             else
