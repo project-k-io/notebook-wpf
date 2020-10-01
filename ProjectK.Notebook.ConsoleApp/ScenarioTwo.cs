@@ -10,17 +10,18 @@ namespace ProjectK.Notebook.ConsoleApp
 {
     class ScenarioTwo
     {
-        private readonly NotebookContext _context = new NotebookContext();
+        private readonly NotebookContext _context;
         private ObservableCollection<NotebookModel> _notebooks;
         public async Task Run()
         {
-            // await CreateDatabaseAsync();
-            await ShowDatabaseAsync();
+            // _context = 
+            await CreateDatabaseAsync();
+            // await ShowDatabaseAsync();
         }
 
         public async Task CreateDatabaseAsync()
         {
-            const string path = @"C:\Data\Alan.json";
+            const string path = @"D:\Data\Alan.json";
 
             // Check
             await _context.Database.EnsureCreatedAsync();
@@ -35,10 +36,11 @@ namespace ProjectK.Notebook.ConsoleApp
             // Create Notebook
             var notebook = new NotebookModel
             {
-                NodeId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 Name = path,
                 Created = DateTime.Now,
                 Context = "Notebook",
+                Description = "Create from Console App"
             };
 
             _notebooks.Add(notebook);
@@ -75,8 +77,8 @@ namespace ProjectK.Notebook.ConsoleApp
         {
             var task = new TaskModel
             {
-                // NodeId = new Guid("00000000-0000-0000-0000-000000000001"),
-                 NodeId = Guid.NewGuid(),
+                // Id = new Guid("00000000-0000-0000-0000-000000000001"),
+                 Id = Guid.NewGuid(),
                  Name = "Alan", 
                 Context = "Help", 
             };

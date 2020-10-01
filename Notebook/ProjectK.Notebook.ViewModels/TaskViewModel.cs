@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils.Extensions;
 
 // using ProjectK.NotebookModel.Models.Versions.Version2;
@@ -38,7 +39,7 @@ namespace ProjectK.Notebook.ViewModels
             SetKind("Task");
             Model = new TaskModel();
         }
-        public TaskViewModel(TaskModel model): base(model)
+        public TaskViewModel(ITask model): base(model)
         {
             SetKind("Task");
         }
@@ -51,6 +52,7 @@ namespace ProjectK.Notebook.ViewModels
             model.Type = Type;
             model.SubType = SubType;
         }
+
         public string Type { get => Model.Type; set => this.Set(Type, v => Model.Type = v, value); }
         public string SubType { get => Model.SubType; set => this.Set(SubType, v => Model.SubType = v, value); }
         public DateTime DateStarted
@@ -279,7 +281,7 @@ namespace ProjectK.Notebook.ViewModels
             if (!IsTaskModelProperty(propertyName)) return;
 
             Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
-             Modified = ModifiedStatus.Modified;
+            Modified = ModifiedStatus.Modified;
             SetParentChildModified();
             MessengerInstance.Send(new NotificationMessage<TaskModel>(Model, "Modified"));
         }

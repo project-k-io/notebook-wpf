@@ -1,7 +1,12 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.Utils.Extensions;
 using Syncfusion.Licensing;
 
 namespace ProjectK.Notebook
@@ -37,24 +42,19 @@ namespace ProjectK.Notebook
             _mainWindow.Show();
 
             // Open Database
-#if !AK // db open
-            _appModel.OpenDatabase();
-
-            // ModelToViewModel Data
-            await _appModel.UpdateTypeListAsync();
-#endif
+            // var key = "AlanDatabase";
+            var key = "TestDatabase";
+            var connectionString = ConfigurationManager.ConnectionStrings[key].ConnectionString;
+            _appModel.OpenDatabase(connectionString);
         }
 
-
-        protected override void OnExit(ExitEventArgs e)
+        protected override async void OnExit(ExitEventArgs e)
         {
             _logger?.LogDebug("OnExit");
             _appModel.SaveSettings(_mainWindow);
 
             // Close Database
-#if AK    // db close
-            _appModel.CloseDatabase();
-#endif
+            await _appModel.CloseDatabaseAsync();
             _mainWindow.Close();
             Shutdown();
             base.OnExit(e);

@@ -44,5 +44,20 @@ namespace ProjectK.Utils
 
             return lines;
         }
+
+        public static string GetUniqueName(string name, List<string> names)
+        {
+            var num = 1;
+            string newName;
+            while (true)
+            {
+                newName = $"{name} {num++}";
+                if (names.Contains(newName))
+                    continue;
+
+                break;
+            }
+            return newName;
+        }
     }
 }

@@ -5,14 +5,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Input;
+using System.Xml;
+using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Reports;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Reports;
+using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
@@ -26,84 +32,104 @@ namespace ProjectK.Notebook.ViewModels
 
         protected ILogger Logger;
 
+        static readonly List<string> GlobalContextList = new List<string>
+        {
+            "Notebook",
+            "Company",
+            "Contact",
+            "Node",
+            "Task",
+            "Note",
+            "Task Manager",
+            "Year",
+            "Month",
+            "Day",
+            "Week"
+        };
+
+        public static Guid RootGuid = new Guid("98601237-050a-4915-860c-5a820b361910");
+
         #endregion
 
         #region Fields
 
-        private string _excelCsvText;
-        private bool _useTimeOptimization;
+        private NotebookContext _db;
+        private NotebookViewModel _selectedNotebook;
         private ReportTypes _reportType = ReportTypes.Notes;
+        private string _excelCsvText;
         private string _textReport;
         private string _title;
-        private NotebookViewModel _selectedNotebook;
-        private NodeViewModel _selectedTask;
+        private bool _useTimeOptimization;
 
         #endregion
 
-        #region Consuctors
+        #region Properties
 
-        private NodeModel _rootModel;
+        public ObservableCollection<NotebookViewModel> Notebooks { get; set; } = new ObservableCollection<NotebookViewModel>();
+        public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
+        public ObservableCollection<string> TypeList { get; set; }
+        public ObservableCollection<string> ContextList { get; set; }
+        public ObservableCollection<string> TaskTitleList { get; set; }
+        // public ObservableCollection<NotebookModel> NotebookModels { get; set; }
 
-        public MainViewModel()
+        public ReportTypes ReportType
         {
-            _rootModel = new NodeModel
+            get => _reportType;
+            set
             {
-                Context = "Root",
-                Created = DateTime.Now,
-                Description = "Root Node",
-                Name = "Root",
-                NodeId = Guid.Empty,
-                ParentId = Guid.Empty
-            };
-
-            RootTask = new NodeViewModel(_rootModel);
-
-
-            CanSave = true;
-            TypeList = new ObservableCollection<string>();
-            ContextList = new ObservableCollection<string>();
-            TaskTitleList = new ObservableCollection<string>();
-            ClearCommand = new RelayCommand(this.UserAction_Clear);
-            EditCommand = new RelayCommand(this.UserAction_Edit);
-            FixTimeCommand = new RelayCommand(() => SelectedNotebook?.FixTime());
-            ExtractContextCommand = new RelayCommand(() => SelectedNotebook?.FixContext());
-            FixTitlesCommand = new RelayCommand(() => SelectedNotebook.FixTitles());
-            FixTypesCommand = new RelayCommand(() => SelectedNotebook.FixTypes());
-            CopyTaskCommand = new RelayCommand(CopyTask);
-            ContinueTaskCommand = new RelayCommand(ContinueTask);
-            ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
-            ExportSelectedAllAsTextCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
-            ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
-            OpenDatabaseCommand = new RelayCommand(OpenDatabase);
-            SyncDatabaseCommand = new RelayCommand(SyncDatabase);
-
-            CurrentNotebookChanged += OnCurrentNotebookChanged;
-
+                if (!Set(ref _reportType, value)) return;
+            }
         }
 
-        public virtual void SyncDatabase()
+        public Assembly Assembly { get; set; }
+
+        public string Title
         {
-            throw new NotImplementedException();
+            get => _title;
+            set
+            {
+                if (_title == null)
+                    return;
+
+                _title = value;
+                RaisePropertyChanged();
+            }
         }
 
-        public virtual void OpenDatabase()
+        public string TextReport
         {
-            throw new NotImplementedException();
+            get => _textReport;
+            set => Set(ref _textReport, value);
         }
 
+        public Guid LastListTaskId { get; set; }
+        public Guid LastTreeTaskId { get; set; }
 
-        private void OnCurrentNotebookChanged()
+
+        public NodeViewModel RootTask { get; set; }
+
+        public NotebookViewModel SelectedNotebook
         {
-            var noteBookName = SelectedNotebook != null ? SelectedNotebook.RootTask.Name : "";
-            Title = Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + noteBookName;
+            get => _selectedNotebook;
+            set => Set(ref _selectedNotebook, value);
         }
 
-        #endregion
+        public string ExcelCsvText
+        {
+            get => _excelCsvText;
+            set => Set(ref _excelCsvText, value);
+        }
 
-        #region Delegates
+        public bool UseTimeOptimization
+        {
+            get => _useTimeOptimization;
+            set => Set(ref _useTimeOptimization, value);
+        }
 
-        public event EventHandler<TaskEventArgs> SelectedTaskChanged;
-        public Action CurrentNotebookChanged { get; set; }
+        public bool CanSave { get; set; }
+        public Action<Action> OnDispatcher { get; set; }
+        public OutputViewModel Output { get; set; } = new OutputViewModel();
+
 
         #endregion
 
@@ -123,75 +149,271 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand ExportSelectedAllAsJsonCommand { get; }
         public ICommand OpenDatabaseCommand { get; }
         public ICommand SyncDatabaseCommand { get; }
-
-
+        public ICommand AddNotebookCommand { get; }
 
         #endregion
 
-        #region Properties
+        #region Consuctors
 
-        public ReportTypes ReportType
+        public MainViewModel()
         {
-            get => _reportType;
-            set
+            var rootModel = new 
             {
-                if (!Set(ref _reportType, value)) return;
+                Id = RootGuid,
+                ParentId = Guid.Empty,
+                Context = "Root",
+                Created = DateTime.Now,
+                Name = "Root",
+            };
+
+            // var connectionString = @"Data Source=D:\\db\\alan_notebooks.db";
+            RootTask = new NodeViewModel(rootModel);
+            CanSave = true;
+            TypeList = new ObservableCollection<string>();
+            ContextList = new ObservableCollection<string>();
+            TaskTitleList = new ObservableCollection<string>();
+            ClearCommand = new RelayCommand(this.UserAction_Clear);
+            EditCommand = new RelayCommand(this.UserAction_Edit);
+            FixTimeCommand = new RelayCommand(() => SelectedNotebook?.FixTime());
+            ExtractContextCommand = new RelayCommand(() => SelectedNotebook?.FixContext());
+            FixTitlesCommand = new RelayCommand(() => SelectedNotebook.FixTitles());
+            FixTypesCommand = new RelayCommand(() => SelectedNotebook.FixTypes());
+            CopyTaskCommand = new RelayCommand(CopyTask);
+            ContinueTaskCommand = new RelayCommand(ContinueTask);
+            ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
+            ExportSelectedAllAsTextCommand =
+                new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
+            ExportSelectedAllAsJsonCommand =
+                new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
+            
+            // OpenDatabaseCommand = new RelayCommand(OpenDatabase);
+            SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
+            AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
+
+            // Add Context 
+            foreach (var context in GlobalContextList)
+            {
+                ContextList.Add(context);
+            }
+
+            MessengerInstance.Register<NotificationMessage<NodeViewModel>>(this, NotifyMe);
+        }
+
+        private void NotifyMe(NotificationMessage<NodeViewModel> notificationMessage)
+        {
+            var notification = notificationMessage.Notification;
+            var node = notificationMessage.Content;
+            Logger.LogDebug($"Model={node.Name} {notification}");
+            switch (notification)
+            {
+                case "Modified":
+                    break;
+                case "Delete":
+                    DeleteNode(node);
+                    break;
+                case "Add":
+                    AddNode(node);
+                    break;
             }
         }
-        public Assembly Assembly { get; set; }
-        public string Title
+
+        private void AddNode(NodeViewModel vm)
         {
-            get => _title;
-            set
+            var model = vm.Model;
+            var notebook = SelectedNotebook.Model;
+            notebook.AddModel(model);
+        }
+
+        private void DeleteNode(NodeViewModel node)
+        {
+            if (node.Context == "Notebook")
             {
-                if (_title == null)
+                var notebook = Notebooks.First(n => n.RootTask.Id == node.Id);
+                if (notebook == null)
                     return;
 
-                _title = value;
-                RaisePropertyChanged();
+                Notebooks.Remove(notebook);
+
+                // Selected Notebook
+                if(Notebooks.Count == 0)
+                {
+                    SelectedNotebook = null;
+                }
+                else
+                {
+                    if (notebook.Model.Id == SelectedNotebook.Model.Id)
+                    {
+                        SelectedNotebook = Notebooks.FirstOrDefault();
+                    }
+                }
+                _db.Notebooks.Remove(notebook.Model);
+            }
+            else
+            {
+                var models = node.GetModels();
+                _db.RemoveRange(models);
             }
         }
-        public string TextReport
-        {
-            get => _textReport;
-            set => Set(ref _textReport, value);
-        }
-        public Guid LastListTaskId { get; set; }
-        public Guid LastTreeTaskId { get; set; }
-        public ObservableCollection<NotebookViewModel> Notebooks { get; set; } = new ObservableCollection<NotebookViewModel>();
 
+        public async Task SyncDatabaseAsync()
+        {
+            SaveRootNodes();
+            SaveNonRootNodes();
+            await _db.SaveChangesAsync();
+            RootTask.ResetParentChildModified();
+            RootTask.ResetModified();
+        }
 
-        public NodeViewModel RootTask { get; set; }
-        public NotebookViewModel SelectedNotebook
+        private void SaveRootNodes()
         {
-            get => _selectedNotebook;
-            set => Set(ref _selectedNotebook, value);
+            // find root nodes not in notebooks
+            foreach (var notebook in Notebooks)
+            {
+                // Get Notebook nodes
+                var models = notebook.RootTask.Nodes.GetModels();
+                notebook.Model.AddModels(models);
+            }
         }
-        public string ExcelCsvText
-        {
-            get => _excelCsvText;
-            set => Set(ref _excelCsvText, value);
-        }
-        public bool UseTimeOptimization
-        {
-            get => _useTimeOptimization;
-            set => Set(ref _useTimeOptimization, value);
-        }
-        public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
-        public ObservableCollection<string> TypeList { get; set; }
-        public ObservableCollection<string> ContextList { get; set; }
-        public ObservableCollection<string> TaskTitleList { get; set; }
-        public bool CanSave { get; set; }
-        public Action<Action> OnDispatcher { get; set; }
-        public OutputViewModel Output { get; set; } = new OutputViewModel();
 
-        public ObservableCollection<NotebookModel> NotebookModels { get; set; }
+        private void SaveNonRootNodes()
+        {
+            // find root nodes not in notebooks
+            var nodes = RootTask.Nodes.Where(n => n.ParentId == RootTask.Id && n.Context != "Notebook").ToList();
+            if(nodes.IsNullOrEmpty())
+                return;
+
+            // find non root notebook
+            var notebooks = _db.Notebooks.Where(n => n.NonRoot).ToArray();
+            
+            NotebookModel notebook;
+            if (!notebooks.IsNullOrEmpty())
+                notebook = notebooks[0];
+            else
+            {
+                notebook = new NotebookModel
+                {
+                    NonRoot = true,
+                    Created = DateTime.Now,
+                    Context = "Notebook",
+                    Description = "Notebook for nodes outside of notebooks",
+                    Name = "Non Root Notebook",
+                    Id = Guid.NewGuid()
+                };
+                _db.Notebooks.Add(notebook);
+            }
+
+            // Add top nodes to notebook
+            // Get all nodes
+            var models = nodes.GetModels();
+
+            // Add modes to notebook
+            notebook.AddModels(models);
+        }
+
+        public void OpenDatabase(string connectionString)
+        {
+            _db = new NotebookContext(connectionString);
+
+            // this is for demo purposes only, to make it easier
+            // to get up and running
+            _db.Database.EnsureCreated();
+
+            // load the entities into EF Core
+            _db.Notebooks.Load();
+
+            // bind to the source
+            var notebookModels = _db.Notebooks.Local.ToObservableCollection();
+
+            var models = new List<ItemModel>();
+            foreach (var model in notebookModels)
+            {
+                var (notebook, nodes) = AddNotebook(model);
+                if(notebook != null)
+                    SelectedNotebook = notebook;
+
+                models.AddRange(nodes);
+            }
+
+            // ModelToViewModel Data
+            UpdateTypeListAsync(models);
+        }
+
+        public async Task CloseDatabaseAsync()
+        {
+            await SyncDatabaseAsync();
+            await _db.SaveChangesAsync();
+            await _db.Database.CloseConnectionAsync();
+        }
+
+        private async Task AddNotebookAsync()
+        {
+            Logger.LogDebug("AddNotebook");
+            var notebookNames = Notebooks.Select(notebook => notebook.Title).ToList();
+            var notebookName = StringHelper.GetUniqueName("Notebook", notebookNames);
+
+            // Create Notebook
+            var model = new NotebookModel
+            {
+                Name = notebookName,
+                Id = Guid.NewGuid(),
+                Context = "Notebook",
+                Created = DateTime.Now,
+            };
+
+            // var names = Notebooks.ToList().Where(n => n.Title).ToList();
+
+            ImportNotebook(model);
+            await SyncDatabaseAsync();
+        }
+        public void ImportNotebook(NotebookModel notebookModel)
+        {
+            Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
+
+            // Add NotebookModel
+            var a = _db.Notebooks.Add(notebookModel);
+            // this will create Primary Key for notebook
+            var (notebook, nodes) = AddNotebook(notebookModel);
+            if (notebook != null)
+                SelectedNotebook = notebook;
+
+            UpdateTypeListAsync(nodes);
+        }
+
+        private (NotebookViewModel, List<ItemModel>) AddNotebook(NotebookModel model)
+        {
+            Logger.LogDebug($"AddNotebook: {model.Name}");
+
+            var items = model.GetItems();
+            if (model.NonRoot)
+            {
+                RootTask.BuildTree(items);
+                return (null, items);
+            }
+            else
+            {
+                var notebook = new NotebookViewModel(model);
+                Notebooks.Add(notebook);
+                notebook.RootTask.BuildTree(items);
+                RootTask.Add(notebook.RootTask);
+                return (notebook, items);
+            }
+        }
+        private void OnCurrentNotebookChanged()
+        {
+            var noteBookName = SelectedNotebook != null ? SelectedNotebook.RootTask.Name : "";
+            Title = Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + noteBookName;
+        }
+
+        #endregion
+
+        #region Delegates
+
+        public event EventHandler<TaskEventArgs> SelectedTaskChanged;
+        public Action CurrentNotebookChanged { get; set; }
 
         #endregion
 
         #region Public functions
-
-
 
         public void FileOpenOldFormat()
         {
@@ -199,39 +421,34 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public async Task UpdateTypeListAsync()
+        public void UpdateTypeListAsync(List<ItemModel> nodes)
         {
-            await Task.Run(() =>
+            var sortedSet1 = new SortedSet<string>();
+            var sortedSet2 = new SortedSet<string>();
+            var sortedSet3 = new SortedSet<string>();
+            foreach (var node in nodes)
             {
-                var nodes = new List<NodeViewModel>();
-                nodes.AddToList(RootTask);
-                var sortedSet1 = new SortedSet<string>();
-                var sortedSet2 = new SortedSet<string>();
-                var sortedSet3 = new SortedSet<string>();
-                foreach (var node in nodes)
+                if (node is TaskModel task)
                 {
-                    if (node is TaskViewModel task)
-                    {
-                        var type = task.Type;
-                        if (!sortedSet1.Contains(type)) sortedSet1.Add(type);
-                    }
-
-                    var context = node.Context;
-                    if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
-
-                    var title = node.Name;
-                    if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
+                    var type = task.Type;
+                    if (!sortedSet1.Contains(type)) sortedSet1.Add(type);
                 }
 
-                TypeList.Clear();
-                foreach (var str in sortedSet1) TypeList.Add(str);
+                var context = node.Context;
+                if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
 
-                ContextList.Clear();
-                foreach (var str in sortedSet2) ContextList.Add(str);
+                var title = node.Name;
+                if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
+            }
 
-                TaskTitleList.Clear();
-                foreach (var str in sortedSet3) TaskTitleList.Add(str);
-            });
+            TypeList.Clear();
+            foreach (var str in sortedSet1) TypeList.Add(str);
+
+            ContextList.Clear();
+            foreach (var str in sortedSet2) ContextList.Add(str);
+
+            TaskTitleList.Clear();
+            foreach (var str in sortedSet3) TaskTitleList.Add(str);
         }
 
 
@@ -256,14 +473,14 @@ namespace ProjectK.Notebook.ViewModels
                     _worksheetReport.GenerateReport(this);
                     break;
                 case ReportTypes.Notes:
-                    TextReport = _notesReport.GenerateReport(SelectedNotebook.SelectedNode);
+                    TextReport = _notesReport.GenerateReport(SelectedNotebook?.SelectedNode);
                     break;
             }
         }
 
         public void PrepareSettings()
         {
-            if (SelectedNotebook.SelectedNode != null)
+            if (SelectedNotebook?.SelectedNode != null)
                 LastListTaskId = SelectedNotebook.SelectedNode.Id;
 
             if (SelectedNotebook?.SelectedTreeNode == null) return;
@@ -291,7 +508,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public NotebookViewModel FindNotebook(NodeViewModel task)
         {
-            var (ok, notebookNode) = task.FindNode(t => t.Context == "NotebookModel");
+            var (ok, notebookNode) = task.FindNode(t => t.Context == "Notebook");
             if (!ok)
                 return null;
 
@@ -351,7 +568,8 @@ namespace ProjectK.Notebook.ViewModels
 
                 var taskViewModel2 = new TaskViewModel()
                 {
-                    Name = excelCsvRecord.Task, Context = "TaskModel"
+                    Name = excelCsvRecord.Task,
+                    Context = "TaskModel"
                 };
 
                 var taskViewModel3 = taskViewModel2;
@@ -392,13 +610,16 @@ namespace ProjectK.Notebook.ViewModels
 
         private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
-            SelectedNotebook.SelectedNode?.KeyboardAction(
-                keyboardKeys,
-                () => keyboardState,
-                () => { }, t => t.IsSelected = true,
-                t => t.IsExpanded = true,
-                () => true,
-                OnDispatcher);
+            var service = new ActionService
+            {
+                GetState = () => keyboardState,
+                Handled = () => { },
+                SelectItem = t => t.IsSelected = true,
+                ExpandItem = t => t.IsExpanded = true,
+                DeleteMessageBox = () => true,
+                Dispatcher = OnDispatcher
+            };
+            SelectedNotebook.SelectedNode?.KeyboardAction(keyboardKeys, service);
         }
 
         private void CopyTask()
@@ -414,10 +635,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-
-        public virtual void ImportNotebook(NotebookModel model, Domain.Versions.Version2.DataModel dataModel)
-        {
-        }
     }
 
 }

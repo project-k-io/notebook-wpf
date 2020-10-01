@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
@@ -18,32 +19,15 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         public static void ViewModelToModel(this NotebookModel notebookModel, NodeViewModel rootTask)
         {
             Logger.LogDebug($@"Populate NotebookModel {notebookModel.Name} from TreeNode {rootTask.Name}");
-
-            var nodes = new List<NodeModel>();
-            rootTask.SaveTo(nodes);
-            foreach (var node in nodes)
+            var list = new List<dynamic>();
+            rootTask.SaveTo(list);
+            foreach (var item in list)
             {
-                if (node is NoteModel note)
-                    notebookModel.Notes.Add(note);
-
-                if (node is TaskModel task)
+                if(item is TaskModel task)
                     notebookModel.Tasks.Add(task);
+                else if (item is NoteModel note)
+                    notebookModel.Notes.Add(note);
             }
-        }
-        public static void ModelToViewModel(this NodeViewModel rootTask, NotebookModel notebookModel)
-        {
-            Logger.LogDebug($@"Populate TreeNode {rootTask.Name} from NotebookModel {notebookModel.Name}");
-
-            var nodes = new List<NodeModel>();
-            var notes = notebookModel.Notes.Cast<NodeModel>().ToList();
-            var tasks2 = notebookModel.Tasks.ToList();
-
-            var tasks = notebookModel.Tasks.Cast<NodeModel>();
-            nodes.AddRange(notes);
-            nodes.AddRange(tasks);
-
-            // Build Tree
-            rootTask.BuildTree(nodes);
         }
 
         public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
@@ -53,7 +37,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             await FileHelper.SaveToFileAsync(path, notebook);
         }
 
-        public static void BuildTree(this NodeViewModel rootTask, List<NodeModel> modes)
+        public static void BuildTree(this NodeViewModel rootTask, List<ItemModel> modes)
         {
             // 
             var index = new SortedList<Guid, NodeViewModel>();
@@ -61,17 +45,17 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             // build index
             foreach (var model in modes)
             {
-                if (!index.ContainsKey(model.NodeId))
+                if (!index.ContainsKey(model.Id))
                 {
-                    if (model is TaskModel task)
+                    if (model is ITask task)
                     {
                         var vm = new TaskViewModel(task);
-                        index.Add(task.NodeId, vm);
+                        index.Add(task.Id, vm);
                     }
                     else
                     {
                         var vm = new NodeViewModel(model);
-                        index.Add(model.NodeId, vm);
+                        index.Add(model.Id, vm);
                     }
                 }
             }
@@ -80,11 +64,11 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             {
                 if (!index.ContainsKey(node.ParentId))
                 {
-                    rootTask.Add(index[node.NodeId]);
+                    rootTask.Add(index[node.Id]);
                 }
                 else
                 {
-                    index[node.ParentId].Add(index[node.NodeId]);
+                    index[node.ParentId].Add(index[node.Id]);
                 }
             }
 

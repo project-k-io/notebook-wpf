@@ -7,7 +7,7 @@
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="400">
+             d:DesignHeight="200" d:DesignWidth="400">
     <UserControl.Resources>
         <viewModels:NodeViewModel 
             x:Key="Model"
@@ -69,4 +69,21 @@
             </Grid>
             <!--Duration-->
         </Grid>
+        <!--Description-->
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="5"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Content="Description" />
+            <TextBox Grid.Row="1" 
+                     MinHeight="60" 
+                     Text="{Binding Path=Description}" 
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True" 
+                     SpellCheck.IsEnabled="True"
+                     VerticalScrollBarVisibility="Auto"/>
+        </Grid>
+
     </Grid></UserControl>

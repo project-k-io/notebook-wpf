@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.Utils.csproj" />
     <ProjectReference Include="..\..\Library\ProjectK.ViewModels\ProjectK.ViewModels.csproj" />
+    <ProjectReference Include="..\..\ProjectK.Notebook.Data\ProjectK.Notebook.Data.csproj" />
     <ProjectReference Include="..\..\ProjectK.Notebook.Domain\ProjectK.Notebook.Domain.csproj" />
   </ItemGroup>
 

@@ -11,11 +11,16 @@ namespace ProjectK.Notebook.Views.Converters
 {
     public class IndexConverter : IValueConverter
     {
-        public object Convert(object value, Type TargetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            ListViewItem item = (ListViewItem)value;
-            ListView listView = ItemsControl.ItemsControlFromItemContainer(item) as ListView;
-            int index = listView.ItemContainerGenerator.IndexFromContainer(item);
+            var index = 0;
+            if (value is ListViewItem item)
+            {
+                if (ItemsControl.ItemsControlFromItemContainer(item) is ListView listView)
+                {
+                    index = listView.ItemContainerGenerator.IndexFromContainer(item);
+                }
+            }
             return index.ToString();
         }
 

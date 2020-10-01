@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,13 +35,6 @@ namespace ProjectK.Notebook
         #region Consts
 
         private const string DockFileName = "DockStates.xml";
-        private const string FileNameRecentFiles = "RecentFiles.json";
-
-        #endregion
-
-        #region Fields
-
-        private readonly NotebookContext _db = new NotebookContext();
 
         #endregion
 
@@ -61,34 +56,12 @@ namespace ProjectK.Notebook
             InitLogging();
             InitOutput();
             Logger = LogManager.GetLogger<MainViewModel>();
-            Logger.LogDebug("Init Logging()");
-            MessengerInstance.Register<NotificationMessage<NodeModel>>(this, NotifyMe);
-        }
-
-        private void NotifyMe(NotificationMessage<NodeModel> notificationMessage)
-        {
-            var notification = notificationMessage.Notification;
-            var model = notificationMessage.Content;
-            if (notification == "Modified")
-            {
-                Logger.LogDebug($"Model={model.Name} {notification}");
-                // _db.SaveChanges();
-            }
-        }
-
-
-        public void NotifyMe(NotificationMessageAction<NodeModel> notificationMessageAction)
-        {
-            string notification = notificationMessageAction.Notification;
-            //do your work
-            notificationMessageAction.Execute("callback parameter"); //Execute the callback
+            Logger.LogDebug("Import Logging()");
         }
 
         #endregion
 
         #region DockingManager
-
-
 
         public void SaveDockLayout()
         {
@@ -149,50 +122,6 @@ namespace ProjectK.Notebook
         }
         #endregion
 
-        #region Override
-
-        public override void OpenDatabase()
-        {
-            // this is for demo purposes only, to make it easier
-            // to get up and running
-            _db.Database.EnsureCreated();
-
-            // load the entities into EF Core
-            _db.Notebooks.Load();
-
-            // bind to the source
-            NotebookModels = _db.Notebooks.Local.ToObservableCollection();
-
-            foreach (var model in NotebookModels)
-            {
-                var notebook = AddNotebook(model);
-                SelectedNotebook = notebook;
-            }
-        }
-        public override void SyncDatabase()
-        {
-            _db.SaveChanges();
-            RootTask.ResetParentChildModified();
-            RootTask.ResetModified();
-        }
-
-        public override void ImportNotebook(NotebookModel notebookModel, Domain.Versions.Version2.DataModel dataModel)
-        {
-            Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
-
-            // Add NotebookModel
-            NotebookModels.Add(notebookModel);
-            _db.SaveChanges();
-
-            // Add Tasks
-            notebookModel.Init(dataModel);
-            _db.SaveChanges();
-
-            AddNotebook(notebookModel);
-        }
-
-        #endregion
-
         #region Private Functions
 
         private void InitLogging()
@@ -237,7 +166,6 @@ namespace ProjectK.Notebook
         }
 
         #endregion
-
 
         public void LoadSettings(MainWindow window)
         {
@@ -324,41 +252,9 @@ namespace ProjectK.Notebook
         {
             var commandBindings = new CommandBindingCollection
             {
-                new CommandBinding(ApplicationCommands.New, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true),
                 new CommandBinding(ApplicationCommands.Open, async (s, e) =>  await this.UserAction_OpenFileAsync(), (s, e) => e.CanExecute = true),
-                new CommandBinding(ApplicationCommands.Close, async (s, e) => await UserNewFileAsync(), (s, e) => e.CanExecute = true)
             };
             return commandBindings;
         }
-
-        private NotebookViewModel AddNotebook(NotebookModel model)
-        {
-            Logger.LogDebug($"AddNotebook: {model.Name}");
-            
-            var notebook = new NotebookViewModel(model);
-            notebook.ModelToViewModel();
-
-            SelectedNotebook = notebook;
-            Notebooks.Add(notebook);
-            RootTask.Add(notebook.RootTask);
-            // add notebookModel task to root task
-            return notebook;
-        }
-
-        private async Task UserNewFileAsync()
-        {
-            Logger.LogDebug("UserNewFileAsync");
-            CanSave = false;
-
-            var notebook = new NotebookViewModel();
-            var path = FileHelper.MakeUnique(notebook.Title);
-
-
-            Notebooks.Add(notebook);
-            RootTask.Add(notebook.RootTask);
-            SelectedNotebook = notebook;
-            CanSave = true;
-        }
-
     }
 }

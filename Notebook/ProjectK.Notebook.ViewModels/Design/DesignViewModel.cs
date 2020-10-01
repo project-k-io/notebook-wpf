@@ -14,7 +14,7 @@ namespace ProjectK.Notebook.ViewModels.Design
             };
 
             // 2018
-            var year2018 = new NodeViewModel { Name = Title = "2018", Context = "Year" };
+            var year2018 = new NodeViewModel  { Name = Title = "2018", Context = "Year" };
             var monthOct2018 = new NodeViewModel { Name = "October", Context = "Month" };
             year2018.Add(monthOct2018);
 

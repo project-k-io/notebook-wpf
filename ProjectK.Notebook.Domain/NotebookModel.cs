@@ -1,19 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NotebookModel: NodeModel
+    public class NotebookModel: ItemModel, INode
     {
         [Key]
-        public int Id { get; set; }
+        public int ItemId { get; set; }
+        public bool NonRoot { get; set; }
 
+        public virtual IList<NodeModel> Nodes { get; set; } = new ObservableCollection<NodeModel>();
         public virtual IList<NoteModel> Notes { get; set; } = new ObservableCollection<NoteModel>();
         public virtual IList<TaskModel> Tasks { get; set; } = new ObservableCollection<TaskModel>();
 
-        public void Init(Versions.Version2.DataModel model)
+        public void Clear()
+        {
+            Nodes.Clear();
+            Notes.Clear();
+            Tasks.Clear();
+        }
+
+        public void Import(Versions.Version2.DataModel model)
         {
             foreach (var task2 in model.Tasks)
             {
@@ -22,6 +34,26 @@ namespace ProjectK.Notebook.Domain
                 Tasks.Add(task);
             }
         }
+
+        public void AddModel(dynamic model)
+        {
+            if (model is TaskModel task)
+                Tasks.Add(task);
+            else if (model is NoteModel note)
+                Notes.Add(note);
+            else if (model is NodeModel node)
+                Nodes.Add(node);
+        }
+        public void AddModels(List<dynamic> models)
+        {
+            foreach (var model in models)
+            {
+                AddModel(model);
+            }
+        }
+
+#if AK
+
 
         public  bool IsSame(NotebookModel target)
         {
@@ -33,7 +65,6 @@ namespace ProjectK.Notebook.Domain
 
             return true;
         }
-
         public  NotebookModel Copy()
         {
             var model = new NotebookModel();
@@ -49,10 +80,20 @@ namespace ProjectK.Notebook.Domain
             Tasks.Copy(source.Tasks, a => a.Copy());
         }
 
-        public  void Clear()
+#endif
+        public List<ItemModel> GetItems()
         {
-            Notes.Clear();
-            Tasks.Clear();
+            var items = new List<ItemModel>();
+
+            var nodes = Nodes.Cast<NodeModel>();
+            var notes = Notes.Cast<ItemModel>();
+            var tasks = Tasks.Cast<TaskModel>();
+
+            items.AddRange(nodes);
+            items.AddRange(notes);
+            items.AddRange(tasks);
+
+            return items;
         }
     }
 }
