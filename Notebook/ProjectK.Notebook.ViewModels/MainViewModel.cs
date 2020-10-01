@@ -346,14 +346,19 @@ namespace ProjectK.Notebook.ViewModels
         private async Task AddNotebookAsync()
         {
             Logger.LogDebug("AddNotebook");
+            var notebookNames = Notebooks.Select(notebook => notebook.Title).ToList();
+            var notebookName = StringHelper.GetUniqueName("Notebook", notebookNames);
+
             // Create Notebook
             var model = new NotebookModel
             {
-                Name = "Notebook",
+                Name = notebookName,
                 Id = Guid.NewGuid(),
                 Context = "Notebook",
                 Created = DateTime.Now,
             };
+
+            // var names = Notebooks.ToList().Where(n => n.Title).ToList();
 
             ImportNotebook(model);
             await SyncDatabaseAsync();
