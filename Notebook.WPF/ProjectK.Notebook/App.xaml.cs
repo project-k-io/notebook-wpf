@@ -43,14 +43,13 @@ namespace ProjectK.Notebook
             _appModel.OpenDatabase();
         }
 
-
-        protected override void OnExit(ExitEventArgs e)
+        protected override async void OnExit(ExitEventArgs e)
         {
             _logger?.LogDebug("OnExit");
             _appModel.SaveSettings(_mainWindow);
 
             // Close Database
-            _appModel.CloseDatabase();
+            await _appModel.CloseDatabaseAsync();
             _mainWindow.Close();
             Shutdown();
             base.OnExit(e);

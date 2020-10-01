@@ -314,7 +314,9 @@ namespace ProjectK.Notebook.ViewModels
 
         public List<dynamic> GetModels()
         {
-            return Nodes.GetModels();
+            var models = Nodes.GetModels();
+            models.Add(Model);
+            return models;
         }
 
 

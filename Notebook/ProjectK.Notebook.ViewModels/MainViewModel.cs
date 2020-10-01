@@ -187,8 +187,8 @@ namespace ProjectK.Notebook.ViewModels
             ExportSelectedAllAsJsonCommand =
                 new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
             OpenDatabaseCommand = new RelayCommand(OpenDatabase);
-            SyncDatabaseCommand = new RelayCommand(SyncDatabase);
-            AddNotebookCommand = new RelayCommand(AddNotebook);
+            SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
+            AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 
             // Add Context 
             foreach (var context in GlobalContextList)
@@ -207,15 +207,12 @@ namespace ProjectK.Notebook.ViewModels
             switch (notification)
             {
                 case "Modified":
-                    // _db.SaveChanges();
                     break;
                 case "Delete":
                     DeleteNode(node);
-                    // _db.SaveChanges();
                     break;
                 case "Add":
                     AddNode(node);
-                    // _db.SaveChanges();
                     break;
             }
         }
@@ -226,7 +223,6 @@ namespace ProjectK.Notebook.ViewModels
             var notebook = SelectedNotebook.Model;
             notebook.AddModel(model);
         }
-
 
         private void DeleteNode(NodeViewModel node)
         {
@@ -241,17 +237,16 @@ namespace ProjectK.Notebook.ViewModels
             }
             else
             {
-                var list = new List<dynamic>();
-                node.SaveTo(list);
-                _db.RemoveRange(list);
+                var models = node.GetModels();
+                _db.RemoveRange(models);
             }
         }
 
-        public void SyncDatabase()
+        public async Task SyncDatabaseAsync()
         {
             SaveRootNodes();
             SaveNonRootNodes();
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             RootTask.ResetParentChildModified();
             RootTask.ResetModified();
         }
@@ -262,7 +257,7 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var notebook in Notebooks)
             {
                 // Get Notebook nodes
-                var models = notebook.RootTask.GetModels();
+                var models = notebook.RootTask.Nodes.GetModels();
                 notebook.Model.AddModels(models);
             }
         }
@@ -328,14 +323,14 @@ namespace ProjectK.Notebook.ViewModels
             UpdateTypeListAsync(models);
         }
 
-        public void CloseDatabase()
+        public async Task CloseDatabaseAsync()
         {
-            _db.SaveChangesAsync();
-            _db.Database.CloseConnectionAsync();
-            _db.DisposeAsync();
+            await SyncDatabaseAsync();
+            await _db.SaveChangesAsync();
+            await _db.Database.CloseConnectionAsync();
         }
 
-        private void AddNotebook()
+        private async Task AddNotebookAsync()
         {
             Logger.LogDebug("AddNotebook");
             // Create Notebook
@@ -348,7 +343,7 @@ namespace ProjectK.Notebook.ViewModels
             };
 
             ImportNotebook(model);
-            SyncDatabase();
+            await SyncDatabaseAsync();
         }
         public void ImportNotebook(NotebookModel notebookModel)
         {
