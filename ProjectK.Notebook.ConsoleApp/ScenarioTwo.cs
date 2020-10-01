@@ -10,10 +10,11 @@ namespace ProjectK.Notebook.ConsoleApp
 {
     class ScenarioTwo
     {
-        private readonly NotebookContext _context = new NotebookContext();
+        private readonly NotebookContext _context;
         private ObservableCollection<NotebookModel> _notebooks;
         public async Task Run()
         {
+            // _context = 
             await CreateDatabaseAsync();
             // await ShowDatabaseAsync();
         }

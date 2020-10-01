@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
@@ -40,7 +42,10 @@ namespace ProjectK.Notebook
             _mainWindow.Show();
 
             // Open Database
-            _appModel.OpenDatabase();
+            // var key = "AlanDatabase";
+            var key = "TestDatabase";
+            var connectionString = ConfigurationManager.ConnectionStrings[key].ConnectionString;
+            _appModel.OpenDatabase(connectionString);
         }
 
         protected override async void OnExit(ExitEventArgs e)

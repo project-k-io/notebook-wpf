@@ -53,7 +53,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Fields
 
-        private readonly NotebookContext _db = new NotebookContext();
+        private NotebookContext _db;
         private NotebookViewModel _selectedNotebook;
         private ReportTypes _reportType = ReportTypes.Notes;
         private string _excelCsvText;
@@ -166,9 +166,8 @@ namespace ProjectK.Notebook.ViewModels
                 Name = "Root",
             };
 
+            // var connectionString = @"Data Source=D:\\db\\alan_notebooks.db";
             RootTask = new NodeViewModel(rootModel);
-
-
             CanSave = true;
             TypeList = new ObservableCollection<string>();
             ContextList = new ObservableCollection<string>();
@@ -186,7 +185,8 @@ namespace ProjectK.Notebook.ViewModels
                 new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
             ExportSelectedAllAsJsonCommand =
                 new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
-            OpenDatabaseCommand = new RelayCommand(OpenDatabase);
+            
+            // OpenDatabaseCommand = new RelayCommand(OpenDatabase);
             SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 
@@ -310,8 +310,10 @@ namespace ProjectK.Notebook.ViewModels
             notebook.AddModels(models);
         }
 
-        public void OpenDatabase()
+        public void OpenDatabase(string connectionString)
         {
+            _db = new NotebookContext(connectionString);
+
             // this is for demo purposes only, to make it easier
             // to get up and running
             _db.Database.EnsureCreated();
