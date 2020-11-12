@@ -70,7 +70,7 @@ namespace ProjectK.Notebook.Views
                 Dispatcher = addDelegate
             };
 
-            task.KeyboardAction(keyState, service);
+            NodeViewModel.KeyboardAction(task, keyState, service);
         }
 
 

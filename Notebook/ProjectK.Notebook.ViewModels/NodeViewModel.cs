@@ -322,9 +322,8 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        public void KeyboardAction( KeyboardKeys keyboardKeys, IActionService service)
+        public static void KeyboardAction(NodeViewModel item, KeyboardKeys keyboardKeys, IActionService service)
         {
-            var item = this;
             var state = service.GetState();
 
             // don't show logging ctl, alt, shift or arrow keys
@@ -334,10 +333,10 @@ namespace ProjectK.Notebook.ViewModels
             switch (keyboardKeys)
             {
                 case KeyboardKeys.Insert:
-                    AddNode(state, service);
+                    item.AddNode(state, service);
                     break;
                 case KeyboardKeys.Delete:
-                    DeleteNode(service);
+                    item.DeleteNode(service);
                     break;
 
                 case KeyboardKeys.Left:

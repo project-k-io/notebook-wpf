@@ -625,7 +625,7 @@ namespace ProjectK.Notebook.ViewModels
                 DeleteMessageBox = () => true,
                 Dispatcher = OnDispatcher
             };
-            SelectedNotebook.SelectedNode?.KeyboardAction(keyboardKeys, service);
+            NodeViewModel.KeyboardAction(SelectedNotebook.SelectedNode, keyboardKeys, service);
         }
 
         private void CopyTask()
