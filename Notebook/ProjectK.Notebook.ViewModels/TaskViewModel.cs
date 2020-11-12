@@ -147,7 +147,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             DateEnded = DateTime.Now;
         }
-        private void FixTitles(TaskViewModel subTask, int ii)
+        public void FixTitles(TaskViewModel subTask, int ii)
         {
             var getTitle1 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("yyyy"));
             var getTitle2 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("MMMM"));
@@ -258,21 +258,6 @@ namespace ProjectK.Notebook.ViewModels
                 if (subTask2.DateStarted != DateTime.MinValue)
                     DateStarted = subTask2.DateStarted;
             }
-        }
-        public override NodeViewModel AddNew()
-        {
-            var subTask = new TaskViewModel
-            {
-                Kind = "Task",
-                Name = "New Model",
-                DateStarted = DateTime.Now,
-                DateEnded = DateTime.Now
-            };
-            Add(subTask);
-            var ii = Nodes.IndexOf(subTask);
-            FixContext(subTask);
-            FixTitles(subTask, ii);
-            return subTask;
         }
 
         public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default(T), T newValue = default(T), bool broadcast = false)

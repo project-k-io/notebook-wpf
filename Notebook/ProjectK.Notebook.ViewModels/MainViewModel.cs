@@ -645,7 +645,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Keyboard Actions
 
-        public void KeyboardAction(NodeViewModel item, KeyboardKeys keyboardKeys, IActionService service)
+        public void KeyboardAction(NodeViewModel node, KeyboardKeys keyboardKeys, IActionService service)
         {
             var state = service.GetState();
 
@@ -656,27 +656,27 @@ namespace ProjectK.Notebook.ViewModels
             switch (keyboardKeys)
             {
                 case KeyboardKeys.Insert:
-                    item.AddNode(state, service);
+                    AddNode(node, state, service);
                     break;
                 case KeyboardKeys.Delete:
-                    item.DeleteNode(service);
+                    node.DeleteNode(service);
                     break;
 
                 case KeyboardKeys.Left:
                     if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = item.Parent;
+                        var parent1 = node.Parent;
                         if (parent1 == null)
                             break;
                         var parent2 = parent1.Parent;
                         if (parent2 == null)
                             break;
 
-                        parent1.Remove(item);
+                        parent1.Remove(node);
 
                         var num2 = parent2.Nodes.IndexOf(parent1);
-                        parent2.Insert(num2 + 1, item);
-                        service.SelectItem(item);
+                        parent2.Insert(num2 + 1, node);
+                        service.SelectItem(node);
                         service.Handled();
                     }
 
@@ -684,10 +684,10 @@ namespace ProjectK.Notebook.ViewModels
                 case KeyboardKeys.Right:
                     if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = item.Parent;
+                        var parent1 = node.Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.Nodes.IndexOf(item);
+                        var num2 = parent1.Nodes.IndexOf(node);
                         if (num2 <= 0)
                             break;
 
@@ -695,11 +695,11 @@ namespace ProjectK.Notebook.ViewModels
                         if (parentNode2 == null)
                             break;
 
-                        parent1.Remove(item);
-                        parentNode2.Add(item);
-                        service.SelectItem(item);
+                        parent1.Remove(node);
+                        parentNode2.Add(node);
+                        service.SelectItem(node);
                         parent1.IsExpanded = true;
-                        item.IsSelected = true;
+                        node.IsSelected = true;
                         service.Handled();
                     }
 
@@ -707,17 +707,17 @@ namespace ProjectK.Notebook.ViewModels
                 case KeyboardKeys.Up:
                     if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = item.Parent;
+                        var parent1 = node.Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.Nodes.IndexOf(item);
+                        var num2 = parent1.Nodes.IndexOf(node);
                         if (num2 <= 0)
                             break;
-                        parent1.Remove(item);
-                        parent1.Insert(num2 - 1, item);
-                        service.SelectItem(item);
+                        parent1.Remove(node);
+                        parent1.Insert(num2 - 1, node);
+                        service.SelectItem(node);
                         parent1.IsExpanded = true;
-                        item.IsSelected = true;
+                        node.IsSelected = true;
                         service.Handled();
                     }
 
@@ -725,22 +725,95 @@ namespace ProjectK.Notebook.ViewModels
                 case KeyboardKeys.Down:
                     if (state == KeyboardStates.IsCtrlShiftPressed)
                     {
-                        var parent1 = item.Parent;
+                        var parent1 = node.Parent;
                         if (parent1 == null)
                             break;
-                        var num2 = parent1.Nodes.IndexOf(item);
+                        var num2 = parent1.Nodes.IndexOf(node);
                         if (num2 >= parent1.Nodes.Count - 1)
                             break;
-                        parent1.Remove(item);
-                        parent1.Insert(num2 + 1, item);
-                        service.SelectItem(item);
+                        parent1.Remove(node);
+                        parent1.Insert(num2 + 1, node);
+                        service.SelectItem(node);
                         parent1.IsExpanded = true;
-                        item.IsSelected = true;
+                        node.IsSelected = true;
                         service.Handled();
                     }
 
                     break;
             }
+        }
+
+
+        public void AddNode(NodeViewModel node, KeyboardStates state, IActionService service)
+        {
+            // var node = this;
+            NodeViewModel newNode;
+            switch (state)
+            {
+                case KeyboardStates.IsShiftPressed:
+                    newNode = AddNew(node.Parent);
+                    break;
+                case KeyboardStates.IsControlPressed:
+                    var lastSubNode = node.Parent.LastSubNode;
+                    newNode = AddNew(node.Parent);
+
+                    if (lastSubNode != null)
+                    {
+                        newNode.Name = node.Name;
+                    }
+
+                    break;
+                default:
+                    newNode = AddNew(node);
+                    break;
+            }
+
+            node.IsSelected = true;
+            service.SelectItem(node);
+            service.ExpandItem(node);
+            service.Handled();
+            if (newNode != null)
+            {
+                MessengerInstance.Send(new NotificationMessage<NodeViewModel>(newNode, "Add"));
+                Logger.LogDebug($"Added [{newNode.Name}] to [{node.Name}]");
+            }
+        }
+
+
+        public virtual NodeViewModel AddNew(NodeViewModel node)
+        {
+
+            var model = new NodeModel
+            {
+                Id = Guid.NewGuid(),
+                Name = "New Node",
+                Created = DateTime.Now
+            };
+            var subNode = new NodeViewModel(model)
+            {
+                Kind = "Node",
+            };
+
+            node.Add(subNode);
+            node.FixContext(subNode);
+            return subNode;
+        }
+
+
+        public NodeViewModel AddNew2(TaskViewModel node)
+        {
+            var subTask = new TaskViewModel
+            {
+                Kind = "Task",
+                Name = "New Model",
+                DateStarted = DateTime.Now,
+                DateEnded = DateTime.Now
+            };
+            node.Add(subTask);
+            var ii = node.Nodes.IndexOf(subTask);
+            node.FixContext(subTask);
+            node.FixTitles(subTask, ii);
+            return subTask;
         }
 
 

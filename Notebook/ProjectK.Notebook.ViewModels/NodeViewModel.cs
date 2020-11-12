@@ -180,24 +180,6 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public virtual NodeViewModel AddNew()
-        {
-
-            var model = new NodeModel
-            {
-                Id = Guid.NewGuid(),
-                Name = "New Node", 
-                Created = DateTime.Now
-            };
-            var subNode = new NodeViewModel(model)
-            {
-                Kind = "Node",
-            };
-
-            Add(subNode);
-            FixContext(subNode);
-            return subNode;
-        }
 
 
         public void Add(NodeViewModel node)
@@ -278,7 +260,7 @@ namespace ProjectK.Notebook.ViewModels
             node.Context = child;
         }
 
-        protected void FixContext(NodeViewModel node)
+        public void FixContext(NodeViewModel node)
         {
             FixContext("Time Tracker", "Year", node);
             FixContext("Year", "Month", node);
@@ -347,39 +329,6 @@ namespace ProjectK.Notebook.ViewModels
             MessengerInstance.Send(new NotificationMessage<NodeViewModel>(item, "Delete"));
         }
 
-        public void AddNode(KeyboardStates state, IActionService service)
-        {
-            // var item = this;
-            NodeViewModel node = null;
-            switch (state)
-            {
-                case KeyboardStates.IsShiftPressed:
-                    node = Parent.AddNew();
-                    break;
-                case KeyboardStates.IsControlPressed:
-                    var lastSubNode = Parent.LastSubNode;
-                    node = Parent.AddNew();
-
-                    if (lastSubNode != null)
-                    {
-                        node.Name = Name;
-                    }
-
-                    break;
-                default:
-                    node = AddNew();
-                    break;
-            }
-
-            IsSelected = true;
-            service.SelectItem(this);
-            service.ExpandItem(this);
-            service.Handled();
-            if(node != null)
-                MessengerInstance.Send(new NotificationMessage<NodeViewModel>(node, "Add"));
-
-            Logger.LogDebug($"Added [{node.Name}] to [{Name}]");
-        }
 
 
 
