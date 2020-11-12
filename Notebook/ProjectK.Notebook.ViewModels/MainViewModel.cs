@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Xml;
 using Castle.Core.Internal;
@@ -14,9 +16,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Notebook.Domain.Reports;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
+using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Notebook.ViewModels.Reports;
 using ProjectK.Notebook.ViewModels.Services;
@@ -179,8 +183,8 @@ namespace ProjectK.Notebook.ViewModels
             ExtractContextCommand = new RelayCommand(() => SelectedNotebook?.FixContext());
             FixTitlesCommand = new RelayCommand(() => SelectedNotebook.FixTitles());
             FixTypesCommand = new RelayCommand(() => SelectedNotebook.FixTypes());
-            CopyTaskCommand = new RelayCommand(CopyTask);
-            ContinueTaskCommand = new RelayCommand(ContinueTask);
+            CopyTaskCommand = new RelayCommand(async () => await CopyTask());
+            ContinueTaskCommand = new RelayCommand(async () => await ContinueTask());
             ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
             ExportSelectedAllAsTextCommand =
                 new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
@@ -615,7 +619,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
+        private async Task OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
             var service = new ActionService
             {
@@ -626,17 +630,17 @@ namespace ProjectK.Notebook.ViewModels
                 DeleteMessageBox = () => true,
                 Dispatcher = OnDispatcher
             };
-            KeyboardAction(SelectedNotebook.SelectedNode, keyboardKeys, service);
+            await KeyboardAction(SelectedNotebook.SelectedNode, keyboardKeys, service);
         }
 
-        private void CopyTask()
+        private async Task CopyTask()
         {
-            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
+            await OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
         }
 
-        private void ContinueTask()
+        private async Task ContinueTask()
         {
-            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
+            await OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
 
 
@@ -645,7 +649,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Keyboard Actions
 
-        public void KeyboardAction(NodeViewModel node, KeyboardKeys keyboardKeys, IActionService service)
+        public async Task KeyboardAction(NodeViewModel node, KeyboardKeys keyboardKeys, IActionService service)
         {
             var state = service.GetState();
 
@@ -656,7 +660,7 @@ namespace ProjectK.Notebook.ViewModels
             switch (keyboardKeys)
             {
                 case KeyboardKeys.Insert:
-                    AddNode(node, state, service);
+                    await AddNode(node, state, service);
                     break;
                 case KeyboardKeys.Delete:
                     node.DeleteNode(service);
@@ -744,18 +748,18 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public void AddNode(NodeViewModel node, KeyboardStates state, IActionService service)
+        public async Task AddNode(NodeViewModel node, KeyboardStates state, IActionService service)
         {
             // var node = this;
             NodeViewModel newNode;
             switch (state)
             {
                 case KeyboardStates.IsShiftPressed:
-                    newNode = AddNew(node.Parent);
+                    newNode = await AddNew(node.Parent);
                     break;
                 case KeyboardStates.IsControlPressed:
                     var lastSubNode = node.Parent.LastSubNode;
-                    newNode = AddNew(node.Parent);
+                    newNode = await AddNew(node.Parent);
 
                     if (lastSubNode != null)
                     {
@@ -764,7 +768,7 @@ namespace ProjectK.Notebook.ViewModels
 
                     break;
                 default:
-                    newNode = AddNew(node);
+                    newNode = await AddNew(node);
                     break;
             }
 
@@ -780,41 +784,74 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public virtual NodeViewModel AddNew(NodeViewModel node)
+        public async Task<NodeViewModel> AddNew(NodeViewModel node)
         {
+            var context = RulesHelper.GetSubNodeContext(node.Context);
+            if (context.IsNullOrEmpty())
+                context = "Node";
 
-            var model = new NodeModel
+            NodeViewModel subNode;
+            INode model;
+
+            // Create Model
+            if (context == "Task")
             {
-                Id = Guid.NewGuid(),
-                Name = "New Node",
-                Created = DateTime.Now
-            };
-            var subNode = new NodeViewModel(model)
+                model = new TaskModel
+                {
+                    DateStarted = DateTime.Now,
+                    DateEnded = DateTime.Now
+                };
+            }
+            else
             {
-                Kind = "Node",
-            };
+                model = new NodeModel
+                {
+                    Id = Guid.NewGuid(),
+                    Created = DateTime.Now
+                };
+            }
+
+            model.Id =  Guid.NewGuid();
+            model.Context = context;
+            var title = RulesHelper.GetSubNodeTitle(node, model);
+            if (!string.IsNullOrEmpty(title))
+                model.Name = title;
+            else
+                model.Name = context;
+
+
+            if (model is TaskModel taskModel)
+            {
+                SelectedNotebook.Model.Tasks.Add(taskModel);
+            }
+            else if (model is NodeModel nodeModel)
+            {
+                SelectedNotebook.Model.Nodes.Add(nodeModel);
+            }
+
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+
+            if (model is ITask)
+            {
+                subNode = new TaskViewModel(model);
+            }
+            else
+            {
+                subNode = new NodeViewModel(model);
+            }
 
             node.Add(subNode);
-            node.FixContext(subNode);
             return subNode;
         }
 
-
-        public NodeViewModel AddNew2(TaskViewModel node)
-        {
-            var subTask = new TaskViewModel
-            {
-                Kind = "Task",
-                Name = "New Model",
-                DateStarted = DateTime.Now,
-                DateEnded = DateTime.Now
-            };
-            node.Add(subTask);
-            var ii = node.Nodes.IndexOf(subTask);
-            node.FixContext(subTask);
-            node.FixTitles(subTask, ii);
-            return subTask;
-        }
 
 
         #endregion

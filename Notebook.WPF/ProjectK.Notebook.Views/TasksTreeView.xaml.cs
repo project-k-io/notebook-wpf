@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,7 +30,7 @@ namespace ProjectK.Notebook.Views
 
             model.RootTask.SetParents();
             TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeNode);
-            TreeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
+            TreeViewTasks.PreviewKeyDown += async (s,e) => await TreeViewTasksOnPreviewKeyDown(s, e);
         }
 
         static bool DeleteMessageBox()
@@ -38,7 +39,7 @@ namespace ProjectK.Notebook.Views
                    MessageBoxResult.Cancel;
         }
 
-        private void TreeViewTasksOnPreviewKeyDown(object sender, KeyEventArgs e)
+        private async Task TreeViewTasksOnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             var keyState = KeyboardHelper.GetKeyState(e.Key);
             if (!(sender is TreeListView treeView))
@@ -70,7 +71,7 @@ namespace ProjectK.Notebook.Views
                 Dispatcher = addDelegate
             };
 
-            mainViewModel.KeyboardAction(task, keyState, service);
+            await mainViewModel.KeyboardAction(task, keyState, service);
         }
 
 

@@ -39,7 +39,7 @@ namespace ProjectK.Notebook.ViewModels
             SetKind("Task");
             Model = new TaskModel();
         }
-        public TaskViewModel(ITask model): base(model)
+        public TaskViewModel(dynamic model) : base( (TaskModel)model)
         {
             SetKind("Task");
         }
@@ -147,17 +147,6 @@ namespace ProjectK.Notebook.ViewModels
         {
             DateEnded = DateTime.Now;
         }
-        public void FixTitles(TaskViewModel subTask, int ii)
-        {
-            var getTitle1 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("yyyy"));
-            var getTitle2 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.ToString("MMMM"));
-            var getTitle3 = (Func<int, TaskViewModel, string>)((i, t) => "Week" + (i + 1));
-            var getTitle4 = (Func<int, TaskViewModel, string>)((i, t) => t.DateStarted.DayOfWeek.ToString());
-            FixTitles("Time Tracker", getTitle1, subTask, ii);
-            FixTitles("Year", getTitle2, subTask, ii);
-            FixTitles("Month", getTitle3, subTask, ii);
-            FixTitles("Week", getTitle4, subTask, ii);
-        }
 
         private void LoadFrom(Domain.Versions.Version1.TaskModel model)
         {
@@ -206,24 +195,9 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var subTask in Nodes)
                 ((TaskViewModel)subTask).FixTypes();
         }
-        private void FixTitles()
-        {
-            for (var ii = 0; ii < Nodes.Count; ++ii)
-            {
-                var subTask = (TaskViewModel)Nodes[ii];
-                FixTitles(subTask, ii);
-                subTask.FixTitles();
-            }
-        }
 
         #endregion
 
-        protected void FixTitles(string parent, Func<int, TaskViewModel, string> getTitle, TaskViewModel subTask, int ii)
-        {
-            if (Context != parent)
-                return;
-            subTask.Name = getTitle(ii, subTask);
-        }
 
         public void FixTime()
         {

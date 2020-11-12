@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,7 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
+using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Utils;
 
@@ -252,23 +254,12 @@ namespace ProjectK.Notebook.ViewModels
                 node.ExtractContext(contextList);
         }
 
-        private void FixContext(string context, string child, NodeViewModel node)
-        {
-            if (Context != context)
-                return;
-
-            node.Context = child;
-        }
-
         public void FixContext(NodeViewModel node)
         {
-            FixContext("Time Tracker", "Year", node);
-            FixContext("Year", "Month", node);
-            FixContext("Month", "Week", node);
-            FixContext("Week", "Day", node);
-            FixContext("Day", "Task", node);
-            FixContext("Task", "Task", node);
+            if(RulesHelper.GetSubNodeContext(Context, out var context))
+                node.Context = context;
         }
+
 
         public void FixContext()
         {
@@ -329,8 +320,17 @@ namespace ProjectK.Notebook.ViewModels
             MessengerInstance.Send(new NotificationMessage<NodeViewModel>(item, "Delete"));
         }
 
+        private void FixTitles()
+        {
+            foreach (var node in Nodes)
+            {
+                var title = RulesHelper.GetSubNodeTitle(this, node.Model);
+                if (!string.IsNullOrEmpty(title))
+                    node.Name = title;
 
-
+                node.FixTitles();
+            }
+        }
 
 
     }
