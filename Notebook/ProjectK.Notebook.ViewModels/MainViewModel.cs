@@ -40,7 +40,7 @@ namespace ProjectK.Notebook.ViewModels
             "Node",
             "Task",
             "Note",
-            "Task Manager",
+            "Time Tracker",
             "Year",
             "Month",
             "Day",
@@ -191,10 +191,7 @@ namespace ProjectK.Notebook.ViewModels
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 
             // Add Context 
-            foreach (var context in GlobalContextList)
-            {
-                ContextList.Add(context);
-            }
+            ContextList.AddRange(GlobalContextList);
 
             MessengerInstance.Register<NotificationMessage<NodeViewModel>>(this, NotifyMe);
         }
@@ -423,32 +420,41 @@ namespace ProjectK.Notebook.ViewModels
 
         public void UpdateTypeListAsync(List<ItemModel> nodes)
         {
-            var sortedSet1 = new SortedSet<string>();
-            var sortedSet2 = new SortedSet<string>();
-            var sortedSet3 = new SortedSet<string>();
+            var types = new SortedSet<string>();
+            var contexts = new SortedSet<string>();
+            var titles = new SortedSet<string>();
+
             foreach (var node in nodes)
             {
                 if (node is TaskModel task)
                 {
                     var type = task.Type;
-                    if (!sortedSet1.Contains(type)) sortedSet1.Add(type);
+                    if (!types.Contains(type)) types.Add(type);
                 }
 
                 var context = node.Context;
-                if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
+                if (!contexts.Contains(context)) contexts.Add(context);
 
                 var title = node.Name;
-                if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
+                if (!titles.Contains(title)) titles.Add(title);
             }
 
             TypeList.Clear();
-            foreach (var str in sortedSet1) TypeList.Add(str);
+            foreach (var str in types) TypeList.Add(str);
+
+            // Add only news ones
+            foreach (var item in GlobalContextList)
+            {
+                if (!contexts.Contains(item))
+                    contexts.Add(item);
+            }
 
             ContextList.Clear();
-            foreach (var str in sortedSet2) ContextList.Add(str);
+            ContextList.AddRange(contexts);
+
 
             TaskTitleList.Clear();
-            foreach (var str in sortedSet3) TaskTitleList.Add(str);
+            foreach (var str in titles) TaskTitleList.Add(str);
         }
 
 
