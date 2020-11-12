@@ -17,6 +17,7 @@ using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Reports;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
+using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Notebook.ViewModels.Reports;
 using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Utils;
@@ -625,7 +626,7 @@ namespace ProjectK.Notebook.ViewModels
                 DeleteMessageBox = () => true,
                 Dispatcher = OnDispatcher
             };
-            NodeViewModel.KeyboardAction(SelectedNotebook.SelectedNode, keyboardKeys, service);
+            KeyboardAction(SelectedNotebook.SelectedNode, keyboardKeys, service);
         }
 
         private void CopyTask()
@@ -636,6 +637,110 @@ namespace ProjectK.Notebook.ViewModels
         private void ContinueTask()
         {
             OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
+        }
+
+
+        #endregion
+
+
+        #region Keyboard Actions
+
+        public void KeyboardAction(NodeViewModel item, KeyboardKeys keyboardKeys, IActionService service)
+        {
+            var state = service.GetState();
+
+            // don't show logging ctl, alt, shift or arrow keys
+            if (keyboardKeys != KeyboardKeys.None && state != KeyboardStates.None)
+                Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
+
+            switch (keyboardKeys)
+            {
+                case KeyboardKeys.Insert:
+                    item.AddNode(state, service);
+                    break;
+                case KeyboardKeys.Delete:
+                    item.DeleteNode(service);
+                    break;
+
+                case KeyboardKeys.Left:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
+                    {
+                        var parent1 = item.Parent;
+                        if (parent1 == null)
+                            break;
+                        var parent2 = parent1.Parent;
+                        if (parent2 == null)
+                            break;
+
+                        parent1.Remove(item);
+
+                        var num2 = parent2.Nodes.IndexOf(parent1);
+                        parent2.Insert(num2 + 1, item);
+                        service.SelectItem(item);
+                        service.Handled();
+                    }
+
+                    break;
+                case KeyboardKeys.Right:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
+                    {
+                        var parent1 = item.Parent;
+                        if (parent1 == null)
+                            break;
+                        var num2 = parent1.Nodes.IndexOf(item);
+                        if (num2 <= 0)
+                            break;
+
+                        var parentNode2 = parent1.Nodes[num2 - 1];
+                        if (parentNode2 == null)
+                            break;
+
+                        parent1.Remove(item);
+                        parentNode2.Add(item);
+                        service.SelectItem(item);
+                        parent1.IsExpanded = true;
+                        item.IsSelected = true;
+                        service.Handled();
+                    }
+
+                    break;
+                case KeyboardKeys.Up:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
+                    {
+                        var parent1 = item.Parent;
+                        if (parent1 == null)
+                            break;
+                        var num2 = parent1.Nodes.IndexOf(item);
+                        if (num2 <= 0)
+                            break;
+                        parent1.Remove(item);
+                        parent1.Insert(num2 - 1, item);
+                        service.SelectItem(item);
+                        parent1.IsExpanded = true;
+                        item.IsSelected = true;
+                        service.Handled();
+                    }
+
+                    break;
+                case KeyboardKeys.Down:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
+                    {
+                        var parent1 = item.Parent;
+                        if (parent1 == null)
+                            break;
+                        var num2 = parent1.Nodes.IndexOf(item);
+                        if (num2 >= parent1.Nodes.Count - 1)
+                            break;
+                        parent1.Remove(item);
+                        parent1.Insert(num2 + 1, item);
+                        service.SelectItem(item);
+                        parent1.IsExpanded = true;
+                        item.IsSelected = true;
+                        service.Handled();
+                    }
+
+                    break;
+            }
         }
 
 
