@@ -46,7 +46,6 @@ namespace ProjectK.Notebook
             AddCommand = new RelayCommand(Add);
 
             Assembly = Assembly.GetExecutingAssembly();
-            InitLogging();
             InitOutput();
             Logger = LogManager.GetLogger<MainViewModel>();
             Logger.LogDebug("Import Logging()");
@@ -57,24 +56,6 @@ namespace ProjectK.Notebook
 
         #region Private Functions
 
-        private void InitLogging()
-        {
-            try
-            {
-                var serviceProvider = new ServiceCollection()
-                    .AddLogging(logging => logging.AddConsole())
-                    .AddLogging(logging => logging.AddDebug())
-                    .AddLogging(logging => logging.AddProvider(new OutputLoggerProvider(Output.LogEvent)))
-                    .Configure<LoggerFilterOptions>(o => o.MinLevel = LogLevel.Debug)
-                    .BuildServiceProvider();
-
-                LogManager.Provider = serviceProvider;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
         private void InitOutput()
         {
             Output.UpdateFilter = () => CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
