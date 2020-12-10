@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -167,6 +168,7 @@ namespace ProjectK.Notebook
 
         #endregion
 
+
         public void LoadSettings(MainWindow window)
         {
             Logger.LogDebug("LoadSettings");
@@ -174,14 +176,7 @@ namespace ProjectK.Notebook
             try
             {
                 var appSettings = ConfigurationManager.AppSettings;
-
-                // window settings
-                window.WindowState = appSettings.GetEnumValue("MainWindowState", WindowState.Normal);
-                window.Top = appSettings.GetDouble("MainWindowTop", 100);
-                window.Left = appSettings.GetDouble("MainWindowLeft", 100);
-                window.Width = appSettings.GetDouble("MainWindowWidth", 800);
-                window.Height = appSettings.GetDouble("MainWindowHeight", 400d);
-
+                window.LoadSettings(appSettings);
                 // dock
                 LoadDockLayout(window);
 
@@ -206,6 +201,8 @@ namespace ProjectK.Notebook
                 Logger.LogError(ex);
             }
         }
+
+
         public void SaveSettings(MainWindow window)
         {
             Logger.LogDebug("SaveSettings()");
@@ -214,16 +211,7 @@ namespace ProjectK.Notebook
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 var settings = configFile.AppSettings.Settings;
                 PrepareSettings();
-
-                // ISSUE: variable of a compiler-generated type
-                // window settings
-                if (window.WindowState != WindowState.Minimized)
-                {
-                    settings.SetValue("MainWindowTop", window.Top.ToString(CultureInfo.InvariantCulture));
-                    settings.SetValue("MainWindowLeft", window.Left.ToString(CultureInfo.InvariantCulture));
-                    settings.SetValue("MainWindowWidth", window.Width.ToString(CultureInfo.InvariantCulture));
-                    settings.SetValue("MainWindowHeight", window.Height.ToString(CultureInfo.InvariantCulture));
-                }
+                window.SaveSettings(settings);
 
                 // dock
                 SaveDockLayout(window);
