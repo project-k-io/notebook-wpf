@@ -1,8 +1,12 @@
-﻿ using System.Collections.Specialized;
+﻿ using System;
+ using System.Collections.Specialized;
  using System.Configuration;
  using System.Globalization;
+ using System.IO;
  using System.Windows;
 using System.Windows.Controls;
+ using System.Xml;
+ using GalaSoft.MvvmLight.Command;
  using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
  using ProjectK.Notebook.Extensions;
@@ -16,7 +20,13 @@ using ProjectK.Logging;
      {
          private readonly ILogger _logger = LogManager.GetLogger<MainWindow>();
 
-         public MainWindow()
+         #region Consts
+
+         private const string DockFileName = "DockStates.xml";
+
+         #endregion
+
+        public MainWindow()
          {
              InitializeComponent();
              Loaded += MainView_Loaded;
@@ -27,7 +37,10 @@ using ProjectK.Logging;
              _logger.LogDebug("Loaded()");
              if (!(DataContext is AppViewModel model)) return;
 
-             model.OnDispatcher = ViewLib.GetAddDelegate(this);
+             model.LoadDockLayoutCommand = new RelayCommand(LoadDockLayout);
+             model.SaveDockLayoutCommand = new RelayCommand(SaveDockLayout);
+
+            model.OnDispatcher = ViewLib.GetAddDelegate(this);
              CommandBindings.AddRange(model.CreateCommandBindings());
          }
 
@@ -50,27 +63,66 @@ using ProjectK.Logging;
              }
          }
 
-         public void LoadSettings(NameValueCollection appSettings)
+
+         #region DockingManager
+
+         public void SaveDockLayout()
          {
-             // window settings
-             WindowState = appSettings.GetEnumValue("MainWindowState", WindowState.Normal);
-             Top = appSettings.GetDouble("MainWindowTop", 100);
-             Left = appSettings.GetDouble("MainWindowLeft", 100);
-             Width = appSettings.GetDouble("MainWindowWidth", 800);
-             Height = appSettings.GetDouble("MainWindowHeight", 400d);
+             if (!(Application.Current.MainWindow is MainWindow window))
+                 return;
+
+             SaveDockLayout(window);
          }
 
-         public void SaveSettings(KeyValueConfigurationCollection settings)
+
+         /// <summary>
+         /// Helps to perform save and load operation of Docking Manager.
+         /// </summary>
+         /// <param name="window"></param>
+         public void SaveDockLayout(MainWindow window)
          {
-             // ISSUE: variable of a compiler-generated type
-             // window settings
-             if (WindowState != WindowState.Minimized)
+             try
              {
-                 settings.SetValue("MainWindowTop", Top.ToString(CultureInfo.InvariantCulture));
-                 settings.SetValue("MainWindowLeft", Left.ToString(CultureInfo.InvariantCulture));
-                 settings.SetValue("MainWindowWidth", Width.ToString(CultureInfo.InvariantCulture));
-                 settings.SetValue("MainWindowHeight", Height.ToString(CultureInfo.InvariantCulture));
+                 var writer = XmlWriter.Create(DockFileName);
+                 window.DockingManager.SaveDockState(writer);
+                 writer.Close();
+             }
+             catch (Exception e)
+             {
+                 Console.WriteLine(e);
+                 throw;
              }
          }
+
+         public void LoadDockLayout()
+         {
+             if (!(Application.Current.MainWindow is MainWindow window))
+                 return;
+
+             LoadDockLayout(window);
+         }
+
+         /// <summary>
+         /// Helps to perform save and load operation of Docking Manager.
+         /// </summary>
+         /// <param name="window"></param>
+         public void LoadDockLayout(MainWindow window)
+         {
+             if (!File.Exists(DockFileName))
+                 return;
+
+             try
+             {
+                 var reader = XmlReader.Create(DockFileName);
+                 window.DockingManager.LoadDockState(reader);
+                 reader.Close();
+             }
+             catch (Exception ex)
+             {
+                 _logger.LogError(ex.Message);
+                 throw;
+             }
+         }
+         #endregion
      }
- }
+}

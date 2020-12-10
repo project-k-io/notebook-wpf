@@ -33,15 +33,9 @@ namespace ProjectK.Notebook
 {
     public class AppViewModel: MainViewModel
     {
-        #region Consts
-
-        private const string DockFileName = "DockStates.xml";
-
-        #endregion
-
         #region Commands
-        public ICommand LoadDockLayoutCommand { get; }
-        public ICommand SaveDockLayoutCommand { get; }
+        public ICommand LoadDockLayoutCommand { get; set; }
+        public ICommand SaveDockLayoutCommand { get; set; }
         public ICommand AddCommand { get; }
 
         #endregion
@@ -49,8 +43,6 @@ namespace ProjectK.Notebook
         #region Constructors
         public AppViewModel()
         {
-            LoadDockLayoutCommand = new RelayCommand(LoadDockLayout);
-            SaveDockLayoutCommand = new RelayCommand(SaveDockLayout);
             AddCommand = new RelayCommand(Add);
 
             Assembly = Assembly.GetExecutingAssembly();
@@ -62,66 +54,6 @@ namespace ProjectK.Notebook
 
         #endregion
 
-        #region DockingManager
-
-        public void SaveDockLayout()
-        {
-            if (!(Application.Current.MainWindow is MainWindow window))
-                return;
-
-            SaveDockLayout(window);
-        }
-
-
-        /// <summary>
-        /// Helps to perform save and load operation of Docking Manager.
-        /// </summary>
-        /// <param name="window"></param>
-        public void SaveDockLayout(MainWindow window)
-        {
-            try
-            {
-                var writer = XmlWriter.Create(DockFileName);
-                window.DockingManager.SaveDockState(writer);
-                writer.Close();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        public void LoadDockLayout()
-        {
-            if (!(Application.Current.MainWindow is MainWindow window))
-                return;
-
-            LoadDockLayout(window);
-        }
-
-        /// <summary>
-            /// Helps to perform save and load operation of Docking Manager.
-            /// </summary>
-            /// <param name="window"></param>
-        public void LoadDockLayout(MainWindow window)
-        {
-            if(!File.Exists(DockFileName))
-                return;
-
-            try
-            {
-                var reader = XmlReader.Create(DockFileName);
-                window.DockingManager.LoadDockState(reader);
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex.Message);
-                throw;
-            }
-        }
-        #endregion
 
         #region Private Functions
 
@@ -169,16 +101,12 @@ namespace ProjectK.Notebook
         #endregion
 
 
-        public void LoadSettings(MainWindow window)
+        public void LoadSettings(NameValueCollection appSettings)
         {
             Logger.LogDebug("LoadSettings");
             // ISSUE: variable of a compiler-generated type
             try
             {
-                var appSettings = ConfigurationManager.AppSettings;
-                window.LoadSettings(appSettings);
-                // dock
-                LoadDockLayout(window);
 
                 // model settings
                 LastListTaskId = appSettings.GetGuid("LastListTaskId", Guid.Empty);
@@ -203,24 +131,17 @@ namespace ProjectK.Notebook
         }
 
 
-        public void SaveSettings(MainWindow window)
+        public void SaveSettings(KeyValueConfigurationCollection settings)
         {
             Logger.LogDebug("SaveSettings()");
             try
             {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var settings = configFile.AppSettings.Settings;
                 PrepareSettings();
-                window.SaveSettings(settings);
-
-                // dock
-                SaveDockLayout(window);
 
                 // model settings
                 settings.SetValue("RecentFile", SelectedNotebook?.Title);
                 settings.SetValue("LastListTaskId", LastListTaskId.ToString());
                 settings.SetValue("LastTreeTaskId", LastTreeTaskId.ToString());
-                settings.SetValue("MainWindowState", window.WindowState.ToString());
 
                 // Output
                 settings.SetValue("OutputError", Output.OutputButtonErrors.IsChecked.ToString());
@@ -228,8 +149,6 @@ namespace ProjectK.Notebook
                 settings.SetValue("OutputInfo", Output.OutputButtonMessages.IsChecked.ToString());
                 settings.SetValue("OutputWarning", Output.OutputButtonWarnings.IsChecked.ToString());
 
-                configFile.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
             }
             catch (Exception ex)
             {

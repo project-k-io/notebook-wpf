@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
+using ProjectK.Notebook.Extensions;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils.Extensions;
 using Syncfusion.Licensing;
@@ -14,8 +15,6 @@ namespace ProjectK.Notebook
     public partial class App : Application
     {
         private static ILogger _logger;
-        private AppViewModel _appModel;
-        private MainWindow _mainWindow;
 
         public App()
         {
@@ -28,34 +27,54 @@ namespace ProjectK.Notebook
             _logger.LogError(e.ToString());
         }
 
-        protected override async void OnStartup(StartupEventArgs e)
+        protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-            _appModel = new AppViewModel();
             _logger = LogManager.GetLogger<App>();
 
+            var appSettings = ConfigurationManager.AppSettings;
+
             // MainWindow
-            _mainWindow = new MainWindow {DataContext = _appModel};
+            var window = new MainWindow();
+            window.LoadSettings(appSettings);
+            window.LoadDockLayout();
 
             // Show MainWindow
-            _appModel.LoadSettings(_mainWindow);
-            _mainWindow.Show();
+            var model = new AppViewModel();
+            window.DataContext = model;
+            model.LoadSettings(appSettings);
+            window.Show();
 
             // Open Database
             // var key = "AlanDatabase";
             var key = "TestDatabase";
             var connectionString = ConfigurationManager.ConnectionStrings[key].ConnectionString;
-            _appModel.OpenDatabase(connectionString);
+            model.OpenDatabase(connectionString);
+
+            base.OnStartup(e);
         }
 
         protected override async void OnExit(ExitEventArgs e)
         {
             _logger?.LogDebug("OnExit");
-            _appModel.SaveSettings(_mainWindow);
+            var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            var settings = configFile.AppSettings.Settings;
 
-            // Close Database
-            await _appModel.CloseDatabaseAsync();
-            _mainWindow.Close();
+            if (App.Current.MainWindow is MainWindow window)
+            {
+                window.SaveSettings(settings);
+                window.SaveDockLayout();
+                window.Close();
+
+                if (window.DataContext is AppViewModel appModel)
+                {
+                    appModel.SaveSettings(settings);
+                    await appModel.CloseDatabaseAsync();
+                }
+
+            }
+            configFile.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+
             Shutdown();
             base.OnExit(e);
         }
