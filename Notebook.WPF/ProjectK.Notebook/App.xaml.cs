@@ -85,10 +85,7 @@ namespace ProjectK.Notebook
             _viewModel.LoadSettings();
 
             // Open Database
-            // var key = "AlanDatabase";
-            var key = "TestDatabase";
-            var connectionString = _window._settings.Connections[key];
-            _viewModel.OpenDatabase(connectionString);
+            _viewModel.OpenDatabase();
 
             // Set MainWindow DataContext
             _window.DataContext = _viewModel;

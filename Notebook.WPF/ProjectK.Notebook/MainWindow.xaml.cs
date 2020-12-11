@@ -16,7 +16,7 @@ namespace ProjectK.Notebook
     public partial class MainWindow : Window
     {
         private readonly ILogger _logger = LogManager.GetLogger<MainWindow>();
-        public AppSettings _settings;
+        private readonly AppSettings _settings;
 
         #region Consts
 

@@ -18,9 +18,10 @@ using Syncfusion.Windows.Tools.Controls; // using ProjectK.NotebookModel.Models.
 
 namespace ProjectK.Notebook
 {
-    public class AppViewModel: MainViewModel
+    public class AppViewModel : MainViewModel
     {
         #region Commands
+
         public ICommand LoadDockLayoutCommand { get; set; }
         public ICommand SaveDockLayoutCommand { get; set; }
         public ICommand AddCommand { get; }
@@ -29,6 +30,7 @@ namespace ProjectK.Notebook
         #endregion
 
         #region Constructors
+
         public AppViewModel(IOptions<AppSettings> settings)
         {
             _settings = settings.Value;
@@ -47,7 +49,8 @@ namespace ProjectK.Notebook
 
         private void InitOutput()
         {
-            Output.UpdateFilter = () => CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
+            Output.UpdateFilter = () =>
+                CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
         }
 
         /// <summary>
@@ -129,11 +132,13 @@ namespace ProjectK.Notebook
                 Logger.LogError(ex);
             }
         }
+
         public CommandBindingCollection CreateCommandBindings()
         {
             var commandBindings = new CommandBindingCollection
             {
-                new CommandBinding(ApplicationCommands.Open, async (s, e) =>  await this.UserAction_OpenFileAsync(), (s, e) => e.CanExecute = true),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await this.UserAction_OpenFileAsync(),
+                    (s, e) => e.CanExecute = true),
             };
             return commandBindings;
         }
@@ -148,5 +153,12 @@ namespace ProjectK.Notebook
             await FileHelper.SaveToFileAsync(path, root);
         }
 
+        public void OpenDatabase()
+        {
+            var key = "AlanDatabase";
+            // var key = "TestDatabase";
+            var connectionString = _settings.Connections[key];
+            OpenDatabase(connectionString);
+        }
     }
 }
