@@ -9,11 +9,15 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Win32;
 using ProjectK.Logging;
+using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Versions.Version2;
 using ProjectK.Notebook.Settings;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
+using ProjectK.View.Helpers.Extensions;
 using Syncfusion.Windows.Tools.Controls; // using ProjectK.NotebookModel.Models.Versions.Version2;
 
 namespace ProjectK.Notebook
@@ -137,7 +141,7 @@ namespace ProjectK.Notebook
         {
             var commandBindings = new CommandBindingCollection
             {
-                new CommandBinding(ApplicationCommands.Open, async (s, e) => await this.UserAction_OpenFileAsync(),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await this.OpenFileAsync(),
                     (s, e) => e.CanExecute = true),
             };
             return commandBindings;
@@ -160,5 +164,32 @@ namespace ProjectK.Notebook
             var connectionString = _settings.Connections[key];
             OpenDatabase(connectionString);
         }
+
+        public async Task OpenFileAsync()
+        {
+            try
+            {
+                Logger.LogDebug($"OpenFileAsync()");
+                var dialog = new OpenFileDialog();
+                var r = dialog.SetFileDialog(SelectedNotebook?.Title);
+                if (!r.ok)
+                    return;
+
+                var path = r.fileName;
+                Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
+
+                var dataModel = await FileHelper.ReadFromFileAsync<DataModel>(path);
+
+                var notebook = new NotebookModel { Name = path };
+                // Populate Notebook model from DataModel
+                notebook.Import(dataModel);
+                ImportNotebook(notebook);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+            }
+        }
+
     }
 }
