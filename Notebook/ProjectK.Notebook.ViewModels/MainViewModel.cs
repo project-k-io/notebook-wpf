@@ -4,10 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Xml;
 using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -27,7 +25,6 @@ using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
-using Task = System.Threading.Tasks.Task;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -134,6 +131,8 @@ namespace ProjectK.Notebook.ViewModels
         public bool CanSave { get; set; }
         public Action<Action> OnDispatcher { get; set; }
         public OutputViewModel Output { get; set; } = new OutputViewModel();
+
+
 
 
         #endregion
@@ -391,14 +390,12 @@ namespace ProjectK.Notebook.ViewModels
                 RootTask.BuildTree(items);
                 return (null, items);
             }
-            else
-            {
-                var notebook = new NotebookViewModel(model);
-                Notebooks.Add(notebook);
-                notebook.RootTask.BuildTree(items);
-                RootTask.Add(notebook.RootTask);
-                return (notebook, items);
-            }
+
+            var notebook = new NotebookViewModel(model);
+            Notebooks.Add(notebook);
+            notebook.RootTask.BuildTree(items);
+            RootTask.Add(notebook.RootTask);
+            return (notebook, items);
         }
         private void OnCurrentNotebookChanged()
         {
@@ -568,7 +565,7 @@ namespace ProjectK.Notebook.ViewModels
                 var taskViewModel1 = selectedTreeTask.Nodes.FirstOrDefault(t => t.Name == dayOfTheWeek);
                 if (taskViewModel1 == null)
                 {
-                    taskViewModel1 = new TaskViewModel()
+                    taskViewModel1 = new TaskViewModel
                     {
                         Name = dayOfTheWeek,
                         DateStarted = excelCsvRecord.Day,
@@ -577,7 +574,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectedTreeTask.Nodes.Add(taskViewModel1);
                 }
 
-                var taskViewModel2 = new TaskViewModel()
+                var taskViewModel2 = new TaskViewModel
                 {
                     Name = excelCsvRecord.Task,
                     Context = "TaskModel"

@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Versions.Version2;
 using ProjectK.Utils;
+using TaskModel = ProjectK.Notebook.Domain.TaskModel;
 
 namespace ProjectK.Notebook.ConsoleApp
 {
@@ -47,7 +49,7 @@ namespace ProjectK.Notebook.ConsoleApp
             await _context.SaveChangesAsync();
 
             // Load DataModel
-            var dataModel = await FileHelper.ReadFromFileAsync<Domain.Versions.Version2.DataModel>(path);
+            var dataModel = await FileHelper.ReadFromFileAsync<DataModel>(path);
 
             // Add Tasks
             foreach (var task2 in dataModel.Tasks)

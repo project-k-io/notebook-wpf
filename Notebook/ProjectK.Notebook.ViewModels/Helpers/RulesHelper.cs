@@ -1,5 +1,4 @@
-﻿using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Interfaces;
+﻿using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.ViewModels.Helpers
 {

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils.Extensions;
 
 // using ProjectK.NotebookModel.Models.Versions.Version2;
@@ -121,7 +119,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             get
             {
-                if (string.IsNullOrEmpty(this.Type))
+                if (string.IsNullOrEmpty(Type))
                     return false;
 
                 var upper = Type.ToUpper();
@@ -234,7 +232,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default(T), T newValue = default(T), bool broadcast = false)
+        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue = default, bool broadcast = false)
         {
             base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
             if (!IsTaskModelProperty(propertyName)) return;

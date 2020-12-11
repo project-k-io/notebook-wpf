@@ -1,14 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ProjectK.Notebook.ViewModels;
-using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Notebook.Views.Helpers;
-using ProjectK.View.Helpers;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.View.Helpers.Misc;
 using ProjectK.Views.TreeViewList;
@@ -66,7 +62,7 @@ namespace ProjectK.Notebook.Views
                 GetState = () => KeyboardHelper.KeyboardState,
                 Handled = () => e.Handled = true,
                 SelectItem = treeView.SelectItem,
-                ExpandItem = (a) => ExpandItem((NodeViewModel)a),
+                ExpandItem = a => ExpandItem(a),
                 DeleteMessageBox = DeleteMessageBox,
                 Dispatcher = addDelegate
             };

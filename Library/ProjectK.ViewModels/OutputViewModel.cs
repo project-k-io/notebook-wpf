@@ -10,27 +10,27 @@ namespace ProjectK.ViewModels
 {
     public class OutputViewModel : ViewModelBase
     {
-        public OutputButtonViewModel OutputButtonClear { get; set; } = new OutputButtonViewModel {Image = "Clear", Label = "Clear"};
-        public OutputButtonViewModel OutputButtonDebug { get; set; } = new OutputButtonViewModel {Image = "Debug", Label = "Logs", IsChecked = true};
-        public OutputButtonViewModel OutputButtonErrors { get; set; } = new OutputButtonViewModel {Image = "Error", Label = "Errors", IsChecked = false};
-        public OutputButtonViewModel OutputButtonMessages { get; set; } = new OutputButtonViewModel {Image = "Message", Label = "Messages", IsChecked = false};
-        public OutputButtonViewModel OutputButtonWarnings { get; set; } = new OutputButtonViewModel {Image = "Warning", Label = "Warnings", IsChecked = false};
+        public OutputButtonViewModel ButtonClear { get; set; } = new OutputButtonViewModel {Image = "Clear", Label = "Clear"};
+        public OutputButtonViewModel ButtonDebug { get; set; } = new OutputButtonViewModel {Image = "Debug", Label = "Logs", IsChecked = true};
+        public OutputButtonViewModel ButtonErrors { get; set; } = new OutputButtonViewModel {Image = "Error", Label = "Errors", IsChecked = false};
+        public OutputButtonViewModel ButtonMessages { get; set; } = new OutputButtonViewModel {Image = "Message", Label = "Messages", IsChecked = false};
+        public OutputButtonViewModel ButtonWarnings { get; set; } = new OutputButtonViewModel {Image = "Warning", Label = "Warnings", IsChecked = false};
 
 
         public OutputViewModel()
         {
             FilterButtons.Clear();
-            FilterButtons.Add(OutputButtonMessages);
-            FilterButtons.Add(OutputButtonErrors);
-            FilterButtons.Add(OutputButtonWarnings);
-            FilterButtons.Add(OutputButtonDebug);
-            OutputButtonClear.Clicked += OutputButtonClearOnClicked;
+            FilterButtons.Add(ButtonMessages);
+            FilterButtons.Add(ButtonErrors);
+            FilterButtons.Add(ButtonWarnings);
+            FilterButtons.Add(ButtonDebug);
+            ButtonClear.Clicked += OutputButtonClearOnClicked;
             CommandButtons.Clear();
-            CommandButtons.Add(OutputButtonClear);
-            OutputButtonMessages.PropertyChanged += OutputButtonRaisePropertyChanged;
-            OutputButtonWarnings.PropertyChanged += OutputButtonRaisePropertyChanged;
-            OutputButtonDebug.PropertyChanged += OutputButtonRaisePropertyChanged;
-            OutputButtonErrors.PropertyChanged += OutputButtonRaisePropertyChanged;
+            CommandButtons.Add(ButtonClear);
+            ButtonMessages.PropertyChanged += OutputButtonRaisePropertyChanged;
+            ButtonWarnings.PropertyChanged += OutputButtonRaisePropertyChanged;
+            ButtonDebug.PropertyChanged += OutputButtonRaisePropertyChanged;
+            ButtonErrors.PropertyChanged += OutputButtonRaisePropertyChanged;
         }
 
         public Action UpdateFilter { get; set; }
@@ -57,13 +57,13 @@ namespace ProjectK.ViewModels
             if (o is OutputRecordViewModel outputRecordViewModel)
             {
                 if (outputRecordViewModel.Type == LogLevel.Error)
-                    return OutputButtonErrors.IsChecked;
+                    return ButtonErrors.IsChecked;
                 if (outputRecordViewModel.Type == LogLevel.Information)
-                    return OutputButtonMessages.IsChecked;
+                    return ButtonMessages.IsChecked;
                 if (outputRecordViewModel.Type == LogLevel.Warning)
-                    return OutputButtonWarnings.IsChecked;
+                    return ButtonWarnings.IsChecked;
                 if (outputRecordViewModel.Type == LogLevel.Debug)
-                    return OutputButtonDebug.IsChecked;
+                    return ButtonDebug.IsChecked;
             }
 
             return false;
@@ -74,16 +74,16 @@ namespace ProjectK.ViewModels
             switch (e.Level)
             {
                 case LogLevel.Information:
-                    ++OutputButtonMessages.Count;
+                    ++ButtonMessages.Count;
                     break;
                 case LogLevel.Error:
-                    ++OutputButtonErrors.Count;
+                    ++ButtonErrors.Count;
                     break;
                 case LogLevel.Warning:
-                    ++OutputButtonWarnings.Count;
+                    ++ButtonWarnings.Count;
                     break;
                 case LogLevel.Debug:
-                    ++OutputButtonDebug.Count;
+                    ++ButtonDebug.Count;
                     break;
             }
 
@@ -107,10 +107,10 @@ namespace ProjectK.ViewModels
         private void ClearOutput()
         {
             Records.Clear();
-            OutputButtonErrors.Count = 0;
-            OutputButtonDebug.Count = 0;
-            OutputButtonMessages.Count = 0;
-            OutputButtonWarnings.Count = 0;
+            ButtonErrors.Count = 0;
+            ButtonDebug.Count = 0;
+            ButtonMessages.Count = 0;
+            ButtonWarnings.Count = 0;
         }
 
         public void LogEvent(LogLevel logLevel, EventId eventId, string message)

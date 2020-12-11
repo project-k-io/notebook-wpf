@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
@@ -103,7 +102,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 if (check(node))
                     return (true, node);
 
-                node = (NodeViewModel)node.Parent;
+                node = node.Parent;
             }
             return (false, null);
         }

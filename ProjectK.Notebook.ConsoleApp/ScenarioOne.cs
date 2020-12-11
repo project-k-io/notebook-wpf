@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using ProjectK.Notebook.Data;
+using ProjectK.Notebook.Domain;
 
 namespace ProjectK.Notebook.ConsoleApp
 {
@@ -22,7 +23,7 @@ namespace ProjectK.Notebook.ConsoleApp
 
         void AddTask()
         {
-            var task = new Domain.TaskModel { Name = "Alan" };
+            var task = new TaskModel { Name = "Alan" };
             _context.Tasks.Add(task);
             _context.SaveChanges();
         }

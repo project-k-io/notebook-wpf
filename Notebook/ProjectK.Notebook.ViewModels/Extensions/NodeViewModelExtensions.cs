@@ -2,11 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Notebook.ViewModels.Interfaces;
-using ProjectK.Notebook.ViewModels.Services;
-using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {

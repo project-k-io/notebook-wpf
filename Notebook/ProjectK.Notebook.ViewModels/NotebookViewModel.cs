@@ -3,14 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Versions.Version1;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
-using Task = System.Threading.Tasks.Task;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -54,7 +55,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Storage Functions Ver 1
 
-        public void LoadFrom(Domain.Versions.Version1.DataModel model)
+        public void LoadFrom(DataModel model)
         {
             Clear();
 #if AK  // Load ver 1
@@ -126,7 +127,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel FindTask(Guid id)
         {
-            return (NodeViewModel)RootTask.FindNode(id);
+            return RootTask.FindNode(id);
         }
 
         public void SelectTreeTask(NodeViewModel task)
@@ -179,7 +180,7 @@ namespace ProjectK.Notebook.ViewModels
             }
 
             foreach (var subTask in node.Nodes)
-                AddToList(list, (NodeViewModel)subTask, dates);
+                AddToList(list, subTask, dates);
         }
 
 
@@ -235,7 +236,7 @@ namespace ProjectK.Notebook.ViewModels
 
             var path = Title;
             var name = SelectedNode.Name;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", (string)SelectedNode.Name, ".txt");
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Name, ".txt");
             if (!ok)
                 return;
 
@@ -245,7 +246,7 @@ namespace ProjectK.Notebook.ViewModels
         public async Task ExportSelectedAllAsJson()
         {
             var path = Title;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", (string)SelectedNode.Name);
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Name);
             if (!ok)
                 return;
 

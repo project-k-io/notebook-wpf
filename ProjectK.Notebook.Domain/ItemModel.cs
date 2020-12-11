@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography;
 using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain

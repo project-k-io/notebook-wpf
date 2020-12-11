@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Versions.Version2;
-// using ProjectK.NotebookModel.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Utils;
-using Task = System.Threading.Tasks.Task;
+using ProjectK.Utils; // using ProjectK.NotebookModel.Models.Versions.Version2;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {

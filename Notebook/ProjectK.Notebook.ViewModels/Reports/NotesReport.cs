@@ -2,7 +2,6 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Domain;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Reports
@@ -68,7 +67,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
             foreach (var subTask in node.Nodes)
             {
-                GenerateReport((NodeViewModel)subTask, sb, offset + 2);
+                GenerateReport(subTask, sb, offset + 2);
             }
         }
     }

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using ProjectK.Notebook.Domain.Interfaces;
-using ProjectK.Utils.Extensions;
+using ProjectK.Notebook.Domain.Versions.Version2;
 
 namespace ProjectK.Notebook.Domain
 {
@@ -25,7 +24,7 @@ namespace ProjectK.Notebook.Domain
             Tasks.Clear();
         }
 
-        public void Import(Versions.Version2.DataModel model)
+        public void Import(DataModel model)
         {
             foreach (var task2 in model.Tasks)
             {

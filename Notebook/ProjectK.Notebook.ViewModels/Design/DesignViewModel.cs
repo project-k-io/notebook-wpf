@@ -39,7 +39,7 @@ namespace ProjectK.Notebook.ViewModels.Design
                 DateEnded = new DateTime(2020, 5, 14, 21, 40, 0),
                 IsExpanded = true
             };
-            var task2 = new TaskViewModel()
+            var task2 = new TaskViewModel
             {
                 Modified = ModifiedStatus.Modified,
                 Name = "Movie",

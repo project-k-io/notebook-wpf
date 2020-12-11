@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 
-
 namespace ProjectK.Notebook.ConsoleApp
 {
     class Program

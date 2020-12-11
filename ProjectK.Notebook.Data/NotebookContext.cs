@@ -1,5 +1,4 @@
 ﻿using System;
-using Castle.DynamicProxy.Contributors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectK.Notebook.Domain;
