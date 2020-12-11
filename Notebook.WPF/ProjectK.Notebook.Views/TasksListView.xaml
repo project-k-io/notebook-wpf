@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             xmlns:views="clr-namespace:ProjectK.Notebook.Views"
-             xmlns:converters="clr-namespace:ProjectK.Notebook.Views.Converters"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
              d:DesignWidth="1000"
              d:DesignHeight="600">
     <UserControl.Resources>

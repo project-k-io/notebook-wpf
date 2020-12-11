@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace ProjectK.Notebook.Views.Converters
+namespace ProjectK.View.Helpers.Converters
 {
     public class IndexConverter : IValueConverter
     {
