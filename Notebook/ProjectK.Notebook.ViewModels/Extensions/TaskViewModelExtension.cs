@@ -46,16 +46,8 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             {
                 if (!index.ContainsKey(model.Id))
                 {
-                    if (model is ITask task)
-                    {
-                        var vm = new TaskViewModel(task);
-                        index.Add(task.Id, vm);
-                    }
-                    else
-                    {
-                        var vm = new NodeViewModel(model);
-                        index.Add(model.Id, vm);
-                    }
+                    var vm = new NodeViewModel(model);
+                    index.Add(model.Id, vm);
                 }
             }
 

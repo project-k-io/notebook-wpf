@@ -8,10 +8,11 @@ using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Versions.Version1;
+//using ;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
+using TaskModel = ProjectK.Notebook.Domain.TaskModel;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -55,7 +56,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Storage Functions Ver 1
 
-        public void LoadFrom(DataModel model)
+        public void LoadFrom(ProjectK.Notebook.Domain.Versions.Version1.DataModel model)
         {
             Clear();
 #if AK  // Load ver 1
@@ -110,7 +111,7 @@ namespace ProjectK.Notebook.ViewModels
             {
                 if (selectedNode.Context == "Day")
                 {
-                    if (selectedNode is TaskViewModel selectedTask)
+                    if (selectedNode.Model is TaskModel selectedTask)
                         dateTimeList.Add(selectedTask.DateStarted);
                 }
             }
@@ -173,7 +174,7 @@ namespace ProjectK.Notebook.ViewModels
 
         private static void AddToList(ICollection<NodeViewModel> list, NodeViewModel node, IList dates)
         {
-            if (node is TaskViewModel task)
+            if (node.Model is TaskModel task)
             {
                 if (ContainDate(dates, task.DateStarted))
                     list.Add(node);
@@ -188,8 +189,10 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTime()
         {
-            if (SelectedTreeNode is TaskViewModel task)
+#if AK
+            if (SelectedTreeNode.Model is TaskModel task)
                 task.FixTime();
+#endif
         }
 
         public void Clear()

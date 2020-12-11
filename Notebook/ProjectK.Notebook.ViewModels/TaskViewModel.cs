@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 
 // using ProjectK.NotebookModel.Models.Versions.Version2;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class TaskViewModel : NodeViewModel
+    public class TaskViewModel : ViewModelBase , ITreeNode<TaskViewModel>
     {
         #region Static Fields
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
@@ -28,23 +30,18 @@ namespace ProjectK.Notebook.ViewModels
 
         // Misc
         private TimeSpan _total;
+        public dynamic Model { get; set; }
 
         #endregion
 
         #region Properties
         public TaskViewModel()
         {
-            SetKind("Task");
             Model = new TaskModel();
-        }
-        public TaskViewModel(dynamic model) : base( (TaskModel)model)
-        {
-            SetKind("Task");
         }
 
         public void ViewModelToModel(TaskModel model)
         {
-            base.ViewModelToModel(model);
             model.DateStarted = DateStarted;
             model.DateEnded = DateEnded;
             model.Type = Type;
@@ -159,7 +156,7 @@ namespace ProjectK.Notebook.ViewModels
             if (model.SubTasks.IsNullOrEmpty())
                 return;
 
-            Nodes = new ObservableCollection<NodeViewModel>();
+            Nodes = new ObservableCollection<TaskViewModel>();
             foreach (var subTask in model.SubTasks)
             {
                 var node = new TaskViewModel();
@@ -167,6 +164,14 @@ namespace ProjectK.Notebook.ViewModels
                 Nodes.Add(node);
             }
         }
+
+        public ObservableCollection<TaskViewModel> Nodes { get; set; }
+
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public bool IsSelected { get; set; }
+        public bool IsExpanded { get; set; }
+
         private void FixTypes()
         {
             var type = Type;
@@ -231,7 +236,7 @@ namespace ProjectK.Notebook.ViewModels
                     DateStarted = subTask2.DateStarted;
             }
         }
-
+#if AK
         public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue = default, bool broadcast = false)
         {
             base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
@@ -242,6 +247,14 @@ namespace ProjectK.Notebook.ViewModels
             SetParentChildModified();
             MessengerInstance.Send(new NotificationMessage<TaskModel>(Model, "Modified"));
         }
+#endif
+        private void SetParentChildModified()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ModifiedStatus Modified { get; set; }
+        public string Context { get; set; }
 
         private static bool IsTaskModelProperty(string n) => 
             n == "Type" || 

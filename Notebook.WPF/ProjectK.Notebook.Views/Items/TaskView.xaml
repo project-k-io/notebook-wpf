@@ -9,7 +9,8 @@
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="300">
     <UserControl.Resources>
-        <viewModels:TaskViewModel x:Key="Model"
+        <viewModels:TaskViewModel 
+            x:Key="Model"
                     Name="May"
                     Context="Month"
                     Description="Task Description"

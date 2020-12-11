@@ -546,73 +546,85 @@ namespace ProjectK.Notebook.ViewModels
                 return;
 
             var stringReader = new StringReader(ExcelCsvText);
-            var excelCsvRecordList = new List<ExcelCsvRecord>();
+            var list = new List<ExcelCsvRecord>();
             string line;
             while ((line = stringReader.ReadLine()) != null)
                 if (!string.IsNullOrEmpty(line))
                 {
                     var excelCsvRecord = new ExcelCsvRecord();
-                    if (excelCsvRecord.TryParse(line)) excelCsvRecordList.Add(excelCsvRecord);
+                    if (excelCsvRecord.TryParse(line)) list.Add(excelCsvRecord);
                 }
 
             var selectedTreeTask = SelectedNotebook.SelectedTreeNode;
             if (selectedTreeTask.Context != "Week") return;
 
-            foreach (var excelCsvRecord in excelCsvRecordList)
+            foreach (var record in list)
             {
-                var dateTime1 = excelCsvRecord.Day;
-                var dayOfTheWeek = dateTime1.DayOfWeek.ToString();
-                var taskViewModel1 = selectedTreeTask.Nodes.FirstOrDefault(t => t.Name == dayOfTheWeek);
-                if (taskViewModel1 == null)
+                var day = record.Day;
+                var name = day.DayOfWeek.ToString();
+                var dayNode = selectedTreeTask.Nodes.FirstOrDefault(t => t.Name == name);
+                if (dayNode == null)
                 {
-                    taskViewModel1 = new TaskViewModel
+                    var model = new TaskModel
                     {
-                        Name = dayOfTheWeek,
-                        DateStarted = excelCsvRecord.Day,
-                        DateEnded = excelCsvRecord.Day
+                        Name = name,
+                        DateStarted = day,
+                        DateEnded = day
                     };
-                    selectedTreeTask.Nodes.Add(taskViewModel1);
+
+                    dayNode = new NodeViewModel()
+                    {
+                        Model = model
+                    };
+                    selectedTreeTask.Nodes.Add(dayNode);
                 }
 
-                var taskViewModel2 = new TaskViewModel
+                var model2 = new TaskModel
                 {
-                    Name = excelCsvRecord.Task,
+                    Name = record.Task,
                     Context = "TaskModel"
                 };
 
+                var taskViewModel2 = new NodeViewModel()
+                {
+                    Model = model2
+                };
+
                 var taskViewModel3 = taskViewModel2;
-                dateTime1 = excelCsvRecord.Day;
-                var year1 = dateTime1.Year;
-                dateTime1 = excelCsvRecord.Day;
-                var month1 = dateTime1.Month;
-                dateTime1 = excelCsvRecord.Day;
-                var day1 = dateTime1.Day;
-                dateTime1 = excelCsvRecord.Start;
-                var hour1 = dateTime1.Hour;
-                dateTime1 = excelCsvRecord.Start;
-                var minute1 = dateTime1.Minute;
-                dateTime1 = excelCsvRecord.Start;
-                var second1 = dateTime1.Second;
+                day = record.Day;
+                var year1 = day.Year;
+                day = record.Day;
+                var month1 = day.Month;
+                day = record.Day;
+                var day1 = day.Day;
+                day = record.Start;
+                var hour1 = day.Hour;
+                day = record.Start;
+                var minute1 = day.Minute;
+                day = record.Start;
+                var second1 = day.Second;
                 var dateTime2 = new DateTime(year1, month1, day1, hour1, minute1, second1);
 
-                taskViewModel3.DateStarted = dateTime2;
+                taskViewModel3.Model.DateStarted = dateTime2;
+
                 var taskViewModel4 = taskViewModel2;
-                dateTime1 = excelCsvRecord.Day;
-                var year2 = dateTime1.Year;
-                dateTime1 = excelCsvRecord.Day;
-                var month2 = dateTime1.Month;
-                dateTime1 = excelCsvRecord.Day;
-                var day2 = dateTime1.Day;
-                dateTime1 = excelCsvRecord.End;
-                var hour2 = dateTime1.Hour;
-                dateTime1 = excelCsvRecord.End;
-                var minute2 = dateTime1.Minute;
-                dateTime1 = excelCsvRecord.End;
-                var second2 = dateTime1.Second;
+                day = record.Day;
+                var year2 = day.Year;
+                day = record.Day;
+                var month2 = day.Month;
+                day = record.Day;
+                var day2 = day.Day;
+                day = record.End;
+                var hour2 = day.Hour;
+                day = record.End;
+                var minute2 = day.Minute;
+                day = record.End;
+                var second2 = day.Second;
                 var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
-                taskViewModel4.DateEnded = dateTime3;
-                taskViewModel2.Description = $"{excelCsvRecord.Type1}:{excelCsvRecord.Type2}:{excelCsvRecord.SubTask}";
-                taskViewModel1.Nodes.Add(taskViewModel2);
+                taskViewModel4.Model.DateEnded = dateTime3;
+                taskViewModel2.Description = $"{record.Type1}:{record.Type2}:{record.SubTask}";
+
+                dayNode.Nodes.Add(taskViewModel2);
             }
         }
 
@@ -835,16 +847,7 @@ namespace ProjectK.Notebook.ViewModels
                 Console.WriteLine(e);
             }
 
-
-            if (model is ITask)
-            {
-                subNode = new TaskViewModel(model);
-            }
-            else
-            {
-                subNode = new NodeViewModel(model);
-            }
-
+            subNode = new NodeViewModel(model);
             node.Add(subNode);
             return subNode;
         }

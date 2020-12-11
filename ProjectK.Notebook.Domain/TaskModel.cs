@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Serialization;
 using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
@@ -17,6 +18,19 @@ namespace ProjectK.Notebook.Domain
         public DateTime DateStarted { get; set; }
         public DateTime DateEnded { get; set; }
         public string Description { get; set; }
+
+        [XmlIgnore]
+        public TimeSpan Duration
+        {
+            get
+            {
+                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
+                    return TimeSpan.Zero;
+
+                return DateEnded - DateStarted;
+            }
+        }
+
 
         // Foreign Key
         [ForeignKey("NotebookModel")]

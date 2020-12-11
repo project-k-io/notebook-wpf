@@ -1,4 +1,5 @@
 ﻿using System;
+using ProjectK.Notebook.Domain;
 
 namespace ProjectK.Notebook.ViewModels.Design
 {
@@ -31,25 +32,35 @@ namespace ProjectK.Notebook.ViewModels.Design
             // May 2020
             var week1 = new NodeViewModel { Name = "Week1", Context = "Week", IsExpanded = true };
             var thursday = new NodeViewModel { Name = "Thursday", Context = "Day", IsExpanded = true };
-            var task1 = new TaskViewModel
+
+            var task1 = new TaskModel
             {
                 Name = "Dinner",
                 Context = "TaskModel",
                 DateStarted = new DateTime(2020, 5, 14, 20, 34, 0),
                 DateEnded = new DateTime(2020, 5, 14, 21, 40, 0),
-                IsExpanded = true
             };
-            var task2 = new TaskViewModel
+            var task2 = new TaskModel
             {
-                Modified = ModifiedStatus.Modified,
                 Name = "Movie",
                 Context = "TaskModel",
                 DateStarted = new DateTime(2020, 5, 14, 21, 50, 0),
                 DateEnded = new DateTime(2020, 5, 14, 23, 20, 0),
+            };
+
+            var node1 = new NodeViewModel()
+            {
+                Model = task1,
                 IsExpanded = true
             };
-            thursday.Add(task1);
-            thursday.Add(task2);
+
+            var node2 = new NodeViewModel()
+            {
+                Modified = ModifiedStatus.Modified,
+                IsExpanded = true
+            };
+            thursday.Add(node1);
+            thursday.Add(node2);
             week1.Add(thursday);
             monthMay2020.Add(week1);
 
