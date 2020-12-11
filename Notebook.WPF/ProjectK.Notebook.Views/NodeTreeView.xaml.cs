@@ -11,9 +11,9 @@ using ProjectK.Views.TreeViewList;
 
 namespace ProjectK.Notebook.Views
 {
-    public partial class TasksTreeView : UserControl
+    public partial class NodeTreeView : UserControl
     {
-        public TasksTreeView()
+        public NodeTreeView()
         {
             InitializeComponent();
             Loaded += TasksTreeView_Loaded;

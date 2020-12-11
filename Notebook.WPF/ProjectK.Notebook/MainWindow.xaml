@@ -153,7 +153,7 @@
                     </Grid.RowDefinitions>
                     <TabControl Grid.Row="0">
                         <TabItem Header="TaskModel TreeView">
-                            <views:TasksTreeView x:Name="TasksTreeView" />
+                            <views:NodeTreeView x:Name="TasksTreeView" />
                         </TabItem>
                         <TabItem Header="Activity View">
                             <views:ActivitiesView DataContext="{Binding}" />
@@ -206,7 +206,7 @@
                 syncfusion:DockingManager.CanFloatMaximize="True"
                 syncfusion:DockingManager.Header="List View"
                 syncfusion:DockingManager.State="Document">
-                <views:TasksListView />
+                <views:NodeListView />
             </ContentControl>
             <ContentControl
                 x:Name="ReportView"
