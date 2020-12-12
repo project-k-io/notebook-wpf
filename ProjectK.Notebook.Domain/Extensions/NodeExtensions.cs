@@ -23,5 +23,10 @@ namespace ProjectK.Notebook.Domain.Extensions
             a.Created = b.Created;
             a.Context = b.Context;
         }
+
+        public static string Text(this INode a)
+        {
+            return $"{a.Id} | {a.ParentId} | {a.Name} | {a.Context} | {a.Created} |  {a.Description}";
+        }
     }
 }

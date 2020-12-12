@@ -1,41 +1,40 @@
 ﻿using System;
-using System.Linq;
-using ProjectK.Notebook.Data;
+using System.Threading.Tasks;
 using ProjectK.Notebook.Domain;
 
 namespace ProjectK.Notebook.ConsoleApp
 {
-
-    class ScenarioOne
+    public class ScenarioOne : Scenario
     {
-        private readonly NotebookContext _context;
-        public ScenarioOne(NotebookContext context)
+        public async Task AddOneTask()
         {
-            _context = context;
-        }
-
-        public void Run()
-        {
-            GetTasks("Before Add:");
-            AddTask();
-            GetTasks("After Add:");
-        }
-
-        void AddTask()
-        {
-            var task = new TaskModel { Name = "Alan" };
-            _context.Tasks.Add(task);
-            _context.SaveChanges();
-        }
-
-        void GetTasks(string text)
-        {
-            var tasks = _context.Tasks.ToList();
-            Console.WriteLine($"{text}: TaskModel count is {tasks.Count}");
-            foreach (var task in tasks)
+            Init();
+            await EnsureCreatedAsync();
+            await ShowTasks("Before Add");
+            await LoadDatabase();
+            await ShowTasks("Before Add" + ":");
+            var notebook = await GetNotebook();
+            var task = new TaskModel
             {
-                Console.WriteLine(task.Name);
-            }
+                Id = Guid.NewGuid(),
+                NotebookId = notebook.Id,
+                Name = "Test",
+                Description = "Created for Testing"
+            };
+            await AddTask(task);
+            await ShowTasks("After Add:");
+        }
+
+        public async Task ImportDatabase()
+        {
+            Init();
+            await EnsureCreatedAsync();
+            await ShowTasks("Before Load Database");
+            await LoadDatabase();
+            await ShowTasks("Before After Load Database");
+            var notebook = await GetNotebook();
+            await ImportData(notebook);
+            await ShowTasks("After Import");
         }
     }
 }

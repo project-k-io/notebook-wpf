@@ -7,7 +7,7 @@ namespace ProjectK.Notebook.Data
 {
     public class NotebookContext : DbContext
     {
-        private string _connectionString;
+        private readonly string _connectionString;
         public NotebookContext(string connectionString)
         {
             _connectionString = connectionString;

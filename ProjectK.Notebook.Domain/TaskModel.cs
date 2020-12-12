@@ -26,6 +26,18 @@ namespace ProjectK.Notebook.Domain
         public DateTime DateStarted { get; set; }
         public DateTime DateEnded { get; set; }
 
+
+
+        // Foreign Key
+        [ForeignKey("NotebookModel")]
+        public Guid NotebookId { get; set; }
+        public virtual NotebookModel NotebookModel { get; set; }
+
+        public bool IsSame(TaskModel b)
+        {
+            return ((ITask)this).IsSame(b);
+        }
+
         [XmlIgnore]
         public TimeSpan Duration
         {
@@ -36,17 +48,6 @@ namespace ProjectK.Notebook.Domain
 
                 return DateEnded - DateStarted;
             }
-        }
-
-
-        // Foreign Key
-        [ForeignKey("NotebookModel")]
-        public int NotebookId { get; set; }
-        public virtual NotebookModel NotebookModel { get; set; }
-
-        public bool IsSame(TaskModel b)
-        {
-            return ((ITask)this).IsSame(b);
         }
 
         public void Init(Versions.Version2.TaskModel task2)
@@ -73,14 +74,14 @@ namespace ProjectK.Notebook.Domain
             return task;
         }
 
-#if AK
 
         public override string ToString()
         {
-            return $"{base.ToString()}:{Type}:{SubType}: {Rating}: {DateStarted}:{DateEnded}";
+            return this.Text();
         }
 
 
+#if AK
 
 
 

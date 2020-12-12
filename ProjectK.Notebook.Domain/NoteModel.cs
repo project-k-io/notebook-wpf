@@ -19,7 +19,7 @@ namespace ProjectK.Notebook.Domain
 
         // Foreign Key
         [ForeignKey("NotebookModel")]
-        public int NotebookId { get; set; }
+        public Guid NotebookId { get; set; }
         public virtual NotebookModel NotebookModel { get; set; }
 
 #if AK

@@ -28,5 +28,9 @@ namespace ProjectK.Notebook.Domain.Extensions
             a.Type = b.Type;
             a.Rating = b.Rating;
         }
+        public static string Text(this ITask a)
+        {
+            return $"{((INode)a).Text()} | {a.DateStarted} | {a.DateEnded} | | {a.Type} | {a.SubType} | {a.Rating}";
+        }
     }
 }
