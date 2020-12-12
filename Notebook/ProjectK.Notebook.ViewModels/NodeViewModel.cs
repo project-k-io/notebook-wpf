@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
@@ -73,7 +74,7 @@ namespace ProjectK.Notebook.ViewModels
             _kind = kind;
         }
 
-        public void ViewModelToModel(ItemModel model)
+        public void ViewModelToModel(INode model)
         {
             SetKind("Node");
             model.Id = Id;

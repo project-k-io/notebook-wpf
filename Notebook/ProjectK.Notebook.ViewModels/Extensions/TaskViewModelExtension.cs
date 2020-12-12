@@ -36,13 +36,13 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             await FileHelper.SaveToFileAsync(path, notebook);
         }
 
-        public static void BuildTree(this NodeViewModel rootTask, List<ItemModel> modes)
+        public static void BuildTree(this NodeViewModel rootTask, List<INode> nodes)
         {
             // 
             var index = new SortedList<Guid, NodeViewModel>();
 
             // build index
-            foreach (var model in modes)
+            foreach (var model in nodes)
             {
                 if (!index.ContainsKey(model.Id))
                 {
@@ -51,7 +51,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 }
             }
 
-            foreach (var node in modes)
+            foreach (var node in nodes)
             {
                 if (!index.ContainsKey(node.ParentId))
                 {

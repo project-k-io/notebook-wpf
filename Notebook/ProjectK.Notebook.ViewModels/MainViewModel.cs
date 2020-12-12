@@ -325,7 +325,7 @@ namespace ProjectK.Notebook.ViewModels
             // bind to the source
             var notebookModels = _db.Notebooks.Local.ToObservableCollection();
 
-            var models = new List<ItemModel>();
+            var models = new List<INode>();
             foreach (var model in notebookModels)
             {
                 var (notebook, nodes) = AddNotebook(model);
@@ -380,7 +380,7 @@ namespace ProjectK.Notebook.ViewModels
             UpdateTypeListAsync(nodes);
         }
 
-        private (NotebookViewModel, List<ItemModel>) AddNotebook(NotebookModel model)
+        private (NotebookViewModel, List<INode>) AddNotebook(NotebookModel model)
         {
             Logger.LogDebug($"AddNotebook: {model.Name}");
 
@@ -420,7 +420,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public void UpdateTypeListAsync(List<ItemModel> nodes)
+        public void UpdateTypeListAsync(List<INode> nodes)
         {
             var types = new SortedSet<string>();
             var contexts = new SortedSet<string>();

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,10 +8,17 @@ using ProjectK.Notebook.Domain.Versions.Version2;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NotebookModel: ItemModel, INode
+    public class NotebookModel: INode
     {
         [Key]
-        public int ItemId { get; set; }
+        public Guid Id { get; set; }
+        public Guid ParentId { get; set; }
+        public string Name { get; set; }
+        public string Context { get; set; }
+        public DateTime Created { get; set; }
+        public string Description { get; set; }
+
+        // Notebook
         public bool NonRoot { get; set; }
 
         public virtual IList<NodeModel> Nodes { get; set; } = new ObservableCollection<NodeModel>();
@@ -80,12 +88,12 @@ namespace ProjectK.Notebook.Domain
         }
 
 #endif
-        public List<ItemModel> GetItems()
+        public List<INode> GetItems()
         {
-            var items = new List<ItemModel>();
+            var items = new List<INode>();
 
             var nodes = Nodes.Cast<NodeModel>();
-            var notes = Notes.Cast<ItemModel>();
+            var notes = Notes.Cast<NoteModel>();
             var tasks = Tasks.Cast<TaskModel>();
 
             items.AddRange(nodes);
@@ -94,5 +102,6 @@ namespace ProjectK.Notebook.Domain
 
             return items;
         }
+
     }
 }
