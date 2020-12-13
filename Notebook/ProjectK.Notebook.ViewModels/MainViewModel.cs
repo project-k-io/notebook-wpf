@@ -161,7 +161,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public MainViewModel()
         {
-            var rootModel = new 
+            var rootModel = new NodeModel
             {
                 Id = RootGuid,
                 ParentId = Guid.Empty,
@@ -189,7 +189,7 @@ namespace ProjectK.Notebook.ViewModels
                 new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
             ExportSelectedAllAsJsonCommand =
                 new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
-            
+
             // OpenDatabaseCommand = new RelayCommand(OpenDatabase);
             SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
@@ -229,14 +229,14 @@ namespace ProjectK.Notebook.ViewModels
         {
             if (node.Context == "Notebook")
             {
-                var notebook = Notebooks.First(n => n.RootTask.Id == node.Id);
+                var notebook = Notebooks.First(n => n.Id == node.Id);
                 if (notebook == null)
                     return;
 
                 Notebooks.Remove(notebook);
 
                 // Selected Notebook
-                if(Notebooks.Count == 0)
+                if (Notebooks.Count == 0)
                 {
                     SelectedNotebook = null;
                 }
@@ -271,7 +271,7 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var notebook in Notebooks)
             {
                 // Get Notebook nodes
-                var models = notebook.RootTask.Nodes.GetModels();
+                var models = notebook.Nodes.GetModels();
                 notebook.Model.AddModels(models);
             }
         }
@@ -280,12 +280,12 @@ namespace ProjectK.Notebook.ViewModels
         {
             // find root nodes not in notebooks
             var nodes = RootTask.Nodes.Where(n => n.ParentId == RootTask.Id && n.Context != "Notebook").ToList();
-            if(nodes.IsNullOrEmpty())
+            if (nodes.IsNullOrEmpty())
                 return;
 
             // find non root notebook
             var notebooks = _db.Notebooks.Where(n => n.NonRoot).ToArray();
-            
+
             NotebookModel notebook;
             if (!notebooks.IsNullOrEmpty())
                 notebook = notebooks[0];
@@ -329,7 +329,7 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var model in notebookModels)
             {
                 var (notebook, nodes) = AddNotebook(model);
-                if(notebook != null)
+                if (notebook != null)
                     SelectedNotebook = notebook;
 
                 models.AddRange(nodes);
@@ -393,13 +393,13 @@ namespace ProjectK.Notebook.ViewModels
 
             var notebook = new NotebookViewModel(model);
             Notebooks.Add(notebook);
-            notebook.RootTask.BuildTree(items);
-            RootTask.Add(notebook.RootTask);
+            notebook.BuildTree(items);
+            RootTask.Add(notebook);
             return (notebook, items);
         }
         private void OnCurrentNotebookChanged()
         {
-            var noteBookName = SelectedNotebook != null ? SelectedNotebook.RootTask.Name : "";
+            var noteBookName = SelectedNotebook != null ? SelectedNotebook.Name : "";
             Title = Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + noteBookName;
         }
 
@@ -759,7 +759,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public async Task AddNode(NodeViewModel node, KeyboardStates state, IActionService service)
         {
-            // var node = this;
+            // var parentNode = this;
             NodeViewModel newNode;
             switch (state)
             {
@@ -793,13 +793,12 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public async Task<NodeViewModel> AddNew(NodeViewModel node)
+        public async Task<NodeViewModel> AddNew(NodeViewModel parentNode)
         {
-            var context = RulesHelper.GetSubNodeContext(node.Context);
+            var context = RulesHelper.GetSubNodeContext(parentNode.Context);
             if (context.IsNullOrEmpty())
                 context = "Node";
 
-            NodeViewModel subNode;
             INode model;
 
             // Create Model
@@ -815,28 +814,33 @@ namespace ProjectK.Notebook.ViewModels
             {
                 model = new NodeModel
                 {
-                    Id = Guid.NewGuid(),
                     Created = DateTime.Now
                 };
             }
 
-            model.Id =  Guid.NewGuid();
+            model.Id = Guid.NewGuid();
             model.Context = context;
-            var title = RulesHelper.GetSubNodeTitle(node, model);
+            var title = RulesHelper.GetSubNodeTitle(parentNode, model);
+
             if (!string.IsNullOrEmpty(title))
                 model.Name = title;
             else
                 model.Name = context;
 
 
-            if (model is TaskModel taskModel)
+            NodeViewModel node = null;
+            switch (model)
             {
-                SelectedNotebook.Model.Tasks.Add(taskModel);
+                case TaskModel taskModel:
+                    SelectedNotebook.Model.Tasks.Add(taskModel);
+                    node = new TaskViewModel(taskModel);
+                    break;
+                case NodeModel nodeModel:
+                    SelectedNotebook.Model.Nodes.Add(nodeModel);
+                    node = new NodeViewModel(nodeModel);
+                    break;
             }
-            else if (model is NodeModel nodeModel)
-            {
-                SelectedNotebook.Model.Nodes.Add(nodeModel);
-            }
+            parentNode.Add(node);
 
             try
             {
@@ -847,9 +851,7 @@ namespace ProjectK.Notebook.ViewModels
                 Console.WriteLine(e);
             }
 
-            subNode = new NodeViewModel(model);
-            node.Add(subNode);
-            return subNode;
+            return node;
         }
 
 

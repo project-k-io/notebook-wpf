@@ -59,24 +59,17 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel()
         {
-            SetKind("Node");
-            Model = new NodeModel();
+            Kind = "Node";
         }
 
-        public NodeViewModel(dynamic model): this()
+        public NodeViewModel(NodeModel model) : this()
         {
-            SetKind("Node");
             Model = model;
         }
 
-        public void SetKind(string kind)
-        {
-            _kind = kind;
-        }
 
         public void ViewModelToModel(INode model)
         {
-            SetKind("Node");
             model.Id = Id;
             model.ParentId = ParentId;
             model.Name = Name;

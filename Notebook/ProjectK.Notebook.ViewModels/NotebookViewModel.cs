@@ -16,13 +16,12 @@ using TaskModel = ProjectK.Notebook.Domain.TaskModel;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class NotebookViewModel : ViewModelBase
+    public class NotebookViewModel : NodeViewModel
     {
         private readonly ILogger _logger = LogManager.GetLogger<NotebookViewModel>();
 
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
-        public  NotebookModel Model { get; }
 
         /*
         public NotebookViewModel()
@@ -47,10 +46,14 @@ namespace ProjectK.Notebook.ViewModels
         }
         */
 
-        public NotebookViewModel(NotebookModel model)
+        public NotebookViewModel() 
+        {
+            Kind = "Notebook";
+        }
+
+        public NotebookViewModel(NotebookModel model) : this()
         {
             Model = model;
-            RootTask = new NodeViewModel(model);
         }
 
 
@@ -71,9 +74,9 @@ namespace ProjectK.Notebook.ViewModels
 
         public void ViewModelToModel()
         {
-            _logger.LogDebug($"Populate NotebookModel from TreeNode {RootTask.Name}");
+            _logger.LogDebug($"Populate NotebookModel from TreeNode {Name}");
             Model.Clear();
-            Model.ViewModelToModel(RootTask);
+            Model.ViewModelToModel(this);
         }
 
 
@@ -82,7 +85,6 @@ namespace ProjectK.Notebook.ViewModels
 
         public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();
 
-        public NodeViewModel RootTask { get; set; }
 
         public NodeViewModel SelectedTreeNode
         {
@@ -96,7 +98,6 @@ namespace ProjectK.Notebook.ViewModels
             set => Set(ref _selectedNode, value);
         }
 
-        public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
         public string Title
         {
             get => Model.Name;
@@ -128,7 +129,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel FindTask(Guid id)
         {
-            return RootTask.FindNode(id);
+            return FindNode(id);
         }
 
         public void SelectTreeTask(NodeViewModel task)
@@ -197,19 +198,14 @@ namespace ProjectK.Notebook.ViewModels
 
         public void Clear()
         {
-            RootTask.Nodes.Clear();
+            Nodes.Clear();
         }
 
         public void ExtractContext()
         {
             ContextList.Clear();
-            RootTask.ExtractContext(ContextList);
+            ExtractContext(ContextList);
             RaisePropertyChanged("ContextList");
-        }
-
-        public void FixContext()
-        {
-            SelectedTreeNode.FixContext();
         }
 
         public void FixTitles()
@@ -229,7 +225,7 @@ namespace ProjectK.Notebook.ViewModels
         public void UpdateSelectDayTasks(IList dates)
         {
             SelectedNodeList.Clear();
-            AddToList(SelectedNodeList, RootTask, dates);
+            AddToList(SelectedNodeList, this, dates);
         }
 
 

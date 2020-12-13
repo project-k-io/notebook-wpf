@@ -7,6 +7,7 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 
@@ -14,7 +15,7 @@ using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class TaskViewModel : ViewModelBase , ITreeNode<TaskViewModel>
+    public class TaskViewModel : NodeViewModel
     {
         #region Static Fields
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
@@ -30,14 +31,17 @@ namespace ProjectK.Notebook.ViewModels
 
         // Misc
         private TimeSpan _total;
-        public dynamic Model { get; set; }
 
         #endregion
 
         #region Properties
         public TaskViewModel()
         {
-            Model = new TaskModel();
+            Kind = "Task";
+        }
+        public TaskViewModel(TaskModel model): this()
+        {
+            Model = model;
         }
 
         public void ViewModelToModel(TaskModel model)
@@ -156,7 +160,6 @@ namespace ProjectK.Notebook.ViewModels
             if (model.SubTasks.IsNullOrEmpty())
                 return;
 
-            Nodes = new ObservableCollection<TaskViewModel>();
             foreach (var subTask in model.SubTasks)
             {
                 var node = new TaskViewModel();
@@ -165,34 +168,27 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        public ObservableCollection<TaskViewModel> Nodes { get; set; }
-
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public bool IsSelected { get; set; }
-        public bool IsExpanded { get; set; }
 
         private void FixTypes()
         {
-            var type = Type;
-            if (string.IsNullOrEmpty(type))
+            if (string.IsNullOrEmpty(Type))
             {
                 var title = Name;
                 var upper = title.ToUpper();
                 if (upper.Contains("LUNCH") || upper.Contains("BREAKFAST"))
-                    type = "Lunch";
+                    Type = "Lunch";
                 else if (upper.Contains("TASK") || upper.Contains("CODE REVIEW") || title.Contains("TA") ||
                          title.Contains("US"))
-                    type = "Dev";
+                    Type = "Dev";
                 else if (upper.Contains("BUILD"))
-                    type = "Build";
+                    Type = "Build";
                 else if (upper.Contains("TIME SHEET") || upper.Contains("TIMESHEET") || upper.Contains("EMAIL") ||
                          upper.Contains("PAPER WORKS"))
-                    type = "Misc";
+                    Type = "Misc";
                 else if (upper.Contains("TALKED") || upper.Contains("MEETING") || upper.Contains("SHOWED"))
-                    type = "Meeting";
+                    Type = "Meeting";
                 else if (upper.Contains("Trouble"))
-                    type = "Support";
+                    Type = "Support";
             }
 
             foreach (var subTask in Nodes)
@@ -248,13 +244,6 @@ namespace ProjectK.Notebook.ViewModels
             MessengerInstance.Send(new NotificationMessage<TaskModel>(Model, "Modified"));
         }
 #endif
-        private void SetParentChildModified()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ModifiedStatus Modified { get; set; }
-        public string Context { get; set; }
 
         private static bool IsTaskModelProperty(string n) => 
             n == "Type" || 
