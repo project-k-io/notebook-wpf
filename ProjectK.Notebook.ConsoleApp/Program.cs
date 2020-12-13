@@ -6,7 +6,7 @@ namespace ProjectK.Notebook.ConsoleApp
     {
         static async Task Main(string[] args)
         {
-            var scenario = new ScenarioOne();
+            var scenario = new Scenario();
             // await scenario.AddOneTask();
             await scenario.ImportDatabase();
          }
