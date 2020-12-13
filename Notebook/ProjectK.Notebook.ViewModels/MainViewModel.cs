@@ -503,7 +503,7 @@ namespace ProjectK.Notebook.ViewModels
                     Context = "TaskModel"
                 };
 
-                var taskViewModel2 = new NodeViewModel()
+                var taskViewModel2 = new TaskViewModel()
                 {
                     Model = model2
                 };
@@ -523,7 +523,7 @@ namespace ProjectK.Notebook.ViewModels
                 var second1 = day.Second;
                 var dateTime2 = new DateTime(year1, month1, day1, hour1, minute1, second1);
 
-                taskViewModel3.Model.DateStarted = dateTime2;
+                taskViewModel3.DateStarted = dateTime2;
 
                 var taskViewModel4 = taskViewModel2;
                 day = record.Day;
@@ -539,7 +539,7 @@ namespace ProjectK.Notebook.ViewModels
                 day = record.End;
                 var second2 = day.Second;
                 var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
-                taskViewModel4.Model.DateEnded = dateTime3;
+                taskViewModel4.DateEnded = dateTime3;
                 taskViewModel2.Description = $"{record.Type1}:{record.Type2}:{record.SubTask}";
 
                 dayNode.Nodes.Add(taskViewModel2);

@@ -52,65 +52,6 @@ namespace ProjectK.Notebook.ViewModels
             model.SubType = SubType;
         }
 
-        public string Type { get => Model.Type; set => this.Set(Type, v => Model.Type = v, value); }
-        public string SubType { get => Model.SubType; set => this.Set(SubType, v => Model.SubType = v, value); }
-        public DateTime DateStarted
-        {
-            get => Model.DateStarted;
-            set
-            {
-                if (!this.Set(DateStarted, v => Model.DateStarted = v, value)) return;
-                RaisePropertyChanged("TimeStarted");
-                RaisePropertyChanged("Duration");
-            }
-        }
-        public DateTime DateEnded
-        {
-            get => Model.DateEnded;
-            set
-            {
-                if (!this.Set(DateEnded, v => Model.DateEnded = v, value)) return;
-                RaisePropertyChanged("TimeEnded");
-                RaisePropertyChanged("Duration");
-            }
-        }
-        // Derived Properties
-        public DateTime TimeStarted
-        {
-            get => DateEnded;
-            set
-            {
-                var d = DateEnded;
-                var t = value;
-                DateStarted = new DateTime(d.Year, d.Month, d.Day, t.Hour, t.Minute, t.Second, t.Millisecond);
-                RaisePropertyChanged(); // MC
-                RaisePropertyChanged("DateStarted");
-                RaisePropertyChanged("Duration");
-            }
-        }
-        public DateTime TimeEnded
-        {
-            get => DateEnded;
-            set
-            {
-                var d = DateEnded;
-                var t = value;
-                DateEnded = new DateTime(d.Year, d.Month, d.Day, t.Hour, t.Minute, t.Second, t.Millisecond);
-                RaisePropertyChanged(); //MC
-                RaisePropertyChanged("DateEnded");
-                RaisePropertyChanged("Duration");
-            }
-        }
-        public TimeSpan Duration
-        {
-            get
-            {
-                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
-                    return TimeSpan.Zero;
-
-                return DateEnded - DateStarted;
-            }
-        }
         public TimeSpan Total
         {
             get => _total;
@@ -250,5 +191,73 @@ namespace ProjectK.Notebook.ViewModels
             n == "SubType" || 
             n == "DataStarted" || 
             n == "DateEnded";
+
+        private TaskModel Task => Model as TaskModel;
+
+        public string Type
+        {
+            get => Task.Type; 
+            set => this.Set(Type, v => Task.Type = v, value);
+        }
+
+        public string SubType { get => Task.SubType; set => this.Set(SubType, v => Task.SubType = v, value); }
+        public DateTime DateStarted
+        {
+            get => Task.DateStarted;
+            set
+            {
+                if (!this.Set(DateStarted, v => Task.DateStarted = v, value)) return;
+                RaisePropertyChanged("TimeStarted");
+                RaisePropertyChanged("Duration");
+            }
+        }
+        public DateTime DateEnded
+        {
+            get => Task.DateEnded;
+            set
+            {
+                if (!this.Set(DateEnded, v => Task.DateEnded = v, value)) return;
+                RaisePropertyChanged("TimeEnded");
+                RaisePropertyChanged("Duration");
+            }
+        }
+        // Derived Properties
+        public DateTime TimeStarted
+        {
+            get => DateEnded;
+            set
+            {
+                var d = DateEnded;
+                var t = value;
+                DateStarted = new DateTime(d.Year, d.Month, d.Day, t.Hour, t.Minute, t.Second, t.Millisecond);
+                RaisePropertyChanged(); // MC
+                RaisePropertyChanged("DateStarted");
+                RaisePropertyChanged("Duration");
+            }
+        }
+        public DateTime TimeEnded
+        {
+            get => DateEnded;
+            set
+            {
+                var d = DateEnded;
+                var t = value;
+                DateEnded = new DateTime(d.Year, d.Month, d.Day, t.Hour, t.Minute, t.Second, t.Millisecond);
+                RaisePropertyChanged(); //MC
+                RaisePropertyChanged("DateEnded");
+                RaisePropertyChanged("Duration");
+            }
+        }
+        public TimeSpan Duration
+        {
+            get
+            {
+                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
+                    return TimeSpan.Zero;
+
+                return DateEnded - DateStarted;
+            }
+        }
+
     }
 }

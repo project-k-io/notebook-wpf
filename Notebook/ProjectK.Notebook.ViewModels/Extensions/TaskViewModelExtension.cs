@@ -18,7 +18,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         public static void ViewModelToModel(this NotebookModel notebookModel, NodeViewModel rootTask)
         {
             Logger.LogDebug($@"Populate NotebookModel {notebookModel.Name} from TreeNode {rootTask.Name}");
-            var list = new List<dynamic>();
+            var list = new List<INode>();
             rootTask.SaveTo(list);
             foreach (var item in list)
             {

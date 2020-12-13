@@ -48,15 +48,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Storage Functions 
 
-        public void ViewModelToModel()
-        {
-            _logger.LogDebug($"Populate NotebookModel from TreeNode {Name}");
-            Model.Clear();
-            Model.ViewModelToModel(this);
-        }
-
-
-
         #endregion
 
         public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();

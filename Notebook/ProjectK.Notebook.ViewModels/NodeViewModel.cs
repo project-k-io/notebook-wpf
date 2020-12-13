@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
@@ -39,7 +40,7 @@ namespace ProjectK.Notebook.ViewModels
         //private string _name;
         //private DateTime _created;
         //private string _description;
-        public dynamic Model;
+        public INode Model { get; set; }
 
         // Misc
         private string _kind;
@@ -130,7 +131,7 @@ namespace ProjectK.Notebook.ViewModels
             Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
             Modified = ModifiedStatus.Modified;
             SetParentChildModified();
-            MessengerInstance.Send(new NotificationMessage<NodeModel>(Model, "Modified"));
+            MessengerInstance.Send(new NotificationMessage<INode>(Model, "Modified"));
         }
 
         #endregion
@@ -145,7 +146,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Public functions
 
-        public void SaveTo(List<dynamic> list)
+        public void SaveTo(List<INode> list)
         {
             foreach (var node in Nodes)
             {
@@ -153,7 +154,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private void SaveRecursively(List<dynamic> list)
+        private void SaveRecursively(List<INode> list)
         {
             list.Add(Model);
 
