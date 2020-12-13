@@ -54,8 +54,7 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Fields
-
-        private NotebookContext _db;
+        Storage _db = new Storage();
         private NotebookViewModel _selectedNotebook;
         private ReportTypes _reportType = ReportTypes.Notes;
         private string _excelCsvText;
@@ -215,72 +214,17 @@ namespace ProjectK.Notebook.ViewModels
 
         public async Task SyncDatabaseAsync()
         {
-            SaveRootNodes();
-            SaveNonRootNodes();
             await _db.SaveChangesAsync();
             RootTask.ResetParentChildModified();
             RootTask.ResetModified();
         }
 
-        private void SaveRootNodes()
-        {
-            // find root nodes not in notebooks
-            foreach (var notebook in Notebooks)
-            {
-                // Get Notebook nodes
-                var models = notebook.Nodes.GetModels();
-                notebook.Model.AddModels(models);
-            }
-        }
-
-        private async Task SaveNonRootNodes()
-        {
-            // find root nodes not in notebooks
-            var nodes = RootTask.Nodes.Where(n => n.ParentId == RootTask.Id && n.Context != "Notebook").ToList();
-            if (nodes.IsNullOrEmpty())
-                return;
-
-            // find non root notebook
-            var notebooks = _db.Notebooks.Where(n => n.NonRoot).ToArray();
-
-            NotebookModel notebook;
-            if (!notebooks.IsNullOrEmpty())
-                notebook = notebooks[0];
-            else
-            {
-                notebook = new NotebookModel
-                {
-                    NonRoot = true,
-                    Created = DateTime.Now,
-                    Context = "Notebook",
-                    Description = "Notebook for nodes outside of notebooks",
-                    Name = "Non Root Notebook",
-                    Id = Guid.NewGuid()
-                };
-                _db.Notebooks.Add(notebook);
-            }
-
-            // Add top nodes to notebook
-            // Get all nodes
-            var models = nodes.GetModels();
-
-            // Add modes to notebook
-            await _db.AddRangeAsync(models);
-        }
-
         public void OpenDatabase(string connectionString)
         {
-            _db = new NotebookContext(connectionString);
-
-            // this is for demo purposes only, to make it easier
-            // to get up and running
-            _db.Database.EnsureCreated();
-
-            // load the entities into EF Core
-            _db.Notebooks.Load();
+            _db.OpenDatabase(connectionString);
 
             // bind to the source
-            var notebookModels = _db.Notebooks.Local.ToObservableCollection();
+            var notebookModels = _db.GetNotebooks();
 
             var models = new List<INode>();
             foreach (var model in notebookModels)
@@ -300,7 +244,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             await SyncDatabaseAsync();
             await _db.SaveChangesAsync();
-            await _db.Database.CloseConnectionAsync();
+            await _db.CloseConnection();
         }
 
         private async Task AddNotebookAsync()
@@ -331,7 +275,7 @@ namespace ProjectK.Notebook.ViewModels
                 var notebook = new NotebookModel { Name = path };
                 var tasks = await ImportHelper.ReadFromFileVersionTwo(path);
                 await _db.ImportData(notebook, tasks);
-                ImportNotebook(notebook);
+                await ImportNotebook(notebook);
             }
             catch (Exception e)
             {
@@ -340,12 +284,12 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public void ImportNotebook(NotebookModel notebookModel)
+        public async Task ImportNotebook(NotebookModel notebookModel)
         {
             Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
 
             // Add NotebookModel
-            var a = _db.Notebooks.Add(notebookModel);
+            var a = await _db.Add(notebookModel);
             // this will create Primary Key for notebook
             var (notebook, nodes) = AddNotebook(notebookModel);
             if (notebook != null)
@@ -754,7 +698,7 @@ namespace ProjectK.Notebook.ViewModels
                         SelectedNotebook = Notebooks.FirstOrDefault();
                     }
                 }
-                _db.Notebooks.Remove(notebook.Model);
+                _db.Remove(notebook.Model as NotebookModel);
             }
             else
             {
