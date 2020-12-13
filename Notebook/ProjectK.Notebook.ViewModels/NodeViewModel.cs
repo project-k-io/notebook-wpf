@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
+using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
@@ -277,7 +279,7 @@ namespace ProjectK.Notebook.ViewModels
             return null;
         }
 
-        public List<dynamic> GetModels()
+        public List<INode> GetModels()
         {
             var models = Nodes.GetModels();
             models.Add(Model);
@@ -308,8 +310,6 @@ namespace ProjectK.Notebook.ViewModels
 
             service.SelectItem(parentNode);
             service.Handled();
-
-            MessengerInstance.Send(new NotificationMessage<NodeViewModel>(item, "Delete"));
         }
 
         private void FixTitles()
@@ -324,6 +324,62 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
+
+        public INode CreateModel(Guid notebookId)
+        {
+            var context = RulesHelper.GetSubNodeContext(Context);
+            if (context.IsNullOrEmpty())
+                context = "Node";
+
+            INode model;
+            // Create Model
+            if (context == "Task")
+            {
+                model = new TaskModel               // CreateModel
+                {
+                    DateStarted = DateTime.Now,
+                    DateEnded = DateTime.Now,
+                    NotebookId = notebookId
+                };
+            }
+            else
+            {
+                model = new NodeModel
+                {
+                    Created = DateTime.Now,
+                    NotebookId = notebookId
+                };
+            }
+
+            model.Id = Guid.NewGuid();
+            model.Context = context;
+            var title = RulesHelper.GetSubNodeTitle(this, model);
+
+            if (!string.IsNullOrEmpty(title))
+                model.Name = title;
+            else
+                model.Name = context;
+
+            return model;
+        }
+
+
+
+        public NodeViewModel CreateNode(INode model)
+        {
+            NodeViewModel node = null;
+            switch (model)
+            {
+                case TaskModel taskModel:
+                    node = new TaskViewModel(taskModel);
+                    break;
+                case NodeModel nodeModel:
+                    node = new NodeViewModel(nodeModel);
+                    break;
+            }
+            Add(node);
+            return node;
+        }
 
     }
 }

@@ -42,8 +42,8 @@
     <Grid d:DataContext="{StaticResource Model}">
         <StackPanel>
             <ComboBox Name="itemViewList" SelectedValue="{Binding Path=Kind, Mode=TwoWay}" >
+                <system:String>Notebook</system:String>
                 <system:String>Node</system:String>
-                <system:String>Note</system:String>
                 <system:String>Task</system:String>
             </ComboBox>
 

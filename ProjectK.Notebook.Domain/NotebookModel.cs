@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
 using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Notebook.Domain.Versions.Version2;
 
@@ -32,23 +34,6 @@ namespace ProjectK.Notebook.Domain
             Tasks.Clear();
         }
 
-        public void AddModel(dynamic model)
-        {
-            if (model is TaskModel task)
-                Tasks.Add(task);
-            else if (model is NoteModel note)
-                Notes.Add(note);
-            else if (model is NodeModel node)
-                Nodes.Add(node);
-        }
-
-        public void AddModels(List<dynamic> models)
-        {
-            foreach (var model in models)
-            {
-                AddModel(model);
-            }
-        }
 
 #if AK
 
@@ -93,6 +78,5 @@ namespace ProjectK.Notebook.Domain
 
             return items;
         }
-
     }
 }

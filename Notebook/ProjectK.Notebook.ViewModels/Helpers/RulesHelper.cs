@@ -1,8 +1,11 @@
-﻿using ProjectK.Notebook.Domain.Interfaces;
+﻿using System;
+using Castle.Core.Internal;
+using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.ViewModels.Helpers
 {
-    public class RulesHelper
+    public static class RulesHelper
     {
         public static string GetSubNodeContext(string context)
         {
@@ -14,7 +17,7 @@ namespace ProjectK.Notebook.ViewModels.Helpers
                 "Week" => "Day",
                 "Day" => "Task",
                 "Task" => "Task",
-                _ => string.Empty
+                _ => "Node"
             };
         }
 
@@ -46,5 +49,7 @@ namespace ProjectK.Notebook.ViewModels.Helpers
             context = GetSubNodeContext(parentContext);
             return  !string.IsNullOrEmpty(context);
         }
+
+
     }
 }

@@ -209,52 +209,9 @@ namespace ProjectK.Notebook.ViewModels
             {
                 case "Modified":
                     break;
-                case "Delete":
-                    DeleteNode(node);
-                    break;
-                case "Add":
-                    AddNode(node);
-                    break;
             }
         }
 
-        private void AddNode(NodeViewModel vm)
-        {
-            var model = vm.Model;
-            var notebook = SelectedNotebook.Model;
-            notebook.AddModel(model);
-        }
-
-        private void DeleteNode(NodeViewModel node)
-        {
-            if (node.Context == "Notebook")
-            {
-                var notebook = Notebooks.First(n => n.Id == node.Id);
-                if (notebook == null)
-                    return;
-
-                Notebooks.Remove(notebook);
-
-                // Selected Notebook
-                if (Notebooks.Count == 0)
-                {
-                    SelectedNotebook = null;
-                }
-                else
-                {
-                    if (notebook.Model.Id == SelectedNotebook.Model.Id)
-                    {
-                        SelectedNotebook = Notebooks.FirstOrDefault();
-                    }
-                }
-                _db.Notebooks.Remove(notebook.Model);
-            }
-            else
-            {
-                var models = node.GetModels();
-                _db.RemoveRange(models);
-            }
-        }
 
         public async Task SyncDatabaseAsync()
         {
@@ -276,7 +233,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private void SaveNonRootNodes()
+        private async Task SaveNonRootNodes()
         {
             // find root nodes not in notebooks
             var nodes = RootTask.Nodes.Where(n => n.ParentId == RootTask.Id && n.Context != "Notebook").ToList();
@@ -308,7 +265,7 @@ namespace ProjectK.Notebook.ViewModels
             var models = nodes.GetModels();
 
             // Add modes to notebook
-            notebook.AddModels(models);
+            await _db.AddRangeAsync(models);
         }
 
         public void OpenDatabase(string connectionString)
@@ -364,14 +321,16 @@ namespace ProjectK.Notebook.ViewModels
             await SyncDatabaseAsync();
         }
 
+
+
         public async Task OpenFileAsync(string path)
         {
             try
             {
                 Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
                 var notebook = new NotebookModel { Name = path };
-                // Populate Notebook model from DataModel
-                await _db.ImportData(notebook, path);
+                var tasks = await ImportHelper.ReadFromFileVersionTwo(path);
+                await _db.ImportData(notebook, tasks);
                 ImportNotebook(notebook);
             }
             catch (Exception e)
@@ -687,7 +646,7 @@ namespace ProjectK.Notebook.ViewModels
                     await AddNode(node, state, service);
                     break;
                 case KeyboardKeys.Delete:
-                    node.DeleteNode(service);
+                    DeleteNode(node, service);
                     break;
 
                 case KeyboardKeys.Left:
@@ -771,8 +730,40 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
+        private void DeleteNode(NodeViewModel node, IActionService service)
+        {
+            node.DeleteNode(service);
 
-        public async Task AddNode(NodeViewModel node, KeyboardStates state, IActionService service)
+            if (node.Context == "Notebook")
+            {
+                var notebook = Notebooks.First(n => n.Id == node.Id);
+                if (notebook == null)
+                    return;
+
+                Notebooks.Remove(notebook);
+
+                // Selected Notebook
+                if (Notebooks.Count == 0)
+                {
+                    SelectedNotebook = null;
+                }
+                else
+                {
+                    if (notebook.Model.Id == SelectedNotebook.Model.Id)
+                    {
+                        SelectedNotebook = Notebooks.FirstOrDefault();
+                    }
+                }
+                _db.Notebooks.Remove(notebook.Model);
+            }
+            else
+            {
+                var models = node.GetModels();
+                _db.RemoveRange(models);
+            }
+        }
+
+        public async Task<NodeViewModel> AddNode(NodeViewModel node, KeyboardStates state, IActionService service)
         {
             // var parentNode = this;
             NodeViewModel newNode;
@@ -800,62 +791,18 @@ namespace ProjectK.Notebook.ViewModels
             service.SelectItem(node);
             service.ExpandItem(node);
             service.Handled();
-            if (newNode != null)
-            {
-                MessengerInstance.Send(new NotificationMessage<NodeViewModel>(newNode, "Add"));
-                Logger.LogDebug($"Added [{newNode.Name}] to [{node.Name}]");
-            }
+            return newNode;
         }
 
         public async Task<NodeViewModel> AddNew(NodeViewModel parentNode)
         {
-            var context = RulesHelper.GetSubNodeContext(parentNode.Context);
-            if (context.IsNullOrEmpty())
-                context = "Node";
+            if (!(SelectedNotebook.Model is NotebookModel notebook))
+                return null;
 
-            INode model;
-
-            // Create Model
-            if (context == "Task")
-            {
-                model = new TaskModel               // AddNew
-                {
-                    DateStarted = DateTime.Now,
-                    DateEnded = DateTime.Now
-                };
-            }
-            else
-            {
-                model = new NodeModel
-                {
-                    Created = DateTime.Now
-                };
-            }
-
-            model.Id = Guid.NewGuid();
-            model.Context = context;
-            var title = RulesHelper.GetSubNodeTitle(parentNode, model);
-
-            if (!string.IsNullOrEmpty(title))
-                model.Name = title;
-            else
-                model.Name = context;
-
-
-            NodeViewModel node = null;
-            switch (model)
-            {
-                case TaskModel taskModel:
-                    SelectedNotebook.Model.Tasks.Add(taskModel);
-                    node = new TaskViewModel(taskModel);
-                    break;
-                case NodeModel nodeModel:
-                    SelectedNotebook.Model.Nodes.Add(nodeModel);
-                    node = new NodeViewModel(nodeModel);
-                    break;
-            }
-            parentNode.Add(node);
-
+            var notebookId = notebook.Id;
+            var model = parentNode.CreateModel(notebookId);
+            var node = parentNode.CreateNode(model);
+            _db.AddModel(model);
             try
             {
                 await _db.SaveChangesAsync();
@@ -864,10 +811,8 @@ namespace ProjectK.Notebook.ViewModels
             {
                 Console.WriteLine(e);
             }
-
             return node;
         }
-
 
         #endregion
 
