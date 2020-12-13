@@ -176,14 +176,7 @@ namespace ProjectK.Notebook
                     return;
 
                 var path = r.fileName;
-                Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
-
-                var dataModel = await FileHelper.ReadFromFileAsync<DataModel>(path);
-
-                var notebook = new NotebookModel { Name = path };
-                // Populate Notebook model from DataModel
-                notebook.Import(dataModel);
-                ImportNotebook(notebook);
+                await OpenFileAsync(path);
             }
             catch (Exception e)
             {

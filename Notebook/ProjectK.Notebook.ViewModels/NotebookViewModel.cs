@@ -23,29 +23,6 @@ namespace ProjectK.Notebook.ViewModels
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
 
-        /*
-        public NotebookViewModel()
-        {
-            var rootTask = new NodeModel
-            {
-                Context = "Notebook",
-                Created = DateTime.Now,
-                Name = "New Notebook",
-                Id = Guid.NewGuid(),
-                ParentId = Guid.Empty
-            };
-
-            RootTask = new NodeViewModel(rootTask);
-
-            RootTask.Add(new NodeViewModel()
-            {
-                 Name = "Time Tracker", Context = "Time Tracker" 
-            });
-
-            Model = new NotebookModel();
-        }
-        */
-
         public NotebookViewModel() 
         {
             Kind = "Notebook";
@@ -55,7 +32,6 @@ namespace ProjectK.Notebook.ViewModels
         {
             Model = model;
         }
-
 
         #region Storage Functions Ver 1
 

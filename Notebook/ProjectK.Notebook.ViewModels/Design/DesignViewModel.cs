@@ -33,14 +33,14 @@ namespace ProjectK.Notebook.ViewModels.Design
             var week1 = new NodeViewModel { Name = "Week1", Context = "Week", IsExpanded = true };
             var thursday = new NodeViewModel { Name = "Thursday", Context = "Day", IsExpanded = true };
 
-            var task1 = new TaskModel
+            var task1 = new TaskModel            // Design
             {
                 Name = "Dinner",
                 Context = "TaskModel",
                 DateStarted = new DateTime(2020, 5, 14, 20, 34, 0),
                 DateEnded = new DateTime(2020, 5, 14, 21, 40, 0),
             };
-            var task2 = new TaskModel
+            var task2 = new TaskModel            // Design
             {
                 Name = "Movie",
                 Context = "TaskModel",

@@ -32,16 +32,6 @@ namespace ProjectK.Notebook.Domain
             Tasks.Clear();
         }
 
-        public void Import(DataModel model)
-        {
-            foreach (var task2 in model.Tasks)
-            {
-                var task = new TaskModel();
-                task.Init(task2);
-                Tasks.Add(task);
-            }
-        }
-
         public void AddModel(dynamic model)
         {
             if (model is TaskModel task)
@@ -51,6 +41,7 @@ namespace ProjectK.Notebook.Domain
             else if (model is NodeModel node)
                 Nodes.Add(node);
         }
+
         public void AddModels(List<dynamic> models)
         {
             foreach (var model in models)

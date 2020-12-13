@@ -360,12 +360,27 @@ namespace ProjectK.Notebook.ViewModels
                 Context = "Notebook",
                 Created = DateTime.Now,
             };
-
-            // var names = Notebooks.ToList().Where(n => n.Title).ToList();
-
             ImportNotebook(model);
             await SyncDatabaseAsync();
         }
+
+        public async Task OpenFileAsync(string path)
+        {
+            try
+            {
+                Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
+                var notebook = new NotebookModel { Name = path };
+                // Populate Notebook model from DataModel
+                await _db.ImportData(notebook, path);
+                ImportNotebook(notebook);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message);
+            }
+        }
+
+
         public void ImportNotebook(NotebookModel notebookModel)
         {
             Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
@@ -565,7 +580,7 @@ namespace ProjectK.Notebook.ViewModels
                 var dayNode = selectedTreeTask.Nodes.FirstOrDefault(t => t.Name == name);
                 if (dayNode == null)
                 {
-                    var model = new TaskModel
+                    var model = new TaskModel         // CopyExcelCsvText
                     {
                         Name = name,
                         DateStarted = day,
@@ -579,7 +594,7 @@ namespace ProjectK.Notebook.ViewModels
                     selectedTreeTask.Nodes.Add(dayNode);
                 }
 
-                var model2 = new TaskModel
+                var model2 = new TaskModel       // CopyExcelCsvText
                 {
                     Name = record.Task,
                     Context = "TaskModel"
@@ -792,7 +807,6 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-
         public async Task<NodeViewModel> AddNew(NodeViewModel parentNode)
         {
             var context = RulesHelper.GetSubNodeContext(parentNode.Context);
@@ -804,7 +818,7 @@ namespace ProjectK.Notebook.ViewModels
             // Create Model
             if (context == "Task")
             {
-                model = new TaskModel
+                model = new TaskModel               // AddNew
                 {
                     DateStarted = DateTime.Now,
                     DateEnded = DateTime.Now
@@ -853,7 +867,6 @@ namespace ProjectK.Notebook.ViewModels
 
             return node;
         }
-
 
 
         #endregion

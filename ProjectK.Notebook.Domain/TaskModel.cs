@@ -64,50 +64,9 @@ namespace ProjectK.Notebook.Domain
             SubType = task2.SubType;
         }
 
-        public static TaskModel NewTask()
-        {
-            var task = new TaskModel
-            {
-                Id = Guid.NewGuid(),
-                DateStarted = DateTime.Now
-            };
-            return task;
-        }
-
-
         public override string ToString()
         {
             return this.Text();
         }
-
-
-#if AK
-
-
-
-        public TaskModel()
-        {
-        }
-        public TaskModel(TaskModel b) : base(b)
-        {
-            Rating = b.Rating;
-            DateStarted = b.DateStarted;
-            DateEnded = b.DateEnded;
-            SubType = b.SubType;
-            Type = b.Type;
-            Description = b.Description;
-         }
-
-        public new TaskModel Copy()
-        {
-            return new TaskModel(this);
-        }
-
-        Guid INode.Id
-        {
-            get => _id;
-            set => _id = value;
-        }
-#endif
     }
 }
