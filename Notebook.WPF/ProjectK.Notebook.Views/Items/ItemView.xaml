@@ -8,22 +8,11 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              xmlns:domain="clr-namespace:ProjectK.Notebook.Domain;assembly=ProjectK.Notebook.Domain"
+             xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="400">
     <UserControl.Resources>
-        <domain:TaskModel 
-            x:Key="Model"
-            Name="May"
-            Context="Month"
-            Type="TaskModel"
-            SubType="Testing"
-            Description="Task Description"
-            DateStarted="{x:Static system:DateTime.Now}"
-            DateEnded="{x:Static system:DateTime.Now}"
-            />
-
-        <viewModels:TaskViewModel x:Key="ViewModel" Model="{StaticResource Model}">
-        </viewModels:TaskViewModel>
+        <design:DesignNodeViewModel x:Key="ViewModel"/>
 
         <!--Create two DataTemplate objects to be   selected by the DataTemplateSelector.-->
         <DataTemplate x:Key="NodeView">
