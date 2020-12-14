@@ -25,7 +25,7 @@ namespace ProjectK.Notebook.Views
                 return;
 
             model.RootTask.SetParents();
-            // TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeNode);
+            TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeNode);
             TreeViewTasks.PreviewKeyDown += async (s,e) => await TreeViewTasksOnPreviewKeyDown(s, e);
         }
 

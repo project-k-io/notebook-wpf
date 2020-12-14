@@ -57,7 +57,6 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
         public ObservableCollection<string> TaskTitleList { get; set; }
-        // public ObservableCollection<NotebookModel> NotebookModels { get; set; }
 
         public ReportTypes ReportType
         {
@@ -155,7 +154,6 @@ namespace ProjectK.Notebook.ViewModels
                 Name = "Root",
             };
 
-            // var connectionString = @"Data Source=D:\\db\\alan_notebooks.db";
             RootTask = new NodeViewModel(rootModel);
             CanSave = true;
             TypeList = new ObservableCollection<string>();
@@ -175,7 +173,6 @@ namespace ProjectK.Notebook.ViewModels
             ExportSelectedAllAsJsonCommand =
                 new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
 
-            // OpenDatabaseCommand = new RelayCommand(OpenDatabase);
             SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 
@@ -688,7 +685,6 @@ namespace ProjectK.Notebook.ViewModels
 
         public async Task<NodeViewModel> AddNode(NodeViewModel node, KeyboardStates state, IActionService service)
         {
-            // var parentNode = this;
             NodeViewModel newNode;
             switch (state)
             {

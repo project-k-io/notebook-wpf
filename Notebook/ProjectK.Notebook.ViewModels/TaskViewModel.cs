@@ -11,8 +11,6 @@ using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 
-// using ProjectK.NotebookModel.Models.Versions.Version2;
-
 namespace ProjectK.Notebook.ViewModels
 {
     public class TaskViewModel : NodeViewModel

@@ -84,4 +84,8 @@
     <Resource Include="images\smallicon.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>
