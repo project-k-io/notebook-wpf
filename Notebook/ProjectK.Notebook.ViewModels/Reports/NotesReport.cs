@@ -36,7 +36,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
             if(node == null)
                 return;
 
-            if (node is TaskViewModel task)
+            if (node.Model is TaskModel task)
             {
                 var description = string.IsNullOrEmpty(task.Description) ? "" : task.Description;
 
@@ -68,7 +68,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
             foreach (var subTask in node.Nodes)
             {
-                GenerateReport((NodeViewModel)subTask, sb, offset + 2);
+                GenerateReport(subTask, sb, offset + 2);
             }
         }
     }

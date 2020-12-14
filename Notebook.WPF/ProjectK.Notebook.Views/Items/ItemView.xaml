@@ -4,24 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dataTemplateSelectors="clr-namespace:ProjectK.Notebook.Views.DataTemplateSelectors"
-             xmlns:views="clr-namespace:ProjectK.Notebook.Views"
              xmlns:items="clr-namespace:ProjectK.Notebook.Views.Items"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
+             xmlns:domain="clr-namespace:ProjectK.Notebook.Domain;assembly=ProjectK.Notebook.Domain"
+             xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="400">
     <UserControl.Resources>
-        <viewModels:TaskViewModel x:Key="Model"
-                                  Kind="Task"
-                                  Name="May"
-                                  Context="Month"
-                                  Type="TaskModel"
-                                  SubType="Testing"
-                                  Description="Task Description"
-                                  DateStarted="{x:Static system:DateTime.Now}"
-                                  DateEnded="{x:Static system:DateTime.Now}"
-        >
-        </viewModels:TaskViewModel>
+        <design:DesignNodeViewModel x:Key="ViewModel"/>
 
         <!--Create two DataTemplate objects to be   selected by the DataTemplateSelector.-->
         <DataTemplate x:Key="NodeView">
@@ -41,11 +32,11 @@
                                                         NoteTemplate="{StaticResource NoteView}"/>
 
     </UserControl.Resources>
-    <Grid d:DataContext="{StaticResource Model}">
+    <Grid d:DataContext="{StaticResource ViewModel}">
         <StackPanel>
             <ComboBox Name="itemViewList" SelectedValue="{Binding Path=Kind, Mode=TwoWay}" >
+                <system:String>Notebook</system:String>
                 <system:String>Node</system:String>
-                <system:String>Note</system:String>
                 <system:String>Task</system:String>
             </ComboBox>
 

@@ -1,14 +1,23 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Serialization;
+using ProjectK.Notebook.Domain.Extensions;
 using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class TaskModel : ItemModel, ITask
+    public class TaskModel : ITask
     {
         // Primary Key
-        [Key] public int ItemId { get; set;}
+        [Key] 
+        public Guid Id { get; set; }
+        // INode
+        public Guid ParentId { get; set; }
+        public string Name { get; set; }
+        public string Context { get; set; }
+        public DateTime Created { get; set; }
+        public string Description { get; set; }
 
         // ITask
         public string Type { get; set; }
@@ -16,24 +25,29 @@ namespace ProjectK.Notebook.Domain
         public int Rating { get; set; }
         public DateTime DateStarted { get; set; }
         public DateTime DateEnded { get; set; }
-        public string Description { get; set; }
+
+
 
         // Foreign Key
         [ForeignKey("NotebookModel")]
-        public int NotebookId { get; set; }
+        public Guid NotebookId { get; set; }
         public virtual NotebookModel NotebookModel { get; set; }
 
         public bool IsSame(TaskModel b)
         {
-            // INode
-            if (!base.IsSame(b)) return false;
-            // ITask
-            if (DateEnded != b.DateEnded) return false;
-            if (DateStarted != b.DateStarted) return false;
-            if (SubType != b.SubType) return false;
-            if (Type != b.Type) return false;
-            if (Rating != b.Rating) return false;
-            return true;
+            return ((ITask)this).IsSame(b);
+        }
+
+        [XmlIgnore]
+        public TimeSpan Duration
+        {
+            get
+            {
+                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
+                    return TimeSpan.Zero;
+
+                return DateEnded - DateStarted;
+            }
         }
 
         public void Init(Versions.Version2.TaskModel task2)
@@ -50,50 +64,9 @@ namespace ProjectK.Notebook.Domain
             SubType = task2.SubType;
         }
 
-        public static TaskModel NewTask()
-        {
-            var task = new TaskModel
-            {
-                Id = Guid.NewGuid(),
-                DateStarted = DateTime.Now
-            };
-            return task;
-        }
-
-#if AK
-
         public override string ToString()
         {
-            return $"{base.ToString()}:{Type}:{SubType}: {Rating}: {DateStarted}:{DateEnded}";
+            return this.Text();
         }
-
-
-
-
-
-        public TaskModel()
-        {
-        }
-        public TaskModel(TaskModel b) : base(b)
-        {
-            Rating = b.Rating;
-            DateStarted = b.DateStarted;
-            DateEnded = b.DateEnded;
-            SubType = b.SubType;
-            Type = b.Type;
-            Description = b.Description;
-         }
-
-        public new TaskModel Copy()
-        {
-            return new TaskModel(this);
-        }
-
-        Guid INode.Id
-        {
-            get => _id;
-            set => _id = value;
-        }
-#endif
     }
 }

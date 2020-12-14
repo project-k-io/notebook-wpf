@@ -9,7 +9,8 @@
              xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
              mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="300">
     <UserControl.Resources>
-        <viewModels:TaskViewModel x:Key="Model"
+        <domain:TaskModel 
+            x:Key="Model"
                     Name="May"
                     Context="Month"
                     Description="Task Description"
@@ -17,11 +18,14 @@
                     SubType="Testing"
                     DateStarted="{x:Static system:DateTime.Now}"
                     DateEnded="{x:Static system:DateTime.Now}"
-                    >
-        </viewModels:TaskViewModel>
+                    />
+        <viewModels:TaskViewModel 
+            x:Key="ViewModel"
+            Model="{StaticResource Model}"
+        />
     </UserControl.Resources>
 
-    <Grid d:DataContext="{StaticResource Model}">
+    <Grid d:DataContext="{StaticResource ViewModel}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>

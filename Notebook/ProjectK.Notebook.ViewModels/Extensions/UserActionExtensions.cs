@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Versions.Version2;
-// using ProjectK.NotebookModel.Models.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Utils;
-using Task = System.Threading.Tasks.Task;
+using ProjectK.Utils; // using ProjectK.NotebookModel.Models.Versions.Version2;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
@@ -40,31 +39,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             notebook.Clear();
         }
 
-        public static async Task UserAction_OpenFileAsync(this MainViewModel mainViewModel)
-        {
-            try
-            {
-                Logger.LogDebug($"{Tag} | OpenFileAsync()");
-                var dialog = new OpenFileDialog();
-                var r = dialog.SetFileDialog(mainViewModel.SelectedNotebook?.Title);
-                if (!r.ok)
-                    return;
-
-                var path = r.fileName;
-                Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
-
-                var dataModel = await FileHelper.ReadFromFileAsync<DataModel>(path);
-
-                var notebook = new NotebookModel { Name = path};
-                // Populate Notebook model from DataModel
-                notebook.Import(dataModel);
-                mainViewModel.ImportNotebook(notebook);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e);
-            }
-        }
 
 
         public static async Task UserAction_ExportSelectedAllAsText(this MainViewModel model)

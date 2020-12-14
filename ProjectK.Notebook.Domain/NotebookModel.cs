@@ -3,15 +3,24 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
 using ProjectK.Notebook.Domain.Interfaces;
-using ProjectK.Utils.Extensions;
+using ProjectK.Notebook.Domain.Versions.Version2;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NotebookModel: ItemModel, INode
+    public class NotebookModel: INode
     {
         [Key]
-        public int ItemId { get; set; }
+        public Guid Id { get; set; }
+        public Guid ParentId { get; set; }
+        public string Name { get; set; }
+        public string Context { get; set; }
+        public DateTime Created { get; set; }
+        public string Description { get; set; }
+
+        // Notebook
         public bool NonRoot { get; set; }
 
         public virtual IList<NodeModel> Nodes { get; set; } = new ObservableCollection<NodeModel>();
@@ -25,32 +34,6 @@ namespace ProjectK.Notebook.Domain
             Tasks.Clear();
         }
 
-        public void Import(Versions.Version2.DataModel model)
-        {
-            foreach (var task2 in model.Tasks)
-            {
-                var task = new TaskModel();
-                task.Init(task2);
-                Tasks.Add(task);
-            }
-        }
-
-        public void AddModel(dynamic model)
-        {
-            if (model is TaskModel task)
-                Tasks.Add(task);
-            else if (model is NoteModel note)
-                Notes.Add(note);
-            else if (model is NodeModel node)
-                Nodes.Add(node);
-        }
-        public void AddModels(List<dynamic> models)
-        {
-            foreach (var model in models)
-            {
-                AddModel(model);
-            }
-        }
 
 #if AK
 
@@ -81,12 +64,12 @@ namespace ProjectK.Notebook.Domain
         }
 
 #endif
-        public List<ItemModel> GetItems()
+        public List<INode> GetItems()
         {
-            var items = new List<ItemModel>();
+            var items = new List<INode>();
 
             var nodes = Nodes.Cast<NodeModel>();
-            var notes = Notes.Cast<ItemModel>();
+            var notes = Notes.Cast<NoteModel>();
             var tasks = Tasks.Cast<TaskModel>();
 
             items.AddRange(nodes);

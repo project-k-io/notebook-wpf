@@ -5,11 +5,11 @@ using ProjectK.View.Helpers.Misc;
 
 namespace ProjectK.Notebook.Views
 {
-    public partial class TasksListView : UserControl
+    public partial class NodeListView : UserControl
     {
         private readonly ListViewSorterHelper _sorterHelper = new ListViewSorterHelper();
 
-        public TasksListView()
+        public NodeListView()
         {
             InitializeComponent();
             Loaded += TasksListView_Loaded;

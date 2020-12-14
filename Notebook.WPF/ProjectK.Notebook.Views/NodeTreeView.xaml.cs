@@ -1,22 +1,19 @@
-﻿using System.Linq;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ProjectK.Notebook.ViewModels;
-using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Notebook.Views.Helpers;
-using ProjectK.View.Helpers;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.View.Helpers.Misc;
 using ProjectK.Views.TreeViewList;
 
 namespace ProjectK.Notebook.Views
 {
-    public partial class TasksTreeView : UserControl
+    public partial class NodeTreeView : UserControl
     {
-        public TasksTreeView()
+        public NodeTreeView()
         {
             InitializeComponent();
             Loaded += TasksTreeView_Loaded;
@@ -28,8 +25,8 @@ namespace ProjectK.Notebook.Views
                 return;
 
             model.RootTask.SetParents();
-            TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeNode);
-            TreeViewTasks.PreviewKeyDown += TreeViewTasksOnPreviewKeyDown;
+            // TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeNode);
+            TreeViewTasks.PreviewKeyDown += async (s,e) => await TreeViewTasksOnPreviewKeyDown(s, e);
         }
 
         static bool DeleteMessageBox()
@@ -38,7 +35,7 @@ namespace ProjectK.Notebook.Views
                    MessageBoxResult.Cancel;
         }
 
-        private void TreeViewTasksOnPreviewKeyDown(object sender, KeyEventArgs e)
+        private async Task TreeViewTasksOnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             var keyState = KeyboardHelper.GetKeyState(e.Key);
             if (!(sender is TreeListView treeView))
@@ -65,12 +62,12 @@ namespace ProjectK.Notebook.Views
                 GetState = () => KeyboardHelper.KeyboardState,
                 Handled = () => e.Handled = true,
                 SelectItem = treeView.SelectItem,
-                ExpandItem = (a) => ExpandItem((NodeViewModel)a),
+                ExpandItem = a => ExpandItem(a),
                 DeleteMessageBox = DeleteMessageBox,
                 Dispatcher = addDelegate
             };
 
-            task.KeyboardAction(keyState, service);
+            await mainViewModel.KeyboardAction(task, keyState, service);
         }
 
 

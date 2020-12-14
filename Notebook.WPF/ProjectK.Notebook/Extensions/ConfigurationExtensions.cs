@@ -20,7 +20,22 @@ namespace ProjectK.Notebook.Extensions
             else
                 settings[key].Value = value;
         }
+    }
+    public static class ConfigurationExtensions2
+    {
+        public static T GetEnumValue<T>(this string key, T defaultValue) where T : struct => Enum.TryParse(key, out T value) ? value : defaultValue;
+        public static double GetDouble(this string key, double defaultValue) => double.TryParse(key, out var value) ? value : defaultValue;
+        public static int GetInt(this string key, int defaultValue) => int.TryParse(key, out var value) ? value : defaultValue;
+        public static Guid GetGuid(this string key, Guid defaultValue) => Guid.TryParse(key, out var value) ? value : defaultValue;
+        public static string GetString(this string key, string defaultValue) => key ?? defaultValue;
+        public static bool GetBool(this string key, bool defaultValue) => bool.TryParse(key, out var value) ? value : defaultValue;
 
-
+        public static void SetValue(this string key, string value)
+        {
+            // if (key == null)
+                // settings.Add(key, value);
+            //else
+                // settings[key].Value = value;
+        }
     }
 }

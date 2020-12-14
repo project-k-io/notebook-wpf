@@ -23,7 +23,7 @@ namespace ProjectK.Utils
         public static List<string> ConvertTextInMultipleLines(string text, int maxLength, char separator)
         {
             var lines = new List<string>();
-            var words = text.Split(separator, StringSplitOptions.None);
+            var words = text.Split(separator);
             var sb = new StringBuilder();
             for(var i = 0; i < words.Length; i++)
             {

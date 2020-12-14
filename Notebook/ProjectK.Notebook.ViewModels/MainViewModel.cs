@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Xml;
 using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -14,15 +14,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Notebook.Domain.Reports;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
+using ProjectK.Notebook.ViewModels.Helpers;
+using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Notebook.ViewModels.Reports;
 using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
-using Task = System.Threading.Tasks.Task;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -32,28 +34,13 @@ namespace ProjectK.Notebook.ViewModels
 
         protected ILogger Logger;
 
-        static readonly List<string> GlobalContextList = new List<string>
-        {
-            "Notebook",
-            "Company",
-            "Contact",
-            "Node",
-            "Task",
-            "Note",
-            "Task Manager",
-            "Year",
-            "Month",
-            "Day",
-            "Week"
-        };
 
         public static Guid RootGuid = new Guid("98601237-050a-4915-860c-5a820b361910");
 
         #endregion
 
         #region Fields
-
-        private NotebookContext _db;
+        Storage _db = new Storage();
         private NotebookViewModel _selectedNotebook;
         private ReportTypes _reportType = ReportTypes.Notes;
         private string _excelCsvText;
@@ -131,6 +118,8 @@ namespace ProjectK.Notebook.ViewModels
         public OutputViewModel Output { get; set; } = new OutputViewModel();
 
 
+
+
         #endregion
 
         #region Commands
@@ -157,7 +146,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public MainViewModel()
         {
-            var rootModel = new 
+            var rootModel = new NodeModel
             {
                 Id = RootGuid,
                 ParentId = Guid.Empty,
@@ -178,23 +167,20 @@ namespace ProjectK.Notebook.ViewModels
             ExtractContextCommand = new RelayCommand(() => SelectedNotebook?.FixContext());
             FixTitlesCommand = new RelayCommand(() => SelectedNotebook.FixTitles());
             FixTypesCommand = new RelayCommand(() => SelectedNotebook.FixTypes());
-            CopyTaskCommand = new RelayCommand(CopyTask);
-            ContinueTaskCommand = new RelayCommand(ContinueTask);
+            CopyTaskCommand = new RelayCommand(async () => await CopyTask());
+            ContinueTaskCommand = new RelayCommand(async () => await ContinueTask());
             ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
             ExportSelectedAllAsTextCommand =
                 new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
             ExportSelectedAllAsJsonCommand =
                 new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
-            
+
             // OpenDatabaseCommand = new RelayCommand(OpenDatabase);
             SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 
             // Add Context 
-            foreach (var context in GlobalContextList)
-            {
-                ContextList.Add(context);
-            }
+            ContextList.AddRange(RulesHelper.GlobalContextList);
 
             MessengerInstance.Register<NotificationMessage<NodeViewModel>>(this, NotifyMe);
         }
@@ -208,127 +194,29 @@ namespace ProjectK.Notebook.ViewModels
             {
                 case "Modified":
                     break;
-                case "Delete":
-                    DeleteNode(node);
-                    break;
-                case "Add":
-                    AddNode(node);
-                    break;
             }
         }
 
-        private void AddNode(NodeViewModel vm)
-        {
-            var model = vm.Model;
-            var notebook = SelectedNotebook.Model;
-            notebook.AddModel(model);
-        }
-
-        private void DeleteNode(NodeViewModel node)
-        {
-            if (node.Context == "Notebook")
-            {
-                var notebook = Notebooks.First(n => n.RootTask.Id == node.Id);
-                if (notebook == null)
-                    return;
-
-                Notebooks.Remove(notebook);
-
-                // Selected Notebook
-                if(Notebooks.Count == 0)
-                {
-                    SelectedNotebook = null;
-                }
-                else
-                {
-                    if (notebook.Model.Id == SelectedNotebook.Model.Id)
-                    {
-                        SelectedNotebook = Notebooks.FirstOrDefault();
-                    }
-                }
-                _db.Notebooks.Remove(notebook.Model);
-            }
-            else
-            {
-                var models = node.GetModels();
-                _db.RemoveRange(models);
-            }
-        }
 
         public async Task SyncDatabaseAsync()
         {
-            SaveRootNodes();
-            SaveNonRootNodes();
             await _db.SaveChangesAsync();
             RootTask.ResetParentChildModified();
             RootTask.ResetModified();
         }
 
-        private void SaveRootNodes()
-        {
-            // find root nodes not in notebooks
-            foreach (var notebook in Notebooks)
-            {
-                // Get Notebook nodes
-                var models = notebook.RootTask.Nodes.GetModels();
-                notebook.Model.AddModels(models);
-            }
-        }
-
-        private void SaveNonRootNodes()
-        {
-            // find root nodes not in notebooks
-            var nodes = RootTask.Nodes.Where(n => n.ParentId == RootTask.Id && n.Context != "Notebook").ToList();
-            if(nodes.IsNullOrEmpty())
-                return;
-
-            // find non root notebook
-            var notebooks = _db.Notebooks.Where(n => n.NonRoot).ToArray();
-            
-            NotebookModel notebook;
-            if (!notebooks.IsNullOrEmpty())
-                notebook = notebooks[0];
-            else
-            {
-                notebook = new NotebookModel
-                {
-                    NonRoot = true,
-                    Created = DateTime.Now,
-                    Context = "Notebook",
-                    Description = "Notebook for nodes outside of notebooks",
-                    Name = "Non Root Notebook",
-                    Id = Guid.NewGuid()
-                };
-                _db.Notebooks.Add(notebook);
-            }
-
-            // Add top nodes to notebook
-            // Get all nodes
-            var models = nodes.GetModels();
-
-            // Add modes to notebook
-            notebook.AddModels(models);
-        }
-
         public void OpenDatabase(string connectionString)
         {
-            _db = new NotebookContext(connectionString);
-
-            // this is for demo purposes only, to make it easier
-            // to get up and running
-            _db.Database.EnsureCreated();
-
-            // load the entities into EF Core
-            _db.Notebooks.Load();
+            _db.OpenDatabase(connectionString);
 
             // bind to the source
-            var notebookModels = _db.Notebooks.Local.ToObservableCollection();
+            var notebookModels = _db.GetNotebooks();
 
-            var models = new List<ItemModel>();
+            var models = new List<INode>();
             foreach (var model in notebookModels)
             {
                 var (notebook, nodes) = AddNotebook(model);
-                if(notebook != null)
+                if (notebook != null)
                     SelectedNotebook = notebook;
 
                 models.AddRange(nodes);
@@ -342,7 +230,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             await SyncDatabaseAsync();
             await _db.SaveChangesAsync();
-            await _db.Database.CloseConnectionAsync();
+            await _db.CloseConnection();
         }
 
         private async Task AddNotebookAsync()
@@ -359,18 +247,35 @@ namespace ProjectK.Notebook.ViewModels
                 Context = "Notebook",
                 Created = DateTime.Now,
             };
-
-            // var names = Notebooks.ToList().Where(n => n.Title).ToList();
-
             ImportNotebook(model);
             await SyncDatabaseAsync();
         }
-        public void ImportNotebook(NotebookModel notebookModel)
+
+
+
+        public async Task OpenFileAsync(string path)
+        {
+            try
+            {
+                Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
+                var notebook = new NotebookModel { Name = path };
+                var tasks = await ImportHelper.ReadFromFileVersionTwo(path);
+                await _db.ImportData(notebook, tasks);
+                await ImportNotebook(notebook);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message);
+            }
+        }
+
+
+        public async Task ImportNotebook(NotebookModel notebookModel)
         {
             Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
 
             // Add NotebookModel
-            var a = _db.Notebooks.Add(notebookModel);
+            var a = await _db.Add(notebookModel);
             // this will create Primary Key for notebook
             var (notebook, nodes) = AddNotebook(notebookModel);
             if (notebook != null)
@@ -379,7 +284,7 @@ namespace ProjectK.Notebook.ViewModels
             UpdateTypeListAsync(nodes);
         }
 
-        private (NotebookViewModel, List<ItemModel>) AddNotebook(NotebookModel model)
+        private (NotebookViewModel, List<INode>) AddNotebook(NotebookModel model)
         {
             Logger.LogDebug($"AddNotebook: {model.Name}");
 
@@ -389,18 +294,16 @@ namespace ProjectK.Notebook.ViewModels
                 RootTask.BuildTree(items);
                 return (null, items);
             }
-            else
-            {
-                var notebook = new NotebookViewModel(model);
-                Notebooks.Add(notebook);
-                notebook.RootTask.BuildTree(items);
-                RootTask.Add(notebook.RootTask);
-                return (notebook, items);
-            }
+
+            var notebook = new NotebookViewModel(model);
+            Notebooks.Add(notebook);
+            notebook.BuildTree(items);
+            RootTask.Add(notebook);
+            return (notebook, items);
         }
         private void OnCurrentNotebookChanged()
         {
-            var noteBookName = SelectedNotebook != null ? SelectedNotebook.RootTask.Name : "";
+            var noteBookName = SelectedNotebook != null ? SelectedNotebook.Name : "";
             Title = Assembly.GetAssemblyTitle() + " " + Assembly.GetAssemblyVersion() + " - " + noteBookName;
         }
 
@@ -421,34 +324,36 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public void UpdateTypeListAsync(List<ItemModel> nodes)
+        public void UpdateTypeListAsync(List<INode> nodes)
         {
-            var sortedSet1 = new SortedSet<string>();
-            var sortedSet2 = new SortedSet<string>();
-            var sortedSet3 = new SortedSet<string>();
+            var types = new SortedSet<string>();
+            var contexts = new SortedSet<string>();
+            var titles = new SortedSet<string>();
+
             foreach (var node in nodes)
             {
                 if (node is TaskModel task)
                 {
                     var type = task.Type;
-                    if (!sortedSet1.Contains(type)) sortedSet1.Add(type);
+                    if (!types.Contains(type)) types.Add(type);
                 }
 
                 var context = node.Context;
-                if (!sortedSet2.Contains(context)) sortedSet2.Add(context);
+                if (!contexts.Contains(context)) contexts.Add(context);
 
                 var title = node.Name;
-                if (!sortedSet3.Contains(title)) sortedSet3.Add(title);
+                if (!titles.Contains(title)) titles.Add(title);
             }
 
             TypeList.Clear();
-            foreach (var str in sortedSet1) TypeList.Add(str);
+            foreach (var str in types) TypeList.Add(str);
 
             ContextList.Clear();
-            foreach (var str in sortedSet2) ContextList.Add(str);
+            ContextList.AddRange(RulesHelper.GlobalContextList);
+
 
             TaskTitleList.Clear();
-            foreach (var str in sortedSet3) TaskTitleList.Add(str);
+            foreach (var str in titles) TaskTitleList.Add(str);
         }
 
 
@@ -538,77 +443,89 @@ namespace ProjectK.Notebook.ViewModels
                 return;
 
             var stringReader = new StringReader(ExcelCsvText);
-            var excelCsvRecordList = new List<ExcelCsvRecord>();
+            var list = new List<ExcelCsvRecord>();
             string line;
             while ((line = stringReader.ReadLine()) != null)
                 if (!string.IsNullOrEmpty(line))
                 {
                     var excelCsvRecord = new ExcelCsvRecord();
-                    if (excelCsvRecord.TryParse(line)) excelCsvRecordList.Add(excelCsvRecord);
+                    if (excelCsvRecord.TryParse(line)) list.Add(excelCsvRecord);
                 }
 
             var selectedTreeTask = SelectedNotebook.SelectedTreeNode;
             if (selectedTreeTask.Context != "Week") return;
 
-            foreach (var excelCsvRecord in excelCsvRecordList)
+            foreach (var record in list)
             {
-                var dateTime1 = excelCsvRecord.Day;
-                var dayOfTheWeek = dateTime1.DayOfWeek.ToString();
-                var taskViewModel1 = selectedTreeTask.Nodes.FirstOrDefault(t => t.Name == dayOfTheWeek);
-                if (taskViewModel1 == null)
+                var day = record.Day;
+                var name = day.DayOfWeek.ToString();
+                var dayNode = selectedTreeTask.Nodes.FirstOrDefault(t => t.Name == name);
+                if (dayNode == null)
                 {
-                    taskViewModel1 = new TaskViewModel()
+                    var model = new TaskModel         // CopyExcelCsvText
                     {
-                        Name = dayOfTheWeek,
-                        DateStarted = excelCsvRecord.Day,
-                        DateEnded = excelCsvRecord.Day
+                        Name = name,
+                        DateStarted = day,
+                        DateEnded = day
                     };
-                    selectedTreeTask.Nodes.Add(taskViewModel1);
+
+                    dayNode = new NodeViewModel()
+                    {
+                        Model = model
+                    };
+                    selectedTreeTask.Nodes.Add(dayNode);
                 }
 
-                var taskViewModel2 = new TaskViewModel()
+                var model2 = new TaskModel       // CopyExcelCsvText
                 {
-                    Name = excelCsvRecord.Task,
+                    Name = record.Task,
                     Context = "TaskModel"
                 };
 
+                var taskViewModel2 = new TaskViewModel()
+                {
+                    Model = model2
+                };
+
                 var taskViewModel3 = taskViewModel2;
-                dateTime1 = excelCsvRecord.Day;
-                var year1 = dateTime1.Year;
-                dateTime1 = excelCsvRecord.Day;
-                var month1 = dateTime1.Month;
-                dateTime1 = excelCsvRecord.Day;
-                var day1 = dateTime1.Day;
-                dateTime1 = excelCsvRecord.Start;
-                var hour1 = dateTime1.Hour;
-                dateTime1 = excelCsvRecord.Start;
-                var minute1 = dateTime1.Minute;
-                dateTime1 = excelCsvRecord.Start;
-                var second1 = dateTime1.Second;
+                day = record.Day;
+                var year1 = day.Year;
+                day = record.Day;
+                var month1 = day.Month;
+                day = record.Day;
+                var day1 = day.Day;
+                day = record.Start;
+                var hour1 = day.Hour;
+                day = record.Start;
+                var minute1 = day.Minute;
+                day = record.Start;
+                var second1 = day.Second;
                 var dateTime2 = new DateTime(year1, month1, day1, hour1, minute1, second1);
 
                 taskViewModel3.DateStarted = dateTime2;
+
                 var taskViewModel4 = taskViewModel2;
-                dateTime1 = excelCsvRecord.Day;
-                var year2 = dateTime1.Year;
-                dateTime1 = excelCsvRecord.Day;
-                var month2 = dateTime1.Month;
-                dateTime1 = excelCsvRecord.Day;
-                var day2 = dateTime1.Day;
-                dateTime1 = excelCsvRecord.End;
-                var hour2 = dateTime1.Hour;
-                dateTime1 = excelCsvRecord.End;
-                var minute2 = dateTime1.Minute;
-                dateTime1 = excelCsvRecord.End;
-                var second2 = dateTime1.Second;
+                day = record.Day;
+                var year2 = day.Year;
+                day = record.Day;
+                var month2 = day.Month;
+                day = record.Day;
+                var day2 = day.Day;
+                day = record.End;
+                var hour2 = day.Hour;
+                day = record.End;
+                var minute2 = day.Minute;
+                day = record.End;
+                var second2 = day.Second;
                 var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
                 taskViewModel4.DateEnded = dateTime3;
-                taskViewModel2.Description = $"{excelCsvRecord.Type1}:{excelCsvRecord.Type2}:{excelCsvRecord.SubTask}";
-                taskViewModel1.Nodes.Add(taskViewModel2);
+                taskViewModel2.Description = $"{record.Type1}:{record.Type2}:{record.SubTask}";
+
+                dayNode.Nodes.Add(taskViewModel2);
             }
         }
 
-        private void OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
+        private async Task OnTreeViewKeyDown(KeyboardKeys keyboardKeys, KeyboardStates keyboardState)
         {
             var service = new ActionService
             {
@@ -619,19 +536,206 @@ namespace ProjectK.Notebook.ViewModels
                 DeleteMessageBox = () => true,
                 Dispatcher = OnDispatcher
             };
-            SelectedNotebook.SelectedNode?.KeyboardAction(keyboardKeys, service);
+            await KeyboardAction(SelectedNotebook.SelectedNode, keyboardKeys, service);
         }
 
-        private void CopyTask()
+        private async Task CopyTask()
         {
-            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
+            await OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsControlPressed);
         }
 
-        private void ContinueTask()
+        private async Task ContinueTask()
         {
-            OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
+            await OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
 
+
+        #endregion
+
+
+        #region Keyboard Actions
+
+        public async Task KeyboardAction(NodeViewModel node, KeyboardKeys keyboardKeys, IActionService service)
+        {
+            var state = service.GetState();
+
+            // don't show logging ctl, alt, shift or arrow keys
+            if (keyboardKeys != KeyboardKeys.None && state != KeyboardStates.None)
+                Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
+
+            switch (keyboardKeys)
+            {
+                case KeyboardKeys.Insert:
+                    await AddNode(node, state, service);
+                    break;
+                case KeyboardKeys.Delete:
+                    DeleteNode(node, service);
+                    break;
+
+                case KeyboardKeys.Left:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
+                    {
+                        var parent1 = node.Parent;
+                        if (parent1 == null)
+                            break;
+                        var parent2 = parent1.Parent;
+                        if (parent2 == null)
+                            break;
+
+                        parent1.Remove(node);
+
+                        var num2 = parent2.Nodes.IndexOf(parent1);
+                        parent2.Insert(num2 + 1, node);
+                        service.SelectItem(node);
+                        service.Handled();
+                    }
+
+                    break;
+                case KeyboardKeys.Right:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
+                    {
+                        var parent1 = node.Parent;
+                        if (parent1 == null)
+                            break;
+                        var num2 = parent1.Nodes.IndexOf(node);
+                        if (num2 <= 0)
+                            break;
+
+                        var parentNode2 = parent1.Nodes[num2 - 1];
+                        if (parentNode2 == null)
+                            break;
+
+                        parent1.Remove(node);
+                        parentNode2.Add(node);
+                        service.SelectItem(node);
+                        parent1.IsExpanded = true;
+                        node.IsSelected = true;
+                        service.Handled();
+                    }
+
+                    break;
+                case KeyboardKeys.Up:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
+                    {
+                        var parent1 = node.Parent;
+                        if (parent1 == null)
+                            break;
+                        var num2 = parent1.Nodes.IndexOf(node);
+                        if (num2 <= 0)
+                            break;
+                        parent1.Remove(node);
+                        parent1.Insert(num2 - 1, node);
+                        service.SelectItem(node);
+                        parent1.IsExpanded = true;
+                        node.IsSelected = true;
+                        service.Handled();
+                    }
+
+                    break;
+                case KeyboardKeys.Down:
+                    if (state == KeyboardStates.IsCtrlShiftPressed)
+                    {
+                        var parent1 = node.Parent;
+                        if (parent1 == null)
+                            break;
+                        var num2 = parent1.Nodes.IndexOf(node);
+                        if (num2 >= parent1.Nodes.Count - 1)
+                            break;
+                        parent1.Remove(node);
+                        parent1.Insert(num2 + 1, node);
+                        service.SelectItem(node);
+                        parent1.IsExpanded = true;
+                        node.IsSelected = true;
+                        service.Handled();
+                    }
+
+                    break;
+            }
+        }
+
+        private void DeleteNode(NodeViewModel node, IActionService service)
+        {
+            node.DeleteNode(service);
+
+            if (node.Context == "Notebook")
+            {
+                var notebook = Notebooks.First(n => n.Id == node.Id);
+                if (notebook == null)
+                    return;
+
+                Notebooks.Remove(notebook);
+
+                // Selected Notebook
+                if (Notebooks.Count == 0)
+                {
+                    SelectedNotebook = null;
+                }
+                else
+                {
+                    if (notebook.Model.Id == SelectedNotebook.Model.Id)
+                    {
+                        SelectedNotebook = Notebooks.FirstOrDefault();
+                    }
+                }
+                _db.Remove(notebook.Model as NotebookModel);
+            }
+            else
+            {
+                var models = node.GetModels();
+                _db.RemoveRange(models);
+            }
+        }
+
+        public async Task<NodeViewModel> AddNode(NodeViewModel node, KeyboardStates state, IActionService service)
+        {
+            // var parentNode = this;
+            NodeViewModel newNode;
+            switch (state)
+            {
+                case KeyboardStates.IsShiftPressed:
+                    newNode = await AddNew(node.Parent);
+                    break;
+                case KeyboardStates.IsControlPressed:
+                    var lastSubNode = node.Parent.LastSubNode;
+                    newNode = await AddNew(node.Parent);
+
+                    if (lastSubNode != null)
+                    {
+                        newNode.Name = node.Name;
+                    }
+
+                    break;
+                default:
+                    newNode = await AddNew(node);
+                    break;
+            }
+
+            node.IsSelected = true;
+            service.SelectItem(node);
+            service.ExpandItem(node);
+            service.Handled();
+            return newNode;
+        }
+
+        public async Task<NodeViewModel> AddNew(NodeViewModel parentNode)
+        {
+            if (!(SelectedNotebook.Model is NotebookModel notebook))
+                return null;
+
+            var notebookId = notebook.Id;
+            var model = parentNode.CreateModel(notebookId);
+            var node = parentNode.CreateNode(model);
+            _db.AddModel(model);
+            try
+            {
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return node;
+        }
 
         #endregion
 

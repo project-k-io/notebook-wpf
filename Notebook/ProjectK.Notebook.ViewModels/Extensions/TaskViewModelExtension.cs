@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
@@ -19,7 +18,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         public static void ViewModelToModel(this NotebookModel notebookModel, NodeViewModel rootTask)
         {
             Logger.LogDebug($@"Populate NotebookModel {notebookModel.Name} from TreeNode {rootTask.Name}");
-            var list = new List<dynamic>();
+            var list = new List<INode>();
             rootTask.SaveTo(list);
             foreach (var item in list)
             {
@@ -37,30 +36,29 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             await FileHelper.SaveToFileAsync(path, notebook);
         }
 
-        public static void BuildTree(this NodeViewModel rootTask, List<ItemModel> modes)
+        public static void BuildTree(this NodeViewModel rootTask, List<INode> nodes)
         {
             // 
             var index = new SortedList<Guid, NodeViewModel>();
 
             // build index
-            foreach (var model in modes)
+            foreach (var model in nodes)
             {
                 if (!index.ContainsKey(model.Id))
                 {
-                    if (model is ITask task)
-                    {
-                        var vm = new TaskViewModel(task);
-                        index.Add(task.Id, vm);
-                    }
-                    else
-                    {
-                        var vm = new NodeViewModel(model);
+                    NodeViewModel vm = null;
+
+                    if (model is TaskModel task)
+                        vm = new TaskViewModel(task);
+                    else if (model is NodeModel node)
+                        vm = new NodeViewModel(node);
+
+                    if (vm != null)
                         index.Add(model.Id, vm);
-                    }
                 }
             }
 
-            foreach (var node in modes)
+            foreach (var node in nodes)
             {
                 if (!index.ContainsKey(node.ParentId))
                 {
@@ -75,24 +73,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         }
 
 
-        public static (string fileName, bool ok) SetFileDialog(this FileDialog dialog, string path)
-        {
-            var directoryName = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName)) dialog.InitialDirectory = directoryName;
-
-            var fileName = Path.GetFileNameWithoutExtension(path);
-            if (!string.IsNullOrEmpty(fileName)) dialog.FileName = fileName;
-
-            dialog.DefaultExt = ".json";
-            dialog.Filter = "Json documents (.json)|*.json" +
-                            "|XML documents(.xml) | *.xml";
-
-            var result = dialog.ShowDialog();
-            if (result != true)
-                return ("", false);
-
-            return (dialog.FileName, true);
-        }
 
 
         public static (bool ok, NodeViewModel task) FindNode(this NodeViewModel task1, Func<NodeViewModel, bool> check)
@@ -103,7 +83,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                 if (check(node))
                     return (true, node);
 
-                node = (NodeViewModel)node.Parent;
+                node = node.Parent;
             }
             return (false, null);
         }

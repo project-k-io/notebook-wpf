@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Notebook.ViewModels.Interfaces;
-using ProjectK.Notebook.ViewModels.Services;
-using ProjectK.Utils;
+using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
@@ -32,9 +28,9 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             model.Parent.UpAction(action);
         }
 
-        public static List<dynamic> GetModels(this IList<NodeViewModel> nodes)
+        public static List<INode> GetModels(this IList<NodeViewModel> nodes)
         {
-            var models = new List<dynamic>();
+            var models = new List<INode>();
             foreach (var node in nodes)
             {
                 node.Execute(n => models.Add(n.Model));

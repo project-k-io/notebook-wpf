@@ -6,19 +6,20 @@
              xmlns:local="clr-namespace:ProjectK.Notebook.Views.Items"
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:domain="clr-namespace:ProjectK.Notebook.Domain;assembly=ProjectK.Notebook.Domain"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
     <UserControl.Resources>
-        <viewModels:NodeViewModel 
+        <domain:NodeModel 
             x:Key="Model"
             Name="May"
             Context="Month"
             Created="{x:Static system:DateTime.Now}"
-            >
-        </viewModels:NodeViewModel>
+            />
+        <viewModels:NodeViewModel x:Key="ViewModel" Model="{StaticResource Model}"/>
     </UserControl.Resources>
 
-    <Grid d:DataContext="{StaticResource Model}">
+    <Grid d:DataContext="{StaticResource ViewModel}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>

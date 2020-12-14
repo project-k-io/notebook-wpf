@@ -1,14 +1,19 @@
 ﻿using System;
-using Castle.DynamicProxy.Contributors;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Interfaces;
+using ProjectK.Utils;
 
 namespace ProjectK.Notebook.Data
 {
     public class NotebookContext : DbContext
     {
-        private string _connectionString;
+        private readonly string _connectionString;
         public NotebookContext(string connectionString)
         {
             _connectionString = connectionString;

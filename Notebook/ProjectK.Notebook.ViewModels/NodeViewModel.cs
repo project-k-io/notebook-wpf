@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
+using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.ViewModels.Enums;
+using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Notebook.ViewModels.Extensions;
+using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Utils;
 
@@ -36,7 +40,7 @@ namespace ProjectK.Notebook.ViewModels
         //private string _name;
         //private DateTime _created;
         //private string _description;
-        public dynamic Model;
+        public INode Model { get; set; }
 
         // Misc
         private string _kind;
@@ -58,24 +62,17 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel()
         {
-            SetKind("Node");
-            Model = new NodeModel();
+            Kind = "Node";
         }
 
-        public NodeViewModel(dynamic model): this()
+        public NodeViewModel(NodeModel model) : this()
         {
-            SetKind("Node");
             Model = model;
         }
 
-        public void SetKind(string kind)
-        {
-            _kind = kind;
-        }
 
-        public void ViewModelToModel(ItemModel model)
+        public void ViewModelToModel(INode model)
         {
-            SetKind("Node");
             model.Id = Id;
             model.ParentId = ParentId;
             model.Name = Name;
@@ -126,7 +123,7 @@ namespace ProjectK.Notebook.ViewModels
             return $"{Context}:{Name}";
         }
 
-        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default(T), T newValue = default(T), bool broadcast = false)
+        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue = default, bool broadcast = false)
         {
             base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
             if (!IsNodeModelProperty(propertyName)) return;
@@ -134,7 +131,7 @@ namespace ProjectK.Notebook.ViewModels
             Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
             Modified = ModifiedStatus.Modified;
             SetParentChildModified();
-            MessengerInstance.Send(new NotificationMessage<NodeModel>(Model, "Modified"));
+            MessengerInstance.Send(new NotificationMessage<INode>(Model, "Modified"));
         }
 
         #endregion
@@ -149,7 +146,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Public functions
 
-        public void SaveTo(List<dynamic> list)
+        public void SaveTo(List<INode> list)
         {
             foreach (var node in Nodes)
             {
@@ -157,7 +154,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private void SaveRecursively(List<dynamic> list)
+        private void SaveRecursively(List<INode> list)
         {
             list.Add(Model);
 
@@ -180,24 +177,6 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        public virtual NodeViewModel AddNew()
-        {
-
-            var model = new NodeModel
-            {
-                Id = Guid.NewGuid(),
-                Name = "New Node", 
-                Created = DateTime.Now
-            };
-            var subNode = new NodeViewModel(model)
-            {
-                Kind = "Node",
-            };
-
-            Add(subNode);
-            FixContext(subNode);
-            return subNode;
-        }
 
 
         public void Add(NodeViewModel node)
@@ -270,23 +249,12 @@ namespace ProjectK.Notebook.ViewModels
                 node.ExtractContext(contextList);
         }
 
-        private void FixContext(string context, string child, NodeViewModel node)
+        public void FixContext(NodeViewModel node)
         {
-            if (Context != context)
-                return;
-
-            node.Context = child;
+            if(RulesHelper.GetSubNodeContext(Context, out var context))
+                node.Context = context;
         }
 
-        protected void FixContext(NodeViewModel node)
-        {
-            FixContext("Time Tracker", "Year", node);
-            FixContext("Year", "Month", node);
-            FixContext("Month", "Week", node);
-            FixContext("Week", "Day", node);
-            FixContext("Day", "Task", node);
-            FixContext("Task", "Task", node);
-        }
 
         public void FixContext()
         {
@@ -312,7 +280,7 @@ namespace ProjectK.Notebook.ViewModels
             return null;
         }
 
-        public List<dynamic> GetModels()
+        public List<INode> GetModels()
         {
             var models = Nodes.GetModels();
             models.Add(Model);
@@ -322,104 +290,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        public void KeyboardAction( KeyboardKeys keyboardKeys, IActionService service)
-        {
-            var item = this;
-            var state = service.GetState();
-
-            // don't show logging ctl, alt, shift or arrow keys
-            if (keyboardKeys != KeyboardKeys.None && state != KeyboardStates.None)
-                Logger.LogDebug($"KeyboardAction: {keyboardKeys}, {state}");
-
-            switch (keyboardKeys)
-            {
-                case KeyboardKeys.Insert:
-                    AddNode(state, service);
-                    break;
-                case KeyboardKeys.Delete:
-                    DeleteNode(service);
-                    break;
-
-                case KeyboardKeys.Left:
-                    if (state == KeyboardStates.IsCtrlShiftPressed)
-                    {
-                        var parent1 = item.Parent;
-                        if (parent1 == null)
-                            break;
-                        var parent2 = parent1.Parent;
-                        if (parent2 == null)
-                            break;
-
-                        parent1.Remove(item);
-
-                        var num2 = parent2.Nodes.IndexOf(parent1);
-                        parent2.Insert(num2 + 1, item);
-                        service.SelectItem(item);
-                        service.Handled();
-                    }
-
-                    break;
-                case KeyboardKeys.Right:
-                    if (state == KeyboardStates.IsCtrlShiftPressed)
-                    {
-                        var parent1 = item.Parent;
-                        if (parent1 == null)
-                            break;
-                        var num2 = parent1.Nodes.IndexOf(item);
-                        if (num2 <= 0)
-                            break;
-
-                        var parentNode2 = parent1.Nodes[num2 - 1];
-                        if (parentNode2 == null)
-                            break;
-
-                        parent1.Remove(item);
-                        parentNode2.Add(item);
-                        service.SelectItem(item);
-                        parent1.IsExpanded = true;
-                        item.IsSelected = true;
-                        service.Handled();
-                    }
-
-                    break;
-                case KeyboardKeys.Up:
-                    if (state == KeyboardStates.IsCtrlShiftPressed)
-                    {
-                        var parent1 = item.Parent;
-                        if (parent1 == null)
-                            break;
-                        var num2 = parent1.Nodes.IndexOf(item);
-                        if (num2 <= 0)
-                            break;
-                        parent1.Remove(item);
-                        parent1.Insert(num2 - 1, item);
-                        service.SelectItem(item);
-                        parent1.IsExpanded = true;
-                        item.IsSelected = true;
-                        service.Handled();
-                    }
-
-                    break;
-                case KeyboardKeys.Down:
-                    if (state == KeyboardStates.IsCtrlShiftPressed)
-                    {
-                        var parent1 = item.Parent;
-                        if (parent1 == null)
-                            break;
-                        var num2 = parent1.Nodes.IndexOf(item);
-                        if (num2 >= parent1.Nodes.Count - 1)
-                            break;
-                        parent1.Remove(item);
-                        parent1.Insert(num2 + 1, item);
-                        service.SelectItem(item);
-                        parent1.IsExpanded = true;
-                        item.IsSelected = true;
-                        service.Handled();
-                    }
-
-                    break;
-            }
-        }
 
         public void DeleteNode(IActionService service)
         {
@@ -441,46 +311,76 @@ namespace ProjectK.Notebook.ViewModels
 
             service.SelectItem(parentNode);
             service.Handled();
-
-            MessengerInstance.Send(new NotificationMessage<NodeViewModel>(item, "Delete"));
         }
 
-        public void AddNode(KeyboardStates state, IActionService service)
+        private void FixTitles()
         {
-            // var item = this;
-            NodeViewModel node = null;
-            switch (state)
+            foreach (var node in Nodes)
             {
-                case KeyboardStates.IsShiftPressed:
-                    node = Parent.AddNew();
-                    break;
-                case KeyboardStates.IsControlPressed:
-                    var lastSubNode = Parent.LastSubNode;
-                    node = Parent.AddNew();
+                var title = RulesHelper.GetSubNodeTitle(this, node.Model);
+                if (!string.IsNullOrEmpty(title))
+                    node.Name = title;
 
-                    if (lastSubNode != null)
-                    {
-                        node.Name = Name;
-                    }
+                node.FixTitles();
+            }
+        }
 
-                    break;
-                default:
-                    node = AddNew();
-                    break;
+
+        public INode CreateModel(Guid notebookId)
+        {
+            var context = RulesHelper.GetSubNodeContext(Context);
+            if (context.IsNullOrEmpty())
+                context = "Node";
+
+            INode model;
+            // Create Model
+            if (context == "Task")
+            {
+                model = new TaskModel               // CreateModel
+                {
+                    DateStarted = DateTime.Now,
+                    DateEnded = DateTime.Now,
+                    NotebookId = notebookId
+                };
+            }
+            else
+            {
+                model = new NodeModel
+                {
+                    Created = DateTime.Now,
+                    NotebookId = notebookId
+                };
             }
 
-            IsSelected = true;
-            service.SelectItem(this);
-            service.ExpandItem(this);
-            service.Handled();
-            if(node != null)
-                MessengerInstance.Send(new NotificationMessage<NodeViewModel>(node, "Add"));
+            model.Id = Guid.NewGuid();
+            model.Context = context;
+            var title = RulesHelper.GetSubNodeTitle(this, model);
 
-            Logger.LogDebug($"Added [{node.Name}] to [{Name}]");
+            if (!string.IsNullOrEmpty(title))
+                model.Name = title;
+            else
+                model.Name = context;
+
+            return model;
         }
 
 
 
+        public NodeViewModel CreateNode(INode model)
+        {
+            NodeViewModel node = null;
+            switch (model)
+            {
+                case TaskModel taskModel:
+                    node = new TaskViewModel(taskModel);
+                    break;
+                case NodeModel nodeModel:
+                    node = new NodeViewModel(nodeModel);
+                    break;
+            }
+            Add(node);
+            return node;
+        }
 
     }
 }

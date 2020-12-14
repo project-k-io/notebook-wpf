@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace ProjectK.View.Helpers
+﻿namespace ProjectK.View.Helpers
 {
     public class XKeyboard
     {

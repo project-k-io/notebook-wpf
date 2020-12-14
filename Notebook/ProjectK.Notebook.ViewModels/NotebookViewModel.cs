@@ -3,58 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
+//using ;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
-using Task = System.Threading.Tasks.Task;
+using TaskModel = ProjectK.Notebook.Domain.TaskModel;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class NotebookViewModel : ViewModelBase
+    public class NotebookViewModel : NodeViewModel
     {
         private readonly ILogger _logger = LogManager.GetLogger<NotebookViewModel>();
 
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
-        public  NotebookModel Model { get; }
 
-        /*
-        public NotebookViewModel()
+        public NotebookViewModel() 
         {
-            var rootTask = new NodeModel
-            {
-                Context = "Notebook",
-                Created = DateTime.Now,
-                Name = "New Notebook",
-                Id = Guid.NewGuid(),
-                ParentId = Guid.Empty
-            };
-
-            RootTask = new NodeViewModel(rootTask);
-
-            RootTask.Add(new NodeViewModel()
-            {
-                 Name = "Time Tracker", Context = "Time Tracker" 
-            });
-
-            Model = new NotebookModel();
+            Kind = "Notebook";
         }
-        */
 
-        public NotebookViewModel(NotebookModel model)
+        public NotebookViewModel(NotebookModel model) : this()
         {
             Model = model;
-            RootTask = new NodeViewModel(model);
         }
-
 
         #region Storage Functions Ver 1
 
-        public void LoadFrom(Domain.Versions.Version1.DataModel model)
+        public void LoadFrom(ProjectK.Notebook.Domain.Versions.Version1.DataModel model)
         {
             Clear();
 #if AK  // Load ver 1
@@ -67,20 +48,10 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Storage Functions 
 
-        public void ViewModelToModel()
-        {
-            _logger.LogDebug($"Populate NotebookModel from TreeNode {RootTask.Name}");
-            Model.Clear();
-            Model.ViewModelToModel(RootTask);
-        }
-
-
-
         #endregion
 
         public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();
 
-        public NodeViewModel RootTask { get; set; }
 
         public NodeViewModel SelectedTreeNode
         {
@@ -94,7 +65,6 @@ namespace ProjectK.Notebook.ViewModels
             set => Set(ref _selectedNode, value);
         }
 
-        public ObservableCollection<string> ContextList { get; set; } = new ObservableCollection<string>();
         public string Title
         {
             get => Model.Name;
@@ -109,7 +79,7 @@ namespace ProjectK.Notebook.ViewModels
             {
                 if (selectedNode.Context == "Day")
                 {
-                    if (selectedNode is TaskViewModel selectedTask)
+                    if (selectedNode.Model is TaskModel selectedTask)
                         dateTimeList.Add(selectedTask.DateStarted);
                 }
             }
@@ -126,7 +96,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel FindTask(Guid id)
         {
-            return (NodeViewModel)RootTask.FindNode(id);
+            return FindNode(id);
         }
 
         public void SelectTreeTask(NodeViewModel task)
@@ -172,14 +142,14 @@ namespace ProjectK.Notebook.ViewModels
 
         private static void AddToList(ICollection<NodeViewModel> list, NodeViewModel node, IList dates)
         {
-            if (node is TaskViewModel task)
+            if (node.Model is TaskModel task)
             {
                 if (ContainDate(dates, task.DateStarted))
                     list.Add(node);
             }
 
             foreach (var subTask in node.Nodes)
-                AddToList(list, (NodeViewModel)subTask, dates);
+                AddToList(list, subTask, dates);
         }
 
 
@@ -187,25 +157,22 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTime()
         {
-            if (SelectedTreeNode is TaskViewModel task)
+#if AK
+            if (SelectedTreeNode.Model is TaskModel task)
                 task.FixTime();
+#endif
         }
 
         public void Clear()
         {
-            RootTask.Nodes.Clear();
+            Nodes.Clear();
         }
 
         public void ExtractContext()
         {
             ContextList.Clear();
-            RootTask.ExtractContext(ContextList);
+            ExtractContext(ContextList);
             RaisePropertyChanged("ContextList");
-        }
-
-        public void FixContext()
-        {
-            SelectedTreeNode.FixContext();
         }
 
         public void FixTitles()
@@ -225,7 +192,7 @@ namespace ProjectK.Notebook.ViewModels
         public void UpdateSelectDayTasks(IList dates)
         {
             SelectedNodeList.Clear();
-            AddToList(SelectedNodeList, RootTask, dates);
+            AddToList(SelectedNodeList, this, dates);
         }
 
 
@@ -235,7 +202,7 @@ namespace ProjectK.Notebook.ViewModels
 
             var path = Title;
             var name = SelectedNode.Name;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", (string)SelectedNode.Name, ".txt");
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Name, ".txt");
             if (!ok)
                 return;
 
@@ -245,7 +212,7 @@ namespace ProjectK.Notebook.ViewModels
         public async Task ExportSelectedAllAsJson()
         {
             var path = Title;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", (string)SelectedNode.Name);
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Name);
             if (!ok)
                 return;
 

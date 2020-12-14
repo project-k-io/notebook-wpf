@@ -21,7 +21,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
             var sortedList = new SortedList<string, SortedList<string, List<NodeViewModel>>>();
             foreach (var node in nodes)
             {
-                if (node is TaskViewModel task)
+                if (node.Model is TaskModel task)
                 {
                     if (!string.IsNullOrEmpty(task.Type) && !task.IsSubTypeSleep())
                     {
@@ -49,7 +49,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                     var timeSpan = new TimeSpan();
                     foreach (var node2 in nodes2)
                     {
-                        if (node2 is TaskViewModel task2)
+                        if (node2.Model is TaskModel task2)
                             timeSpan += task2.Duration;
                     }
 
@@ -71,8 +71,14 @@ namespace ProjectK.Notebook.ViewModels.Reports
             if (t.Nodes.IsNullOrEmpty())
                 return;
 
-            var firstTask = (TaskViewModel)t.Nodes.FirstOrDefault();
-            var lastTask = (TaskViewModel)t.Nodes.LastOrDefault();
+            var firstNode = t.Nodes.FirstOrDefault();
+            var lastNode = t.Nodes.LastOrDefault();
+
+            if(!(firstNode?.Model is TaskModel firstTask))
+                return;
+
+            if (!(lastNode?.Model is TaskModel lastTask))
+                return;
 
             var dateStarted1 = firstTask?.DateStarted;
             var dateStarted2 = lastTask?.DateStarted;
@@ -112,13 +118,14 @@ namespace ProjectK.Notebook.ViewModels.Reports
                     AddHeader(selectedTask, sb, Logger);
 
                 sb.Append(report);
+
                 if (notebook.SelectedNode != null && notebook.SelectedNode.Context == "Week")
                 {
                     var nodes = notebook.SelectedNode.Nodes;
                     var lastNode = (NodeViewModel)nodes.LastOrDefault();
                     if (lastNode != null)
                     {
-                        var dateStarted = lastNode is TaskViewModel lastTask ? lastTask.DateStarted : DateTime.Now;
+                        var dateStarted = lastNode.Model is TaskModel lastTask ?  lastTask.DateStarted : DateTime.Now;
                         File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", model.TextReport);
                     }
                 }
