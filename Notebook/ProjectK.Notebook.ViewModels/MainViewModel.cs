@@ -34,20 +34,6 @@ namespace ProjectK.Notebook.ViewModels
 
         protected ILogger Logger;
 
-        static readonly List<string> GlobalContextList = new List<string>
-        {
-            "Notebook",
-            "Company",
-            "Contact",
-            "Node",
-            "Task",
-            "Note",
-            "Time Tracker",
-            "Year",
-            "Month",
-            "Day",
-            "Week"
-        };
 
         public static Guid RootGuid = new Guid("98601237-050a-4915-860c-5a820b361910");
 
@@ -194,7 +180,7 @@ namespace ProjectK.Notebook.ViewModels
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 
             // Add Context 
-            ContextList.AddRange(GlobalContextList);
+            ContextList.AddRange(RulesHelper.GlobalContextList);
 
             MessengerInstance.Register<NotificationMessage<NodeViewModel>>(this, NotifyMe);
         }
@@ -362,15 +348,8 @@ namespace ProjectK.Notebook.ViewModels
             TypeList.Clear();
             foreach (var str in types) TypeList.Add(str);
 
-            // Add only news ones
-            foreach (var item in GlobalContextList)
-            {
-                if (!contexts.Contains(item))
-                    contexts.Add(item);
-            }
-
             ContextList.Clear();
-            ContextList.AddRange(contexts);
+            ContextList.AddRange(RulesHelper.GlobalContextList);
 
 
             TaskTitleList.Clear();

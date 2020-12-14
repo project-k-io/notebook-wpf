@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Castle.Core.Internal;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Interfaces;
@@ -7,6 +8,21 @@ namespace ProjectK.Notebook.ViewModels.Helpers
 {
     public static class RulesHelper
     {
+        public static readonly List<string> GlobalContextList = new List<string>
+        {
+            "Notebook",
+            "Company",
+            "Contact",
+            "Node",
+            "Task",
+            "Note",
+            "Time Tracker",
+            "Year",
+            "Month",
+            "Day",
+            "Week"
+        };
+
         public static string GetSubNodeContext(string context)
         {
             return context switch
