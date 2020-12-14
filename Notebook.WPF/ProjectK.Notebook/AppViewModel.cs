@@ -18,7 +18,6 @@ using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.Extensions;
-using Syncfusion.Windows.Tools.Controls; // using ProjectK.NotebookModel.Models.Versions.Version2;
 
 namespace ProjectK.Notebook
 {
@@ -66,13 +65,9 @@ namespace ProjectK.Notebook
             var count = 1;
             var contentControl = new ContentControl();
             contentControl.Name = "newChild" + count;
-            DockingManager.SetHeader(contentControl, "New Child " + count);
-            DockingManager.SetDesiredWidthInDockedMode(contentControl, 200);
             if (!(Application.Current.MainWindow is MainWindow mainWindow))
                 return;
 
-            mainWindow.DockingManager.Children.Add(contentControl);
-            count++;
         }
 
         #endregion

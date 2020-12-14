@@ -99,54 +99,18 @@
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
-        <syncfusion:DockingManager 
-                x:Name="DockingManager"
-                Grid.Row="1"
-                DockStateChanged="DockingManager_OnDockStateChanged"
-                EnableMouseHoverBackground="False"
-                UseDocumentContainer="True"
-                >
-            <ContentControl
-                x:Name="bottomWindow"
-                syncfusion:DockingManager.CanFloatMaximize="True"
-                syncfusion:DockingManager.DesiredHeightInDockedMode="200"
-                syncfusion:DockingManager.DesiredWidthInDockedMode="200"
-                syncfusion:DockingManager.Header="Output"
-                syncfusion:DockingManager.SideInDockedMode="Bottom" >
-                <output:OutputView DataContext="{Binding Output}" />
-            </ContentControl>
-            <ContentControl
-                x:Name="tabbedWindow"
-                syncfusion:DockingManager.CanFloatMaximize="True"
-                syncfusion:DockingManager.DesiredHeightInDockedMode="200"
-                syncfusion:DockingManager.DesiredWidthInDockedMode="200"
-                syncfusion:DockingManager.Header="Error List"
-                syncfusion:DockingManager.SideInDockedMode="Tabbed"
-                syncfusion:DockingManager.TargetNameInDockedMode="bottomWindow" />
-            <ContentControl
-                x:Name="RightWindow"
-                syncfusion:DockingManager.CanFloatMaximize="True"
-                syncfusion:DockingManager.DesiredHeightInDockedMode="200"
-                syncfusion:DockingManager.DesiredWidthInDockedMode="200"
-                syncfusion:DockingManager.Header="Find and Replace"
-                syncfusion:DockingManager.SideInDockedMode="Right"
-                syncfusion:DockingManager.TargetNameInDockedMode="bottomWindow" />
-            <ContentControl
-                x:Name="exceptionWindow"
-                syncfusion:DockingManager.CanFloatMaximize="True"
-                syncfusion:DockingManager.DesiredHeightInDockedMode="200"
-                syncfusion:DockingManager.DesiredWidthInDockedMode="200"
-                syncfusion:DockingManager.Header="Exception Settings"
-                syncfusion:DockingManager.SideInDockedMode="Tabbed"
-                syncfusion:DockingManager.TargetNameInDockedMode="RightWindow" />
-            <ContentControl
-                x:Name="toolBox"
-                syncfusion:DockingManager.CanFloatMaximize="True"
-                syncfusion:DockingManager.DesiredHeightInDockedMode="200"
-                syncfusion:DockingManager.DesiredWidthInDockedMode="200"
-                syncfusion:DockingManager.Header="Toolbox"
-                syncfusion:DockingManager.SideInDockedMode="Left" >
-                <Grid>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
@@ -163,60 +127,30 @@
                         <Calendar SelectedDatesChanged="Calendar_OnSelectedDatesChanged" SelectionMode="MultipleRange" />
                     </Expander>
                 </Grid>
-            </ContentControl>
-            <ContentControl
-                x:Name="solutionExplorer"
-                syncfusion:DockingManager.CanFloatMaximize="True"
-                syncfusion:DockingManager.DesiredHeightInDockedMode="200"
-                syncfusion:DockingManager.DesiredWidthInDockedMode="200"
-                syncfusion:DockingManager.Header="Solution Explorer"
-                syncfusion:DockingManager.SideInDockedMode="Right">
-                <items:ItemView DataContext="{Binding Path= SelectedNotebook.SelectedNode}"/>
-            </ContentControl>
-            <ContentControl
-                x:Name="properties"
-                syncfusion:DockingManager.CanDragAutoHidden="True"
-                syncfusion:DockingManager.CanFloatMaximize="True"
-                syncfusion:DockingManager.DesiredHeightInDockedMode="200"
-                syncfusion:DockingManager.DesiredWidthInDockedMode="200"
-                syncfusion:DockingManager.Header="Properties"
-                syncfusion:DockingManager.SideInDockedMode="Right"
-                syncfusion:DockingManager.State="AutoHidden" />
-            <ContentControl
-                x:Name="teamExplorer"
-                syncfusion:DockingManager.CanFloatMaximize="True"
-                syncfusion:DockingManager.DesiredHeightInDockedMode="200"
-                syncfusion:DockingManager.DesiredWidthInDockedMode="200"
-                syncfusion:DockingManager.Header="Team Explorer"
-                syncfusion:DockingManager.SideInDockedMode="Tabbed"
-                syncfusion:DockingManager.TargetNameInDockedMode="solutionExplorer">
-                <ComboBox Grid.Row="0" IsEditable="true" ItemsSource="{Binding Path=SelectedNotebook.ContextList}"/>
-            </ContentControl>
-            <ContentControl
-                    x:Name="ExcelCSVView"
-                    syncfusion:DockingManager.CanDock="False"
-                    syncfusion:DockingManager.CanFloatMaximize="True"
-                    syncfusion:DockingManager.Header="Excel CSV View"
-                    syncfusion:DockingManager.State="Document">
-                <views:ExcelCsvView />
-            </ContentControl>
-            <ContentControl
-                x:Name="ListView"
-                syncfusion:DockingManager.CanDock="False"
-                syncfusion:DockingManager.CanFloatMaximize="True"
-                syncfusion:DockingManager.Header="List View"
-                syncfusion:DockingManager.State="Document">
-                <views:NodeListView />
-            </ContentControl>
-            <ContentControl
-                x:Name="ReportView"
-                syncfusion:DockingManager.CanFloatMaximize="True"
-                syncfusion:DockingManager.Header="Report View"
-                syncfusion:DockingManager.State="Document">
-                <views:ReportView />
-            </ContentControl>
+                <TabControl Grid.Column="1">
+                    <TabItem Header="Report View">
+                        <views:ReportView />
+                    </TabItem>
+                    <TabItem Header="List View">
+                        <views:NodeListView />
+                    </TabItem>
+                    <TabItem  Header="Excel CSV View">
+                        <views:ExcelCsvView />
+                    </TabItem>
+                </TabControl>
+                <TabControl Grid.Column="2">
+                    <TabItem Header="Item View">
+                        <items:ItemView DataContext="{Binding Path= SelectedNotebook.SelectedNode}"/>
+                    </TabItem>
+                    <TabItem Header="Context List">
+                        <ComboBox Grid.Row="0" IsEditable="true" ItemsSource="{Binding Path=SelectedNotebook.ContextList}"/>
+                    </TabItem>
+                </TabControl>
 
-        </syncfusion:DockingManager>
+            </Grid>
+            <output:OutputView Grid.Row="1">
+            </output:OutputView>
+        </Grid>
     </Grid>
 
 </Window>

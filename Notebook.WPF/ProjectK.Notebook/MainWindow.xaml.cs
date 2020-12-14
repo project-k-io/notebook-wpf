@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using ProjectK.Logging;
 using ProjectK.Notebook.Settings;
 using ProjectK.View.Helpers.Misc;
-using Syncfusion.Windows.Tools.Controls;
 
 namespace ProjectK.Notebook
 {
@@ -52,13 +51,6 @@ namespace ProjectK.Notebook
             model.OnGenerateReportChanged();
         }
 
-        private void DockingManager_OnDockStateChanged(FrameworkElement sender, DockStateEventArgs e)
-        {
-            if (e.NewState == DockState.Hidden)
-            {
-                DockingManager.Children.Remove(sender);
-            }
-        }
 
         #region DockingManager
 
@@ -80,7 +72,6 @@ namespace ProjectK.Notebook
             try
             {
                 var writer = XmlWriter.Create(DockFileName);
-                window.DockingManager.SaveDockState(writer);
                 writer.Close();
             }
             catch (Exception e)
@@ -110,7 +101,6 @@ namespace ProjectK.Notebook
             try
             {
                 var reader = XmlReader.Create(DockFileName);
-                window.DockingManager.LoadDockState(reader);
                 reader.Close();
             }
             catch (Exception ex)

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Settings;
-using Syncfusion.Licensing;
 
 namespace ProjectK.Notebook
 {
@@ -49,7 +48,6 @@ namespace ProjectK.Notebook
             _logger = LogManager.GetLogger<App>();
             _logger.LogDebug("Test");
 
-            SyncfusionLicenseProvider.RegisterLicense("MzEwNjY0QDMxMzgyZTMyMmUzMEdzZjVJbzlJbzdSTkNLWWJuNFlPRWlZOXBOWkZNc0N0cnVTRm9PcXVBNEE9");
             DispatcherUnhandledException += OnDispatcherUnhandledException;
         }
         private void ConfigureServices(IConfiguration configuration, IServiceCollection services)
