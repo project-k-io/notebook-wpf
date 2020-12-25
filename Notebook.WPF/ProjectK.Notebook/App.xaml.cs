@@ -1,15 +1,15 @@
-﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Settings;
 using ProjectK.ViewModels;
+using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace ProjectK.Notebook
 {
@@ -25,7 +25,7 @@ namespace ProjectK.Notebook
         public App()
         {
             _host = Host.CreateDefaultBuilder() // Use default settings
-                //new HostBuilder()          // Initialize an empty HostBuilder
+                                                //new HostBuilder()          // Initialize an empty HostBuilder
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     _basePath = Environment.CurrentDirectory;

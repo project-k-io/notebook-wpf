@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using Castle.Core.Internal;
+﻿using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
@@ -13,6 +9,10 @@ using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Utils;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ProjectK.Notebook.ViewModels
 {

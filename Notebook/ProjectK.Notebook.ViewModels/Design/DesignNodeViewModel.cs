@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using ProjectK.Notebook.Domain;
+﻿using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Utils.Extensions;
+using System;
+using System.Collections.ObjectModel;
 
 namespace ProjectK.Notebook.ViewModels.Design
 {

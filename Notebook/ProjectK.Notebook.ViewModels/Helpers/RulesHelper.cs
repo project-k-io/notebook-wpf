@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using ProjectK.Notebook.Domain.Interfaces;
+﻿using ProjectK.Notebook.Domain.Interfaces;
+using System.Collections.Generic;
 
 namespace ProjectK.Notebook.ViewModels.Helpers
 {

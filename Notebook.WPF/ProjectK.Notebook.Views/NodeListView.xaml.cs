@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using ProjectK.Notebook.ViewModels;
+﻿using ProjectK.Notebook.ViewModels;
 using ProjectK.View.Helpers.Misc;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace ProjectK.Notebook.Views
 {

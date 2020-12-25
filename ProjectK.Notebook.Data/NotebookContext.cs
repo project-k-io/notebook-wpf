@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectK.Notebook.Domain;
+using System;
 
 namespace ProjectK.Notebook.Data
 {

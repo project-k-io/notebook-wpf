@@ -1,11 +1,11 @@
-﻿using System;
+﻿using ProjectK.Notebook.Domain.Extensions;
+using ProjectK.Notebook.Domain.Interfaces;
+using ProjectK.Utils.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using ProjectK.Notebook.Domain.Extensions;
-using ProjectK.Notebook.Domain.Interfaces;
-using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
 {
@@ -33,7 +33,7 @@ namespace ProjectK.Notebook.Domain
         }
 
 
-        public  bool IsSame(NotebookModel target)
+        public bool IsSame(NotebookModel target)
         {
             if (!Notes.IsSame(target.Notes, (a, b) => a.IsSame(b)))
                 return false;

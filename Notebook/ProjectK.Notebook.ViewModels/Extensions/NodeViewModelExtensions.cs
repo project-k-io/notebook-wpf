@@ -1,8 +1,6 @@
-﻿using System;
+﻿using ProjectK.Notebook.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
-using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {

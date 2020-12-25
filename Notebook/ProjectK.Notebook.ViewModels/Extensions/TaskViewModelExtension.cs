@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Interfaces;
 using ProjectK.Utils;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {

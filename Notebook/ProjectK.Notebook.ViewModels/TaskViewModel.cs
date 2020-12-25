@@ -1,11 +1,10 @@
-﻿using System;
-using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
+﻿using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Utils.Extensions;
+using System;
+using System.Windows.Input;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -134,7 +133,7 @@ namespace ProjectK.Notebook.ViewModels
             }
 
             foreach (var subTask in Nodes)
-                ((TaskViewModel) subTask).FixTypes();
+                ((TaskViewModel)subTask).FixTypes();
         }
 
         #endregion
@@ -153,23 +152,23 @@ namespace ProjectK.Notebook.ViewModels
             {
                 for (var index = 0; index < Nodes.Count; ++index)
                 {
-                    var subTask = (TaskViewModel) Nodes[index];
+                    var subTask = (TaskViewModel)Nodes[index];
                     if (subTask.DateEnded == DateTime.MinValue && index < Nodes.Count - 1)
-                        subTask.DateEnded = ((TaskViewModel) Nodes[index + 1]).DateStarted;
+                        subTask.DateEnded = ((TaskViewModel)Nodes[index + 1]).DateStarted;
                 }
 
                 Total = TimeSpan.Zero;
                 for (var index = 0; index < Nodes.Count; ++index)
                 {
-                    var subTask = (TaskViewModel) Nodes[index];
+                    var subTask = (TaskViewModel)Nodes[index];
                     subTask.FixTime();
                     Total += subTask.Total;
                 }
 
-                var subTask1 = (TaskViewModel) Nodes[^1];
+                var subTask1 = (TaskViewModel)Nodes[^1];
                 if (subTask1.DateEnded != DateTime.MinValue)
                     DateEnded = subTask1.DateEnded;
-                var subTask2 = (TaskViewModel) Nodes[0];
+                var subTask2 = (TaskViewModel)Nodes[0];
                 if (subTask2.DateStarted != DateTime.MinValue)
                     DateStarted = subTask2.DateStarted;
             }

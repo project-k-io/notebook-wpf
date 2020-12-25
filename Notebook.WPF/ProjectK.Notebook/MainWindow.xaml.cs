@@ -1,14 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Windows;
-using System.Windows.Controls;
-using System.Xml;
-using GalaSoft.MvvmLight.Command;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProjectK.Logging;
 using ProjectK.Notebook.Settings;
 using ProjectK.View.Helpers.Misc;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace ProjectK.Notebook
 {

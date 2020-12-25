@@ -1,13 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using ProjectK.Logging;
@@ -16,6 +7,12 @@ using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.ViewModels;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace ProjectK.Notebook
 {

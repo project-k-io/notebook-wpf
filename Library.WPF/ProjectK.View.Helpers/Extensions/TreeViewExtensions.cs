@@ -20,7 +20,7 @@ namespace ProjectK.View.Helpers.Extensions
                     currentContainer.IsExpanded = true;
                     if (currentContainer.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
                     {
-                        var eh = (EventHandler) null;
+                        var eh = (EventHandler)null;
                         eh = (param0, param1) =>
                         {
                             if (currentContainer.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
@@ -64,7 +64,7 @@ namespace ProjectK.View.Helpers.Extensions
                 currentContainer.IsExpanded = true;
                 if (currentContainer.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
                 {
-                    var eh = (EventHandler) null;
+                    var eh = (EventHandler)null;
                     eh = (param0, param1) =>
                     {
                         if (currentContainer.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)

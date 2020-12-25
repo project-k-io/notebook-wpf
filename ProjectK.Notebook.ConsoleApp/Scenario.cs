@@ -1,7 +1,5 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
-using ProjectK.Notebook.Data;
+﻿using ProjectK.Notebook.Data;
+using System.Threading.Tasks;
 
 namespace ProjectK.Notebook.ConsoleApp
 {

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using ProjectK.Notebook.Domain.Versions.Version2;
+﻿using ProjectK.Notebook.Domain.Versions.Version2;
 using ProjectK.Utils;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using TaskModel = ProjectK.Notebook.Domain.TaskModel;
 
 namespace ProjectK.Notebook.Data

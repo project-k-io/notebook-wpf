@@ -1,13 +1,13 @@
-﻿using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using ProjectK.Notebook.ViewModels;
+﻿using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Notebook.Views.Helpers;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.View.Helpers.Misc;
 using ProjectK.Views.TreeViewList;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ProjectK.Notebook.Views
 {
@@ -80,7 +80,7 @@ namespace ProjectK.Notebook.Views
             if (!(treeListView.DataContext is MainViewModel model))
                 return;
 
-            var task = treeListView.SelectedItem is NodeViewModel ? (NodeViewModel) treeListView.SelectedItem : model.RootTask;
+            var task = treeListView.SelectedItem is NodeViewModel ? (NodeViewModel)treeListView.SelectedItem : model.RootTask;
             model.SelectTreeTask(task);
         }
     }
