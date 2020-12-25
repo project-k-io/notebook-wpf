@@ -312,14 +312,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Public functions
 
-        public void FileOpenOldFormat()
-        {
-#if AK
-            SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Title));
-#endif
-        }
-
-
         public void UpdateTypeListAsync(List<INode> nodes)
         {
             var types = new SortedSet<string>();

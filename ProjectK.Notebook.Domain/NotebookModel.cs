@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using ProjectK.Notebook.Domain.Extensions;
 using ProjectK.Notebook.Domain.Interfaces;
+using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Domain
 {
@@ -31,7 +33,6 @@ namespace ProjectK.Notebook.Domain
         }
 
 
-#if AK
         public  bool IsSame(NotebookModel target)
         {
             if (!Notes.IsSame(target.Notes, (a, b) => a.IsSame(b)))
@@ -42,7 +43,8 @@ namespace ProjectK.Notebook.Domain
 
             return true;
         }
-        public  NotebookModel Copy()
+#if AK
+        public NotebookModel Copy()
         {
             var model = new NotebookModel();
             model.Notes.Copy(Notes, a => a.Copy());

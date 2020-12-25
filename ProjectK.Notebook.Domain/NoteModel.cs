@@ -21,20 +21,5 @@ namespace ProjectK.Notebook.Domain
         // Foreign Key
         [ForeignKey("NotebookModel")] public Guid NotebookId { get; set; }
         public virtual NotebookModel NotebookModel { get; set; }
-
-#if AK
-        public NoteModel()
-        {
-        }
-        public NoteModel(NoteModel b) : base(b)
-        {
-            Text = b.Text;
-        }
-
-        public new NoteModel Copy()
-        {
-            return new NoteModel(this);
-        }
-#endif
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
@@ -174,8 +175,7 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 #if AK
-        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue =
- default, bool broadcast = false)
+        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue = default, bool broadcast = false)
         {
             base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
             if (!IsTaskModelProperty(propertyName)) return;
@@ -183,7 +183,7 @@ namespace ProjectK.Notebook.ViewModels
             Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
             Modified = ModifiedStatus.Modified;
             SetParentChildModified();
-            MessengerInstance.Send(new NotificationMessage<TaskModel>(Model, "Modified"));
+            MessengerInstance.Send(new NotificationMessage<TaskViewModel>(this, "Modified"));
         }
 #endif
 

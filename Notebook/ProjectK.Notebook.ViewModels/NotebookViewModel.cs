@@ -54,18 +54,6 @@ namespace ProjectK.Notebook.ViewModels
             set => Model.Name = value;
         }
 
-        #region Storage Functions Ver 1
-
-        public void LoadFrom(DataModel model)
-        {
-            Clear();
-#if AK // Load ver 1
-            RootTask.LoadFrom(model.RootTask);
-#endif
-        }
-
-        #endregion
-
 
         public List<DateTime> GetSelectedDays()
         {
@@ -144,10 +132,8 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTime()
         {
-#if AK
-            if (SelectedTreeNode.Model is TaskModel task)
+            if (SelectedTreeNode is TaskViewModel task)
                 task.FixTime();
-#endif
         }
 
         public void Clear()
