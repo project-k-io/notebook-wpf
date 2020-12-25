@@ -242,7 +242,7 @@ namespace ProjectK.Notebook.ViewModels
                 Context = "Notebook",
                 Created = DateTime.Now
             };
-            ImportNotebook(model);
+            await ImportNotebook(model);
             await SyncDatabaseAsync();
         }
 

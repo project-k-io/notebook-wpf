@@ -11,7 +11,9 @@ using ProjectK.Notebook.Domain.Versions.Version1;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
-using TaskModel = ProjectK.Notebook.Domain.TaskModel; //using ;
+using TaskModel = ProjectK.Notebook.Domain.TaskModel;
+
+//using ;
 
 namespace ProjectK.Notebook.ViewModels
 {

@@ -10,5 +10,6 @@ namespace ProjectK.Logging
         public string Message { get; set; }
 
         public LogLevel Level { get; set; }
+        public EventId EventId { get; set; }
     }
 }

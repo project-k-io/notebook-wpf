@@ -128,7 +128,7 @@ namespace ProjectK.ViewModels
 
         public void LogEvent(LogLevel logLevel, EventId eventId, string message)
         {
-            var record = AddNewRecord(new LoggingEventArgs {Level = logLevel, Message = message});
+            AddNewRecord(new LoggingEventArgs {Level = logLevel, EventId = eventId, Message = message});
         }
     }
 }
