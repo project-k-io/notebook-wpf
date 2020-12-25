@@ -52,7 +52,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.Utils.csproj" />
-    <ProjectReference Include="..\..\ProjectK.Notebook.Data\ProjectK.Notebook.Data.csproj" />
     <ProjectReference Include="..\ProjectK.Notebook.Views\ProjectK.Notebook.Views.csproj" />
   </ItemGroup>
 
