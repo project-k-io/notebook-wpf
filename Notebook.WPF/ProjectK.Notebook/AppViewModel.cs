@@ -18,6 +18,7 @@ using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.Extensions;
+using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook
 {
@@ -40,7 +41,6 @@ namespace ProjectK.Notebook
             AddCommand = new RelayCommand(Add);
 
             Assembly = Assembly.GetExecutingAssembly();
-            InitOutput();
             Logger = LogManager.GetLogger<MainViewModel>();
             Logger.LogDebug("Import Logging()");
         }
@@ -50,8 +50,9 @@ namespace ProjectK.Notebook
 
         #region Private Functions
 
-        private void InitOutput()
+        public void InitOutput(OutputViewModel output)
         {
+            Output = output;
             Output.UpdateFilter = () =>
                 CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
         }

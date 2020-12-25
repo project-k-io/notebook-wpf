@@ -114,9 +114,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public bool CanSave { get; set; }
         public Action<Action> OnDispatcher { get; set; }
-        public OutputViewModel Output { get; set; } = new OutputViewModel();
-
-
+        public OutputViewModel Output { get; set; } 
 
 
         #endregion

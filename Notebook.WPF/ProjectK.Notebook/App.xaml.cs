@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Settings;
+using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook
 {
@@ -19,7 +20,7 @@ namespace ProjectK.Notebook
         private string _basePath;
         private MainWindow _window;
         private AppViewModel _viewModel;
-
+        private OutputViewModel _output = new OutputViewModel();
 
         public App()
         {
@@ -39,7 +40,7 @@ namespace ProjectK.Notebook
                 {
                     logging.AddConsole();
                     logging.AddDebug();
-                    // logging.AddProvider(new OutputLoggerProvider(Output.LogEvent));
+                    logging.AddProvider(new OutputLoggerProvider(_output.LogEvent));
                     // Add other loggers...
                 })
                 .Build();
@@ -80,6 +81,7 @@ namespace ProjectK.Notebook
 
             // Created ViewModel
             _viewModel = _host.Services.GetRequiredService<AppViewModel>();
+            _viewModel.InitOutput(_output);
             _viewModel.LoadSettings();
 
             // Open Database

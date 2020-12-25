@@ -148,7 +148,7 @@
                 </TabControl>
 
             </Grid>
-            <output:OutputView Grid.Row="1">
+            <output:OutputView Grid.Row="1" DataContext="{Binding Output}">
             </output:OutputView>
         </Grid>
     </Grid>
