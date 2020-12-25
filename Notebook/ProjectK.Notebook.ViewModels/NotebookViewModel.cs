@@ -4,15 +4,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
-//using ;
+using ProjectK.Notebook.Domain.Versions.Version1;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
-using TaskModel = ProjectK.Notebook.Domain.TaskModel;
+using TaskModel = ProjectK.Notebook.Domain.TaskModel; //using ;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -23,7 +22,7 @@ namespace ProjectK.Notebook.ViewModels
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
 
-        public NotebookViewModel() 
+        public NotebookViewModel()
         {
             Kind = "Notebook";
         }
@@ -33,24 +32,8 @@ namespace ProjectK.Notebook.ViewModels
             Model = model;
         }
 
-        #region Storage Functions Ver 1
-
-        public void LoadFrom(ProjectK.Notebook.Domain.Versions.Version1.DataModel model)
-        {
-            Clear();
-#if AK  // Load ver 1
-            RootTask.LoadFrom(model.RootTask);
-#endif
-        }
-
-
-        #endregion
-
-        #region Storage Functions 
-
-        #endregion
-
-        public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();
+        public ObservableCollection<NodeViewModel> SelectedNodeList { get; } =
+            new ObservableCollection<NodeViewModel>();
 
 
         public NodeViewModel SelectedTreeNode
@@ -71,18 +54,26 @@ namespace ProjectK.Notebook.ViewModels
             set => Model.Name = value;
         }
 
+        #region Storage Functions Ver 1
+
+        public void LoadFrom(DataModel model)
+        {
+            Clear();
+#if AK // Load ver 1
+            RootTask.LoadFrom(model.RootTask);
+#endif
+        }
+
+        #endregion
+
 
         public List<DateTime> GetSelectedDays()
         {
             var dateTimeList = new List<DateTime>();
             foreach (var selectedNode in SelectedNodeList)
-            {
                 if (selectedNode.Context == "Day")
-                {
                     if (selectedNode.Model is TaskModel selectedTask)
                         dateTimeList.Add(selectedTask.DateStarted);
-                }
-            }
 
             return dateTimeList;
         }
@@ -143,16 +134,12 @@ namespace ProjectK.Notebook.ViewModels
         private static void AddToList(ICollection<NodeViewModel> list, NodeViewModel node, IList dates)
         {
             if (node.Model is TaskModel task)
-            {
                 if (ContainDate(dates, task.DateStarted))
                     list.Add(node);
-            }
 
             foreach (var subTask in node.Nodes)
                 AddToList(list, subTask, dates);
         }
-
-
 
 
         public void FixTime()
@@ -196,10 +183,8 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-
         public async Task ExportSelectedAllAsText(string text)
         {
-
             var path = Title;
             var name = SelectedNode.Name;
             var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Name, ".txt");
@@ -219,6 +204,8 @@ namespace ProjectK.Notebook.ViewModels
             await SelectedNode.ExportToFileAsync(exportPath);
         }
 
+        #region Storage Functions
 
+        #endregion
     }
 }

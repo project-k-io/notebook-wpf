@@ -19,13 +19,13 @@ namespace ProjectK.Utils
 
             return lines;
         }
-        
+
         public static List<string> ConvertTextInMultipleLines(string text, int maxLength, char separator)
         {
             var lines = new List<string>();
             var words = text.Split(separator);
             var sb = new StringBuilder();
-            for(var i = 0; i < words.Length; i++)
+            for (var i = 0; i < words.Length; i++)
             {
                 var word = words[i];
                 if (sb.Length + word.Length > maxLength)
@@ -36,7 +36,7 @@ namespace ProjectK.Utils
 
                 sb.Append(word);
                 // don't to last word
-                if(i != words.Length- 1)
+                if (i != words.Length - 1)
                     sb.Append(" ");
             }
 
@@ -57,6 +57,7 @@ namespace ProjectK.Utils
 
                 break;
             }
+
             return newName;
         }
     }

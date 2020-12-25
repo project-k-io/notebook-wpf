@@ -3,7 +3,7 @@
 namespace ProjectK.Notebook.Views.Items
 {
     /// <summary>
-    /// Interaction logic for NodeView.xaml
+    ///     Interaction logic for NodeView.xaml
     /// </summary>
     public partial class NodeView : UserControl
     {

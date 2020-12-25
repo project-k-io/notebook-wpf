@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using ProjectK.Notebook.Domain.Interfaces;
-using ProjectK.Notebook.Domain.Versions.Version2;
 
 namespace ProjectK.Notebook.Domain
 {
-    public class NotebookModel: INode
+    public class NotebookModel : INode
     {
-        [Key]
-        public Guid Id { get; set; }
+        [Key] public Guid Id { get; set; }
         public Guid ParentId { get; set; }
         public string Name { get; set; }
         public string Context { get; set; }
@@ -36,8 +32,6 @@ namespace ProjectK.Notebook.Domain
 
 
 #if AK
-
-
         public  bool IsSame(NotebookModel target)
         {
             if (!Notes.IsSame(target.Notes, (a, b) => a.IsSame(b)))

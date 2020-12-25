@@ -11,7 +11,8 @@ namespace ProjectK.Notebook.ViewModels
     {
         private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
 
-        public static bool Set<T>(this ViewModelBase m, T oldValue, Action<T> setValue, T newValue, bool broadcast = false, [CallerMemberName] string propertyName = null)
+        public static bool Set<T>(this ViewModelBase m, T oldValue, Action<T> setValue, T newValue,
+            bool broadcast = false, [CallerMemberName] string propertyName = null)
         {
             try
             {

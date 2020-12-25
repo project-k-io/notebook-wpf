@@ -9,6 +9,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
 {
     public class NotesReport
     {
+        private const char SpaceChar = ' ';
         private static readonly ILogger Logger = LogManager.GetLogger<NotesReport>();
 
         public string GenerateReport(NodeViewModel node)
@@ -16,7 +17,6 @@ namespace ProjectK.Notebook.ViewModels.Reports
             Logger.LogDebug("GenerateReport()");
             try
             {
-
                 var sb = new StringBuilder();
                 GenerateReport(node, sb, 0);
                 return sb.ToString();
@@ -28,12 +28,10 @@ namespace ProjectK.Notebook.ViewModels.Reports
             }
         }
 
-        private const char SpaceChar = ' ';
-
         private void GenerateReport(NodeViewModel node, StringBuilder sb, int offset)
         {
             const int max = 80;
-            if(node == null)
+            if (node == null)
                 return;
 
             if (node.Model is TaskModel task)
@@ -62,14 +60,10 @@ namespace ProjectK.Notebook.ViewModels.Reports
                         sb.AppendLine(description);
                     }
                 }
-
             }
 
 
-            foreach (var subTask in node.Nodes)
-            {
-                GenerateReport(subTask, sb, offset + 2);
-            }
+            foreach (var subTask in node.Nodes) GenerateReport(subTask, sb, offset + 2);
         }
     }
 }

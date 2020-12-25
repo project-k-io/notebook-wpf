@@ -9,7 +9,7 @@
              d:DesignWidth="1000"
              d:DesignHeight="600">
     <UserControl.Resources>
-        <converters:IndexConverter x:Key="IndexConverter"/>
+        <converters:IndexConverter x:Key="IndexConverter" />
         <system:String x:Key="DateFormatF">{0:MM-dd-yyyy HH:mm:ss tt}</system:String>
         <system:Double x:Key="DateWidth">150</system:Double>
         <Style x:Key="TextStyle" TargetType="{x:Type TextBlock}">
@@ -31,11 +31,11 @@
     </UserControl.Resources>
     <Grid>
         <ListView
-                  ButtonBase.Click="ListViewTasks_OnClick"
-                  x:Name="listViewTasks"
-                  SelectionMode="Extended"
-                  ItemsSource="{Binding Path=SelectedNotebook.SelectedNodeList}"
-                  SelectedItem="{Binding Path=SelectedNotebook.SelectedNode, IsAsync=true, Mode=TwoWay}">
+            ButtonBase.Click="ListViewTasks_OnClick"
+            x:Name="listViewTasks"
+            SelectionMode="Extended"
+            ItemsSource="{Binding Path=SelectedNotebook.SelectedNodeList}"
+            SelectedItem="{Binding Path=SelectedNotebook.SelectedNode, IsAsync=true, Mode=TwoWay}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn
@@ -51,9 +51,11 @@
                     <GridViewColumn Header="Type" Width="80" DisplayMemberBinding="{Binding Path=Type}" />
                     <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Path=Name}" />
                     <GridViewColumn Header="Description" Width="350" DisplayMemberBinding="{Binding Path=Description}" />
-                    <GridViewColumn Header="Started" Width="{StaticResource DateWidth}" DisplayMemberBinding="{Binding Path=DateStarted, StringFormat={StaticResource DateFormatF}}" />
-                    <GridViewColumn Header="Ended" Width="{StaticResource DateWidth}" DisplayMemberBinding="{Binding Path=DateEnded, StringFormat={StaticResource DateFormatF}}" />
-                    <GridViewColumn Header="Duration" Width="100"> 
+                    <GridViewColumn Header="Started" Width="{StaticResource DateWidth}"
+                                    DisplayMemberBinding="{Binding Path=DateStarted, StringFormat={StaticResource DateFormatF}}" />
+                    <GridViewColumn Header="Ended" Width="{StaticResource DateWidth}"
+                                    DisplayMemberBinding="{Binding Path=DateEnded, StringFormat={StaticResource DateFormatF}}" />
+                    <GridViewColumn Header="Duration" Width="100">
                         <GridViewColumn.DisplayMemberBinding>
                             <MultiBinding StringFormat="{}{0:D1} hrs {1:D1} min" Mode="OneWay">
                                 <Binding Path="Duration.Hours" />
@@ -61,7 +63,7 @@
                             </MultiBinding>
                         </GridViewColumn.DisplayMemberBinding>
                     </GridViewColumn>
-                    <GridViewColumn Header="Total" Width="100"> 
+                    <GridViewColumn Header="Total" Width="100">
                         <GridViewColumn.DisplayMemberBinding>
                             <MultiBinding StringFormat="{}{0:D1} days {1:D1} hrs {2:D1} min" Mode="OneWay">
                                 <Binding Path="Total.Days" />

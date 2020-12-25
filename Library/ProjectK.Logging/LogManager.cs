@@ -7,6 +7,7 @@ namespace ProjectK.Logging
     public class LogManager
     {
         private static IServiceProvider _provider;
+
         public LogManager(IServiceProvider provider)
         {
             _provider = provider;

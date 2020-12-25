@@ -11,11 +11,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using ProjectK.Logging;
-using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Versions.Version2;
 using ProjectK.Notebook.Settings;
 using ProjectK.Notebook.ViewModels;
-using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.ViewModels;
@@ -24,15 +21,6 @@ namespace ProjectK.Notebook
 {
     public class AppViewModel : MainViewModel
     {
-        #region Commands
-
-        public ICommand LoadDockLayoutCommand { get; set; }
-        public ICommand SaveDockLayoutCommand { get; set; }
-        public ICommand AddCommand { get; }
-        public AppSettings _settings;
-
-        #endregion
-
         #region Constructors
 
         public AppViewModel(IOptions<AppSettings> settings)
@@ -48,39 +36,12 @@ namespace ProjectK.Notebook
         #endregion
 
 
-        #region Private Functions
-
-        public void InitOutput(OutputViewModel output)
-        {
-            Output = output;
-            Output.UpdateFilter = () =>
-                CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
-        }
-
-        /// <summary>
-        /// Helps to perform save and load operation of Docking Manager.
-        /// </summary>
-        /// <param name="obj"></param>
-        private void Add()
-        {
-            var count = 1;
-            var contentControl = new ContentControl();
-            contentControl.Name = "newChild" + count;
-            if (!(Application.Current.MainWindow is MainWindow mainWindow))
-                return;
-
-        }
-
-        #endregion
-
-
         public void LoadSettings()
         {
             Logger.LogDebug("LoadSettings");
             // ISSUE: variable of a compiler-generated type
             try
             {
-
                 // model settings
                 LastListTaskId = _settings.LastListTaskId;
                 LastTreeTaskId = _settings.LastTreeTaskId;
@@ -137,8 +98,8 @@ namespace ProjectK.Notebook
         {
             var commandBindings = new CommandBindingCollection
             {
-                new CommandBinding(ApplicationCommands.Open, async (s, e) => await this.OpenFileAsync(),
-                    (s, e) => e.CanExecute = true),
+                new CommandBinding(ApplicationCommands.Open, async (s, e) => await OpenFileAsync(),
+                    (s, e) => e.CanExecute = true)
             };
             return commandBindings;
         }
@@ -165,7 +126,7 @@ namespace ProjectK.Notebook
         {
             try
             {
-                Logger.LogDebug($"OpenFileAsync()");
+                Logger.LogDebug("OpenFileAsync()");
                 var dialog = new OpenFileDialog();
                 var r = dialog.SetFileDialog(SelectedNotebook?.Title);
                 if (!r.ok)
@@ -180,5 +141,38 @@ namespace ProjectK.Notebook
             }
         }
 
+        #region Commands
+
+        public ICommand LoadDockLayoutCommand { get; set; }
+        public ICommand SaveDockLayoutCommand { get; set; }
+        public ICommand AddCommand { get; }
+        public AppSettings _settings;
+
+        #endregion
+
+
+        #region Private Functions
+
+        public void InitOutput(OutputViewModel output)
+        {
+            Output = output;
+            Output.UpdateFilter = () =>
+                CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
+        }
+
+        /// <summary>
+        ///     Helps to perform save and load operation of Docking Manager.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Add()
+        {
+            var count = 1;
+            var contentControl = new ContentControl();
+            contentControl.Name = "newChild" + count;
+            if (!(Application.Current.MainWindow is MainWindow mainWindow))
+                return;
+        }
+
+        #endregion
     }
 }

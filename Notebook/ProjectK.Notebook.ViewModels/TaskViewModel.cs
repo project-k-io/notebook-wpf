@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Interfaces;
-using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
@@ -16,7 +11,9 @@ namespace ProjectK.Notebook.ViewModels
     public class TaskViewModel : NodeViewModel
     {
         #region Static Fields
+
         private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
+
         #endregion
 
         #region Fields
@@ -33,11 +30,13 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Properties
+
         public TaskViewModel()
         {
             Kind = "Task";
         }
-        public TaskViewModel(TaskModel model): this()
+
+        public TaskViewModel(TaskModel model) : this()
         {
             Model = model;
         }
@@ -55,6 +54,7 @@ namespace ProjectK.Notebook.ViewModels
             get => _total;
             set => Set(ref _total, value);
         }
+
         public bool IsPersonalType
         {
             get
@@ -77,10 +77,12 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Private Funtions
+
         private void SetStartedTime()
         {
             DateStarted = DateTime.Now;
         }
+
         private void SetEndedTime()
         {
             DateEnded = DateTime.Now;
@@ -131,7 +133,7 @@ namespace ProjectK.Notebook.ViewModels
             }
 
             foreach (var subTask in Nodes)
-                ((TaskViewModel)subTask).FixTypes();
+                ((TaskViewModel) subTask).FixTypes();
         }
 
         #endregion
@@ -150,29 +152,30 @@ namespace ProjectK.Notebook.ViewModels
             {
                 for (var index = 0; index < Nodes.Count; ++index)
                 {
-                    var subTask = (TaskViewModel)Nodes[index];
+                    var subTask = (TaskViewModel) Nodes[index];
                     if (subTask.DateEnded == DateTime.MinValue && index < Nodes.Count - 1)
-                        subTask.DateEnded = ((TaskViewModel)Nodes[index + 1]).DateStarted;
+                        subTask.DateEnded = ((TaskViewModel) Nodes[index + 1]).DateStarted;
                 }
 
                 Total = TimeSpan.Zero;
                 for (var index = 0; index < Nodes.Count; ++index)
                 {
-                    var subTask = (TaskViewModel)Nodes[index];
+                    var subTask = (TaskViewModel) Nodes[index];
                     subTask.FixTime();
                     Total += subTask.Total;
                 }
 
-                var subTask1 = (TaskViewModel)Nodes[Nodes.Count - 1];
+                var subTask1 = (TaskViewModel) Nodes[Nodes.Count - 1];
                 if (subTask1.DateEnded != DateTime.MinValue)
                     DateEnded = subTask1.DateEnded;
-                var subTask2 = (TaskViewModel)Nodes[0];
+                var subTask2 = (TaskViewModel) Nodes[0];
                 if (subTask2.DateStarted != DateTime.MinValue)
                     DateStarted = subTask2.DateStarted;
             }
         }
 #if AK
-        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue = default, bool broadcast = false)
+        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue =
+ default, bool broadcast = false)
         {
             base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
             if (!IsTaskModelProperty(propertyName)) return;
@@ -184,21 +187,28 @@ namespace ProjectK.Notebook.ViewModels
         }
 #endif
 
-        private static bool IsTaskModelProperty(string n) => 
-            n == "Type" || 
-            n == "SubType" || 
-            n == "DataStarted" || 
-            n == "DateEnded";
+        private static bool IsTaskModelProperty(string n)
+        {
+            return n == "Type" ||
+                   n == "SubType" ||
+                   n == "DataStarted" ||
+                   n == "DateEnded";
+        }
 
         private TaskModel Task => Model as TaskModel;
 
         public string Type
         {
-            get => Task.Type; 
+            get => Task.Type;
             set => this.Set(Type, v => Task.Type = v, value);
         }
 
-        public string SubType { get => Task.SubType; set => this.Set(SubType, v => Task.SubType = v, value); }
+        public string SubType
+        {
+            get => Task.SubType;
+            set => this.Set(SubType, v => Task.SubType = v, value);
+        }
+
         public DateTime DateStarted
         {
             get => Task.DateStarted;
@@ -209,6 +219,7 @@ namespace ProjectK.Notebook.ViewModels
                 RaisePropertyChanged("Duration");
             }
         }
+
         public DateTime DateEnded
         {
             get => Task.DateEnded;
@@ -219,6 +230,7 @@ namespace ProjectK.Notebook.ViewModels
                 RaisePropertyChanged("Duration");
             }
         }
+
         // Derived Properties
         public DateTime TimeStarted
         {
@@ -233,6 +245,7 @@ namespace ProjectK.Notebook.ViewModels
                 RaisePropertyChanged("Duration");
             }
         }
+
         public DateTime TimeEnded
         {
             get => DateEnded;
@@ -246,6 +259,7 @@ namespace ProjectK.Notebook.ViewModels
                 RaisePropertyChanged("Duration");
             }
         }
+
         public TimeSpan Duration
         {
             get
@@ -256,6 +270,5 @@ namespace ProjectK.Notebook.ViewModels
                 return DateEnded - DateStarted;
             }
         }
-
     }
 }

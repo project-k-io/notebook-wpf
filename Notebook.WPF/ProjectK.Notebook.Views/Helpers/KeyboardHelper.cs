@@ -13,6 +13,21 @@ namespace ProjectK.Notebook.Views.Helpers
 
         public static bool IsControlPressed => (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
 
+        public static KeyboardStates KeyboardState
+        {
+            get
+            {
+                var keyboardStates = KeyboardStates.None;
+                if (IsCtrlShiftPressed)
+                    keyboardStates = KeyboardStates.IsCtrlShiftPressed;
+                else if (IsShiftPressed)
+                    keyboardStates = KeyboardStates.IsShiftPressed;
+                else if (IsControlPressed)
+                    keyboardStates = KeyboardStates.IsControlPressed;
+                return keyboardStates;
+            }
+        }
+
         public static KeyboardKeys GetKeyState(Key key)
         {
             var keyStates = KeyboardKeys.None;
@@ -39,20 +54,6 @@ namespace ProjectK.Notebook.Views.Helpers
             }
 
             return keyStates;
-        }
-        public static KeyboardStates KeyboardState
-        {
-            get
-            {
-                var keyboardStates = KeyboardStates.None;
-                if (IsCtrlShiftPressed)
-                    keyboardStates = KeyboardStates.IsCtrlShiftPressed;
-                else if (IsShiftPressed)
-                    keyboardStates = KeyboardStates.IsShiftPressed;
-                else if (IsControlPressed)
-                    keyboardStates = KeyboardStates.IsControlPressed;
-                return keyboardStates;
-            }
         }
     }
 }

@@ -26,15 +26,11 @@ namespace ProjectK.Utils.Extensions
 
         public static void AddRange<T>(this ICollection<T> target, ICollection<T> source)
         {
-            foreach (var item in source)
-            {
-                target.Add(item);
-            }
+            foreach (var item in source) target.Add(item);
         }
 
 
-
-        public static bool IsSame<T>(this IList<T> listA, IList<T> listB, Func<T,T, bool> isSame)
+        public static bool IsSame<T>(this IList<T> listA, IList<T> listB, Func<T, T, bool> isSame)
         {
             if (listA.Count != listB.Count)
                 return false;
@@ -44,16 +40,17 @@ namespace ProjectK.Utils.Extensions
                 var a = listB[i];
                 var b = listA[i];
 
-                if (!isSame(a,b))
+                if (!isSame(a, b))
                     return false;
             }
+
             return true;
         }
+
         public static void Copy<T>(this IList<T> listA, IList<T> listB, Func<T, T> copy)
         {
             foreach (var nodeB in listB)
                 listA.Add(copy(nodeB));
         }
-
     }
 }

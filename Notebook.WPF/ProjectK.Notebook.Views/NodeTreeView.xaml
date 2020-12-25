@@ -10,7 +10,7 @@
              xmlns:treeViewList="clr-namespace:ProjectK.Views.TreeViewList;assembly=ProjectK.Views"
              d:DesignWidth="450" d:DesignHeight="200">
     <UserControl.Resources>
-        <design:DesignViewModel x:Key="Model"/>
+        <design:DesignViewModel x:Key="Model" />
         <converters:LevelToIndentConverter x:Key="LevelIndentConverter" />
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Focusable" Value="false" />
@@ -20,7 +20,8 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                         <Border Width="19" Height="13" Background="Transparent">
-                            <Border Width="9" Height="9" BorderThickness="1" BorderBrush="#FF7898B5" CornerRadius="1" SnapsToDevicePixels="true">
+                            <Border Width="9" Height="9" BorderThickness="1" BorderBrush="#FF7898B5" CornerRadius="1"
+                                    SnapsToDevicePixels="true">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                         <GradientBrush.GradientStops>
@@ -45,9 +46,9 @@
 
         <DataTemplate x:Key="CellTemplateName" DataType="viewModels:NodeViewModel">
             <DockPanel>
-                <ToggleButton 
-                    x:Name="Expander" 
-                    Style="{StaticResource ExpandCollapseToggleStyle}" 
+                <ToggleButton
+                    x:Name="Expander"
+                    Style="{StaticResource ExpandCollapseToggleStyle}"
                     ClickMode="Press"
                     Margin="{Binding Level, 
                         Converter={StaticResource LevelIndentConverter}, 
@@ -55,7 +56,7 @@
                     IsChecked="{Binding Path=IsExpanded, 
                         RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}" />
 
-                <TextBlock Text="{Binding Path=Name}"/>
+                <TextBlock Text="{Binding Path=Name}" />
             </DockPanel>
             <DataTemplate.Triggers>
                 <DataTrigger Value="False"
@@ -76,11 +77,13 @@
                                         <!--<DataTrigger Binding="{Binding Path=Modified }" Value="{x:Static viewModels:ModifiedStatus.None}">
                                             <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png"/>
                                         </DataTrigger>-->
-                                        <DataTrigger Binding="{Binding Path=Modified}" Value="{x:Static viewModels:ModifiedStatus.Modified}">
-                                            <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png"/>
+                                        <DataTrigger Binding="{Binding Path=Modified}"
+                                                     Value="{x:Static viewModels:ModifiedStatus.Modified}">
+                                            <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Path=Modified }" Value="{x:Static viewModels:ModifiedStatus.ChildModified}">
-                                            <Setter Property="Source" Value="Images\icons8_expand_arrow_50px.png"/>
+                                        <DataTrigger Binding="{Binding Path=Modified }"
+                                                     Value="{x:Static viewModels:ModifiedStatus.ChildModified}">
+                                            <Setter Property="Source" Value="Images\icons8_expand_arrow_50px.png" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -122,7 +125,7 @@
                                                       Content="{TemplateBinding HeaderedItemsControl.Header}"
                                                       Columns="{StaticResource Columns}" />
                             </Border>
-                            <ItemsPresenter x:Name="ItemsHost"/>
+                            <ItemsPresenter x:Name="ItemsHost" />
                         </StackPanel>
                         <ControlTemplate.Triggers>
                             <Trigger Property="TreeViewItem.IsExpanded" Value="false">
@@ -192,8 +195,7 @@
                                       ItemsSource="{Binding Path=Nodes}" />
         </FrameworkElement.Resources>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                      FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
-                      >
+                      FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}">
             <treeViewList:TreeListView x:Name="TreeViewTasks"
                                        SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
                                        ItemContainerStyle="{StaticResource TreeListViewItemStyle}"

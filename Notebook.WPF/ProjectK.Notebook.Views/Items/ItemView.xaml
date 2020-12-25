@@ -1,48 +1,47 @@
 ﻿<UserControl x:Class="ProjectK.Notebook.Views.Items.ItemView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dataTemplateSelectors="clr-namespace:ProjectK.Notebook.Views.DataTemplateSelectors"
              xmlns:items="clr-namespace:ProjectK.Notebook.Views.Items"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
-             xmlns:domain="clr-namespace:ProjectK.Notebook.Domain;assembly=ProjectK.Notebook.Domain"
              xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="350" d:DesignWidth="400">
     <UserControl.Resources>
-        <design:DesignNodeViewModel x:Key="ViewModel"/>
+        <design:DesignNodeViewModel x:Key="ViewModel" />
 
         <!--Create two DataTemplate objects to be   selected by the DataTemplateSelector.-->
         <DataTemplate x:Key="NodeView">
-            <items:NodeView DataContext="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=DataContext}"/>
+            <items:NodeView
+                DataContext="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=DataContext}" />
         </DataTemplate>
         <DataTemplate x:Key="NoteView">
             <Label>Note View</Label>
         </DataTemplate>
         <DataTemplate x:Key="TaskView">
-            <items:TaskView DataContext="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=DataContext}"/>
+            <items:TaskView
+                DataContext="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=DataContext}" />
         </DataTemplate>
 
 
         <dataTemplateSelectors:ItemDataTemplateSelector x:Key="itemTemplateSelector"
                                                         TaskTemplate="{StaticResource TaskView}"
                                                         NodeTemplate="{StaticResource NodeView}"
-                                                        NoteTemplate="{StaticResource NoteView}"/>
+                                                        NoteTemplate="{StaticResource NoteView}" />
 
     </UserControl.Resources>
     <Grid d:DataContext="{StaticResource ViewModel}">
         <StackPanel>
-            <ComboBox Name="itemViewList" SelectedValue="{Binding Path=Kind, Mode=TwoWay}" >
+            <ComboBox Name="itemViewList" SelectedValue="{Binding Path=Kind, Mode=TwoWay}">
                 <system:String>Notebook</system:String>
                 <system:String>Node</system:String>
                 <system:String>Task</system:String>
             </ComboBox>
 
             <ContentControl Content="{Binding ElementName=itemViewList, Path=SelectedValue}"
-                            ContentTemplateSelector="{StaticResource itemTemplateSelector}">
-            </ContentControl>
+                            ContentTemplateSelector="{StaticResource itemTemplateSelector}" />
 
         </StackPanel>
     </Grid>

@@ -12,10 +12,11 @@ namespace ProjectK.Notebook.Domain.Extensions
             if (a.Text != b.Text) return false;
             return true;
         }
+
         public static void Init(this INote a, INote b)
         {
             // INode
-            ((INode)a).Init(b);
+            ((INode) a).Init(b);
             // INote 
             a.Text = b.Text;
         }

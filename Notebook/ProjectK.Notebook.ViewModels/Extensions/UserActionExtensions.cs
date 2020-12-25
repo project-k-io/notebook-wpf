@@ -1,21 +1,18 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 using ProjectK.Logging;
-using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Versions.Version2;
 using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Utils; // using ProjectK.NotebookModel.Models.Versions.Version2;
+
+// using ProjectK.NotebookModel.Models.Versions.Version2;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {
     public static class UserActionExtensions
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
         private const string Tag = "UserAction";
+        private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
 
         public static void UserAction_Edit(this MainViewModel model)
         {
@@ -38,7 +35,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             Logger.LogDebug($"{Tag} | Clear");
             notebook.Clear();
         }
-
 
 
         public static async Task UserAction_ExportSelectedAllAsText(this MainViewModel model)
@@ -68,6 +64,5 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             Logger.LogDebug($"Show Report: {reportType}");
             model.OnGenerateReportChanged();
         }
-
     }
 }

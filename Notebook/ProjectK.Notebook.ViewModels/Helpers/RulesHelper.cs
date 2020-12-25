@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Castle.Core.Internal;
-using ProjectK.Notebook.Domain;
+﻿using System.Collections.Generic;
 using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.ViewModels.Helpers
@@ -56,6 +53,7 @@ namespace ProjectK.Notebook.ViewModels.Helpers
                     title = node.Created.DayOfWeek.ToString();
                     break;
             }
+
             return title;
         }
 
@@ -63,9 +61,7 @@ namespace ProjectK.Notebook.ViewModels.Helpers
         public static bool GetSubNodeContext(string parentContext, out string context)
         {
             context = GetSubNodeContext(parentContext);
-            return  !string.IsNullOrEmpty(context);
+            return !string.IsNullOrEmpty(context);
         }
-
-
     }
 }

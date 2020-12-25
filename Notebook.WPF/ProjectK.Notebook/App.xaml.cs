@@ -17,25 +17,22 @@ namespace ProjectK.Notebook
     {
         private static ILogger _logger;
         private readonly IHost _host;
+        private readonly OutputViewModel _output = new OutputViewModel();
         private string _basePath;
-        private MainWindow _window;
         private AppViewModel _viewModel;
-        private OutputViewModel _output = new OutputViewModel();
+        private MainWindow _window;
 
         public App()
         {
-            _host = Host.CreateDefaultBuilder()  // Use default settings
-                                                 //new HostBuilder()          // Initialize an empty HostBuilder
+            _host = Host.CreateDefaultBuilder() // Use default settings
+                //new HostBuilder()          // Initialize an empty HostBuilder
                 .ConfigureAppConfiguration((context, builder) =>
-                    {
-                        _basePath = Environment.CurrentDirectory;
-                        builder.SetBasePath(_basePath);
-                        // Add other configuration files...
-                        // builder.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
-                    }).ConfigureServices((context, services) =>
-                    {
-                        ConfigureServices(context.Configuration, services);
-                    })
+                {
+                    _basePath = Environment.CurrentDirectory;
+                    builder.SetBasePath(_basePath);
+                    // Add other configuration files...
+                    // builder.AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true);
+                }).ConfigureServices((context, services) => { ConfigureServices(context.Configuration, services); })
                 .ConfigureLogging(logging =>
                 {
                     logging.AddConsole();
@@ -51,6 +48,7 @@ namespace ProjectK.Notebook
 
             DispatcherUnhandledException += OnDispatcherUnhandledException;
         }
+
         private void ConfigureServices(IConfiguration configuration, IServiceCollection services)
         {
             var xx = configuration["Window"];
@@ -93,7 +91,7 @@ namespace ProjectK.Notebook
             // 
             _window.Closing += async (sender, args) => await WindowOnClosing(sender, args);
 
-             // Show 
+            // Show 
             _window.Show();
             base.OnStartup(e);
         }
@@ -109,6 +107,7 @@ namespace ProjectK.Notebook
             {
                 await _host.StopAsync(TimeSpan.FromSeconds(5));
             }
+
             base.OnExit(e);
         }
 

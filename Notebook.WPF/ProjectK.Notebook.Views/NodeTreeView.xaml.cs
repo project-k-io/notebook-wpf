@@ -26,12 +26,13 @@ namespace ProjectK.Notebook.Views
 
             model.RootTask.SetParents();
             TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeNode);
-            TreeViewTasks.PreviewKeyDown += async (s,e) => await TreeViewTasksOnPreviewKeyDown(s, e);
+            TreeViewTasks.PreviewKeyDown += async (s, e) => await TreeViewTasksOnPreviewKeyDown(s, e);
         }
 
-        static bool DeleteMessageBox()
+        private static bool DeleteMessageBox()
         {
-            return MessageBox.Show("Are you sure you would like to delete this?", "Delete", MessageBoxButton.OKCancel) ==
+            return MessageBox.Show("Are you sure you would like to delete this?", "Delete",
+                       MessageBoxButton.OKCancel) ==
                    MessageBoxResult.Cancel;
         }
 

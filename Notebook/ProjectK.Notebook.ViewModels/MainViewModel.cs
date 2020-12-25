@@ -6,11 +6,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Domain;
@@ -40,7 +38,8 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Fields
-        Storage _db = new Storage();
+
+        private readonly Storage _db = new Storage();
         private NotebookViewModel _selectedNotebook;
         private ReportTypes _reportType = ReportTypes.Notes;
         private string _excelCsvText;
@@ -52,7 +51,9 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Properties
 
-        public ObservableCollection<NotebookViewModel> Notebooks { get; set; } = new ObservableCollection<NotebookViewModel>();
+        public ObservableCollection<NotebookViewModel> Notebooks { get; set; } =
+            new ObservableCollection<NotebookViewModel>();
+
         public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
@@ -114,8 +115,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public bool CanSave { get; set; }
         public Action<Action> OnDispatcher { get; set; }
-        public OutputViewModel Output { get; set; } 
-
+        public OutputViewModel Output { get; set; }
 
         #endregion
 
@@ -149,7 +149,7 @@ namespace ProjectK.Notebook.ViewModels
                 ParentId = Guid.Empty,
                 Context = "Root",
                 Created = DateTime.Now,
-                Name = "Root",
+                Name = "Root"
             };
 
             RootTask = new NodeViewModel(rootModel);
@@ -240,12 +240,11 @@ namespace ProjectK.Notebook.ViewModels
                 Name = notebookName,
                 Id = Guid.NewGuid(),
                 Context = "Notebook",
-                Created = DateTime.Now,
+                Created = DateTime.Now
             };
             ImportNotebook(model);
             await SyncDatabaseAsync();
         }
-
 
 
         public async Task OpenFileAsync(string path)
@@ -253,7 +252,7 @@ namespace ProjectK.Notebook.ViewModels
             try
             {
                 Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
-                var notebook = new NotebookModel { Name = path };
+                var notebook = new NotebookModel {Name = path};
                 var tasks = await ImportHelper.ReadFromFileVersionTwo(path);
                 await _db.ImportData(notebook, tasks);
                 await ImportNotebook(notebook);
@@ -296,6 +295,7 @@ namespace ProjectK.Notebook.ViewModels
             RootTask.Add(notebook);
             return (notebook, items);
         }
+
         private void OnCurrentNotebookChanged()
         {
             var noteBookName = SelectedNotebook != null ? SelectedNotebook.Name : "";
@@ -350,8 +350,6 @@ namespace ProjectK.Notebook.ViewModels
             TaskTitleList.Clear();
             foreach (var str in titles) TaskTitleList.Add(str);
         }
-
-
 
 
         public void OnSelectedTaskChanged(NodeViewModel task)
@@ -418,7 +416,6 @@ namespace ProjectK.Notebook.ViewModels
             return notebook;
         }
 
-
         #endregion
 
         #region Private functions
@@ -457,27 +454,27 @@ namespace ProjectK.Notebook.ViewModels
                 var dayNode = selectedTreeTask.Nodes.FirstOrDefault(t => t.Name == name);
                 if (dayNode == null)
                 {
-                    var model = new TaskModel         // CopyExcelCsvText
+                    var model = new TaskModel // CopyExcelCsvText
                     {
                         Name = name,
                         DateStarted = day,
                         DateEnded = day
                     };
 
-                    dayNode = new NodeViewModel()
+                    dayNode = new NodeViewModel
                     {
                         Model = model
                     };
                     selectedTreeTask.Nodes.Add(dayNode);
                 }
 
-                var model2 = new TaskModel       // CopyExcelCsvText
+                var model2 = new TaskModel // CopyExcelCsvText
                 {
                     Name = record.Task,
                     Context = "TaskModel"
                 };
 
-                var taskViewModel2 = new TaskViewModel()
+                var taskViewModel2 = new TaskViewModel
                 {
                     Model = model2
                 };
@@ -543,7 +540,6 @@ namespace ProjectK.Notebook.ViewModels
         {
             await OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
-
 
         #endregion
 
@@ -667,11 +663,9 @@ namespace ProjectK.Notebook.ViewModels
                 }
                 else
                 {
-                    if (notebook.Model.Id == SelectedNotebook.Model.Id)
-                    {
-                        SelectedNotebook = Notebooks.FirstOrDefault();
-                    }
+                    if (notebook.Model.Id == SelectedNotebook.Model.Id) SelectedNotebook = Notebooks.FirstOrDefault();
                 }
+
                 _db.Remove(notebook.Model as NotebookModel);
             }
             else
@@ -693,10 +687,7 @@ namespace ProjectK.Notebook.ViewModels
                     var lastSubNode = node.Parent.LastSubNode;
                     newNode = await AddNew(node.Parent);
 
-                    if (lastSubNode != null)
-                    {
-                        newNode.Name = node.Name;
-                    }
+                    if (lastSubNode != null) newNode.Name = node.Name;
 
                     break;
                 default:
@@ -728,11 +719,10 @@ namespace ProjectK.Notebook.ViewModels
             {
                 Console.WriteLine(e);
             }
+
             return node;
         }
 
         #endregion
-
     }
-
 }

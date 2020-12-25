@@ -11,7 +11,10 @@ namespace ProjectK.Views.TreeViewList
         {
             get
             {
-                if (_level == -1) _level = ItemsControlFromItemContainer(this) is TreeListViewItem treeListViewItem ? treeListViewItem.Level + 1 : 0;
+                if (_level == -1)
+                    _level = ItemsControlFromItemContainer(this) is TreeListViewItem treeListViewItem
+                        ? treeListViewItem.Level + 1
+                        : 0;
 
                 return _level;
             }

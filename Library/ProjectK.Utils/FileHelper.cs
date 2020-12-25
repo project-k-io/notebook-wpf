@@ -14,7 +14,8 @@ namespace ProjectK.Utils
     {
         private static readonly ILogger Logger = LogManager.GetLogger<FileHelper>();
 
-        public static (string path, bool ok) GetNewFileName(string path, string folderName, string suffix, string newExtension = "")
+        public static (string path, bool ok) GetNewFileName(string path, string folderName, string suffix,
+            string newExtension = "")
         {
             try
             {
@@ -24,12 +25,16 @@ namespace ProjectK.Utils
                 var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directoryName = Path.GetDirectoryName(path);
-                var subFolder = string.IsNullOrWhiteSpace(directoryName) ? folderName : Path.Combine(directoryName, folderName);
+                var subFolder = string.IsNullOrWhiteSpace(directoryName)
+                    ? folderName
+                    : Path.Combine(directoryName, folderName);
 
                 if (!Directory.Exists(subFolder))
                     Directory.CreateDirectory(subFolder);
 
-                subFolder = string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? subFolder : Path.Combine(subFolder, fileNameWithoutExtension);
+                subFolder = string.IsNullOrWhiteSpace(fileNameWithoutExtension)
+                    ? subFolder
+                    : Path.Combine(subFolder, fileNameWithoutExtension);
                 if (!Directory.Exists(subFolder))
                     Directory.CreateDirectory(subFolder);
 
@@ -91,7 +96,7 @@ namespace ProjectK.Utils
                         var options = new JsonSerializerOptions
                         {
                             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                            WriteIndented = true,
+                            WriteIndented = true
                         };
                         await JsonSerializer.SerializeAsync(fs, model, options);
                         break;

@@ -10,13 +10,6 @@ namespace ProjectK.ViewModels
 {
     public class OutputViewModel : ViewModelBase
     {
-        public OutputButtonViewModel ButtonClear { get; set; } = new OutputButtonViewModel {Image = "Clear", Label = "Clear"};
-        public OutputButtonViewModel ButtonDebug { get; set; } = new OutputButtonViewModel {Image = "Debug", Label = "Logs", IsChecked = true};
-        public OutputButtonViewModel ButtonErrors { get; set; } = new OutputButtonViewModel {Image = "Error", Label = "Errors", IsChecked = false};
-        public OutputButtonViewModel ButtonMessages { get; set; } = new OutputButtonViewModel {Image = "Message", Label = "Messages", IsChecked = false};
-        public OutputButtonViewModel ButtonWarnings { get; set; } = new OutputButtonViewModel {Image = "Warning", Label = "Warnings", IsChecked = false};
-
-
         public OutputViewModel()
         {
             FilterButtons.Clear();
@@ -33,11 +26,31 @@ namespace ProjectK.ViewModels
             ButtonErrors.PropertyChanged += OutputButtonRaisePropertyChanged;
         }
 
+        public OutputButtonViewModel ButtonClear { get; set; } =
+            new OutputButtonViewModel {Image = "Clear", Label = "Clear"};
+
+        public OutputButtonViewModel ButtonDebug { get; set; } = new OutputButtonViewModel
+            {Image = "Debug", Label = "Logs", IsChecked = true};
+
+        public OutputButtonViewModel ButtonErrors { get; set; } = new OutputButtonViewModel
+            {Image = "Error", Label = "Errors", IsChecked = false};
+
+        public OutputButtonViewModel ButtonMessages { get; set; } = new OutputButtonViewModel
+            {Image = "Message", Label = "Messages", IsChecked = false};
+
+        public OutputButtonViewModel ButtonWarnings { get; set; } = new OutputButtonViewModel
+            {Image = "Warning", Label = "Warnings", IsChecked = false};
+
         public Action UpdateFilter { get; set; }
 
-        public ObservableCollection<OutputButtonViewModel> FilterButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
-        public ObservableCollection<OutputButtonViewModel> CommandButtons { get; } = new ObservableCollection<OutputButtonViewModel>();
-        public ObservableCollection<OutputRecordViewModel> Records { get; } = new ObservableCollection<OutputRecordViewModel>();
+        public ObservableCollection<OutputButtonViewModel> FilterButtons { get; } =
+            new ObservableCollection<OutputButtonViewModel>();
+
+        public ObservableCollection<OutputButtonViewModel> CommandButtons { get; } =
+            new ObservableCollection<OutputButtonViewModel>();
+
+        public ObservableCollection<OutputRecordViewModel> Records { get; } =
+            new ObservableCollection<OutputRecordViewModel>();
 
         private void OutputButtonClearOnClicked(object sender, EventArgs eventArgs)
         {

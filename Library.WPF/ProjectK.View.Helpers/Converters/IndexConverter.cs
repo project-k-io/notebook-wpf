@@ -11,12 +11,8 @@ namespace ProjectK.View.Helpers.Converters
         {
             var index = 0;
             if (value is ListViewItem item)
-            {
                 if (ItemsControl.ItemsControlFromItemContainer(item) is ListView listView)
-                {
                     index = listView.ItemContainerGenerator.IndexFromContainer(item);
-                }
-            }
             return index.ToString();
         }
 

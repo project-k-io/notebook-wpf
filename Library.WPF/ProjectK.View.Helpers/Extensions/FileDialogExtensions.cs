@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Microsoft.Win32;
 
 namespace ProjectK.View.Helpers.Extensions
@@ -13,7 +8,8 @@ namespace ProjectK.View.Helpers.Extensions
         public static (string fileName, bool ok) SetFileDialog(this FileDialog dialog, string path)
         {
             var directoryName = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName)) dialog.InitialDirectory = directoryName;
+            if (!string.IsNullOrEmpty(directoryName) && Directory.Exists(directoryName))
+                dialog.InitialDirectory = directoryName;
 
             var fileName = Path.GetFileNameWithoutExtension(path);
             if (!string.IsNullOrEmpty(fileName)) dialog.FileName = fileName;
@@ -28,6 +24,5 @@ namespace ProjectK.View.Helpers.Extensions
 
             return (dialog.FileName, true);
         }
-
     }
 }

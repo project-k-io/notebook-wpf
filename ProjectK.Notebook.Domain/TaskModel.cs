@@ -9,9 +9,26 @@ namespace ProjectK.Notebook.Domain
 {
     public class TaskModel : ITask
     {
+        // Foreign Key
+        [ForeignKey("NotebookModel")] public Guid NotebookId { get; set; }
+
+        public virtual NotebookModel NotebookModel { get; set; }
+
+        [XmlIgnore]
+        public TimeSpan Duration
+        {
+            get
+            {
+                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
+                    return TimeSpan.Zero;
+
+                return DateEnded - DateStarted;
+            }
+        }
+
         // Primary Key
-        [Key] 
-        public Guid Id { get; set; }
+        [Key] public Guid Id { get; set; }
+
         // INode
         public Guid ParentId { get; set; }
         public string Name { get; set; }
@@ -26,28 +43,9 @@ namespace ProjectK.Notebook.Domain
         public DateTime DateStarted { get; set; }
         public DateTime DateEnded { get; set; }
 
-
-
-        // Foreign Key
-        [ForeignKey("NotebookModel")]
-        public Guid NotebookId { get; set; }
-        public virtual NotebookModel NotebookModel { get; set; }
-
         public bool IsSame(TaskModel b)
         {
-            return ((ITask)this).IsSame(b);
-        }
-
-        [XmlIgnore]
-        public TimeSpan Duration
-        {
-            get
-            {
-                if (DateStarted == DateTime.MinValue || DateEnded == DateTime.MinValue)
-                    return TimeSpan.Zero;
-
-                return DateEnded - DateStarted;
-            }
+            return ((ITask) this).IsSame(b);
         }
 
         public void Init(Versions.Version2.TaskModel task2)

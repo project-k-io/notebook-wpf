@@ -20,9 +20,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
         {
             var sortedList = new SortedList<string, SortedList<string, List<NodeViewModel>>>();
             foreach (var node in nodes)
-            {
                 if (node.Model is TaskModel task)
-                {
                     if (!string.IsNullOrEmpty(task.Type) && !task.IsSubTypeSleep())
                     {
                         if (!sortedList.ContainsKey(task.Type))
@@ -33,14 +31,12 @@ namespace ProjectK.Notebook.ViewModels.Reports
                             sortedList2.Add(node.Name, new List<NodeViewModel>());
                         sortedList2[node.Name].Add(node);
                     }
-                }
-            }
 
             var reportModule = new ReportModule();
             foreach (var kv1 in sortedList)
             {
                 var key1 = kv1.Key;
-                var record = new ReportRecord { Type = key1, Text = key1 };
+                var record = new ReportRecord {Type = key1, Text = key1};
                 reportModule.Records.Add(record);
                 foreach (var kv2 in kv1.Value)
                 {
@@ -48,12 +44,10 @@ namespace ProjectK.Notebook.ViewModels.Reports
                     var nodes2 = kv2.Value;
                     var timeSpan = new TimeSpan();
                     foreach (var node2 in nodes2)
-                    {
                         if (node2.Model is TaskModel task2)
                             timeSpan += task2.Duration;
-                    }
 
-                    var record2 = new ReportRecord { Level = 2, Text = key2, Duration = timeSpan };
+                    var record2 = new ReportRecord {Level = 2, Text = key2, Duration = timeSpan};
                     record2.Type = key1;
                     record.Duration += record2.Duration;
                     reportModule.Records.Add(record2);
@@ -74,7 +68,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
             var firstNode = t.Nodes.FirstOrDefault();
             var lastNode = t.Nodes.LastOrDefault();
 
-            if(!(firstNode?.Model is TaskModel firstTask))
+            if (!(firstNode?.Model is TaskModel firstTask))
                 return;
 
             if (!(lastNode?.Model is TaskModel lastTask))
@@ -93,7 +87,8 @@ namespace ProjectK.Notebook.ViewModels.Reports
             sb.AppendLine();
             sb.AppendLine();
 
-            sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ", dateStarted2?.Year, dateStarted2?.Month, dateStarted2?.Day);
+            sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ",
+                dateStarted2?.Year, dateStarted2?.Month, dateStarted2?.Day);
             sb.AppendLine();
             sb.AppendLine();
         }
@@ -111,7 +106,8 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 var maxDelta = 40.0 / 5.0 * notebook.GetSelectedDays().Count;
 
                 var sb = new StringBuilder();
-                var report = GenerateReport(notebook.SelectedNodeList).GenerateReport(maxDelta, model.UseTimeOptimization);
+                var report = GenerateReport(notebook.SelectedNodeList)
+                    .GenerateReport(maxDelta, model.UseTimeOptimization);
                 var selectedTask = notebook.SelectedNode;
 
                 if (selectedTask != null && selectedTask.Context == "Week")
@@ -122,13 +118,16 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 if (notebook.SelectedNode != null && notebook.SelectedNode.Context == "Week")
                 {
                     var nodes = notebook.SelectedNode.Nodes;
-                    var lastNode = (NodeViewModel)nodes.LastOrDefault();
+                    var lastNode = (NodeViewModel) nodes.LastOrDefault();
                     if (lastNode != null)
                     {
-                        var dateStarted = lastNode.Model is TaskModel lastTask ?  lastTask.DateStarted : DateTime.Now;
-                        File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", model.TextReport);
+                        var dateStarted = lastNode.Model is TaskModel lastTask ? lastTask.DateStarted : DateTime.Now;
+                        File.WriteAllText(
+                            $"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt",
+                            model.TextReport);
                     }
                 }
+
                 model.TextReport = sb.ToString();
             }
             catch (Exception ex)
