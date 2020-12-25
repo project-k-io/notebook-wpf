@@ -16,13 +16,6 @@ using System.Linq;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public enum ModifiedStatus
-    {
-        None,
-        Modified,
-        ChildModified
-    }
-
     public class NodeViewModel : ViewModelBase, ITreeNode<NodeViewModel>
     {
         #region Static Fields
