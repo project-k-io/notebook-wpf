@@ -4,10 +4,9 @@ namespace ProjectK.Notebook.ConsoleApp
 {
     internal class Program
     {
-        private static async Task Main(string[] args)
+        private static async Task Main()
         {
             var scenario = new Scenario();
-            // await scenario.AddOneTask();
             await scenario.ImportDatabase();
         }
     }

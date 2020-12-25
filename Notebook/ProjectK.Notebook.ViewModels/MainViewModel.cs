@@ -32,8 +32,7 @@ namespace ProjectK.Notebook.ViewModels
 
         protected ILogger Logger;
 
-
-        public static Guid RootGuid = new Guid("98601237-050a-4915-860c-5a820b361910");
+        private static readonly Guid RootGuid = new Guid("98601237-050a-4915-860c-5a820b361910");
 
         #endregion
 
@@ -269,7 +268,7 @@ namespace ProjectK.Notebook.ViewModels
             Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
 
             // Add NotebookModel
-            var a = await _db.Add(notebookModel);
+            await _db.Add(notebookModel);
             // this will create Primary Key for notebook
             var (notebook, nodes) = AddNotebook(notebookModel);
             if (notebook != null)
@@ -315,7 +314,9 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FileOpenOldFormat()
         {
-            //AK SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Title));
+#if AK
+            SelectedNotebook.LoadFrom(Models.Versions.Version1.NotebookModel.ReadFromFile(Title));
+#endif
         }
 
 
@@ -368,7 +369,7 @@ namespace ProjectK.Notebook.ViewModels
             switch (ReportType)
             {
                 case ReportTypes.Worksheet:
-                    _worksheetReport.GenerateReport(this);
+                    WorksheetReport.GenerateReport(this);
                     break;
                 case ReportTypes.Notes:
                     TextReport = _notesReport.GenerateReport(SelectedNotebook?.SelectedNode);
@@ -416,9 +417,9 @@ namespace ProjectK.Notebook.ViewModels
             return notebook;
         }
 
-        #endregion
+#endregion
 
-        #region Private functions
+#region Private functions
 
         private void UseSettings()
         {
@@ -541,10 +542,10 @@ namespace ProjectK.Notebook.ViewModels
             await OnTreeViewKeyDown(KeyboardKeys.Insert, KeyboardStates.IsShiftPressed);
         }
 
-        #endregion
+#endregion
 
 
-        #region Keyboard Actions
+#region Keyboard Actions
 
         public async Task KeyboardAction(NodeViewModel node, KeyboardKeys keyboardKeys, IActionService service)
         {
@@ -723,6 +724,6 @@ namespace ProjectK.Notebook.ViewModels
             return node;
         }
 
-        #endregion
+#endregion
     }
 }

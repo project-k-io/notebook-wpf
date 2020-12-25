@@ -19,8 +19,6 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class NotebookViewModel : NodeViewModel
     {
-        private readonly ILogger _logger = LogManager.GetLogger<NotebookViewModel>();
-
         private NodeViewModel _selectedNode;
         private NodeViewModel _selectedTreeNode;
 
@@ -102,7 +100,7 @@ namespace ProjectK.Notebook.ViewModels
             SelectedNodeList.AddToList(task);
             OnSelectedDaysChanged();
             SelectedNode = !SelectedNodeList.IsNullOrEmpty() ? SelectedNodeList[0] : task;
-            RaisePropertyChanged("SelectedNodeList");
+            RaisePropertyChanged(nameof(SelectedNodeList));
         }
 
         public void SelectTreeTask(Guid id)
@@ -115,7 +113,7 @@ namespace ProjectK.Notebook.ViewModels
             if (task == null)
                 return;
             SelectedNode = task;
-            RaisePropertyChanged("SelectedNodeList");
+            RaisePropertyChanged(nameof(SelectedNodeList));
         }
 
         public void SelectTask(Guid id)
@@ -189,7 +187,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             var path = Title;
             var name = SelectedNode.Name;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", SelectedNode.Name, ".txt");
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", name, ".txt");
             if (!ok)
                 return;
 

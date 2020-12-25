@@ -37,7 +37,7 @@ namespace ProjectK.Utils
                 sb.Append(word);
                 // don't to last word
                 if (i != words.Length - 1)
-                    sb.Append(" ");
+                    sb.Append(' ');
             }
 
             lines.Add(sb.ToString());

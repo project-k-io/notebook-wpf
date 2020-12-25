@@ -14,12 +14,6 @@ namespace ProjectK.Notebook
 {
     public partial class MainWindow : Window
     {
-        #region Consts
-
-        private const string DockFileName = "DockStates.xml";
-
-        #endregion
-
         private readonly ILogger _logger = LogManager.GetLogger<MainWindow>();
         private readonly AppSettings _settings;
 
@@ -35,10 +29,6 @@ namespace ProjectK.Notebook
         {
             _logger.LogDebug("Loaded()");
             if (!(DataContext is AppViewModel model)) return;
-
-            model.LoadDockLayoutCommand = new RelayCommand(LoadDockLayout);
-            model.SaveDockLayoutCommand = new RelayCommand(SaveDockLayout);
-
             model.OnDispatcher = ViewLib.GetAddDelegate(this);
             CommandBindings.AddRange(model.CreateCommandBindings());
         }
@@ -77,66 +67,5 @@ namespace ProjectK.Notebook
                 settings.WindowState = WindowState;
             }
         }
-
-
-        #region DockingManager
-
-        public void SaveDockLayout()
-        {
-            if (!(Application.Current.MainWindow is MainWindow window))
-                return;
-
-            SaveDockLayout(window);
-        }
-
-
-        /// <summary>
-        ///     Helps to perform save and load operation of Docking Manager.
-        /// </summary>
-        /// <param name="window"></param>
-        public void SaveDockLayout(MainWindow window)
-        {
-            try
-            {
-                var writer = XmlWriter.Create(DockFileName);
-                writer.Close();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        public void LoadDockLayout()
-        {
-            if (!(Application.Current.MainWindow is MainWindow window))
-                return;
-
-            LoadDockLayout(window);
-        }
-
-        /// <summary>
-        ///     Helps to perform save and load operation of Docking Manager.
-        /// </summary>
-        /// <param name="window"></param>
-        public void LoadDockLayout(MainWindow window)
-        {
-            if (!File.Exists(DockFileName))
-                return;
-
-            try
-            {
-                var reader = XmlReader.Create(DockFileName);
-                reader.Close();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                throw;
-            }
-        }
-
-        #endregion
     }
 }

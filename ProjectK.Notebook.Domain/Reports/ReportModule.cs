@@ -77,7 +77,7 @@ namespace ProjectK.Notebook.Domain.Reports
             return sb.ToString();
         }
 
-        private bool IsDev(ReportRecord r)
+        private static bool IsDev(ReportRecord r)
         {
             return r.Level == 2 && r.Type == "Dev";
         }

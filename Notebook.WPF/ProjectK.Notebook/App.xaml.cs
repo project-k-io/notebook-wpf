@@ -49,7 +49,7 @@ namespace ProjectK.Notebook
             DispatcherUnhandledException += OnDispatcherUnhandledException;
         }
 
-        private void ConfigureServices(IConfiguration configuration, IServiceCollection services)
+        private static void ConfigureServices(IConfiguration configuration, IServiceCollection services)
         {
             var xx = configuration["Window"];
             services.Configure<AppSettings>(configuration.GetSection(nameof(AppSettings)));
@@ -75,7 +75,6 @@ namespace ProjectK.Notebook
             // MainWindow
             _window = _host.Services.GetRequiredService<MainWindow>();
             _window.LoadSettings();
-            _window.LoadDockLayout();
 
             // Created ViewModel
             _viewModel = _host.Services.GetRequiredService<AppViewModel>();
@@ -114,7 +113,6 @@ namespace ProjectK.Notebook
         private async Task SaveSettingsAsync()
         {
             _window.SaveSettings();
-            _window.SaveDockLayout();
             _viewModel.SaveSettings();
 
             await _viewModel.CloseDatabaseAsync();

@@ -56,6 +56,7 @@ namespace ProjectK.Notebook.ViewModels.Design
 
             var node2 = new NodeViewModel
             {
+                Model = task2,
                 Modified = ModifiedStatus.Modified,
                 IsExpanded = true
             };

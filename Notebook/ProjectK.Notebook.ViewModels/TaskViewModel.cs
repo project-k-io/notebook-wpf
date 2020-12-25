@@ -165,7 +165,7 @@ namespace ProjectK.Notebook.ViewModels
                     Total += subTask.Total;
                 }
 
-                var subTask1 = (TaskViewModel) Nodes[Nodes.Count - 1];
+                var subTask1 = (TaskViewModel) Nodes[^1];
                 if (subTask1.DateEnded != DateTime.MinValue)
                     DateEnded = subTask1.DateEnded;
                 var subTask2 = (TaskViewModel) Nodes[0];
@@ -215,8 +215,8 @@ namespace ProjectK.Notebook.ViewModels
             set
             {
                 if (!this.Set(DateStarted, v => Task.DateStarted = v, value)) return;
-                RaisePropertyChanged("TimeStarted");
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged(nameof(TimeStarted));
+                RaisePropertyChanged(nameof(Duration));
             }
         }
 
@@ -226,8 +226,8 @@ namespace ProjectK.Notebook.ViewModels
             set
             {
                 if (!this.Set(DateEnded, v => Task.DateEnded = v, value)) return;
-                RaisePropertyChanged("TimeEnded");
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged(nameof(TimeEnded));
+                RaisePropertyChanged(nameof(Duration));
             }
         }
 
@@ -241,8 +241,8 @@ namespace ProjectK.Notebook.ViewModels
                 var t = value;
                 DateStarted = new DateTime(d.Year, d.Month, d.Day, t.Hour, t.Minute, t.Second, t.Millisecond);
                 RaisePropertyChanged(); // MC
-                RaisePropertyChanged("DateStarted");
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged(nameof(DateStarted));
+                RaisePropertyChanged(nameof(Duration));
             }
         }
 
@@ -255,8 +255,8 @@ namespace ProjectK.Notebook.ViewModels
                 var t = value;
                 DateEnded = new DateTime(d.Year, d.Month, d.Day, t.Hour, t.Minute, t.Second, t.Millisecond);
                 RaisePropertyChanged(); //MC
-                RaisePropertyChanged("DateEnded");
-                RaisePropertyChanged("Duration");
+                RaisePropertyChanged(nameof(DateEnded));
+                RaisePropertyChanged(nameof(Duration));
             }
         }
 

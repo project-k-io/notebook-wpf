@@ -80,7 +80,7 @@ namespace ProjectK.Notebook.Views
             if (!(treeListView.DataContext is MainViewModel model))
                 return;
 
-            var task = treeListView.SelectedItem as NodeViewModel ?? model.RootTask;
+            var task = treeListView.SelectedItem is NodeViewModel ? (NodeViewModel) treeListView.SelectedItem : model.RootTask;
             model.SelectTreeTask(task);
         }
     }

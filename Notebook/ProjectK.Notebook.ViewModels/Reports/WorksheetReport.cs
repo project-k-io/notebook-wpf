@@ -16,7 +16,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
     {
         private static readonly ILogger Logger = LogManager.GetLogger<WorksheetReport>();
 
-        private ReportModule GenerateReport(IList<NodeViewModel> nodes)
+        private static ReportModule GenerateReport(IList<NodeViewModel> nodes)
         {
             var sortedList = new SortedList<string, SortedList<string, List<NodeViewModel>>>();
             foreach (var node in nodes)
@@ -47,8 +47,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                         if (node2.Model is TaskModel task2)
                             timeSpan += task2.Duration;
 
-                    var record2 = new ReportRecord {Level = 2, Text = key2, Duration = timeSpan};
-                    record2.Type = key1;
+                    var record2 = new ReportRecord {Level = 2, Text = key2, Duration = timeSpan, Type = key1};
                     record.Duration += record2.Duration;
                     reportModule.Records.Add(record2);
                 }
@@ -59,7 +58,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
             return reportModule;
         }
 
-        private void AddHeader(NodeViewModel t, StringBuilder sb, ILogger logger)
+        private static void AddHeader(NodeViewModel t, StringBuilder sb, ILogger logger)
         {
             logger.LogDebug("GenerateReport()");
             if (t.Nodes.IsNullOrEmpty())
@@ -74,26 +73,25 @@ namespace ProjectK.Notebook.ViewModels.Reports
             if (!(lastNode?.Model is TaskModel lastTask))
                 return;
 
-            var dateStarted1 = firstTask?.DateStarted;
-            var dateStarted2 = lastTask?.DateStarted;
+            var dateStarted1 = firstTask.DateStarted;
+            var dateStarted2 = lastTask.DateStarted;
             sb.AppendLine("                       Alan Kharebov                                  ");
             sb.AppendLine();
             sb.AppendLine("                        Worksheet                                     ");
             sb.AppendLine();
             sb.Append("                 From ");
-            sb.Append(dateStarted1?.ToShortDateString());
+            sb.Append(dateStarted1.ToShortDateString());
             sb.Append(" to ");
-            sb.Append(dateStarted2?.ToShortDateString());
+            sb.Append(dateStarted2.ToShortDateString());
             sb.AppendLine();
             sb.AppendLine();
 
-            sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ",
-                dateStarted2?.Year, dateStarted2?.Month, dateStarted2?.Day);
+            sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ", dateStarted2.Year, dateStarted2.Month, dateStarted2.Day);
             sb.AppendLine();
             sb.AppendLine();
         }
 
-        public void GenerateReport(MainViewModel model)
+        public static void GenerateReport(MainViewModel model)
         {
             Logger.LogDebug("GenerateReport()");
             try

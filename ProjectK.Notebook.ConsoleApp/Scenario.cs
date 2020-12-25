@@ -9,15 +9,7 @@ namespace ProjectK.Notebook.ConsoleApp
     {
         private const string ConnectionString = "Data Source=D:\\db\\test_notebooks2.db";
         private const string DataPath = @"D:\Data\Alan.json";
-
-        #region Static Fields
-
-        private static readonly ILogger Logger = LogManager.GetLogger<Scenario>();
-
-        #endregion
-
         private readonly Storage _db = new Storage();
-
 
         public async Task ImportDatabase()
         {

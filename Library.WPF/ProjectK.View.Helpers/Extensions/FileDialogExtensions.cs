@@ -19,7 +19,7 @@ namespace ProjectK.View.Helpers.Extensions
                             "|XML documents(.xml) | *.xml";
 
             var result = dialog.ShowDialog();
-            if (result != true)
+            if (!result ?? true)
                 return ("", false);
 
             return (dialog.FileName, true);

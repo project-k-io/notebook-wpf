@@ -26,7 +26,6 @@ namespace ProjectK.Notebook
         public AppViewModel(IOptions<AppSettings> settings)
         {
             _settings = settings.Value;
-            AddCommand = new RelayCommand(Add);
 
             Assembly = Assembly.GetExecutingAssembly();
             Logger = LogManager.GetLogger<MainViewModel>();
@@ -128,11 +127,10 @@ namespace ProjectK.Notebook
             {
                 Logger.LogDebug("OpenFileAsync()");
                 var dialog = new OpenFileDialog();
-                var r = dialog.SetFileDialog(SelectedNotebook?.Title);
-                if (!r.ok)
+                var (path, ok) = dialog.SetFileDialog(SelectedNotebook?.Title);
+                if (!ok)
                     return;
 
-                var path = r.fileName;
                 await OpenFileAsync(path);
             }
             catch (Exception e)
@@ -143,9 +141,6 @@ namespace ProjectK.Notebook
 
         #region Commands
 
-        public ICommand LoadDockLayoutCommand { get; set; }
-        public ICommand SaveDockLayoutCommand { get; set; }
-        public ICommand AddCommand { get; }
         public AppSettings _settings;
 
         #endregion
@@ -158,19 +153,6 @@ namespace ProjectK.Notebook
             Output = output;
             Output.UpdateFilter = () =>
                 CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
-        }
-
-        /// <summary>
-        ///     Helps to perform save and load operation of Docking Manager.
-        /// </summary>
-        /// <param name="obj"></param>
-        private void Add()
-        {
-            var count = 1;
-            var contentControl = new ContentControl();
-            contentControl.Name = "newChild" + count;
-            if (!(Application.Current.MainWindow is MainWindow mainWindow))
-                return;
         }
 
         #endregion

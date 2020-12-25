@@ -8,8 +8,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 {
     public static class NodeViewModelExtensions
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<TaskViewModel>();
-
         public static void Execute(this NodeViewModel model, Action<NodeViewModel> action)
         {
             action(model);
