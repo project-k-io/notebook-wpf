@@ -10,7 +10,7 @@
              xmlns:treeViewList="clr-namespace:ProjectK.Views.TreeViewList;assembly=ProjectK.Views"
              d:DesignWidth="450" d:DesignHeight="200">
     <UserControl.Resources>
-        <design:DesignViewModel x:Key="Model" />
+        <design:DesignMainViewModel x:Key="Model" />
         <converters:LevelToIndentConverter x:Key="LevelIndentConverter" />
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Focusable" Value="false" />
