@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 
 namespace ProjectK.Utils
 {
@@ -85,22 +85,22 @@ namespace ProjectK.Utils
                 switch (extension)
                 {
                     case ".XML":
-                        {
-                            await using var sr = File.Create(path);
-                            new XmlSerializer(typeof(T)).Serialize(sr, model);
-                        }
+                    {
+                        await using var sr = File.Create(path);
+                        new XmlSerializer(typeof(T)).Serialize(sr, model);
+                    }
                         break;
                     case ".JSON":
+                    {
+                        await using var fs = File.Create(path);
+                        var options = new JsonSerializerOptions
                         {
-                            await using var fs = File.Create(path);
-                            var options = new JsonSerializerOptions
-                            {
-                                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                                WriteIndented = true
-                            };
-                            await JsonSerializer.SerializeAsync(fs, model, options);
-                            break;
-                        }
+                            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                            WriteIndented = true
+                        };
+                        await JsonSerializer.SerializeAsync(fs, model, options);
+                        break;
+                    }
                 }
             }
             catch (Exception ex)
@@ -118,17 +118,17 @@ namespace ProjectK.Utils
                 switch (extension)
                 {
                     case ".XML":
-                        {
-                            await using var fs = File.OpenRead(path);
-                            var data = new XmlSerializer(typeof(T)).Deserialize(fs);
-                            return data as T;
-                        }
+                    {
+                        await using var fs = File.OpenRead(path);
+                        var data = new XmlSerializer(typeof(T)).Deserialize(fs);
+                        return data as T;
+                    }
                     case ".JSON":
-                        {
-                            await using var fs = File.OpenRead(path);
-                            var data = await JsonSerializer.DeserializeAsync<T>(fs);
-                            return data;
-                        }
+                    {
+                        await using var fs = File.OpenRead(path);
+                        var data = await JsonSerializer.DeserializeAsync<T>(fs);
+                        return data;
+                    }
                     default:
                         return default;
                 }

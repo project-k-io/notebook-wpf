@@ -1,5 +1,5 @@
-﻿using ProjectK.Notebook.Data;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using ProjectK.Notebook.Data;
 
 namespace ProjectK.Notebook.ConsoleApp
 {

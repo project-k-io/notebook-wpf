@@ -1,6 +1,6 @@
-﻿using ProjectK.Notebook.ViewModels.Enums;
+﻿using System;
+using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Interfaces;
-using System;
 
 namespace ProjectK.Notebook.ViewModels.Services
 {

@@ -1,8 +1,8 @@
-﻿using ProjectK.Notebook.Domain.Extensions;
-using ProjectK.Notebook.Domain.Interfaces;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ProjectK.Notebook.Domain.Extensions;
+using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {

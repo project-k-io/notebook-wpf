@@ -1,4 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Input;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using ProjectK.Logging;
@@ -7,17 +13,17 @@ using ProjectK.Notebook.ViewModels;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.ViewModels;
-using System;
-using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Data;
-using System.Windows.Input;
 
 namespace ProjectK.Notebook
 {
     public class AppViewModel : MainViewModel
     {
+        #region Commands
+
+        public AppSettings _settings;
+
+        #endregion
+
         #region Constructors
 
         public AppViewModel(IOptions<AppSettings> settings)
@@ -135,12 +141,6 @@ namespace ProjectK.Notebook
                 Logger.LogError(e);
             }
         }
-
-        #region Commands
-
-        public AppSettings _settings;
-
-        #endregion
 
 
         #region Private Functions

@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 
 namespace ProjectK.View.Helpers.Misc
 {

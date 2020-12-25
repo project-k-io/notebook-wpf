@@ -1,5 +1,5 @@
-﻿using ProjectK.Notebook.ViewModels.Enums;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using ProjectK.Notebook.ViewModels.Enums;
 
 namespace ProjectK.Notebook.Views.Helpers
 {

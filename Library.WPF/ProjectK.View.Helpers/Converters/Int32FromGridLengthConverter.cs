@@ -9,12 +9,12 @@ namespace ProjectK.View.Helpers.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return new GridLength((int)value);
+            return new GridLength((int) value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (int)((GridLength)value).Value;
+            return (int) ((GridLength) value).Value;
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using ProjectK.Notebook.Domain.Extensions;
-using ProjectK.Notebook.Domain.Interfaces;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Serialization;
+using ProjectK.Notebook.Domain.Extensions;
+using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
@@ -45,7 +45,7 @@ namespace ProjectK.Notebook.Domain
 
         public bool IsSame(TaskModel b)
         {
-            return ((ITask)this).IsSame(b);
+            return ((ITask) this).IsSame(b);
         }
 
         public void Init(Versions.Version2.TaskModel task2)

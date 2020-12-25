@@ -1,9 +1,9 @@
-﻿using GalaSoft.MvvmLight;
-using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using GalaSoft.MvvmLight;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 
 namespace ProjectK.Notebook.ViewModels
 {

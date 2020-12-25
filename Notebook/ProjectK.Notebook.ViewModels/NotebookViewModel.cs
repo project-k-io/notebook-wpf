@@ -1,14 +1,13 @@
-﻿using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.ViewModels.Extensions;
-using ProjectK.Utils;
-using ProjectK.Utils.Extensions;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
-using TaskModel = ProjectK.Notebook.Domain.TaskModel;
+using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.ViewModels.Extensions;
+using ProjectK.Utils;
+using ProjectK.Utils.Extensions;
 
 //using ;
 

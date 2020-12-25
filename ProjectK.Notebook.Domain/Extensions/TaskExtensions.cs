@@ -7,7 +7,7 @@ namespace ProjectK.Notebook.Domain.Extensions
         public static bool IsSame(this ITask a, ITask b)
         {
             // INode
-            if (!((INode)a).IsSame(b)) return false;
+            if (!((INode) a).IsSame(b)) return false;
             // ITask
             if (a.DateEnded != b.DateEnded) return false;
             if (a.DateStarted != b.DateStarted) return false;
@@ -20,7 +20,7 @@ namespace ProjectK.Notebook.Domain.Extensions
         public static void Init(this ITask a, ITask b)
         {
             // INode
-            ((INode)a).Init(b);
+            ((INode) a).Init(b);
             // ITask 
             a.DateEnded = b.DateEnded;
             a.DateStarted = b.DateStarted;
@@ -31,7 +31,7 @@ namespace ProjectK.Notebook.Domain.Extensions
 
         public static string Text(this ITask a)
         {
-            return $"{((INode)a).Text()} | {a.DateStarted} | {a.DateEnded} | | {a.Type} | {a.SubType} | {a.Rating}";
+            return $"{((INode) a).Text()} | {a.DateStarted} | {a.DateEnded} | | {a.Type} | {a.SubType} | {a.Rating}";
         }
     }
 }

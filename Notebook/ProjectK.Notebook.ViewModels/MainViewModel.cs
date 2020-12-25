@@ -1,4 +1,12 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
@@ -15,14 +23,6 @@ using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -251,7 +251,7 @@ namespace ProjectK.Notebook.ViewModels
             try
             {
                 Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
-                var notebook = new NotebookModel { Name = path };
+                var notebook = new NotebookModel {Name = path};
                 var tasks = await ImportHelper.ReadFromFileVersionTwo(path);
                 await _db.ImportData(notebook, tasks);
                 await ImportNotebook(notebook);

@@ -8,7 +8,7 @@ namespace ProjectK.Utils
     {
         public static List<string> ConvertTextInMultipleLines(string text, int maxLength)
         {
-            var separators = new[] { "\r\n", "\r", "\n" };
+            var separators = new[] {"\r\n", "\r", "\n"};
             var paragraphs = text.Split(separators, StringSplitOptions.None);
             var lines = new List<string>();
             foreach (var paragraph in paragraphs)

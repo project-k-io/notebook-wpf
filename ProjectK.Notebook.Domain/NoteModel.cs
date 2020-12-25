@@ -1,12 +1,15 @@
-﻿using ProjectK.Notebook.Domain.Interfaces;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain
 {
     public class NoteModel : INote
     {
+        // Foreign Key
+        [ForeignKey("NotebookModel")] public Guid NotebookId { get; set; }
+        public virtual NotebookModel NotebookModel { get; set; }
         [Key] public Guid Id { get; set; }
         public Guid ParentId { get; set; }
         public string Name { get; set; }
@@ -17,9 +20,5 @@ namespace ProjectK.Notebook.Domain
 
         // INote
         public string Text { get; set; }
-
-        // Foreign Key
-        [ForeignKey("NotebookModel")] public Guid NotebookId { get; set; }
-        public virtual NotebookModel NotebookModel { get; set; }
     }
 }

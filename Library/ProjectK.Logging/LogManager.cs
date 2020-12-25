@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace ProjectK.Logging
 {
@@ -16,6 +16,11 @@ namespace ProjectK.Logging
         public static ILogger GetLogger<T>()
         {
             return _provider?.GetService<ILogger<T>>();
+        }
+
+        public static ILogger GetLogger()
+        {
+            return _provider?.GetService<ILogger<LogManager>>();
         }
     }
 }

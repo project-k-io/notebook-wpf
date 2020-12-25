@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Windows;
+using System.Windows.Controls;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProjectK.Logging;
 using ProjectK.Notebook.Settings;
-using ProjectK.View.Helpers.Misc;
-using System.Windows;
-using System.Windows.Controls;
+using ProjectK.View.Helpers.Extensions;
 
 namespace ProjectK.Notebook
 {
@@ -25,7 +25,7 @@ namespace ProjectK.Notebook
         {
             _logger.LogDebug("Loaded()");
             if (!(DataContext is AppViewModel model)) return;
-            model.OnDispatcher = ViewLib.GetAddDelegate(this);
+            model.OnDispatcher = this.GetAddDelegate();
             CommandBindings.AddRange(model.CreateCommandBindings());
         }
 

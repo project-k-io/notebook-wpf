@@ -1,10 +1,10 @@
-﻿using GalaSoft.MvvmLight;
-using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using GalaSoft.MvvmLight;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 
 namespace ProjectK.ViewModels
 {
@@ -27,19 +27,19 @@ namespace ProjectK.ViewModels
         }
 
         public OutputButtonViewModel ButtonClear { get; set; } =
-            new OutputButtonViewModel { Image = "Clear", Label = "Clear" };
+            new OutputButtonViewModel {Image = "Clear", Label = "Clear"};
 
         public OutputButtonViewModel ButtonDebug { get; set; } = new OutputButtonViewModel
-        { Image = "Debug", Label = "Logs", IsChecked = true };
+            {Image = "Debug", Label = "Logs", IsChecked = true};
 
         public OutputButtonViewModel ButtonErrors { get; set; } = new OutputButtonViewModel
-        { Image = "Error", Label = "Errors", IsChecked = false };
+            {Image = "Error", Label = "Errors", IsChecked = false};
 
         public OutputButtonViewModel ButtonMessages { get; set; } = new OutputButtonViewModel
-        { Image = "Message", Label = "Messages", IsChecked = false };
+            {Image = "Message", Label = "Messages", IsChecked = false};
 
         public OutputButtonViewModel ButtonWarnings { get; set; } = new OutputButtonViewModel
-        { Image = "Warning", Label = "Warnings", IsChecked = false };
+            {Image = "Warning", Label = "Warnings", IsChecked = false};
 
         public Action UpdateFilter { get; set; }
 
@@ -128,7 +128,7 @@ namespace ProjectK.ViewModels
 
         public void LogEvent(LogLevel logLevel, EventId eventId, string message)
         {
-            AddNewRecord(new LoggingEventArgs { Level = logLevel, EventId = eventId, Message = message });
+            AddNewRecord(new LoggingEventArgs {Level = logLevel, EventId = eventId, Message = message});
         }
     }
 }

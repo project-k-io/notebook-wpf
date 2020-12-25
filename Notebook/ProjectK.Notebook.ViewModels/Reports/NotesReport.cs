@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Text;
+using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Domain;
 using ProjectK.Utils;
-using System;
-using System.Text;
 
 namespace ProjectK.Notebook.ViewModels.Reports
 {
