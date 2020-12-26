@@ -8,7 +8,7 @@ using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class TaskViewModel : NodeViewModel
+    public class TaskViewModel : ItemViewModel
     {
         #region Static Fields
 
@@ -55,17 +55,6 @@ namespace ProjectK.Notebook.ViewModels
             set => Set(ref _total, value);
         }
 
-        public bool IsPersonalType
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(Type))
-                    return false;
-
-                var upper = Type.ToUpper();
-                return upper.Contains("LUNCH") || upper.Contains("PERSONAL");
-            }
-        }
 
         #endregion
 
@@ -88,91 +77,12 @@ namespace ProjectK.Notebook.ViewModels
             DateEnded = DateTime.Now;
         }
 
-        private void LoadFrom(Models.Versions.Version1.TaskModel model)
-        {
-            IsSelected = model.IsSelected;
-            IsExpanded = model.IsExpanded;
-            Description = model.Description;
-            Type = model.Type;
-            DateStarted = model.DateStarted;
-            DateEnded = model.DateEnded;
-            Name = model.Title;
-
-            if (model.SubTasks.IsNullOrEmpty())
-                return;
-
-            foreach (var subTask in model.SubTasks)
-            {
-                var node = new TaskViewModel();
-                node.LoadFrom(subTask);
-                Nodes.Add(node);
-            }
-        }
 
 
-        private void FixTypes()
-        {
-            if (string.IsNullOrEmpty(Type))
-            {
-                var title = Name;
-                var upper = title.ToUpper();
-                if (upper.Contains("LUNCH") || upper.Contains("BREAKFAST"))
-                    Type = "Lunch";
-                else if (upper.Contains("TASK") || upper.Contains("CODE REVIEW") || title.Contains("TA") ||
-                         title.Contains("US"))
-                    Type = "Dev";
-                else if (upper.Contains("BUILD"))
-                    Type = "Build";
-                else if (upper.Contains("TIME SHEET") || upper.Contains("TIMESHEET") || upper.Contains("EMAIL") ||
-                         upper.Contains("PAPER WORKS"))
-                    Type = "Misc";
-                else if (upper.Contains("TALKED") || upper.Contains("MEETING") || upper.Contains("SHOWED"))
-                    Type = "Meeting";
-                else if (upper.Contains("Trouble"))
-                    Type = "Support";
-            }
-
-            foreach (var subTask in Nodes)
-                ((TaskViewModel) subTask).FixTypes();
-        }
 
         #endregion
 
 
-        public void FixTime()
-        {
-            if (IsPersonalType)
-                return;
-
-            if (Nodes.IsNullOrEmpty())
-            {
-                Total = Duration;
-            }
-            else
-            {
-                for (var index = 0; index < Nodes.Count; ++index)
-                {
-                    var subTask = (TaskViewModel) Nodes[index];
-                    if (subTask.DateEnded == DateTime.MinValue && index < Nodes.Count - 1)
-                        subTask.DateEnded = ((TaskViewModel) Nodes[index + 1]).DateStarted;
-                }
-
-                Total = TimeSpan.Zero;
-                for (var index = 0; index < Nodes.Count; ++index)
-                {
-                    var subTask = (TaskViewModel) Nodes[index];
-                    subTask.FixTime();
-                    Total += subTask.Total;
-                }
-
-                var subTask1 = (TaskViewModel) Nodes[^1];
-                if (subTask1.DateEnded != DateTime.MinValue)
-                    DateEnded = subTask1.DateEnded;
-                var subTask2 = (TaskViewModel) Nodes[0];
-                if (subTask2.DateStarted != DateTime.MinValue)
-                    DateStarted = subTask2.DateStarted;
-            }
-        }
 #if AK
         public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue =
  default, bool broadcast = false)
@@ -187,13 +97,6 @@ namespace ProjectK.Notebook.ViewModels
         }
 #endif
 
-        private static bool IsTaskModelProperty(string n)
-        {
-            return n == "Type" ||
-                   n == "SubType" ||
-                   n == "DataStarted" ||
-                   n == "DateEnded";
-        }
 
         private TaskModel Task => Model as TaskModel;
 

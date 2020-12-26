@@ -18,7 +18,7 @@ namespace ProjectK.Notebook.ViewModels.Design
 
             Model = model;
             ContextList = new ObservableCollection<string>();
-            ContextList.AddRange(ModesRulesHelper.GlobalContextList);
+            ContextList.AddRange(ModelRules.GlobalContextList);
         }
     }
 }

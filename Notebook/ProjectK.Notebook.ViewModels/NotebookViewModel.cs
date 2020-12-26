@@ -128,8 +128,8 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixTime()
         {
-            if (SelectedTreeNode is TaskViewModel task)
-                task.FixTime();
+            if (SelectedTreeNode.Model is TaskModel task)
+                SelectedTreeNode.FixTime();
         }
 
         public void Clear()

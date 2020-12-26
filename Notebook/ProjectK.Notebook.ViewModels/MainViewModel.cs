@@ -174,7 +174,7 @@ namespace ProjectK.Notebook.ViewModels
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 
             // Add Context 
-            ContextList.AddRange(ModesRulesHelper.GlobalContextList);
+            ContextList.AddRange(ModelRules.GlobalContextList);
 
             MessengerInstance.Register<NotificationMessage<NodeViewModel>>(this, NotifyMe);
         }
@@ -337,7 +337,7 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var str in types) TypeList.Add(str);
 
             ContextList.Clear();
-            ContextList.AddRange(ModesRulesHelper.GlobalContextList);
+            ContextList.AddRange(ModelRules.GlobalContextList);
 
 
             TaskTitleList.Clear();
@@ -429,12 +429,14 @@ namespace ProjectK.Notebook.ViewModels
 
             var stringReader = new StringReader(ExcelCsvText);
             var list = new List<ExcelCsvRecord>();
+
             string line;
             while ((line = stringReader.ReadLine()) != null)
                 if (!string.IsNullOrEmpty(line))
                 {
                     var excelCsvRecord = new ExcelCsvRecord();
-                    if (excelCsvRecord.TryParse(line)) list.Add(excelCsvRecord);
+                    if (excelCsvRecord.TryParse(line)) 
+                        list.Add(excelCsvRecord);
                 }
 
             var selectedTreeTask = SelectedNotebook.SelectedTreeNode;
@@ -443,13 +445,13 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var record in list)
             {
                 var day = record.Day;
-                var name = day.DayOfWeek.ToString();
-                var dayNode = selectedTreeTask.Nodes.FirstOrDefault(t => t.Name == name);
+                var dayOfWeek = day.DayOfWeek.ToString();
+                var dayNode = selectedTreeTask.Nodes.FirstOrDefault(t => t.Name == dayOfWeek);
                 if (dayNode == null)
                 {
                     var model = new TaskModel // CopyExcelCsvText
                     {
-                        Name = name,
+                        Name = dayOfWeek,
                         DateStarted = day,
                         DateEnded = day
                     };
@@ -461,18 +463,17 @@ namespace ProjectK.Notebook.ViewModels
                     selectedTreeTask.Nodes.Add(dayNode);
                 }
 
-                var model2 = new TaskModel // CopyExcelCsvText
+                var taskModel = new TaskModel // CopyExcelCsvText
                 {
                     Name = record.Task,
                     Context = "TaskModel"
                 };
 
-                var taskViewModel2 = new TaskViewModel
+                var taskViewModel = new NodeViewModel()
                 {
-                    Model = model2
+                    Model = taskModel
                 };
 
-                var taskViewModel3 = taskViewModel2;
                 day = record.Day;
                 var year1 = day.Year;
                 day = record.Day;
@@ -485,11 +486,11 @@ namespace ProjectK.Notebook.ViewModels
                 var minute1 = day.Minute;
                 day = record.Start;
                 var second1 = day.Second;
+
                 var dateTime2 = new DateTime(year1, month1, day1, hour1, minute1, second1);
 
-                taskViewModel3.DateStarted = dateTime2;
+                taskModel.DateStarted = dateTime2;
 
-                var taskViewModel4 = taskViewModel2;
                 day = record.Day;
                 var year2 = day.Year;
                 day = record.Day;
@@ -503,10 +504,12 @@ namespace ProjectK.Notebook.ViewModels
                 day = record.End;
                 var second2 = day.Second;
                 var dateTime3 = new DateTime(year2, month2, day2, hour2, minute2, second2);
-                taskViewModel4.DateEnded = dateTime3;
-                taskViewModel2.Description = $"{record.Type1}:{record.Type2}:{record.SubTask}";
 
-                dayNode.Nodes.Add(taskViewModel2);
+
+                taskModel.DateEnded = dateTime3;
+                taskViewModel.Description = $"{record.Type1}:{record.Type2}:{record.SubTask}";
+                 
+                dayNode.Nodes.Add(taskViewModel);
             }
         }
 

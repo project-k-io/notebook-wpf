@@ -41,15 +41,8 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             foreach (var model in nodes)
                 if (!index.ContainsKey(model.Id))
                 {
-                    NodeViewModel vm = null;
-
-                    if (model is TaskModel task)
-                        vm = new TaskViewModel(task);
-                    else if (model is NodeModel node)
-                        vm = new NodeViewModel(node);
-
-                    if (vm != null)
-                        index.Add(model.Id, vm);
+                    var vm = new NodeViewModel(model);
+                    index.Add(model.Id, vm);
                 }
 
             foreach (var node in nodes)

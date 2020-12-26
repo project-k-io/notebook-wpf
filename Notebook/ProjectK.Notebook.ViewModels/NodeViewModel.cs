@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
+using ProjectK.Notebook.Models.Extensions;
 using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Utils;
+using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class NodeViewModel : ViewModelBase, ITreeNode<NodeViewModel>
+    public class NodeViewModel : ItemViewModel, ITreeNode<NodeViewModel>
     {
         #region Static Fields
 
@@ -29,15 +30,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        private static bool IsNodeModelProperty(string n)
-        {
-            return n == "Id" ||
-                   n == "ParentId" ||
-                   n == "Name" ||
-                   n == "Created" ||
-                   n == "Context" ||
-                   n == "Description";
-        }
 
 
         public void DeleteNode(IActionService service)
@@ -76,20 +68,11 @@ namespace ProjectK.Notebook.ViewModels
 
         public NodeViewModel CreateNode(INode model)
         {
-            NodeViewModel node = null;
-            switch (model)
-            {
-                case TaskModel taskModel:
-                    node = new TaskViewModel(taskModel);
-                    break;
-                case NodeModel nodeModel:
-                    node = new NodeViewModel(nodeModel);
-                    break;
-            }
-
+            var node = new NodeViewModel(model);
             Add(node);
             return node;
         }
+
 
         #region Fields
 
@@ -100,10 +83,8 @@ namespace ProjectK.Notebook.ViewModels
         //private string _name;
         //private DateTime _created;
         //private string _description;
-        public INode Model { get; set; }
 
         // Misc
-        private string _kind;
         private bool _isExpanded;
         private bool _isSelected;
         private ModifiedStatus _modified;
@@ -119,7 +100,7 @@ namespace ProjectK.Notebook.ViewModels
             Kind = "Node";
         }
 
-        public NodeViewModel(NodeModel model) : this()
+        public NodeViewModel(INode model) : this()
         {
             Model = model;
         }
@@ -136,47 +117,7 @@ namespace ProjectK.Notebook.ViewModels
 
 
         // Model Wrapper
-        public string Kind
-        {
-            get => _kind;
-            set => Set(ref _kind, value);
-        }
 
-        public string Description
-        {
-            get => Model.Description;
-            set => this.Set(Description, v => Model.Description = v, value);
-        }
-
-        public Guid Id
-        {
-            get => Model.Id;
-            set => this.Set(Id, v => Model.Id = v, value);
-        }
-
-        public Guid ParentId
-        {
-            get => Model.ParentId;
-            set => this.Set(ParentId, v => Model.ParentId = v, value);
-        }
-
-        public string Name
-        {
-            get => Model.Name;
-            set => this.Set(Name, v => Model.Name = v, value);
-        }
-
-        public DateTime Created
-        {
-            get => Model.Created;
-            set => this.Set(Created, v => Model.Created = v, value);
-        }
-
-        public string Context
-        {
-            get => Model.Context;
-            set => this.Set(Context, v => Model.Context = v, value);
-        }
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }
@@ -223,7 +164,7 @@ namespace ProjectK.Notebook.ViewModels
             T newValue = default, bool broadcast = false)
         {
             base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
-            if (!IsNodeModelProperty(propertyName)) return;
+            if (!ModelRules.IsNodeModelProperty(propertyName)) return;
 
             Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
             Modified = ModifiedStatus.Modified;
@@ -239,7 +180,6 @@ namespace ProjectK.Notebook.ViewModels
         {
             foreach (var node in Nodes) node.SaveRecursively(list);
         }
-
         private void SaveRecursively(List<INode> list)
         {
             list.Add(Model);
@@ -252,8 +192,6 @@ namespace ProjectK.Notebook.ViewModels
                 node.ParentId = Id;
             }
         }
-
-
         public void TrySetId()
         {
             if (Id != Guid.Empty)
@@ -261,32 +199,25 @@ namespace ProjectK.Notebook.ViewModels
 
             Id = Guid.NewGuid();
         }
-
-
         public void Add(NodeViewModel node)
         {
             node.SetParent(this);
             Nodes.Add(node);
         }
-
-
         public void Remove(NodeViewModel node)
         {
             Nodes.Remove(node);
         }
-
         public void Insert(int index, NodeViewModel node)
         {
             node.SetParent(this);
             Nodes.Insert(index, node);
         }
-
         public void SetParent(NodeViewModel parent)
         {
             Parent = parent;
             ParentId = parent.Id;
         }
-
         public void SetParents()
         {
             foreach (var node in Nodes)
@@ -295,7 +226,6 @@ namespace ProjectK.Notebook.ViewModels
                 node.SetParents();
             }
         }
-
         public void ResetModified()
         {
             this.Execute(a =>
@@ -304,12 +234,10 @@ namespace ProjectK.Notebook.ViewModels
                     a.Modified = ModifiedStatus.None;
             });
         }
-
         public void SetParentChildModified()
         {
             this.UpAction(a => { a.Modified = ModifiedStatus.ChildModified; });
         }
-
         public void ResetParentChildModified()
         {
             this.Execute(a =>
@@ -318,8 +246,6 @@ namespace ProjectK.Notebook.ViewModels
                     a.Modified = ModifiedStatus.None;
             });
         }
-
-
         public void ExtractContext(ObservableCollection<string> contextList)
         {
             if (!string.IsNullOrEmpty(Context) && !contextList.Contains(Context))
@@ -328,14 +254,11 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var node in Nodes)
                 node.ExtractContext(contextList);
         }
-
         public void FixContext(NodeViewModel node)
         {
-            if (ModesRulesHelper.GetSubNodeContext(Context, out var context))
+            if (ModelRules.GetSubNodeContext(Context, out var context))
                 node.Context = context;
         }
-
-
         public void FixContext()
         {
             foreach (var node in Nodes)
@@ -344,7 +267,6 @@ namespace ProjectK.Notebook.ViewModels
                 node.FixContext();
             }
         }
-
         public NodeViewModel FindNode(Guid id)
         {
             if (Id == id)
@@ -359,7 +281,6 @@ namespace ProjectK.Notebook.ViewModels
 
             return null;
         }
-
         public List<INode> GetModels()
         {
             var models = Nodes.GetModels();
@@ -368,5 +289,81 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         #endregion
+
+        private void FixTypes()
+        {
+            Model.FixTypes(Name);
+            foreach (var node in Nodes)
+                node.FixTypes();
+        }
+
+        public void LoadFrom(Models.Versions.Version1.TaskModel model)
+        {
+            IsSelected = model.IsSelected;
+            IsExpanded = model.IsExpanded;
+            Description = model.Description;
+            if (Model is TaskModel task)
+            {
+                task.Type = model.Type;
+                task.DateStarted = model.DateStarted;
+                task.DateEnded = model.DateEnded;
+            }
+
+            Name = model.Title;
+
+            if (model.SubTasks.IsNullOrEmpty())
+                return;
+
+            foreach (var subTask in model.SubTasks)
+            {
+                var node = new NodeViewModel();
+                node.Model = new TaskModel();
+                node.LoadFrom(subTask);
+                Nodes.Add(node);
+            }
+        }
+
+        public void FixTime()
+        {
+#if AK
+            if (Model is TaskModel task)
+            {
+                if (ModelRules.IsPersonalType(task.Type))
+                    return;
+            }
+
+            if (Nodes.IsNullOrEmpty())
+            {
+                Total = Duration;
+            }
+            else
+            {
+                for (var index = 0; index < Nodes.Count; ++index)
+                {
+                    var subTask = (TaskViewModel)Nodes[index];
+                    if (subTask.DateEnded == DateTime.MinValue && index < Nodes.Count - 1)
+                        subTask.DateEnded = ((TaskViewModel)Nodes[index + 1]).DateStarted;
+                }
+
+                Total = TimeSpan.Zero;
+                for (var index = 0; index < Nodes.Count; ++index)
+                {
+                    var subTask = (TaskViewModel)Nodes[index];
+                    subTask.FixTime();
+                    Total += subTask.Total;
+                }
+
+                var subTask1 = (TaskViewModel)Nodes[^1];
+                if (subTask1.DateEnded != DateTime.MinValue)
+                    DateEnded = subTask1.DateEnded;
+                var subTask2 = (TaskViewModel)Nodes[0];
+                if (subTask2.DateStarted != DateTime.MinValue)
+                    DateStarted = subTask2.DateStarted;
+            }
+#endif
+        }
+
+
+
     }
 }

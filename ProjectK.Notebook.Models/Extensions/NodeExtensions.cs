@@ -33,7 +33,7 @@ namespace ProjectK.Notebook.Models.Extensions
 
         public static INode CreateModel(this INode parentNode, Guid notebookId)
         {
-            var context = ModesRulesHelper.GetSubNodeContext(parentNode.Context);
+            var context = ModelRules.GetSubNodeContext(parentNode.Context);
             if (string.IsNullOrEmpty(context))
                 context = "Node";
 
@@ -57,5 +57,15 @@ namespace ProjectK.Notebook.Models.Extensions
             model.Context = context;
             return model;
         }
+
+        public static void FixTypes(this INode model, string name)
+        {
+            if (model is TaskModel task)
+            {
+                if (string.IsNullOrEmpty(task.Type))
+                    task.Type = ModelRules.FixTypes(name);
+            }
+        }
+
     }
 }
