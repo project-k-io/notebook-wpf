@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using Castle.Core.Internal;
-using ProjectK.Notebook.Domain;
 using ProjectK.Notebook.Domain.Extensions;
 using ProjectK.Notebook.Domain.Interfaces;
-using SQLitePCL;
 
 namespace ProjectK.Notebook.ViewModels.Helpers
 {
     public static class RulesHelper
     {
-
         public static string GetSubNodeTitle(this NodeViewModel parent, INode node)
         {
             var title = string.Empty;
@@ -46,6 +41,5 @@ namespace ProjectK.Notebook.ViewModels.Helpers
 
             return model;
         }
-
     }
 }

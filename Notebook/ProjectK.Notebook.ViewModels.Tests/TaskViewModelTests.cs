@@ -6,51 +6,51 @@ using ProjectK.Notebook.Domain;
 
 namespace ProjectK.Notebook.ViewModels.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class TaskViewModelTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void ToStringTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SaveToTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void TaskViewModelTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void TaskViewModelTest1()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void TrySetIdTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void LoadFromTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AddTest()
         {
             // Arrange
-            var parent = new NodeViewModel{ Model = new TaskModel{Id = Guid.NewGuid()}};
-            var child = new NodeViewModel { Model = new TaskModel { Id = Guid.NewGuid() }};
+            var parent = new NodeViewModel {Model = new TaskModel {Id = Guid.NewGuid()}};
+            var child = new NodeViewModel {Model = new TaskModel {Id = Guid.NewGuid()}};
 
             // Act
             parent.Add(child);
@@ -62,49 +62,49 @@ namespace ProjectK.Notebook.ViewModels.Tests
             Assert.IsTrue(parent.Nodes.Contains(child), "TaskModel has wrong child");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SetParentsTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FixTimeTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ExtractContextTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FixContextTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FixTitlesTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FixTypesTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void FindTaskTest()
         {
             //AK Assert.Fail();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void KeyboardActionTest()
         {
             //AK Assert.Fail();

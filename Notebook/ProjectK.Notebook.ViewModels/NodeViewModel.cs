@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Castle.Core.Internal;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
@@ -67,7 +66,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             foreach (var node in Nodes)
             {
-                var title = RulesHelper.GetSubNodeTitle(this, node.Model);
+                var title = this.GetSubNodeTitle(node.Model);
                 if (!string.IsNullOrEmpty(title))
                     node.Name = title;
 

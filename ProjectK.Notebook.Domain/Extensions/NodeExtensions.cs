@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain.Extensions
@@ -30,7 +29,6 @@ namespace ProjectK.Notebook.Domain.Extensions
         {
             return $"{a.Id} | {a.ParentId} | {a.Name} | {a.Context} | {a.Created} |  {a.Description}";
         }
-
 
 
         public static INode CreateModel(this INode parentNode, Guid notebookId)

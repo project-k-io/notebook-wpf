@@ -14,27 +14,30 @@ namespace ProjectK.Notebook.ViewModels.Design
                     Name = "Time Tracker",
                     Context = "App"
                 },
-                IsExpanded = true,
+                IsExpanded = true
             };
 
             // 2018
-            var year2018 = new NodeViewModel { Model = new NodeModel { Name = Title = "2018", Context = "Year" } };
-            var monthOct2018 = new NodeViewModel { Model = new NodeModel { Name = "October", Context = "Month" } };
+            var year2018 = new NodeViewModel {Model = new NodeModel {Name = Title = "2018", Context = "Year"}};
+            var monthOct2018 = new NodeViewModel {Model = new NodeModel {Name = "October", Context = "Month"}};
             year2018.Add(monthOct2018);
 
             // 2019
-            var year2019 = new NodeViewModel { Model = new NodeModel { Name = "2019", Context = "Year" } };
-            var monthJan2019 = new NodeViewModel { Model = new NodeModel { Name = "January", Context = "Month" } };
+            var year2019 = new NodeViewModel {Model = new NodeModel {Name = "2019", Context = "Year"}};
+            var monthJan2019 = new NodeViewModel {Model = new NodeModel {Name = "January", Context = "Month"}};
             year2019.Add(monthJan2019);
 
             // 2020
-            var year2020 = new NodeViewModel { Model = new NodeModel { Name = "2020", Context = "Year" }, IsExpanded = true };
-            var monthMay2020 = new NodeViewModel { Model = new NodeModel { Name = "May", Context = "Month" }, IsExpanded = true };
+            var year2020 = new NodeViewModel
+                {Model = new NodeModel {Name = "2020", Context = "Year"}, IsExpanded = true};
+            var monthMay2020 = new NodeViewModel
+                {Model = new NodeModel {Name = "May", Context = "Month"}, IsExpanded = true};
             year2020.Add(monthMay2020);
 
             // May 2020
-            var week1 = new NodeViewModel { Model = new NodeModel { Name = "Week1", Context = "Week" }, IsExpanded = true };
-            var thursday = new NodeViewModel { Model = new NodeModel { Name = "Thursday", Context = "Day" }, IsExpanded = true };
+            var week1 = new NodeViewModel {Model = new NodeModel {Name = "Week1", Context = "Week"}, IsExpanded = true};
+            var thursday = new NodeViewModel
+                {Model = new NodeModel {Name = "Thursday", Context = "Day"}, IsExpanded = true};
 
 
             var node1 = new NodeViewModel
