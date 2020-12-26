@@ -1,4 +1,6 @@
-﻿using ProjectK.Notebook.Domain.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using ProjectK.Notebook.Domain.Interfaces;
 
 namespace ProjectK.Notebook.Domain.Extensions
 {
@@ -27,6 +29,35 @@ namespace ProjectK.Notebook.Domain.Extensions
         public static string Text(this INode a)
         {
             return $"{a.Id} | {a.ParentId} | {a.Name} | {a.Context} | {a.Created} |  {a.Description}";
+        }
+
+
+
+        public static INode CreateModel(this INode parentNode, Guid notebookId)
+        {
+            var context = ModesRulesHelper.GetSubNodeContext(parentNode.Context);
+            if (string.IsNullOrEmpty(context))
+                context = "Node";
+
+            INode model;
+            // Create Model
+            if (context == "Task")
+                model = new TaskModel // CreateModel
+                {
+                    DateStarted = DateTime.Now,
+                    DateEnded = DateTime.Now,
+                    NotebookId = notebookId
+                };
+            else
+                model = new NodeModel
+                {
+                    Created = DateTime.Now,
+                    NotebookId = notebookId
+                };
+
+            model.Id = Guid.NewGuid();
+            model.Context = context;
+            return model;
         }
     }
 }

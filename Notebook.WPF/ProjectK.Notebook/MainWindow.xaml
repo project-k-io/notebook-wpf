@@ -79,11 +79,11 @@
                     <RibbonButton Command="{Binding Path=FixTypesCommand}" Label="Fix Types"
                                   SmallImageSource="Images\FixTypes.png" ToolTip="Fix Types" />
                 </RibbonGroup>
-                <RibbonGroup Header="Context">
-                    <RibbonButton Command="{Binding Path=ExtractContextCommand}" Label="Extract Context"
-                                  SmallImageSource="Images\Download.png" ToolTip="Extract Context" />
-                    <RibbonButton Command="{Binding Path=FixContextCommand}" Label="Fix Context"
-                                  SmallImageSource="Images\Repair.png" ToolTip="Fix Context" />
+                <RibbonGroup Header="parenContext">
+                    <RibbonButton Command="{Binding Path=ExtractContextCommand}" Label="Extract parenContext"
+                                  SmallImageSource="Images\Download.png" ToolTip="Extract parenContext" />
+                    <RibbonButton Command="{Binding Path=FixContextCommand}" Label="Fix parenContext"
+                                  SmallImageSource="Images\Repair.png" ToolTip="Fix parenContext" />
                 </RibbonGroup>
                 <RibbonGroup Header="Action">
                     <RibbonButton Command="{Binding Path=CopyTaskCommand}" Label="Copy"
@@ -162,7 +162,7 @@
                     <TabItem Header="Item View">
                         <items:ItemView DataContext="{Binding Path= SelectedNotebook.SelectedNode}" />
                     </TabItem>
-                    <TabItem Header="Context List">
+                    <TabItem Header="parenContext List">
                         <ComboBox IsEditable="true"
                                   ItemsSource="{Binding Path=SelectedNotebook.ContextList}" />
                     </TabItem>

@@ -174,7 +174,7 @@ namespace ProjectK.Notebook.ViewModels
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 
             // Add Context 
-            ContextList.AddRange(RulesHelper.GlobalContextList);
+            ContextList.AddRange(ModesRulesHelper.GlobalContextList);
 
             MessengerInstance.Register<NotificationMessage<NodeViewModel>>(this, NotifyMe);
         }
@@ -337,7 +337,7 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var str in types) TypeList.Add(str);
 
             ContextList.Clear();
-            ContextList.AddRange(RulesHelper.GlobalContextList);
+            ContextList.AddRange(ModesRulesHelper.GlobalContextList);
 
 
             TaskTitleList.Clear();

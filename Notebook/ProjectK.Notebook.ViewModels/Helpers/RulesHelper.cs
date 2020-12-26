@@ -1,40 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Castle.Core.Internal;
+using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Domain.Extensions;
 using ProjectK.Notebook.Domain.Interfaces;
+using SQLitePCL;
 
 namespace ProjectK.Notebook.ViewModels.Helpers
 {
     public static class RulesHelper
     {
-        public static readonly List<string> GlobalContextList = new List<string>
-        {
-            "Notebook",
-            "Company",
-            "Contact",
-            "Node",
-            "Task",
-            "Note",
-            "Time Tracker",
-            "Year",
-            "Month",
-            "Day",
-            "Week"
-        };
 
-        public static string GetSubNodeContext(string context)
-        {
-            return context switch
-            {
-                "Time Tracker" => "Year",
-                "Year" => "Month",
-                "Month" => "Week",
-                "Week" => "Day",
-                "Day" => "Task",
-                "Task" => "Task",
-                _ => "Node"
-            };
-        }
-
-        public static string GetSubNodeTitle(NodeViewModel parent, INode node)
+        public static string GetSubNodeTitle(this NodeViewModel parent, INode node)
         {
             var title = string.Empty;
             switch (parent.Context)
@@ -57,11 +34,18 @@ namespace ProjectK.Notebook.ViewModels.Helpers
             return title;
         }
 
-
-        public static bool GetSubNodeContext(string parentContext, out string context)
+        public static INode CreateModel(this NodeViewModel parentNode, Guid notebookId)
         {
-            context = GetSubNodeContext(parentContext);
-            return !string.IsNullOrEmpty(context);
+            var model = parentNode.Model.CreateModel(notebookId);
+            var title = parentNode.GetSubNodeTitle(model);
+
+            if (!string.IsNullOrEmpty(title))
+                model.Name = title;
+            else
+                model.Name = model.Context;
+
+            return model;
         }
+
     }
 }

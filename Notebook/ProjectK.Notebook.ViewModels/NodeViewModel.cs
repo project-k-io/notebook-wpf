@@ -75,42 +75,6 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-
-        public INode CreateModel(Guid notebookId)
-        {
-            var context = RulesHelper.GetSubNodeContext(Context);
-            if (context.IsNullOrEmpty())
-                context = "Node";
-
-            INode model;
-            // Create Model
-            if (context == "Task")
-                model = new TaskModel // CreateModel
-                {
-                    DateStarted = DateTime.Now,
-                    DateEnded = DateTime.Now,
-                    NotebookId = notebookId
-                };
-            else
-                model = new NodeModel
-                {
-                    Created = DateTime.Now,
-                    NotebookId = notebookId
-                };
-
-            model.Id = Guid.NewGuid();
-            model.Context = context;
-            var title = RulesHelper.GetSubNodeTitle(this, model);
-
-            if (!string.IsNullOrEmpty(title))
-                model.Name = title;
-            else
-                model.Name = context;
-
-            return model;
-        }
-
-
         public NodeViewModel CreateNode(INode model)
         {
             NodeViewModel node = null;
@@ -368,7 +332,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixContext(NodeViewModel node)
         {
-            if (RulesHelper.GetSubNodeContext(Context, out var context))
+            if (ModesRulesHelper.GetSubNodeContext(Context, out var context))
                 node.Context = context;
         }
 
