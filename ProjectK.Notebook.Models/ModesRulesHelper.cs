@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ProjectK.Notebook.Domain
+namespace ProjectK.Notebook.Models
 {
     public static class ModesRulesHelper
     {

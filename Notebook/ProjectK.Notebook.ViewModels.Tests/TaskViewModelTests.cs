@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Models;
 
 // using ProjectK.NotebookModel.Models.Versions.Version2;
 

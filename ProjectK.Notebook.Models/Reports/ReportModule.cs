@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace ProjectK.Notebook.Domain.Reports
+namespace ProjectK.Notebook.Models.Reports
 {
     public class ReportModule
     {

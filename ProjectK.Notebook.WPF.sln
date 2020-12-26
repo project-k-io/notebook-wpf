@@ -34,7 +34,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Utils.Tests", "Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook.Data", "ProjectK.Notebook.Data\ProjectK.Notebook.Data.csproj", "{5112ADDB-4295-493B-8E22-80152F87673E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook.Domain", "ProjectK.Notebook.Domain\ProjectK.Notebook.Domain.csproj", "{C8E48B10-A5E4-4012-8540-A718D4C80796}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook.Models", "ProjectK.Notebook.Models\ProjectK.Notebook.Models.csproj", "{C8E48B10-A5E4-4012-8540-A718D4C80796}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook.ConsoleApp", "ProjectK.Notebook.ConsoleApp\ProjectK.Notebook.ConsoleApp.csproj", "{B0B7C535-8688-4961-B0CE-B2AEF1D88D6C}"
 EndProject

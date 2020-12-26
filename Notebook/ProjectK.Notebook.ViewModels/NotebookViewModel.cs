@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
-using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Models;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;

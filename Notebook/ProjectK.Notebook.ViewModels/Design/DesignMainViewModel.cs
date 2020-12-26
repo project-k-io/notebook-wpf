@@ -1,5 +1,5 @@
 ﻿using System;
-using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Models;
 
 namespace ProjectK.Notebook.ViewModels.Design
 {

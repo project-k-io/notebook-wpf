@@ -1,6 +1,6 @@
-﻿using ProjectK.Notebook.Domain.Interfaces;
+﻿using ProjectK.Notebook.Models.Interfaces;
 
-namespace ProjectK.Notebook.Domain.Extensions
+namespace ProjectK.Notebook.Models.Extensions
 {
     public static class TaskExtensions
     {

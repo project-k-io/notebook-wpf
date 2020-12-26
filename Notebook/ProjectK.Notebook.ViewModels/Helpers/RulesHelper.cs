@@ -1,6 +1,6 @@
 ﻿using System;
-using ProjectK.Notebook.Domain.Extensions;
-using ProjectK.Notebook.Domain.Interfaces;
+using ProjectK.Notebook.Models.Extensions;
+using ProjectK.Notebook.Models.Interfaces;
 
 namespace ProjectK.Notebook.ViewModels.Helpers
 {

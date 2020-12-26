@@ -2,10 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Serialization;
-using ProjectK.Notebook.Domain.Extensions;
-using ProjectK.Notebook.Domain.Interfaces;
+using ProjectK.Notebook.Models.Extensions;
+using ProjectK.Notebook.Models.Interfaces;
 
-namespace ProjectK.Notebook.Domain
+namespace ProjectK.Notebook.Models
 {
     public class TaskModel : ITask
     {

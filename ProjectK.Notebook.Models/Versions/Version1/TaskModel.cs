@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace ProjectK.Notebook.Domain.Versions.Version1
+namespace ProjectK.Notebook.Models.Versions.Version1
 {
     [XmlRoot("NodeViewModel")]
     public class TaskModel

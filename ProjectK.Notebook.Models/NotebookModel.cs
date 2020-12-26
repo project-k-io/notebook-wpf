@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using ProjectK.Notebook.Domain.Extensions;
-using ProjectK.Notebook.Domain.Interfaces;
+using ProjectK.Notebook.Models.Extensions;
+using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Utils.Extensions;
 
-namespace ProjectK.Notebook.Domain
+namespace ProjectK.Notebook.Models
 {
     public class NotebookModel : INode
     {

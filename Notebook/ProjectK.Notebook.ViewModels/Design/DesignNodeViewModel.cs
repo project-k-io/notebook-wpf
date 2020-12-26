@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Models;
 using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels.Design

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProjectK.Notebook.Domain.Interfaces
+namespace ProjectK.Notebook.Models.Interfaces
 {
     public interface ITask : INode
     {

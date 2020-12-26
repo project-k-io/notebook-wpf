@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ProjectK.Notebook.Domain.Versions.Version2
+namespace ProjectK.Notebook.Models.Versions.Version2
 {
     public class DataModel
     {

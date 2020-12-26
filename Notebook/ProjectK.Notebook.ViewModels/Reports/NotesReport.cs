@@ -2,7 +2,7 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Models;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Reports

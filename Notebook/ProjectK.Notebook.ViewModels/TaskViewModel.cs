@@ -3,7 +3,7 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Models;
 using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
@@ -88,7 +88,7 @@ namespace ProjectK.Notebook.ViewModels
             DateEnded = DateTime.Now;
         }
 
-        private void LoadFrom(Domain.Versions.Version1.TaskModel model)
+        private void LoadFrom(Models.Versions.Version1.TaskModel model)
         {
             IsSelected = model.IsSelected;
             IsExpanded = model.IsExpanded;

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:domain="clr-namespace:ProjectK.Notebook.Domain;assembly=ProjectK.Notebook.Domain"
+             xmlns:domain="clr-namespace:ProjectK.Notebook.Models;assembly=ProjectK.Notebook.Models"
              mc:Ignorable="d"
              d:DesignHeight="200" d:DesignWidth="400">
     <UserControl.Resources>

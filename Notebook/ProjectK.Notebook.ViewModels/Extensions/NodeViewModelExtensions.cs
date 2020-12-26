@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using ProjectK.Notebook.Domain.Interfaces;
+using ProjectK.Notebook.Models.Interfaces;
 
 namespace ProjectK.Notebook.ViewModels.Extensions
 {

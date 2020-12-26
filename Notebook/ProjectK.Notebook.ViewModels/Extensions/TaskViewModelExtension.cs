@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Interfaces;
+using ProjectK.Notebook.Models;
+using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Extensions

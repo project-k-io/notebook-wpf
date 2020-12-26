@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProjectK.Notebook.Domain.Reports
+namespace ProjectK.Notebook.Models.Reports
 {
     public class ExcelCsvRecord
     {
