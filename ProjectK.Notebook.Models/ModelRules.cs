@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using ProjectK.Notebook.Models.Interfaces;
 
 namespace ProjectK.Notebook.Models
@@ -88,5 +90,16 @@ namespace ProjectK.Notebook.Models
                 var upper = type.ToUpper();
                 return upper.Contains("LUNCH") || upper.Contains("PERSONAL");
         }
+
+        public static bool ContainDate(IList dates, DateTime a)
+        {
+            foreach (var date in dates)
+                if (date is DateTime dateTime)
+                    if (a.Day == dateTime.Day && a.Month == dateTime.Month && a.Year == dateTime.Year)
+                        return true;
+
+            return false;
+        }
+
     }
 }

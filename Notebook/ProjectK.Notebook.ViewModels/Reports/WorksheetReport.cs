@@ -97,9 +97,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
             Logger.LogDebug("GenerateReport()");
             try
             {
-                var notebook = model.SelectedNotebook;
-                if (notebook == null)
-                    return;
+                var notebook = model;
 
 
                 var maxDelta = 40.0 / 5.0 * notebook.GetSelectedDays().Count;

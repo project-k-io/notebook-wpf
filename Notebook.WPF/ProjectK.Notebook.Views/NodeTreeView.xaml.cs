@@ -23,8 +23,8 @@ namespace ProjectK.Notebook.Views
             if (!(DataContext is MainViewModel model))
                 return;
 
-            model.RootTask.SetParents();
-            TreeViewTasks.SelectItem(model.SelectedNotebook?.SelectedTreeNode);
+            model.RootNode.SetParents();
+            TreeViewTasks.SelectItem(model.SelectedTreeNode);
             TreeViewTasks.PreviewKeyDown += async (s, e) => await TreeViewTasksOnPreviewKeyDown(s, e);
         }
 
@@ -45,7 +45,7 @@ namespace ProjectK.Notebook.Views
                 return;
 
             if (!(treeView.SelectedItem is NodeViewModel task))
-                task = mainViewModel.RootTask;
+                task = mainViewModel.RootNode;
 
             void ExpandItem(NodeViewModel t)
             {
@@ -81,8 +81,9 @@ namespace ProjectK.Notebook.Views
 
             var task = treeListView.SelectedItem is NodeViewModel
                 ? (NodeViewModel) treeListView.SelectedItem
-                : model.RootTask;
-            model.SelectTreeTask(task);
+                : model.RootNode;
+
+            model.SelectTreeTask2(task);
         }
     }
 }

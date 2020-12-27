@@ -1,4 +1,4 @@
-﻿namespace ProjectK.Notebook.ViewModels
+﻿namespace ProjectK.Notebook.ViewModels.Enums
 {
     public enum ModifiedStatus
     {

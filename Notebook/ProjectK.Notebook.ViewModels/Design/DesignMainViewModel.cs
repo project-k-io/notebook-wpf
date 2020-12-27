@@ -1,5 +1,6 @@
 ﻿using System;
 using ProjectK.Notebook.Models;
+using ProjectK.Notebook.ViewModels.Enums;
 
 namespace ProjectK.Notebook.ViewModels.Design
 {
@@ -75,7 +76,7 @@ namespace ProjectK.Notebook.ViewModels.Design
             notebook.Add(year2019);
             notebook.Add(year2020);
 
-            RootTask.Add(notebook);
+            RootNode.Add(notebook);
         }
     }
 }

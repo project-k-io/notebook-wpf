@@ -16,6 +16,7 @@ namespace ProjectK.Notebook.ViewModels.Extensions
 
         public static void UserAction_Edit(this MainViewModel model)
         {
+#if AK
             var notebook = model.SelectedNotebook;
             if (notebook == null)
                 return;
@@ -24,16 +25,19 @@ namespace ProjectK.Notebook.ViewModels.Extensions
             Logger.LogDebug($"{Tag} | Edit | {Path.GetFileName(path)} | {Path.GetDirectoryName(path)}");
 
             Process.Start("explorer", path);
+#endif
         }
 
         public static void UserAction_Clear(this MainViewModel model)
         {
+#if AK
             var notebook = model.SelectedNotebook;
             if (notebook == null)
                 return;
 
             Logger.LogDebug($"{Tag} | Clear");
             notebook.Clear();
+#endif
         }
 
 
@@ -41,22 +45,19 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         {
             Logger.LogDebug($"{Tag} | ExportSelectedAllAsText()");
 
-            var notebook = model.SelectedNotebook;
+            var notebook = model.SelectedNode;
             if (notebook == null)
                 return;
 
-            await notebook.ExportSelectedAllAsText(model.TextReport);
+            await model.ExportSelectedAllAsText(model.TextReport);
         }
 
         public static async Task UserAction_ExportSelectedAllAsJson(this MainViewModel model)
         {
             Logger.LogDebug($"{Tag} | ExportSelectedAllAsJson()");
 
-            var notebook = model.SelectedNotebook;
-            if (notebook == null)
-                return;
 
-            await notebook.ExportSelectedAllAsJson();
+            await model.ExportSelectedAllAsJson();
         }
 
         public static void UserAction_ShowReport(this MainViewModel model, ReportTypes reportType)

@@ -14,7 +14,6 @@ namespace ProjectK.Notebook.Settings
         public WindowSettings Window { get; set; } = new WindowSettings();
         public LayoutSettings Layout { get; set; } = new LayoutSettings();
         public Dictionary<string, string> Connections { get; set; } = new Dictionary<string, string>();
-        public string RecentFile { get; set; }
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
     }

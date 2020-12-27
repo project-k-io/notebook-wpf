@@ -5,7 +5,7 @@ using GalaSoft.MvvmLight;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 
-namespace ProjectK.Notebook.ViewModels
+namespace ProjectK.Notebook.ViewModels.Extensions
 {
     public static class ViewModelExtensions
     {

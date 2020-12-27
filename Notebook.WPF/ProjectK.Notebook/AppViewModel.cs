@@ -47,8 +47,6 @@ namespace ProjectK.Notebook
                 // model settings
                 LastListTaskId = _settings.LastListTaskId;
                 LastTreeTaskId = _settings.LastTreeTaskId;
-                if (SelectedNotebook != null)
-                    SelectedNotebook.Title = _settings.RecentFile;
 
                 // Output
                 Output.ButtonErrors.IsChecked = _settings.Layout.Output.Error;
@@ -57,14 +55,13 @@ namespace ProjectK.Notebook
                 Output.ButtonWarnings.IsChecked = _settings.Layout.Output.Warning;
 
                 MostRecentFiles.Clear();
-                if (File.Exists(SelectedNotebook?.Title))
-                    MostRecentFiles.Add(new FileInfo(SelectedNotebook?.Title));
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex);
             }
         }
+
 
 
         public void SaveSettings()
@@ -77,8 +74,6 @@ namespace ProjectK.Notebook
                 // model settings
                 _settings.LastListTaskId = LastListTaskId;
                 _settings.LastTreeTaskId = LastTreeTaskId;
-                if (SelectedNotebook != null)
-                    _settings.RecentFile = SelectedNotebook.Title;
 
                 //// Output
                 _settings.Layout.Output.Error = Output.ButtonErrors.IsChecked;
@@ -87,8 +82,6 @@ namespace ProjectK.Notebook
                 _settings.Layout.Output.Warning = Output.ButtonWarnings.IsChecked;
 
                 MostRecentFiles.Clear();
-                if (File.Exists(SelectedNotebook?.Title))
-                    MostRecentFiles.Add(new FileInfo(SelectedNotebook?.Title));
             }
             catch (Exception ex)
             {
@@ -122,6 +115,7 @@ namespace ProjectK.Notebook
             // var key = "TestDatabase";
             var connectionString = _settings.Connections[key];
             OpenDatabase(connectionString);
+            SetTitle(key);
         }
 
         public async Task OpenFileAsync()
@@ -130,7 +124,7 @@ namespace ProjectK.Notebook
             {
                 Logger.LogDebug("OpenFileAsync()");
                 var dialog = new OpenFileDialog();
-                var (path, ok) = dialog.SetFileDialog(SelectedNotebook?.Title);
+                var (path, ok) = dialog.SetFileDialog("");
                 if (!ok)
                     return;
 

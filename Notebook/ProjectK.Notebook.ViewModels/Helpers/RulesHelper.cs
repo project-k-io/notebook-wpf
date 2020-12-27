@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Extensions;
 using ProjectK.Notebook.Models.Interfaces;
 
@@ -41,5 +44,17 @@ namespace ProjectK.Notebook.ViewModels.Helpers
 
             return model;
         }
+
+
+        public static void AddToList2(ICollection<NodeViewModel> list, NodeViewModel node, IList dates)
+        {
+            if (node.Model is TaskModel task)
+                if (ModelRules.ContainDate(dates, task.DateStarted))
+                    list.Add(node);
+
+            foreach (var subTask in node.Nodes)
+                AddToList2(list, subTask, dates);
+        }
+
     }
 }

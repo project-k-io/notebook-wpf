@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
+using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels

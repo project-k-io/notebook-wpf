@@ -1,6 +1,7 @@
 ﻿using System;
 using GalaSoft.MvvmLight;
 using ProjectK.Notebook.Models.Interfaces;
+using ProjectK.Notebook.ViewModels.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -48,6 +49,13 @@ namespace ProjectK.Notebook.ViewModels
             get => Model.Context;
             set => this.Set(Context, v => Model.Context = v, value);
         }
+
+        public string Title
+        {
+            get => Model.Name;
+            set => Model.Name = value;
+        }
+
 
     }
 }

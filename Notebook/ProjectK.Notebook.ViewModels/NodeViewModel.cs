@@ -8,6 +8,7 @@ using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Extensions;
 using ProjectK.Notebook.Models.Interfaces;
+using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
@@ -54,7 +55,7 @@ namespace ProjectK.Notebook.ViewModels
             service.Handled();
         }
 
-        private void FixTitles()
+        public void FixTitles()
         {
             foreach (var node in Nodes)
             {
@@ -290,7 +291,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        private void FixTypes()
+        public void FixTypes()
         {
             Model.FixTypes(Name);
             foreach (var node in Nodes)

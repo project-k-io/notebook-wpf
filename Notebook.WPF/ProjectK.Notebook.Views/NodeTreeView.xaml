@@ -8,6 +8,7 @@
              xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
              xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
              xmlns:treeViewList="clr-namespace:ProjectK.Views.TreeViewList;assembly=ProjectK.Views"
+             xmlns:enums="clr-namespace:ProjectK.Notebook.ViewModels.Enums;assembly=ProjectK.Notebook.ViewModels"
              d:DesignWidth="450" d:DesignHeight="200">
     <UserControl.Resources>
         <design:DesignMainViewModel x:Key="Model" />
@@ -78,11 +79,11 @@
                                             <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png"/>
                                         </DataTrigger>-->
                                         <DataTrigger Binding="{Binding Path=Modified}"
-                                                     Value="{x:Static viewModels:ModifiedStatus.Modified}">
+                                                     Value="{x:Static enums:ModifiedStatus.Modified}">
                                             <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Path=Modified }"
-                                                     Value="{x:Static viewModels:ModifiedStatus.ChildModified}">
+                                                     Value="{x:Static enums:ModifiedStatus.ChildModified}">
                                             <Setter Property="Source" Value="Images\icons8_expand_arrow_50px.png" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -200,7 +201,7 @@
                                        SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
                                        ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
                                        Style="{StaticResource TreeListViewStyle}"
-                                       ItemsSource="{Binding Path=RootTask.Nodes}" />
+                                       ItemsSource="{Binding Path=RootNode.Nodes}" />
         </ScrollViewer>
     </Grid>
 </UserControl>
