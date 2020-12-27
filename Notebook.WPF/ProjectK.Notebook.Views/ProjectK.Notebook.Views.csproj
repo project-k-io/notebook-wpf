@@ -70,7 +70,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Resource Include="icons8-no-synchronize-32.png" />
+	  <Resource Include="Images\icons8-no-synchronize-32.png" />
 	  <Resource Include="Images\action_create_16xmd.png" />
 	  <Resource Include="Images\clear.png" />
 	  <Resource Include="Images\copy_6524.png" />
