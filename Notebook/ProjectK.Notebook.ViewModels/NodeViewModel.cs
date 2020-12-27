@@ -26,7 +26,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-
         #region Fields
 
         // Main Wrappers

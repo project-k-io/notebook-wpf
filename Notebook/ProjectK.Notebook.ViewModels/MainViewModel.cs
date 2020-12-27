@@ -51,7 +51,7 @@ namespace ProjectK.Notebook.ViewModels
             if (notebook != null)
             {
                 SetSelectedNode(node);
-                Logger.LogDebug($"SelectedNotebook selected | {notebook.Title}");
+                Logger.LogDebug($"SelectedNotebook selected | {notebook.Name}");
             }
 
             SelectTreeTask(node);
