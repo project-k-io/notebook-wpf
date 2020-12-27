@@ -32,7 +32,7 @@
     <Grid>
         <ListView
             ButtonBase.Click="ListViewTasks_OnClick"
-            x:Name="listViewTasks"
+            x:Name="ListViewTasks"
             SelectionMode="Extended"
             ItemsSource="{Binding Path=SelectedNotebook.SelectedNodeList}"
             SelectedItem="{Binding Path=SelectedNotebook.SelectedNode, IsAsync=true, Mode=TwoWay}">

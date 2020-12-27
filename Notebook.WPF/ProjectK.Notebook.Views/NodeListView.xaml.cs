@@ -20,7 +20,7 @@ namespace ProjectK.Notebook.Views
             if (!(DataContext is MainViewModel model))
                 return;
 
-            listViewTasks.SelectedItem = model.SelectedNode;
+            ListViewTasks.SelectedItem = model.SelectedNode;
         }
 
 

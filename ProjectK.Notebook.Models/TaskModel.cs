@@ -7,7 +7,7 @@ using ProjectK.Notebook.Models.Interfaces;
 
 namespace ProjectK.Notebook.Models
 {
-    public class TaskModel : ITask
+    public class TaskModel : IItem
     {
         // Foreign Key
         [ForeignKey("NotebookModel")] public Guid NotebookId { get; set; }

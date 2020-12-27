@@ -1,6 +1,7 @@
 ﻿using System;
 using GalaSoft.MvvmLight;
 using ProjectK.Notebook.Models.Interfaces;
+using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
@@ -8,6 +9,9 @@ namespace ProjectK.Notebook.ViewModels
     public class ItemViewModel : ViewModelBase
     {
         private string _kind;
+        private ModifiedStatus _modified;
+        private bool _isSelected;
+
         public string Kind
         {
             get => _kind;
@@ -56,6 +60,16 @@ namespace ProjectK.Notebook.ViewModels
             set => Model.Name = value;
         }
 
+        public ModifiedStatus Modified
+        {
+            get => _modified;
+            set => Set(ref _modified, value);
+        }
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => Set(ref _isSelected, value);
+        }
 
     }
 }

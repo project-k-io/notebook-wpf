@@ -90,13 +90,6 @@
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
             <RibbonTab Header="Edit">
-                <RibbonGroup Header="Edit">
-                    <RibbonButton
-                        Command="{Binding Path=ClearCommand}"
-                        Label="Clear"
-                        SmallImageSource="Images\Clear.png"
-                        ToolTip="Clear" />
-                </RibbonGroup>
                 <RibbonGroup Header="Fix">
                     <RibbonButton
                         Command="{Binding Path=FixTimeCommand}"

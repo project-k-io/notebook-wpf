@@ -31,8 +31,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-
-
         public void DeleteNode(IActionService service)
         {
             Logger.LogDebug($"Delete Node : {Name}");
@@ -87,8 +85,6 @@ namespace ProjectK.Notebook.ViewModels
 
         // Misc
         private bool _isExpanded;
-        private bool _isSelected;
-        private ModifiedStatus _modified;
 
         #endregion
 
@@ -124,19 +120,6 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
         public ObservableCollection<string> TitleList { get; set; }
-
-
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set => Set(ref _isSelected, value);
-        }
-
-        public ModifiedStatus Modified
-        {
-            get => _modified;
-            set => Set(ref _modified, value);
-        }
 
         public bool IsExpanded
         {
@@ -323,48 +306,5 @@ namespace ProjectK.Notebook.ViewModels
                 Nodes.Add(node);
             }
         }
-
-        public void FixTime()
-        {
-#if AK
-            if (Main is TaskModel task)
-            {
-                if (ModelRules.IsPersonalType(task.Type))
-                    return;
-            }
-
-            if (Nodes.IsNullOrEmpty())
-            {
-                Total = Duration;
-            }
-            else
-            {
-                for (var index = 0; index < Nodes.Count; ++index)
-                {
-                    var subTask = (TaskViewModel)Nodes[index];
-                    if (subTask.DateEnded == DateTime.MinValue && index < Nodes.Count - 1)
-                        subTask.DateEnded = ((TaskViewModel)Nodes[index + 1]).DateStarted;
-                }
-
-                Total = TimeSpan.Zero;
-                for (var index = 0; index < Nodes.Count; ++index)
-                {
-                    var subTask = (TaskViewModel)Nodes[index];
-                    subTask.FixTime();
-                    Total += subTask.Total;
-                }
-
-                var subTask1 = (TaskViewModel)Nodes[^1];
-                if (subTask1.DateEnded != DateTime.MinValue)
-                    DateEnded = subTask1.DateEnded;
-                var subTask2 = (TaskViewModel)Nodes[0];
-                if (subTask2.DateStarted != DateTime.MinValue)
-                    DateStarted = subTask2.DateStarted;
-            }
-#endif
-        }
-
-
-
     }
 }

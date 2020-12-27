@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using ProjectK.Notebook.Models;
+using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
@@ -15,13 +16,12 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class NotebookViewModel : ItemViewModel
     {
-
         public NotebookViewModel()
         {
             Kind = "Notebook";
         }
 
-        public NotebookViewModel(NotebookModel model) : this()
+        public NotebookViewModel(INode model) : this()
         {
             Model = model;
         }

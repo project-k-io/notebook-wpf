@@ -7,7 +7,7 @@ using ProjectK.Notebook.Models.Interfaces;
 namespace ProjectK.Notebook.Models
 {
     // [Table("Nodes")]
-    public class NodeModel : INode
+    public class NodeModel : IItem
     {
         // Foreign Key
         [ForeignKey("NotebookModel")] public Guid NotebookId { get; set; }

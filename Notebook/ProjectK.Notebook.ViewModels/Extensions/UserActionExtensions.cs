@@ -15,19 +15,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
 
 
-        public static void UserAction_Clear(this MainViewModel model)
-        {
-#if AK
-            var notebook = model.SelectedNotebook;
-            if (notebook == null)
-                return;
-
-            Logger.LogDebug($"{Tag} | Clear");
-            notebook.Clear();
-#endif
-        }
-
-
         public static async Task UserAction_ExportSelectedAllAsText(this MainViewModel model)
         {
             Logger.LogDebug($"{Tag} | ExportSelectedAllAsText()");

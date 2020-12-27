@@ -85,9 +85,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
             sb.Append(dateStarted2.ToShortDateString());
             sb.AppendLine();
             sb.AppendLine();
-
-            sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ",
-                dateStarted2.Year, dateStarted2.Month, dateStarted2.Day);
+            sb.AppendFormat("                    INVOICE #{0}{1:00}{2:00}                                ", dateStarted2.Year, dateStarted2.Month, dateStarted2.Day);
             sb.AppendLine();
             sb.AppendLine();
         }
@@ -97,34 +95,29 @@ namespace ProjectK.Notebook.ViewModels.Reports
             Logger.LogDebug("GenerateReport()");
             try
             {
-                var notebook = model;
-
-
-                var maxDelta = 40.0 / 5.0 * notebook.GetSelectedDays().Count;
+                var maxDelta = 40.0 / 5.0 * model.GetSelectedDays().Count;
 
                 var sb = new StringBuilder();
-                var report = GenerateReport(notebook.SelectedNodeList)
-                    .GenerateReport(maxDelta, model.UseTimeOptimization);
-                var selectedTask = notebook.SelectedNode;
+                var report = GenerateReport(model.SelectedNodeList).GenerateReport(maxDelta, model.UseTimeOptimization);
 
-                if (selectedTask != null && selectedTask.Context == "Week")
-                    AddHeader(selectedTask, sb, Logger);
+                if(!(model.SelectedNode is NodeViewModel selectedNode))
+                    return;
+
+                if (selectedNode.Context == "Week")
+                    AddHeader(selectedNode, sb, Logger);
 
                 sb.Append(report);
 
-                if (notebook.SelectedNode != null && notebook.SelectedNode.Context == "Week")
+                if (selectedNode.Context == "Week")
                 {
-                    var nodes = notebook.SelectedNode.Nodes;
+                    var nodes = selectedNode.Nodes;
                     var lastNode = (NodeViewModel) nodes.LastOrDefault();
                     if (lastNode != null)
                     {
                         var dateStarted = lastNode.Model is TaskModel lastTask ? lastTask.DateStarted : DateTime.Now;
-                        File.WriteAllText(
-                            $"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt",
-                            model.TextReport);
+                        File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", model.TextReport);
                     }
                 }
-
                 model.TextReport = sb.ToString();
             }
             catch (Exception ex)

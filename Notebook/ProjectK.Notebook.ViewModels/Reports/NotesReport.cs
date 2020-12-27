@@ -12,13 +12,15 @@ namespace ProjectK.Notebook.ViewModels.Reports
         private const char SpaceChar = ' ';
         private static readonly ILogger Logger = LogManager.GetLogger<NotesReport>();
 
-        public string GenerateReport(NodeViewModel node)
+        public string GenerateReport(ItemViewModel item)
         {
             Logger.LogDebug("GenerateReport()");
             try
             {
                 var sb = new StringBuilder();
-                GenerateReport(node, sb, 0);
+                if(item is NodeViewModel node)
+                    GenerateReport(node, sb, 0);
+
                 return sb.ToString();
             }
             catch (Exception ex)

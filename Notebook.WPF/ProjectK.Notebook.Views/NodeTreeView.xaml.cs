@@ -79,11 +79,10 @@ namespace ProjectK.Notebook.Views
             if (!(treeListView.DataContext is MainViewModel model))
                 return;
 
-            var task = treeListView.SelectedItem is NodeViewModel
-                ? (NodeViewModel) treeListView.SelectedItem
-                : model.RootNode;
+            if(!(treeListView.SelectedItem is NodeViewModel node))
+                return;
 
-            model.SelectTreeTask2(task);
+            model.SelectTreeTask2(node);
         }
     }
 }

@@ -9,7 +9,7 @@ using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Models
 {
-    public class NotebookModel : INode
+    public class NotebookModel : INotebook
     {
         [Key] public Guid Id { get; set; }
         public Guid ParentId { get; set; }
