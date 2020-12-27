@@ -1,15 +1,17 @@
-<UserControl x:Class="ProjectK.Notebook.Views.NodeTreeView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
-             xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
-             xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
-             xmlns:treeViewList="clr-namespace:ProjectK.Views.TreeViewList;assembly=ProjectK.Views"
-             xmlns:enums="clr-namespace:ProjectK.Notebook.ViewModels.Enums;assembly=ProjectK.Notebook.ViewModels"
-             d:DesignWidth="450" d:DesignHeight="200">
+<UserControl
+    x:Class="ProjectK.Notebook.Views.NodeTreeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
+    xmlns:enums="clr-namespace:ProjectK.Notebook.ViewModels.Enums;assembly=ProjectK.Notebook.ViewModels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:treeViewList="clr-namespace:ProjectK.Views.TreeViewList;assembly=ProjectK.Views"
+    xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
+    d:DesignHeight="200"
+    d:DesignWidth="450"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <design:Designer x:Key="Model" />
         <converters:LevelToIndentConverter x:Key="LevelIndentConverter" />
@@ -20,19 +22,30 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border Width="19" Height="13" Background="Transparent">
-                            <Border Width="9" Height="9" BorderThickness="1" BorderBrush="#FF7898B5" CornerRadius="1"
-                                    SnapsToDevicePixels="true">
+                        <Border
+                            Width="19"
+                            Height="13"
+                            Background="Transparent">
+                            <Border
+                                Width="9"
+                                Height="9"
+                                BorderBrush="#FF7898B5"
+                                BorderThickness="1"
+                                CornerRadius="1"
+                                SnapsToDevicePixels="true">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                         <GradientBrush.GradientStops>
-                                            <GradientStop Color="White" Offset=".2" />
-                                            <GradientStop Color="#FFC0B7A6" Offset="1" />
+                                            <GradientStop Offset=".2" Color="White" />
+                                            <GradientStop Offset="1" Color="#FFC0B7A6" />
                                         </GradientBrush.GradientStops>
                                     </LinearGradientBrush>
                                 </Border.Background>
-                                <Path x:Name="ExpandPath" Margin="1,1,1,1" Fill="Black"
-                                      Data="M 0,2 L 0,3 2,3 2,5 3,5 3,3 5,3 5,2 3,2 3,0 2,0 2,2 Z" />
+                                <Path
+                                    x:Name="ExpandPath"
+                                    Margin="1,1,1,1"
+                                    Data="M 0,2 L 0,3 2,3 2,5 3,5 3,3 5,3 5,2 3,2 3,0 2,0 2,2 Z"
+                                    Fill="Black" />
                             </Border>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -49,41 +62,41 @@
             <DockPanel>
                 <ToggleButton
                     x:Name="Expander"
-                    Style="{StaticResource ExpandCollapseToggleStyle}"
+                    Margin="{Binding Level, Converter={StaticResource LevelIndentConverter}, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}"
                     ClickMode="Press"
-                    Margin="{Binding Level, 
-                        Converter={StaticResource LevelIndentConverter}, 
-                        RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}"
-                    IsChecked="{Binding Path=IsExpanded, 
-                        RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}" />
+                    IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}"
+                    Style="{StaticResource ExpandCollapseToggleStyle}" />
 
                 <TextBlock Text="{Binding Path=Name}" />
             </DockPanel>
             <DataTemplate.Triggers>
-                <DataTrigger Value="False"
-                             Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}">
+                <DataTrigger Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}" Value="False">
                     <Setter TargetName="Expander" Property="UIElement.Visibility" Value="Hidden" />
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
         <GridViewColumnCollection x:Key="Columns">
-            <GridViewColumn Header="Title" CellTemplate="{StaticResource CellTemplateName}" Width="200" />
+            <GridViewColumn
+                Width="200"
+                CellTemplate="{StaticResource CellTemplateName}"
+                Header="Title" />
             <GridViewColumn Header="M">
                 <GridViewColumn.CellTemplate>
                     <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
-                        <Image Width="16" Height="16" Margin="3,0">
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Margin="3,0">
                             <Image.Style>
                                 <Style TargetType="{x:Type Image}">
                                     <Style.Triggers>
                                         <!--<DataTrigger Binding="{Binding Path=Modified }" Value="{x:Static viewModels:ModifiedStatus.None}">
                                             <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png"/>
                                         </DataTrigger>-->
-                                        <DataTrigger Binding="{Binding Path=Modified}"
-                                                     Value="{x:Static enums:ModifiedStatus.Modified}">
+                                        <DataTrigger Binding="{Binding Path=Modified}" Value="{x:Static enums:ModifiedStatus.Modified}">
                                             <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png" />
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding Path=Modified }"
-                                                     Value="{x:Static enums:ModifiedStatus.ChildModified}">
+                                        <DataTrigger Binding="{Binding Path=Modified}" Value="{x:Static enums:ModifiedStatus.ChildModified}">
                                             <Setter Property="Source" Value="Images\icons8_expand_arrow_50px.png" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -94,18 +107,21 @@
                     </DataTemplate>
                 </GridViewColumn.CellTemplate>
             </GridViewColumn>
-            <GridViewColumn Header="Day" Width="60" DisplayMemberBinding="{Binding DateStarted}" />
-            <GridViewColumn Header="Start" Width="70">
+            <GridViewColumn
+                Width="60"
+                DisplayMemberBinding="{Binding DateStarted}"
+                Header="Day" />
+            <GridViewColumn Width="70" Header="Start">
                 <GridViewColumn.CellTemplate>
                     <DataTemplate>
-                        <TextBlock TextAlignment="Right" Text="{Binding DateStarted, StringFormat=t}" />
+                        <TextBlock Text="{Binding DateStarted, StringFormat=t}" TextAlignment="Right" />
                     </DataTemplate>
                 </GridViewColumn.CellTemplate>
             </GridViewColumn>
-            <GridViewColumn Header="End" Width="70">
+            <GridViewColumn Width="70" Header="End">
                 <GridViewColumn.CellTemplate>
                     <DataTemplate>
-                        <TextBlock TextAlignment="Right" Text="{Binding DateEnded, StringFormat=t}" />
+                        <TextBlock Text="{Binding DateEnded, StringFormat=t}" TextAlignment="Right" />
                     </DataTemplate>
                 </GridViewColumn.CellTemplate>
             </GridViewColumn>
@@ -117,14 +133,17 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type treeViewList:TreeListViewItem}">
                         <StackPanel>
-                            <Border Name="Bd" Background="{TemplateBinding Control.Background}"
-                                    BorderBrush="{TemplateBinding Control.BorderBrush}"
-                                    BorderThickness="{TemplateBinding Control.BorderThickness}"
-                                    Padding="{TemplateBinding Control.Padding}">
+                            <Border
+                                Name="Bd"
+                                Padding="{TemplateBinding Control.Padding}"
+                                Background="{TemplateBinding Control.Background}"
+                                BorderBrush="{TemplateBinding Control.BorderBrush}"
+                                BorderThickness="{TemplateBinding Control.BorderThickness}">
 
-                                <GridViewRowPresenter x:Name="PART_Header"
-                                                      Content="{TemplateBinding HeaderedItemsControl.Header}"
-                                                      Columns="{StaticResource Columns}" />
+                                <GridViewRowPresenter
+                                    x:Name="PART_Header"
+                                    Columns="{StaticResource Columns}"
+                                    Content="{TemplateBinding HeaderedItemsControl.Header}" />
                             </Border>
                             <ItemsPresenter x:Name="ItemsHost" />
                         </StackPanel>
@@ -147,26 +166,19 @@
                                 <Setter TargetName="PART_Header" Property="FrameworkElement.MinHeight" Value="19" />
                             </MultiTrigger>
                             <Trigger Property="TreeViewItem.IsSelected" Value="true">
-                                <Setter TargetName="Bd"
-                                        Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
-                                        Property="Border.Background" />
-                                <Setter Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
-                                        Property="Control.Foreground" />
+                                <Setter TargetName="Bd" Property="Border.Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                <Setter Property="Control.Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="TreeViewItem.IsSelected" Value="true" />
                                     <Condition Property="TreeViewItem.IsSelectionActive" Value="false" />
                                 </MultiTrigger.Conditions>
-                                <Setter TargetName="Bd"
-                                        Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                                        Property="Border.Background" />
-                                <Setter Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                                        Property="Control.Foreground" />
+                                <Setter TargetName="Bd" Property="Border.Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                                <Setter Property="Control.Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
                             </MultiTrigger>
                             <Trigger Property="UIElement.IsEnabled" Value="false">
-                                <Setter Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
-                                        Property="Control.Foreground" />
+                                <Setter Property="Control.Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -177,8 +189,7 @@
             <Setter Property="Control.Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type treeViewList:TreeListView}">
-                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}"
-                                BorderThickness="{TemplateBinding Control.BorderThickness}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="{TemplateBinding Control.BorderThickness}">
                             <DockPanel>
                                 <GridViewHeaderRowPresenter Columns="{StaticResource Columns}" DockPanel.Dock="Top" />
                                 <ItemsPresenter />
@@ -191,17 +202,21 @@
     </UserControl.Resources>
     <Grid d:DataContext="{StaticResource Model}">
         <FrameworkElement.Resources>
-            <HierarchicalDataTemplate x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
-                                      DataType="{x:Type viewModels:NodeViewModel}"
-                                      ItemsSource="{Binding Path=Nodes}" />
+            <HierarchicalDataTemplate
+                x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
+                DataType="{x:Type viewModels:NodeViewModel}"
+                ItemsSource="{Binding Path=Nodes}" />
         </FrameworkElement.Resources>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                      FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}">
-            <treeViewList:TreeListView x:Name="TreeViewTasks"
-                                       SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
-                                       ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
-                                       Style="{StaticResource TreeListViewStyle}"
-                                       ItemsSource="{Binding Path=RootNode.Nodes}" />
+        <ScrollViewer
+            FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
+            HorizontalScrollBarVisibility="Auto"
+            VerticalScrollBarVisibility="Auto">
+            <treeViewList:TreeListView
+                x:Name="TreeViewTasks"
+                ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
+                ItemsSource="{Binding Path=RootNode.Nodes}"
+                SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
+                Style="{StaticResource TreeListViewStyle}" />
         </ScrollViewer>
     </Grid>
 </UserControl>
