@@ -14,19 +14,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
         private const string Tag = "UserAction";
         private static readonly ILogger Logger = LogManager.GetLogger<MainViewModel>();
 
-        public static void UserAction_Edit(this MainViewModel model)
-        {
-#if AK
-            var notebook = model.SelectedNotebook;
-            if (notebook == null)
-                return;
-
-            var path = notebook.Title;
-            Logger.LogDebug($"{Tag} | Edit | {Path.GetFileName(path)} | {Path.GetDirectoryName(path)}");
-
-            Process.Start("explorer", path);
-#endif
-        }
 
         public static void UserAction_Clear(this MainViewModel model)
         {

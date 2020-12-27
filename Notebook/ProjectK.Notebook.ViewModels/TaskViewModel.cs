@@ -19,7 +19,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Fields
 
-        // Model wrappers
+        // Main wrappers
         //private string _type;
         //private string _subType;
         //private DateTime _dateStarted;

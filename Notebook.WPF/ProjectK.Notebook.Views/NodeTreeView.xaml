@@ -11,7 +11,7 @@
              xmlns:enums="clr-namespace:ProjectK.Notebook.ViewModels.Enums;assembly=ProjectK.Notebook.ViewModels"
              d:DesignWidth="450" d:DesignHeight="200">
     <UserControl.Resources>
-        <design:DesignMainViewModel x:Key="Model" />
+        <design:Designer x:Key="Model" />
         <converters:LevelToIndentConverter x:Key="LevelIndentConverter" />
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Focusable" Value="false" />

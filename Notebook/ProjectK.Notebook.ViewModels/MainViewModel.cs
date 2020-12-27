@@ -57,18 +57,12 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> ContextList { get; set; }
         public ObservableCollection<string> TaskTitleList { get; set; }
         public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();
-
         public ReportTypes ReportType
         {
             get => _reportType;
-            set
-            {
-                if (!Set(ref _reportType, value)) return;
-            }
+            set => Set(ref _reportType, value);
         }
-
         public Assembly Assembly { get; set; }
-
         public string Title
         {
             get => _title;
@@ -81,55 +75,43 @@ namespace ProjectK.Notebook.ViewModels
                 RaisePropertyChanged();
             }
         }
-
         public string TextReport
         {
             get => _textReport;
             set => Set(ref _textReport, value);
         }
-
         public Guid LastListTaskId { get; set; }
         public Guid LastTreeTaskId { get; set; }
-
-
         public NodeViewModel RootNode { get; set; }
-
         public NodeViewModel SelectedTreeNode
         {
             get => _selectedTreeNode;
             set => Set(ref _selectedTreeNode, value);
         }
-
         public NodeViewModel SelectedNode
         {
             get => _selectedNode;
             set => Set(ref _selectedNode, value);
         }
-
-
         public string ExcelCsvText
         {
             get => _excelCsvText;
             set => Set(ref _excelCsvText, value);
         }
-
         public bool UseTimeOptimization
         {
             get => _useTimeOptimization;
             set => Set(ref _useTimeOptimization, value);
         }
-
         public bool CanSave { get; set; }
         public Action<Action> OnDispatcher { get; set; }
         public OutputViewModel Output { get; set; }
-
 
         #endregion
 
         #region Commands
 
         public ICommand ClearCommand { get; }
-        public ICommand EditCommand { get; }
         public ICommand FixTimeCommand { get; }
         public ICommand ExtractContextCommand { get; }
         public ICommand FixContextCommand { get; private set; }
@@ -165,19 +147,15 @@ namespace ProjectK.Notebook.ViewModels
             ContextList = new ObservableCollection<string>();
             TaskTitleList = new ObservableCollection<string>();
             ClearCommand = new RelayCommand(this.UserAction_Clear);
-            EditCommand = new RelayCommand(this.UserAction_Edit);
-            FixTimeCommand = new RelayCommand(() => FixTime());
-            ExtractContextCommand = new RelayCommand(() => FixContext());
-            FixTitlesCommand = new RelayCommand(() => FixTitles());
-            FixTypesCommand = new RelayCommand(() => FixTypes());
+            FixTimeCommand = new RelayCommand(FixTime);
+            ExtractContextCommand = new RelayCommand(FixContext);
+            FixTitlesCommand = new RelayCommand(FixTitles);
+            FixTypesCommand = new RelayCommand(FixTypes);
             CopyTaskCommand = new RelayCommand(async () => await CopyTask());
             ContinueTaskCommand = new RelayCommand(async () => await ContinueTask());
             ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
-            ExportSelectedAllAsTextCommand =
-                new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
-            ExportSelectedAllAsJsonCommand =
-                new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
-
+            ExportSelectedAllAsTextCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
+            ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
             SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 
@@ -192,7 +170,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             var notification = notificationMessage.Notification;
             var node = notificationMessage.Content;
-            Logger.LogDebug($"Model={node.Name} {notification}");
+            Logger.LogDebug($"Main={node.Name} {notification}");
             switch (notification)
             {
                 case "Modified":
@@ -638,10 +616,10 @@ namespace ProjectK.Notebook.ViewModels
                 }
                 else
                 {
-                    if (notebook.Model.Id == SelectedNotebook.Model.Id) SelectedNotebook = Notebooks.FirstOrDefault();
+                    if (notebook.Main.Id == SelectedNotebook.Main.Id) SelectedNotebook = Notebooks.FirstOrDefault();
                 }
 
-                _db.Remove(notebook.Model as NotebookModel);
+                _db.Remove(notebook.Main as NotebookModel);
 #endif
             }
             else
@@ -681,7 +659,7 @@ namespace ProjectK.Notebook.ViewModels
         public async Task<NodeViewModel> AddNew(NodeViewModel parentNode)
         {
 #if AK
-            if (!(SelectedNotebook.Model is NotebookModel notebook))
+            if (!(SelectedNotebook.Main is NotebookModel notebook))
                 return null;
             var notebookId = notebook.Id;
             var model = parentNode.CreateModel(notebookId);
@@ -704,7 +682,6 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-
         public List<DateTime> GetSelectedDays()
         {
             var dateTimeList = new List<DateTime>();
@@ -715,7 +692,6 @@ namespace ProjectK.Notebook.ViewModels
 
             return dateTimeList;
         }
-
         public void SelectTreeTask2(NodeViewModel node)
         {
             node.TypeList = TypeList;
@@ -731,7 +707,6 @@ namespace ProjectK.Notebook.ViewModels
             SelectTreeTask(node);
             OnGenerateReportChanged();
         }
-
         public void SelectTreeTask(NodeViewModel task)
         {
             if (task == null)
@@ -744,13 +719,11 @@ namespace ProjectK.Notebook.ViewModels
             SelectedNode = !SelectedNodeList.IsNullOrEmpty() ? SelectedNodeList[0] : task;
             RaisePropertyChanged(nameof(SelectedNodeList));
         }
-
         public void FixTime()
         {
             if (SelectedTreeNode.Model is TaskModel task)
                 SelectedTreeNode.FixTime();
         }
-
         public void ExtractContext()
         {
             ContextList.Clear();
@@ -761,17 +734,14 @@ namespace ProjectK.Notebook.ViewModels
         {
             SelectedTreeNode.FixContext();
         }
-
         public void FixTitles()
         {
             SelectedTreeNode.FixTitles();
         }
-
         public void FixTypes()
         {
             SelectedTreeNode.FixTypes();
         }
-
         public static void AddToList22(ICollection<NodeViewModel> list, NodeViewModel node, IList dates)
         {
             if (node.Model is TaskModel task)
@@ -781,7 +751,6 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var subTask in node.Nodes)
                 AddToList22(list, subTask, dates);
         }
-
         public void UpdateSelectDayTasks(IList dates)
         {
             SelectedNodeList.Clear();
@@ -789,8 +758,6 @@ namespace ProjectK.Notebook.ViewModels
             AddToList2(SelectedNodeList, RootNode, dates);
 #endif
         }
-
-
         public async Task ExportSelectedAllAsText(string text)
         {
             var path = Title;
@@ -801,7 +768,6 @@ namespace ProjectK.Notebook.ViewModels
 
             await File.WriteAllTextAsync(exportPath, text);
         }
-
         public async Task ExportSelectedAllAsJson()
         {
             var path = Title;
@@ -811,19 +777,15 @@ namespace ProjectK.Notebook.ViewModels
 
             await SelectedNode.ExportToFileAsync(exportPath);
         }
-
         public NodeViewModel FindTask(Guid id)
         {
             return SelectedNode.FindNode(id);
         }
-
         public event EventHandler SelectedDaysChanged;
-
         public void OnSelectedDaysChanged()
         {
             SelectedDaysChanged?.Invoke(this, EventArgs.Empty);
         }
-
 
     }
 }

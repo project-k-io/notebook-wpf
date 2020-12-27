@@ -77,7 +77,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Fields
 
-        // Model Wrappers
+        // Main Wrappers
         //private Guid _id;
         //private Guid _parentId;
         //private string _context;
@@ -94,7 +94,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Properties
 
-        // Model 
+        // Main 
 
         public NodeViewModel()
         {
@@ -117,7 +117,7 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        // Model Wrapper
+        // Main Wrapper
 
 
         public NodeViewModel Parent { get; set; }
@@ -327,7 +327,7 @@ namespace ProjectK.Notebook.ViewModels
         public void FixTime()
         {
 #if AK
-            if (Model is TaskModel task)
+            if (Main is TaskModel task)
             {
                 if (ModelRules.IsPersonalType(task.Type))
                     return;
