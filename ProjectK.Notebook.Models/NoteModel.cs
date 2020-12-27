@@ -7,9 +7,10 @@ namespace ProjectK.Notebook.Models
 {
     public class NoteModel : INote
     {
+        public virtual NotebookModel NotebookModel { get; set; }
+
         // Foreign Key
         [ForeignKey("NotebookModel")] public Guid NotebookId { get; set; }
-        public virtual NotebookModel NotebookModel { get; set; }
         [Key] public Guid Id { get; set; }
         public Guid ParentId { get; set; }
         public string Name { get; set; }

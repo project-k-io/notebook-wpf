@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using ProjectK.Notebook.Models.Interfaces;
 
 namespace ProjectK.Notebook.Models
 {
@@ -84,11 +83,11 @@ namespace ProjectK.Notebook.Models
 
         public static bool IsPersonalType(string type)
         {
-                if (string.IsNullOrEmpty(type))
-                    return false;
+            if (string.IsNullOrEmpty(type))
+                return false;
 
-                var upper = type.ToUpper();
-                return upper.Contains("LUNCH") || upper.Contains("PERSONAL");
+            var upper = type.ToUpper();
+            return upper.Contains("LUNCH") || upper.Contains("PERSONAL");
         }
 
         public static bool ContainDate(IList dates, DateTime a)
@@ -100,6 +99,5 @@ namespace ProjectK.Notebook.Models
 
             return false;
         }
-
     }
 }

@@ -38,13 +38,13 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="10" />
-                <RowDefinition Height="Auto" /> 
+                <RowDefinition Height="Auto" />
                 <!--  1 Context  -->
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" /> 
+                <RowDefinition Height="Auto" />
                 <!--  3 Title  -->
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" /> 
+                <RowDefinition Height="Auto" />
                 <!--  5 Created  -->
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />

@@ -55,6 +55,5 @@ namespace ProjectK.Notebook.ViewModels.Helpers
             foreach (var subTask in node.Nodes)
                 AddToList2(list, subTask, dates);
         }
-
     }
 }

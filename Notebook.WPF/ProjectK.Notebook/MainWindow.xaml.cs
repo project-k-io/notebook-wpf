@@ -1,10 +1,8 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProjectK.Logging;
 using ProjectK.Notebook.Settings;
-using ProjectK.View.Helpers.Extensions;
 
 namespace ProjectK.Notebook
 {
@@ -17,24 +15,14 @@ namespace ProjectK.Notebook
         {
             InitializeComponent();
             _settings = settings.Value;
-
-            Loaded += MainView_Loaded;
+            Loaded += OnLoaded;
         }
 
-        private void MainView_Loaded(object sender, RoutedEventArgs e)
+        private void OnLoaded(object sender, RoutedEventArgs e)
         {
             _logger.LogDebug("Loaded()");
             if (!(DataContext is AppViewModel model)) return;
-            model.OnDispatcher = this.GetAddDelegate();
             CommandBindings.AddRange(model.CreateCommandBindings());
-        }
-
-        private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!(DataContext is AppViewModel model)) return;
-            if (!(sender is Calendar calendar)) return;
-            model.UpdateSelectDayTasks(calendar.SelectedDates);
-            model.OnGenerateReportChanged();
         }
 
         public void LoadSettings()

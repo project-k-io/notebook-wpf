@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Threading.Tasks;
-using ProjectK.Notebook.Models;
-using ProjectK.Notebook.Models.Interfaces;
-using ProjectK.Notebook.ViewModels.Extensions;
-using ProjectK.Utils;
-using ProjectK.Utils.Extensions;
+﻿using ProjectK.Notebook.Models.Interfaces;
 
 //using ;
 

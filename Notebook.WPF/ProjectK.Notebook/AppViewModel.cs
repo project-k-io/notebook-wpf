@@ -63,7 +63,6 @@ namespace ProjectK.Notebook
         }
 
 
-
         public void SaveSettings()
         {
             Logger.LogDebug("SaveSettings()");

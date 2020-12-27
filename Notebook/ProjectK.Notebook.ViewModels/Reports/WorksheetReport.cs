@@ -100,7 +100,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 var sb = new StringBuilder();
                 var report = GenerateReport(model.SelectedNodeList).GenerateReport(maxDelta, model.UseTimeOptimization);
 
-                if(!(model.SelectedNode is NodeViewModel selectedNode))
+                if (!(model.SelectedNode is NodeViewModel selectedNode))
                     return;
 
                 if (selectedNode.Context == "Week")
@@ -118,6 +118,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                         File.WriteAllText($"Alan Kharebov Worksheet {dateStarted.Year}-{dateStarted.Month:00}-{dateStarted.Day:00}.txt", model.TextReport);
                     }
                 }
+
                 model.TextReport = sb.ToString();
             }
             catch (Exception ex)

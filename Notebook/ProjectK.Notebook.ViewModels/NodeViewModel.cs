@@ -14,6 +14,7 @@ using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
+using TaskModel = ProjectK.Notebook.Models.Versions.Version1.TaskModel;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -22,6 +23,22 @@ namespace ProjectK.Notebook.ViewModels
         #region Static Fields
 
         private static readonly ILogger Logger = LogManager.GetLogger<NodeViewModel>();
+
+        #endregion
+
+
+        #region Fields
+
+        // Main Wrappers
+        //private Guid _id;
+        //private Guid _parentId;
+        //private string _context;
+        //private string _name;
+        //private DateTime _created;
+        //private string _description;
+
+        // Misc
+        private bool _isExpanded;
 
         #endregion
 
@@ -72,21 +89,38 @@ namespace ProjectK.Notebook.ViewModels
             return node;
         }
 
+        public void FixTypes()
+        {
+            Model.FixTypes(Name);
+            foreach (var node in Nodes)
+                node.FixTypes();
+        }
 
-        #region Fields
+        public void LoadFrom(TaskModel model)
+        {
+            IsSelected = model.IsSelected;
+            IsExpanded = model.IsExpanded;
+            Description = model.Description;
+            if (Model is Models.TaskModel task)
+            {
+                task.Type = model.Type;
+                task.DateStarted = model.DateStarted;
+                task.DateEnded = model.DateEnded;
+            }
 
-        // Main Wrappers
-        //private Guid _id;
-        //private Guid _parentId;
-        //private string _context;
-        //private string _name;
-        //private DateTime _created;
-        //private string _description;
+            Name = model.Title;
 
-        // Misc
-        private bool _isExpanded;
+            if (model.SubTasks.IsNullOrEmpty())
+                return;
 
-        #endregion
+            foreach (var subTask in model.SubTasks)
+            {
+                var node = new NodeViewModel();
+                node.Model = new Models.TaskModel();
+                node.LoadFrom(subTask);
+                Nodes.Add(node);
+            }
+        }
 
         #region Properties
 
@@ -164,6 +198,7 @@ namespace ProjectK.Notebook.ViewModels
         {
             foreach (var node in Nodes) node.SaveRecursively(list);
         }
+
         private void SaveRecursively(List<INode> list)
         {
             list.Add(Model);
@@ -176,6 +211,7 @@ namespace ProjectK.Notebook.ViewModels
                 node.ParentId = Id;
             }
         }
+
         public void TrySetId()
         {
             if (Id != Guid.Empty)
@@ -183,25 +219,30 @@ namespace ProjectK.Notebook.ViewModels
 
             Id = Guid.NewGuid();
         }
+
         public void Add(NodeViewModel node)
         {
             node.SetParent(this);
             Nodes.Add(node);
         }
+
         public void Remove(NodeViewModel node)
         {
             Nodes.Remove(node);
         }
+
         public void Insert(int index, NodeViewModel node)
         {
             node.SetParent(this);
             Nodes.Insert(index, node);
         }
+
         public void SetParent(NodeViewModel parent)
         {
             Parent = parent;
             ParentId = parent.Id;
         }
+
         public void SetParents()
         {
             foreach (var node in Nodes)
@@ -210,6 +251,7 @@ namespace ProjectK.Notebook.ViewModels
                 node.SetParents();
             }
         }
+
         public void ResetModified()
         {
             this.Execute(a =>
@@ -218,10 +260,12 @@ namespace ProjectK.Notebook.ViewModels
                     a.Modified = ModifiedStatus.None;
             });
         }
+
         public void SetParentChildModified()
         {
             this.UpAction(a => { a.Modified = ModifiedStatus.ChildModified; });
         }
+
         public void ResetParentChildModified()
         {
             this.Execute(a =>
@@ -230,6 +274,7 @@ namespace ProjectK.Notebook.ViewModels
                     a.Modified = ModifiedStatus.None;
             });
         }
+
         public void ExtractContext(ObservableCollection<string> contextList)
         {
             if (!string.IsNullOrEmpty(Context) && !contextList.Contains(Context))
@@ -238,11 +283,13 @@ namespace ProjectK.Notebook.ViewModels
             foreach (var node in Nodes)
                 node.ExtractContext(contextList);
         }
+
         public void FixContext(NodeViewModel node)
         {
             if (ModelRules.GetSubNodeContext(Context, out var context))
                 node.Context = context;
         }
+
         public void FixContext()
         {
             foreach (var node in Nodes)
@@ -251,6 +298,7 @@ namespace ProjectK.Notebook.ViewModels
                 node.FixContext();
             }
         }
+
         public NodeViewModel FindNode(Guid id)
         {
             if (Id == id)
@@ -265,6 +313,7 @@ namespace ProjectK.Notebook.ViewModels
 
             return null;
         }
+
         public List<INode> GetModels()
         {
             var models = Nodes.GetModels();
@@ -273,38 +322,5 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         #endregion
-
-        public void FixTypes()
-        {
-            Model.FixTypes(Name);
-            foreach (var node in Nodes)
-                node.FixTypes();
-        }
-
-        public void LoadFrom(Models.Versions.Version1.TaskModel model)
-        {
-            IsSelected = model.IsSelected;
-            IsExpanded = model.IsExpanded;
-            Description = model.Description;
-            if (Model is TaskModel task)
-            {
-                task.Type = model.Type;
-                task.DateStarted = model.DateStarted;
-                task.DateEnded = model.DateEnded;
-            }
-
-            Name = model.Title;
-
-            if (model.SubTasks.IsNullOrEmpty())
-                return;
-
-            foreach (var subTask in model.SubTasks)
-            {
-                var node = new NodeViewModel();
-                node.Model = new TaskModel();
-                node.LoadFrom(subTask);
-                Nodes.Add(node);
-            }
-        }
     }
 }

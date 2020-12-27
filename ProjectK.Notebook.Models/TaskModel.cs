@@ -9,9 +9,6 @@ namespace ProjectK.Notebook.Models
 {
     public class TaskModel : IItem
     {
-        // Foreign Key
-        [ForeignKey("NotebookModel")] public Guid NotebookId { get; set; }
-
         public virtual NotebookModel NotebookModel { get; set; }
 
         [XmlIgnore]
@@ -26,6 +23,17 @@ namespace ProjectK.Notebook.Models
             }
         }
 
+        // ITask
+        public string Type { get; set; }
+        public string SubType { get; set; }
+        public int Rating { get; set; }
+        public DateTime DateStarted { get; set; }
+
+        public DateTime DateEnded { get; set; }
+
+        // Foreign Key
+        [ForeignKey("NotebookModel")] public Guid NotebookId { get; set; }
+
         // Primary Key
         [Key] public Guid Id { get; set; }
 
@@ -35,13 +43,6 @@ namespace ProjectK.Notebook.Models
         public string Context { get; set; }
         public DateTime Created { get; set; }
         public string Description { get; set; }
-
-        // ITask
-        public string Type { get; set; }
-        public string SubType { get; set; }
-        public int Rating { get; set; }
-        public DateTime DateStarted { get; set; }
-        public DateTime DateEnded { get; set; }
 
         public bool IsSame(TaskModel b)
         {

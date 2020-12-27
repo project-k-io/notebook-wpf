@@ -61,11 +61,8 @@ namespace ProjectK.Notebook.Models.Extensions
         public static void FixTypes(this INode model, string name)
         {
             if (model is TaskModel task)
-            {
                 if (string.IsNullOrEmpty(task.Type))
                     task.Type = ModelRules.FixTypes(name);
-            }
         }
-
     }
 }

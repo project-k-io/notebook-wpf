@@ -8,7 +8,6 @@ using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
-using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -32,72 +31,6 @@ namespace ProjectK.Notebook.ViewModels
         private TimeSpan _total;
 
         #endregion
-
-        #region Properties
-
-        public TaskViewModel()
-        {
-            Kind = "Task";
-        }
-
-        public TaskViewModel(INode model) : this()
-        {
-            Model = model;
-        }
-
-        public void ViewModelToModel(TaskModel model)
-        {
-            model.DateStarted = DateStarted;
-            model.DateEnded = DateEnded;
-            model.Type = Type;
-            model.SubType = SubType;
-        }
-
-        public TimeSpan Total
-        {
-            get => _total;
-            set => Set(ref _total, value);
-        }
-
-
-        #endregion
-
-        #region Commands
-
-        public ICommand CommandSetStartedTime => new RelayCommand(SetStartedTime);
-        public ICommand CommandSetEndedTime => new RelayCommand(SetEndedTime);
-
-        #endregion
-
-        #region Private Funtions
-
-        private void SetStartedTime()
-        {
-            DateStarted = DateTime.Now;
-        }
-
-        private void SetEndedTime()
-        {
-            DateEnded = DateTime.Now;
-        }
-
-
-
-
-        #endregion
-
-
-        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue = default, bool broadcast = false)
-        {
-            base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
-
-            if (!ModelRules.IsTaskModelProperty(propertyName)) 
-                return;
-
-            Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
-            Modified = ModifiedStatus.Modified;
-            MessengerInstance.Send(new NotificationMessage<TaskViewModel>(this, "Modified"));
-        }
 
 
         private TaskModel Task => Model as TaskModel;
@@ -175,5 +108,67 @@ namespace ProjectK.Notebook.ViewModels
                 return DateEnded - DateStarted;
             }
         }
+
+
+        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue = default, bool broadcast = false)
+        {
+            base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
+
+            if (!ModelRules.IsTaskModelProperty(propertyName))
+                return;
+
+            Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+            Modified = ModifiedStatus.Modified;
+            MessengerInstance.Send(new NotificationMessage<TaskViewModel>(this, "Modified"));
+        }
+
+        #region Properties
+
+        public TaskViewModel()
+        {
+            Kind = "Task";
+        }
+
+        public TaskViewModel(INode model) : this()
+        {
+            Model = model;
+        }
+
+        public void ViewModelToModel(TaskModel model)
+        {
+            model.DateStarted = DateStarted;
+            model.DateEnded = DateEnded;
+            model.Type = Type;
+            model.SubType = SubType;
+        }
+
+        public TimeSpan Total
+        {
+            get => _total;
+            set => Set(ref _total, value);
+        }
+
+        #endregion
+
+        #region Commands
+
+        public ICommand CommandSetStartedTime => new RelayCommand(SetStartedTime);
+        public ICommand CommandSetEndedTime => new RelayCommand(SetEndedTime);
+
+        #endregion
+
+        #region Private Funtions
+
+        private void SetStartedTime()
+        {
+            DateStarted = DateTime.Now;
+        }
+
+        private void SetEndedTime()
+        {
+            DateEnded = DateTime.Now;
+        }
+
+        #endregion
     }
 }

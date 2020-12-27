@@ -18,7 +18,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
             try
             {
                 var sb = new StringBuilder();
-                if(item is NodeViewModel node)
+                if (item is NodeViewModel node)
                     GenerateReport(node, sb, 0);
 
                 return sb.ToString();

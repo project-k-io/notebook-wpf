@@ -15,7 +15,7 @@ namespace ProjectK.Notebook.ViewModels.Design
                 var model = new MainViewModel();
                 var notebook = new NodeViewModel
                 {
-                    Model = new NotebookModel()
+                    Model = new NotebookModel
                     {
                         Name = "Time Tracker",
                         Context = "App"
@@ -106,6 +106,5 @@ namespace ProjectK.Notebook.ViewModels.Design
                 return node;
             }
         }
-
     }
 }

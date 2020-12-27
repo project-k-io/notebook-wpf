@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -30,6 +29,202 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        private Dictionary<Guid, TaskViewModel> Tasks { get; } = new Dictionary<Guid, TaskViewModel>();
+
+        public List<DateTime> GetSelectedDays()
+        {
+            var dateTimeList = new List<DateTime>();
+            foreach (var selectedNode in SelectedNodeList)
+                if (selectedNode.Context == "Day")
+                    if (selectedNode.Model is TaskModel selectedTask)
+                        dateTimeList.Add(selectedTask.DateStarted);
+
+            return dateTimeList;
+        }
+
+        public void SelectTreeTask2(NodeViewModel node)
+        {
+            node.TypeList = TypeList;
+            node.ContextList = ContextList;
+            node.TitleList = TaskTitleList;
+            var notebook = FindNotebook(node);
+            if (notebook != null)
+            {
+                SetSelectedNode(node);
+                Logger.LogDebug($"SelectedNotebook selected | {notebook.Title}");
+            }
+
+            SelectTreeTask(node);
+            OnGenerateReportChanged();
+        }
+
+        public void SelectTreeTask(NodeViewModel task)
+        {
+            if (task == null)
+                return;
+
+            SelectedTreeNode = task;
+            SelectedNodeList.Clear();
+            SelectedNodeList.AddToList(task);
+            OnSelectedDaysChanged();
+            SetSelectedNode(!SelectedNodeList.IsNullOrEmpty() ? SelectedNodeList[0] : task);
+            RaisePropertyChanged(nameof(SelectedNodeList));
+        }
+
+        public void FixTime()
+        {
+            Logger.LogDebug("FixTime");
+            FixTime(SelectedTreeNode);
+        }
+
+        private void FixContext()
+        {
+            SelectedTreeNode.FixContext();
+        }
+
+        public void FixTitles()
+        {
+            SelectedTreeNode.FixTitles();
+        }
+
+        public void FixTypes()
+        {
+            SelectedTreeNode.FixTypes();
+        }
+
+        public static void AddToList22(ICollection<NodeViewModel> list, NodeViewModel node, IList dates)
+        {
+            if (node.Model is TaskModel task)
+                if (ModelRules.ContainDate(dates, task.DateStarted))
+                    list.Add(node);
+
+            foreach (var subTask in node.Nodes)
+                AddToList22(list, subTask, dates);
+        }
+
+        public void UpdateSelectDayTasks(IList dates)
+        {
+            SelectedNodeList.Clear();
+#if AK
+            AddToList2(SelectedNodeList, RootNode, dates);
+#endif
+        }
+
+        public async Task ExportSelectedAllAsText(string text)
+        {
+            var path = Title;
+            var name = SelectedNode.Name;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", name, ".txt");
+            if (!ok)
+                return;
+
+            await File.WriteAllTextAsync(exportPath, text);
+        }
+
+        public async Task ExportSelectedAllAsJson()
+        {
+            if (!(SelectedNode is NodeViewModel node))
+                return;
+
+            var path = Title;
+            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", node.Name);
+            if (!ok)
+                return;
+
+            await node.ExportToFileAsync(exportPath);
+        }
+
+        public NodeViewModel FindTask(Guid id)
+        {
+            if (!(SelectedNode is NodeViewModel node))
+                return null;
+
+            return node.FindNode(id);
+        }
+
+        public event EventHandler SelectedDaysChanged;
+
+        public void OnSelectedDaysChanged()
+        {
+            SelectedDaysChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private bool TryGetTask2(Guid id, out TaskViewModel task)
+        {
+            if (Tasks.TryGetValue(id, out task) || task == null)
+                return false;
+
+            return true;
+        }
+
+        private bool TryGetTask(INode node, out TaskViewModel task)
+        {
+            task = null;
+            if (!(node is TaskModel model))
+                return false;
+
+            if (Tasks.TryGetValue(model.Id, out task))
+                return true;
+
+            task = new TaskViewModel(model);
+            Tasks.Add(task.Id, task);
+            return true;
+        }
+
+        public void FixTime(NodeViewModel node)
+        {
+            if (node == null)
+                return;
+
+            if (!TryGetTask(node.Model, out var task))
+                return;
+
+            if (ModelRules.IsPersonalType(task.Type))
+                return;
+
+            if (node.Nodes.IsNullOrEmpty())
+            {
+                task.Total = task.Duration;
+                return;
+            }
+
+
+            for (var index = 0; index < node.Nodes.Count; ++index)
+            {
+                if (!TryGetTask(node.Nodes[index].Model, out var subTask))
+                    continue;
+
+                if (subTask.DateEnded == DateTime.MinValue && index < node.Nodes.Count - 1)
+                {
+                    if (!TryGetTask(node.Nodes[index - 1].Model, out var nextTask))
+                        continue;
+
+                    subTask.DateEnded = nextTask.DateStarted;
+                }
+            }
+
+            var total = TimeSpan.Zero;
+            foreach (var subNode in node.Nodes)
+            {
+                if (!TryGetTask(subNode.Model, out var subTask))
+                    continue;
+
+                FixTime(subNode);
+                total += subTask.Total;
+            }
+
+            task.Total = total;
+
+
+            if (!TryGetTask(node.Nodes[^1].Model, out var lastTask))
+                if (lastTask.DateEnded != DateTime.MinValue)
+                    lastTask.DateEnded = lastTask.DateEnded;
+
+            if (!TryGetTask(node.Nodes[0].Model, out var firstTask))
+                if (firstTask.DateStarted != DateTime.MinValue)
+                    firstTask.DateStarted = firstTask.DateStarted;
+        }
+
         #region Static
 
         protected ILogger Logger;
@@ -57,9 +252,7 @@ namespace ProjectK.Notebook.ViewModels
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
         public ObservableCollection<string> TaskTitleList { get; set; }
-
-        public ObservableCollection<NodeViewModel> SelectedNodeList { get; } =
-            new ObservableCollection<NodeViewModel>();
+        public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();
 
         public ReportTypes ReportType
         {
@@ -165,10 +358,8 @@ namespace ProjectK.Notebook.ViewModels
             CopyTaskCommand = new RelayCommand(async () => await CopyTask());
             ContinueTaskCommand = new RelayCommand(async () => await ContinueTask());
             ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
-            ExportSelectedAllAsTextCommand =
-                new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
-            ExportSelectedAllAsJsonCommand =
-                new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
+            ExportSelectedAllAsTextCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
+            ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
             SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 
@@ -191,6 +382,7 @@ namespace ProjectK.Notebook.ViewModels
                     break;
             }
         }
+
         private void NotifyMe(NotificationMessage<TaskViewModel> notificationMessage)
         {
             var notification = notificationMessage.Notification;
@@ -209,6 +401,7 @@ namespace ProjectK.Notebook.ViewModels
                         node.Modified = ModifiedStatus.Modified;
                         node.SetParentChildModified();
                     }
+
                     break;
             }
         }
@@ -243,9 +436,8 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        void SetSelectedNode(ItemViewModel item)
+        private void SetSelectedNode(ItemViewModel item)
         {
-
             ItemViewModel value;
             if (item.Model is TaskModel taskModel)
             {
@@ -424,7 +616,6 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-
         public NodeViewModel FindNotebook(NodeViewModel task)
         {
             var (ok, notebook) = task.FindNode(t => t.Context == "Notebook");
@@ -482,7 +673,7 @@ namespace ProjectK.Notebook.ViewModels
                     Context = "TaskModel"
                 };
 
-                var taskViewModel = new NodeViewModel()
+                var taskViewModel = new NodeViewModel
                 {
                     Model = taskModel
                 };
@@ -556,7 +747,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public async Task KeyboardAction(ItemViewModel item, KeyboardKeys keyboardKeys, IActionService service)
         {
-            if(!(item is NodeViewModel node))
+            if (!(item is NodeViewModel node))
                 return;
 
             var state = service.GetState();
@@ -747,204 +938,5 @@ namespace ProjectK.Notebook.ViewModels
         }
 
         #endregion
-
-        public List<DateTime> GetSelectedDays()
-        {
-            var dateTimeList = new List<DateTime>();
-            foreach (var selectedNode in SelectedNodeList)
-                if (selectedNode.Context == "Day")
-                    if (selectedNode.Model is TaskModel selectedTask)
-                        dateTimeList.Add(selectedTask.DateStarted);
-
-            return dateTimeList;
-        }
-
-        public void SelectTreeTask2(NodeViewModel node)
-        {
-            node.TypeList = TypeList;
-            node.ContextList = ContextList;
-            node.TitleList = TaskTitleList;
-            var notebook = FindNotebook(node);
-            if (notebook != null)
-            {
-                SetSelectedNode(node);
-                Logger.LogDebug($"SelectedNotebook selected | {notebook.Title}");
-            }
-
-            SelectTreeTask(node);
-            OnGenerateReportChanged();
-        }
-
-        public void SelectTreeTask(NodeViewModel task)
-        {
-            if (task == null)
-                return;
-
-            SelectedTreeNode = task;
-            SelectedNodeList.Clear();
-            SelectedNodeList.AddToList(task);
-            OnSelectedDaysChanged();
-            SetSelectedNode(!SelectedNodeList.IsNullOrEmpty() ? SelectedNodeList[0] : task);
-            RaisePropertyChanged(nameof(SelectedNodeList));
-        }
-
-        public void FixTime()
-        {
-            Logger.LogDebug("FixTime");
-            FixTime(SelectedTreeNode);
-        }
-
-        private void FixContext()
-        {
-            SelectedTreeNode.FixContext();
-        }
-
-        public void FixTitles()
-        {
-            SelectedTreeNode.FixTitles();
-        }
-
-        public void FixTypes()
-        {
-            SelectedTreeNode.FixTypes();
-        }
-
-        public static void AddToList22(ICollection<NodeViewModel> list, NodeViewModel node, IList dates)
-        {
-            if (node.Model is TaskModel task)
-                if (ModelRules.ContainDate(dates, task.DateStarted))
-                    list.Add(node);
-
-            foreach (var subTask in node.Nodes)
-                AddToList22(list, subTask, dates);
-        }
-
-        public void UpdateSelectDayTasks(IList dates)
-        {
-            SelectedNodeList.Clear();
-#if AK
-            AddToList2(SelectedNodeList, RootNode, dates);
-#endif
-        }
-
-        public async Task ExportSelectedAllAsText(string text)
-        {
-            var path = Title;
-            var name = SelectedNode.Name;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", name, ".txt");
-            if (!ok)
-                return;
-
-            await File.WriteAllTextAsync(exportPath, text);
-        }
-
-        public async Task ExportSelectedAllAsJson()
-        {
-            if (!(SelectedNode is NodeViewModel node))
-                return;
-
-            var path = Title;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", node.Name);
-            if (!ok)
-                return;
-
-            await node.ExportToFileAsync(exportPath);
-        }
-
-        public NodeViewModel FindTask(Guid id)
-        {
-            if (!(SelectedNode is NodeViewModel node))
-                return null;
-
-            return node.FindNode(id);
-        }
-
-        public event EventHandler SelectedDaysChanged;
-
-        public void OnSelectedDaysChanged()
-        {
-            SelectedDaysChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private Dictionary<Guid, TaskViewModel> Tasks { get; set; } = new Dictionary<Guid, TaskViewModel>();
-
-        private bool TryGetTask2(Guid id, out TaskViewModel task)
-        {
-            if (Tasks.TryGetValue(id, out task) || task == null)
-                return false;
-
-            return true;
-        }
-        private bool TryGetTask(INode node, out TaskViewModel task)
-        {
-            task = null;
-            if (!(node is TaskModel model))
-                return false;
-
-            if (Tasks.TryGetValue(model.Id, out task))
-                return true;
-
-            task = new TaskViewModel(model);
-            Tasks.Add(task.Id, task);
-            return true;
-        }
-
-        public void FixTime(NodeViewModel node)
-        {
-            if(node == null)
-                return;
-
-            if (!TryGetTask(node.Model, out var task))
-                return;
-
-            if (ModelRules.IsPersonalType(task.Type))
-                return;
-
-            if (node.Nodes.IsNullOrEmpty())
-            {
-                task.Total = task.Duration;
-                return;
-            }
-
-
-            for (var index = 0; index < node.Nodes.Count; ++index)
-            {
-                if (!TryGetTask(node.Nodes[index].Model, out var subTask))
-                    continue;
-
-                if (subTask.DateEnded == DateTime.MinValue && index < node.Nodes.Count - 1)
-                {
-                    if (!TryGetTask(node.Nodes[index - 1].Model, out var nextTask))
-                        continue;
-
-                    subTask.DateEnded = nextTask.DateStarted;
-                }
-            }
-
-            var total = TimeSpan.Zero;
-            foreach (var subNode in node.Nodes)
-            {
-                if (!TryGetTask(subNode.Model, out var subTask))
-                    continue;
-
-                FixTime(subNode);
-                total += subTask.Total;
-            }
-
-            task.Total = total;
-
-
-            if (!TryGetTask(node.Nodes[^1].Model, out var lastTask))
-            {
-                if (lastTask.DateEnded != DateTime.MinValue)
-                    lastTask.DateEnded = lastTask.DateEnded;
-            }
-
-            if (!TryGetTask(node.Nodes[0].Model, out var firstTask))
-            {
-                if (firstTask.DateStarted != DateTime.MinValue)
-                    firstTask.DateStarted = firstTask.DateStarted;
-            }
-        }
     }
 }

@@ -9,10 +9,10 @@ namespace ProjectK.Notebook.Models
     // [Table("Nodes")]
     public class NodeModel : IItem
     {
+        public virtual NotebookModel NotebookModel { get; set; }
+
         // Foreign Key
         [ForeignKey("NotebookModel")] public Guid NotebookId { get; set; }
-
-        public virtual NotebookModel NotebookModel { get; set; }
 
         [Key] public Guid Id { get; set; }
 

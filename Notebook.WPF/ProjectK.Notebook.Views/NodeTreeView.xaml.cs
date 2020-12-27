@@ -79,7 +79,7 @@ namespace ProjectK.Notebook.Views
             if (!(treeListView.DataContext is MainViewModel model))
                 return;
 
-            if(!(treeListView.SelectedItem is NodeViewModel node))
+            if (!(treeListView.SelectedItem is NodeViewModel node))
                 return;
 
             model.SelectTreeTask2(node);

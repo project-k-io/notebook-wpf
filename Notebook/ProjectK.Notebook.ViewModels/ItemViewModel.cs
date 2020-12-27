@@ -8,16 +8,18 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class ItemViewModel : ViewModelBase
     {
+        private bool _isSelected;
         private string _kind;
         private ModifiedStatus _modified;
-        private bool _isSelected;
 
         public string Kind
         {
             get => _kind;
             set => Set(ref _kind, value);
         }
+
         public INode Model { get; set; }
+
         public string Description
         {
             get => Model.Description;
@@ -65,11 +67,11 @@ namespace ProjectK.Notebook.ViewModels
             get => _modified;
             set => Set(ref _modified, value);
         }
+
         public bool IsSelected
         {
             get => _isSelected;
             set => Set(ref _isSelected, value);
         }
-
     }
 }
