@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.Utils.csproj" />
-    <ProjectReference Include="..\ProjectK.Notebook.Views\ProjectK.Notebook.Views.csproj" />
+    <ProjectReference Include="..\..\Notebook\ProjectK.Notebook.Views\ProjectK.Notebook.Views.csproj" />
   </ItemGroup>
 
   <ItemGroup>
