@@ -6,7 +6,7 @@ namespace ProjectK.Notebook.Models
 {
     public static class ModelRules
     {
-        public static readonly List<string> GlobalContextList = new List<string>
+        public static readonly List<string> GlobalContextList = new()
         {
             "Notebook",
             "Company",

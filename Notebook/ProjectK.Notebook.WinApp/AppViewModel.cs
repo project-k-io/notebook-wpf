@@ -8,13 +8,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using ProjectK.Logging;
-using ProjectK.Notebook.Settings;
 using ProjectK.Notebook.ViewModels;
+using ProjectK.Notebook.WinApp.Settings;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.ViewModels;
 
-namespace ProjectK.Notebook
+namespace ProjectK.Notebook.WinApp
 {
     public class AppViewModel : MainViewModel
     {

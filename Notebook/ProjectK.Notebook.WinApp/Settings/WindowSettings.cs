@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using System.Windows;
 
-namespace ProjectK.Notebook.Settings
+namespace ProjectK.Notebook.WinApp.Settings
 {
     public class WindowSettings
     {

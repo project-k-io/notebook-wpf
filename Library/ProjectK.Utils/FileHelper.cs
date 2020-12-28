@@ -77,7 +77,7 @@ namespace ProjectK.Utils
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                 WriteIndented = true
             };
-            await JsonSerializer.SerializeAsync<T>(stream, model, options);
+            await JsonSerializer.SerializeAsync(stream, model, options);
             stream.Position = 0;
             using var reader = new StreamReader(stream);
             return await reader.ReadToEndAsync();

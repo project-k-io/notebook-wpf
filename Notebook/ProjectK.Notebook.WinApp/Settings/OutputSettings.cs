@@ -1,4 +1,4 @@
-﻿namespace ProjectK.Notebook.Settings
+﻿namespace ProjectK.Notebook.WinApp.Settings
 {
     public class OutputSettings
     {

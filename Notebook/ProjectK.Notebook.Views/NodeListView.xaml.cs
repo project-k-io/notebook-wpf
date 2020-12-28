@@ -7,7 +7,7 @@ namespace ProjectK.Notebook.Views
 {
     public partial class NodeListView : UserControl
     {
-        private readonly ListViewSorterHelper _sorterHelper = new ListViewSorterHelper();
+        private readonly ListViewSorterHelper _sorterHelper = new();
 
         public NodeListView()
         {

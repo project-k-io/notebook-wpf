@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProjectK.Logging;
-using ProjectK.Notebook.Settings;
+using ProjectK.Notebook.WinApp.Settings;
 
-namespace ProjectK.Notebook
+namespace ProjectK.Notebook.WinApp
 {
     public partial class MainWindow : Window
     {

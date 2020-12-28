@@ -27,30 +27,26 @@ namespace ProjectK.ViewModels
         }
 
         public OutputButtonViewModel ButtonClear { get; set; } =
-            new OutputButtonViewModel {Image = "Clear", Label = "Clear"};
+            new() {Image = "Clear", Label = "Clear"};
 
-        public OutputButtonViewModel ButtonDebug { get; set; } = new OutputButtonViewModel
-            {Image = "Debug", Label = "Logs", IsChecked = true};
+        public OutputButtonViewModel ButtonDebug { get; set; } = new() {Image = "Debug", Label = "Logs", IsChecked = true};
 
-        public OutputButtonViewModel ButtonErrors { get; set; } = new OutputButtonViewModel
-            {Image = "Error", Label = "Errors", IsChecked = false};
+        public OutputButtonViewModel ButtonErrors { get; set; } = new() {Image = "Error", Label = "Errors", IsChecked = false};
 
-        public OutputButtonViewModel ButtonMessages { get; set; } = new OutputButtonViewModel
-            {Image = "Message", Label = "Messages", IsChecked = false};
+        public OutputButtonViewModel ButtonMessages { get; set; } = new() {Image = "Message", Label = "Messages", IsChecked = false};
 
-        public OutputButtonViewModel ButtonWarnings { get; set; } = new OutputButtonViewModel
-            {Image = "Warning", Label = "Warnings", IsChecked = false};
+        public OutputButtonViewModel ButtonWarnings { get; set; } = new() {Image = "Warning", Label = "Warnings", IsChecked = false};
 
         public Action UpdateFilter { get; set; }
 
         public ObservableCollection<OutputButtonViewModel> FilterButtons { get; } =
-            new ObservableCollection<OutputButtonViewModel>();
+            new();
 
         public ObservableCollection<OutputButtonViewModel> CommandButtons { get; } =
-            new ObservableCollection<OutputButtonViewModel>();
+            new();
 
         public ObservableCollection<OutputRecordViewModel> Records { get; } =
-            new ObservableCollection<OutputRecordViewModel>();
+            new();
 
         private void OutputButtonClearOnClicked(object sender, EventArgs eventArgs)
         {

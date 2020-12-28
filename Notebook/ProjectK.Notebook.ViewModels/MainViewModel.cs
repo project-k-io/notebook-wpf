@@ -30,7 +30,7 @@ namespace ProjectK.Notebook.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private Dictionary<Guid, TaskViewModel> Tasks { get; } = new Dictionary<Guid, TaskViewModel>();
+        private Dictionary<Guid, TaskViewModel> Tasks { get; } = new();
 
         public List<DateTime> GetSelectedDays()
         {
@@ -240,13 +240,13 @@ namespace ProjectK.Notebook.ViewModels
 
         protected ILogger Logger;
 
-        private static readonly Guid RootGuid = new Guid("98601237-050a-4915-860c-5a820b361910");
+        private static readonly Guid RootGuid = new("98601237-050a-4915-860c-5a820b361910");
 
         #endregion
 
         #region Fields
 
-        private readonly Storage _db = new Storage();
+        private readonly Storage _db = new();
         private ReportTypes _reportType = ReportTypes.Notes;
         private string _excelCsvText;
         private string _textReport;
@@ -259,11 +259,11 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Properties
 
-        public ObservableCollection<FileInfo> MostRecentFiles { get; } = new ObservableCollection<FileInfo>();
+        public ObservableCollection<FileInfo> MostRecentFiles { get; } = new();
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
         public ObservableCollection<string> TaskTitleList { get; set; }
-        public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new ObservableCollection<NodeViewModel>();
+        public ObservableCollection<NodeViewModel> SelectedNodeList { get; } = new();
 
         public ReportTypes ReportType
         {
@@ -600,8 +600,8 @@ namespace ProjectK.Notebook.ViewModels
             });
         }
 
-        private readonly WorksheetReport _worksheetReport = new WorksheetReport();
-        private readonly NotesReport _notesReport = new NotesReport();
+        private readonly WorksheetReport _worksheetReport = new();
+        private readonly NotesReport _notesReport = new();
 
         public void OnGenerateReportChanged()
         {

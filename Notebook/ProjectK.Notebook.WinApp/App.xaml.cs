@@ -8,16 +8,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Settings;
+using ProjectK.Notebook.WinApp.Settings;
 using ProjectK.ViewModels;
 
-namespace ProjectK.Notebook
+namespace ProjectK.Notebook.WinApp
 {
     public partial class App : Application
     {
         private static ILogger _logger;
         private readonly IHost _host;
-        private readonly OutputViewModel _output = new OutputViewModel();
+        private readonly OutputViewModel _output = new();
         private string _basePath;
         private AppViewModel _viewModel;
         private MainWindow _window;

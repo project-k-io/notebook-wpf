@@ -43,7 +43,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region INode - Implementation
 
-        public ObservableCollection<NodeViewModel> Nodes { get; set; } = new ObservableCollection<NodeViewModel>();
+        public ObservableCollection<NodeViewModel> Nodes { get; set; } = new();
 
         #endregion
 
