@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 
 namespace ProjectK.Notebook.Data
 {
     public class NotebookContext : DbContext
     {
+        private static readonly ILogger Logger = LogManager.GetLogger<NotebookContext>();
+
         private readonly string _connectionString;
 
         public NotebookContext(string connectionString)
@@ -21,10 +25,11 @@ namespace ProjectK.Notebook.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(_connectionString);
-            optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
-            optionsBuilder.UseLazyLoadingProxies();
-            // optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder
+                .UseSqlite(_connectionString)
+                .UseLazyLoadingProxies()
+                // .EnableSensitiveDataLogging()
+                .LogTo(s => Logger.LogDebug(s), LogLevel.Information);
         }
     }
 }
