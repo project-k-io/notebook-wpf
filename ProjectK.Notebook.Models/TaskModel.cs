@@ -9,6 +9,7 @@ namespace ProjectK.Notebook.Models
 {
     public class TaskModel : IItem
     {
+        [XmlIgnore]
         public virtual NotebookModel NotebookModel { get; set; }
 
         [XmlIgnore]

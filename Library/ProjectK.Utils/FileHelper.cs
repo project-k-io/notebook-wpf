@@ -14,27 +14,20 @@ namespace ProjectK.Utils
     {
         private static readonly ILogger Logger = LogManager.GetLogger<FileHelper>();
 
-        public static (string path, bool ok) GetNewFileName(string path, string folderName, string suffix,
-            string newExtension = "")
+        public static (string path, bool ok) GetNewFileName(string path, string folderName, string suffix, string newExtension = "")
         {
             try
             {
-                if (!File.Exists(path))
-                    return ("", false);
-
                 var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
                 var extension = Path.GetExtension(path);
                 var directoryName = Path.GetDirectoryName(path);
-                var subFolder = string.IsNullOrWhiteSpace(directoryName)
-                    ? folderName
-                    : Path.Combine(directoryName, folderName);
+                var subFolder = string.IsNullOrWhiteSpace(directoryName) ? folderName : Path.Combine(directoryName, folderName);
 
                 if (!Directory.Exists(subFolder))
                     Directory.CreateDirectory(subFolder);
 
-                subFolder = string.IsNullOrWhiteSpace(fileNameWithoutExtension)
-                    ? subFolder
-                    : Path.Combine(subFolder, fileNameWithoutExtension);
+                subFolder = string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? subFolder : Path.Combine(subFolder, fileNameWithoutExtension);
+
                 if (!Directory.Exists(subFolder))
                     Directory.CreateDirectory(subFolder);
 
@@ -76,9 +69,24 @@ namespace ProjectK.Utils
         }
 
 
+        public static async Task<string> GetJsonAsync<T>(T model)
+        {
+            await using var stream = new MemoryStream();
+            var options = new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            };
+            await JsonSerializer.SerializeAsync<T>(stream, model, options);
+            stream.Position = 0;
+            using var reader = new StreamReader(stream);
+            return await reader.ReadToEndAsync();
+        }
+
+
         public static async Task SaveToFileAsync<T>(string path, T model)
         {
-            Logger.LogDebug($"SaveToFileAsync | {Path.GetFileName(path)} | {Path.GetDirectoryName(path)}");
+            Logger.LogDebug($"SaveToFileAsync | {Path.GetFileName(path)} | {Path.GetFullPath(path)}");
             try
             {
                 var extension = Path.GetExtension(path).ToUpper();
@@ -92,13 +100,13 @@ namespace ProjectK.Utils
                         break;
                     case ".JSON":
                     {
-                        await using var fs = File.Create(path);
+                        await using var stream = File.Create(path);
                         var options = new JsonSerializerOptions
                         {
                             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                             WriteIndented = true
                         };
-                        await JsonSerializer.SerializeAsync(fs, model, options);
+                        await JsonSerializer.SerializeAsync(stream, model, options);
                         break;
                     }
                 }

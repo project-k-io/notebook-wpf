@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Serialization;
 using ProjectK.Notebook.Models.Extensions;
 using ProjectK.Notebook.Models.Interfaces;
 
@@ -9,6 +10,7 @@ namespace ProjectK.Notebook.Models
     // [Table("Nodes")]
     public class NodeModel : IItem
     {
+        [XmlIgnore]
         public virtual NotebookModel NotebookModel { get; set; }
 
         // Foreign Key

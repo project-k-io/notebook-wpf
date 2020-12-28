@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -110,15 +111,18 @@ namespace ProjectK.Notebook.ViewModels
 #endif
         }
 
-        public async Task ExportSelectedAllAsText(string text)
+        public async Task ExportSelectedAllAsText()
         {
-            var path = Title;
-            var name = SelectedNode.Name;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", name, ".txt");
+            if (!(SelectedNode is NodeViewModel node))
+                return;
+
+            var (path, ok) = FileHelper.GetNewFileName(Title, "Export", node.Name, ".txt");
             if (!ok)
                 return;
 
-            await File.WriteAllTextAsync(exportPath, text);
+            var text = TextReport;
+            await File.WriteAllTextAsync(path, text);
+            Process.Start("explorer", path);
         }
 
         public async Task ExportSelectedAllAsJson()
@@ -126,13 +130,20 @@ namespace ProjectK.Notebook.ViewModels
             if (!(SelectedNode is NodeViewModel node))
                 return;
 
-            var path = Title;
-            var (exportPath, ok) = FileHelper.GetNewFileName(path, "Export", node.Name);
+            var (path, ok) = FileHelper.GetNewFileName(Title, "Export", node.Name, ".json");
             if (!ok)
                 return;
 
-            await node.ExportToFileAsync(exportPath);
+            var notebook = new NotebookModel();
+            notebook.ViewModelToModel(node);
+
+            var text = await FileHelper.GetJsonAsync(notebook);
+
+            // await FileHelper.SaveToFileAsync(path, notebook);
+            await File.WriteAllTextAsync(path, text);
+            Process.Start("explorer", path);
         }
+
 
         public NodeViewModel FindTask(Guid id)
         {
@@ -357,9 +368,9 @@ namespace ProjectK.Notebook.ViewModels
             FixTypesCommand = new RelayCommand(FixTypes);
             CopyTaskCommand = new RelayCommand(async () => await CopyTask());
             ContinueTaskCommand = new RelayCommand(async () => await ContinueTask());
-            ShowReportCommand = new RelayCommand<ReportTypes>(this.UserAction_ShowReport);
-            ExportSelectedAllAsTextCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsText());
-            ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await this.UserAction_ExportSelectedAllAsJson());
+            ShowReportCommand = new RelayCommand(OnGenerateReportChanged);
+            ExportSelectedAllAsTextCommand = new RelayCommand(async () => await ExportSelectedAllAsText());
+            ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await ExportSelectedAllAsJson());
             SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
 

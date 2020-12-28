@@ -25,13 +25,6 @@ namespace ProjectK.Notebook.ViewModels.Extensions
                     notebookModel.Notes.Add(note);
         }
 
-        public static async Task ExportToFileAsync(this NodeViewModel rootTask, string path)
-        {
-            var notebook = new NotebookModel();
-            notebook.ViewModelToModel(rootTask);
-            await FileHelper.SaveToFileAsync(path, notebook);
-        }
-
         public static void BuildTree(this NodeViewModel rootTask, List<INode> nodes)
         {
             // 
