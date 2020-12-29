@@ -2,23 +2,25 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Domain;
+using ProjectK.Notebook.Models;
 using ProjectK.Utils;
 
 namespace ProjectK.Notebook.ViewModels.Reports
 {
     public class NotesReport
     {
+        private const char SpaceChar = ' ';
         private static readonly ILogger Logger = LogManager.GetLogger<NotesReport>();
 
-        public string GenerateReport(NodeViewModel node)
+        public string GenerateReport(ItemViewModel item)
         {
             Logger.LogDebug("GenerateReport()");
             try
             {
-
                 var sb = new StringBuilder();
-                GenerateReport(node, sb, 0);
+                if (item is NodeViewModel node)
+                    GenerateReport(node, sb, 0);
+
                 return sb.ToString();
             }
             catch (Exception ex)
@@ -28,12 +30,10 @@ namespace ProjectK.Notebook.ViewModels.Reports
             }
         }
 
-        private const char SpaceChar = ' ';
-
         private void GenerateReport(NodeViewModel node, StringBuilder sb, int offset)
         {
             const int max = 80;
-            if(node == null)
+            if (node == null)
                 return;
 
             if (node.Model is TaskModel task)
@@ -62,14 +62,10 @@ namespace ProjectK.Notebook.ViewModels.Reports
                         sb.AppendLine(description);
                     }
                 }
-
             }
 
 
-            foreach (var subTask in node.Nodes)
-            {
-                GenerateReport(subTask, sb, offset + 2);
-            }
+            foreach (var subTask in node.Nodes) GenerateReport(subTask, sb, offset + 2);
         }
     }
 }

@@ -1,43 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using Castle.Core.Internal;
-using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Interfaces;
+using ProjectK.Notebook.Models;
+using ProjectK.Notebook.Models.Extensions;
+using ProjectK.Notebook.Models.Interfaces;
 
 namespace ProjectK.Notebook.ViewModels.Helpers
 {
     public static class RulesHelper
     {
-        public static readonly List<string> GlobalContextList = new List<string>
-        {
-            "Notebook",
-            "Company",
-            "Contact",
-            "Node",
-            "Task",
-            "Note",
-            "Time Tracker",
-            "Year",
-            "Month",
-            "Day",
-            "Week"
-        };
-
-        public static string GetSubNodeContext(string context)
-        {
-            return context switch
-            {
-                "Time Tracker" => "Year",
-                "Year" => "Month",
-                "Month" => "Week",
-                "Week" => "Day",
-                "Day" => "Task",
-                "Task" => "Task",
-                _ => "Node"
-            };
-        }
-
-        public static string GetSubNodeTitle(NodeViewModel parent, INode node)
+        public static string GetSubNodeTitle(this NodeViewModel parent, INode node)
         {
             var title = string.Empty;
             switch (parent.Context)
@@ -56,16 +28,32 @@ namespace ProjectK.Notebook.ViewModels.Helpers
                     title = node.Created.DayOfWeek.ToString();
                     break;
             }
+
             return title;
         }
 
-
-        public static bool GetSubNodeContext(string parentContext, out string context)
+        public static INode CreateModel(this NodeViewModel parentNode, Guid notebookId)
         {
-            context = GetSubNodeContext(parentContext);
-            return  !string.IsNullOrEmpty(context);
+            var model = parentNode.Model.CreateModel(notebookId);
+            var title = parentNode.GetSubNodeTitle(model);
+
+            if (!string.IsNullOrEmpty(title))
+                model.Name = title;
+            else
+                model.Name = model.Context;
+
+            return model;
         }
 
 
+        public static void AddToList2(ICollection<NodeViewModel> list, NodeViewModel node, IList dates)
+        {
+            if (node.Model is TaskModel task)
+                if (ModelRules.ContainDate(dates, task.DateStarted))
+                    list.Add(node);
+
+            foreach (var subTask in node.Nodes)
+                AddToList2(list, subTask, dates);
+        }
     }
 }

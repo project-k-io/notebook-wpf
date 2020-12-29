@@ -2,70 +2,135 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
-using Castle.Core.Internal;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.Domain;
-using ProjectK.Notebook.Domain.Interfaces;
+using ProjectK.Notebook.Models;
+using ProjectK.Notebook.Models.Extensions;
+using ProjectK.Notebook.Models.Interfaces;
+using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Utils;
+using ProjectK.Utils.Extensions;
+using TaskModel = ProjectK.Notebook.Models.Versions.Version1.TaskModel;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public enum ModifiedStatus
-    {
-        None,
-        Modified,
-        ChildModified
-    }
-
-    public class NodeViewModel : ViewModelBase, ITreeNode<NodeViewModel>
+    public class NodeViewModel : ItemViewModel, ITreeNode<NodeViewModel>
     {
         #region Static Fields
+
         private static readonly ILogger Logger = LogManager.GetLogger<NodeViewModel>();
+
         #endregion
 
         #region Fields
 
-        // Model Wrappers
+        // Main Wrappers
         //private Guid _id;
         //private Guid _parentId;
         //private string _context;
         //private string _name;
         //private DateTime _created;
         //private string _description;
-        public INode Model { get; set; }
 
         // Misc
-        private string _kind;
         private bool _isExpanded;
-        private bool _isSelected;
-        private ModifiedStatus _modified;
 
         #endregion
 
         #region INode - Implementation
 
-        public ObservableCollection<NodeViewModel> Nodes { get; set; } = new ObservableCollection<NodeViewModel>();
+        public ObservableCollection<NodeViewModel> Nodes { get; set; } = new();
 
         #endregion
 
+        public void DeleteNode(IActionService service)
+        {
+            Logger.LogDebug($"Delete Node : {Name}");
+            var item = this;
+            if (service.DeleteMessageBox())
+                return;
+
+            var parent = item.Parent;
+            if (parent == null)
+                return;
+
+            var num1 = parent.Nodes.IndexOf(item);
+            service.Dispatcher(() => parent.Remove(item));
+
+            var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
+            if (parentNode == null)
+                return;
+
+            service.SelectItem(parentNode);
+            service.Handled();
+        }
+
+        public void FixTitles()
+        {
+            foreach (var node in Nodes)
+            {
+                var title = this.GetSubNodeTitle(node.Model);
+                if (!string.IsNullOrEmpty(title))
+                    node.Name = title;
+
+                node.FixTitles();
+            }
+        }
+
+        public NodeViewModel CreateNode(INode model)
+        {
+            var node = new NodeViewModel(model);
+            Add(node);
+            return node;
+        }
+
+        public void FixTypes()
+        {
+            Model.FixTypes(Name);
+            foreach (var node in Nodes)
+                node.FixTypes();
+        }
+
+        public void LoadFrom(TaskModel model)
+        {
+            IsSelected = model.IsSelected;
+            IsExpanded = model.IsExpanded;
+            Description = model.Description;
+            if (Model is Models.TaskModel task)
+            {
+                task.Type = model.Type;
+                task.DateStarted = model.DateStarted;
+                task.DateEnded = model.DateEnded;
+            }
+
+            Name = model.Title;
+
+            if (model.SubTasks.IsNullOrEmpty())
+                return;
+
+            foreach (var subTask in model.SubTasks)
+            {
+                var node = new NodeViewModel();
+                node.Model = new Models.TaskModel();
+                node.LoadFrom(subTask);
+                Nodes.Add(node);
+            }
+        }
+
         #region Properties
 
-        // Model 
+        // Main 
 
         public NodeViewModel()
         {
             Kind = "Node";
         }
 
-        public NodeViewModel(NodeModel model) : this()
+        public NodeViewModel(INode model) : this()
         {
             Model = model;
         }
@@ -81,24 +146,13 @@ namespace ProjectK.Notebook.ViewModels
         }
 
 
-        // Model Wrapper
-        public string Kind { get => _kind; set => Set(ref _kind, value); }
+        // Main Wrapper
 
-        public string Description { get => Model.Description; set => this.Set(Description, v => Model.Description = v, value); }
-        public Guid Id { get => Model.Id; set => this.Set(Id, v => Model.Id = v, value); }
-        public Guid ParentId { get => Model.ParentId; set => this.Set(ParentId, v => Model.ParentId = v, value); }
-        public string Name { get => Model.Name; set => this.Set(Name, v => Model.Name = v, value); }
-        public DateTime Created { get => Model.Created; set => this.Set(Created, v => Model.Created = v, value); }
-        public string Context { get => Model.Context; set => this.Set(Context, v => Model.Context = v, value); }
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }
         public ObservableCollection<string> ContextList { get; set; }
         public ObservableCollection<string> TitleList { get; set; }
-
-
-        public bool IsSelected { get => _isSelected; set => Set(ref _isSelected, value); }
-        public ModifiedStatus Modified { get => _modified; set => Set(ref _modified, value); }
 
         public bool IsExpanded
         {
@@ -123,10 +177,11 @@ namespace ProjectK.Notebook.ViewModels
             return $"{Context}:{Name}";
         }
 
-        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue = default, bool broadcast = false)
+        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default,
+            T newValue = default, bool broadcast = false)
         {
             base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
-            if (!IsNodeModelProperty(propertyName)) return;
+            if (!ModelRules.IsNodeModelProperty(propertyName)) return;
 
             Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
             Modified = ModifiedStatus.Modified;
@@ -136,22 +191,11 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        private static bool IsNodeModelProperty(string n) => 
-            n == "Id" || 
-            n == "ParentId" || 
-            n == "Name" || 
-            n == "Created" || 
-            n == "Context" || 
-            n == "Description";
-
         #region Public functions
 
         public void SaveTo(List<INode> list)
         {
-            foreach (var node in Nodes)
-            {
-                node.SaveRecursively(list);
-            }
+            foreach (var node in Nodes) node.SaveRecursively(list);
         }
 
         private void SaveRecursively(List<INode> list)
@@ -167,7 +211,6 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-
         public void TrySetId()
         {
             if (Id != Guid.Empty)
@@ -176,16 +219,11 @@ namespace ProjectK.Notebook.ViewModels
             Id = Guid.NewGuid();
         }
 
-
-
-
         public void Add(NodeViewModel node)
         {
             node.SetParent(this);
             Nodes.Add(node);
         }
-
-
 
         public void Remove(NodeViewModel node)
         {
@@ -221,12 +259,10 @@ namespace ProjectK.Notebook.ViewModels
                     a.Modified = ModifiedStatus.None;
             });
         }
+
         public void SetParentChildModified()
         {
-            this.UpAction(a =>
-            {
-                 a.Modified = ModifiedStatus.ChildModified;
-            });
+            this.UpAction(a => { a.Modified = ModifiedStatus.ChildModified; });
         }
 
         public void ResetParentChildModified()
@@ -237,8 +273,6 @@ namespace ProjectK.Notebook.ViewModels
                     a.Modified = ModifiedStatus.None;
             });
         }
-
-
 
         public void ExtractContext(ObservableCollection<string> contextList)
         {
@@ -251,10 +285,9 @@ namespace ProjectK.Notebook.ViewModels
 
         public void FixContext(NodeViewModel node)
         {
-            if(RulesHelper.GetSubNodeContext(Context, out var context))
+            if (ModelRules.GetSubNodeContext(Context, out var context))
                 node.Context = context;
         }
-
 
         public void FixContext()
         {
@@ -287,100 +320,6 @@ namespace ProjectK.Notebook.ViewModels
             return models;
         }
 
-
         #endregion
-
-
-        public void DeleteNode(IActionService service)
-        {
-            Logger.LogDebug($"Delete Node : {Name}");
-            var item = this;
-            if (service.DeleteMessageBox())
-                return;
-
-            var parent = item.Parent;
-            if (parent == null)
-                return;
-
-            var num1 = parent.Nodes.IndexOf(item);
-            service.Dispatcher(() => parent.Remove(item));
-
-            var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
-            if (parentNode == null)
-                return;
-
-            service.SelectItem(parentNode);
-            service.Handled();
-        }
-
-        private void FixTitles()
-        {
-            foreach (var node in Nodes)
-            {
-                var title = RulesHelper.GetSubNodeTitle(this, node.Model);
-                if (!string.IsNullOrEmpty(title))
-                    node.Name = title;
-
-                node.FixTitles();
-            }
-        }
-
-
-        public INode CreateModel(Guid notebookId)
-        {
-            var context = RulesHelper.GetSubNodeContext(Context);
-            if (context.IsNullOrEmpty())
-                context = "Node";
-
-            INode model;
-            // Create Model
-            if (context == "Task")
-            {
-                model = new TaskModel               // CreateModel
-                {
-                    DateStarted = DateTime.Now,
-                    DateEnded = DateTime.Now,
-                    NotebookId = notebookId
-                };
-            }
-            else
-            {
-                model = new NodeModel
-                {
-                    Created = DateTime.Now,
-                    NotebookId = notebookId
-                };
-            }
-
-            model.Id = Guid.NewGuid();
-            model.Context = context;
-            var title = RulesHelper.GetSubNodeTitle(this, model);
-
-            if (!string.IsNullOrEmpty(title))
-                model.Name = title;
-            else
-                model.Name = context;
-
-            return model;
-        }
-
-
-
-        public NodeViewModel CreateNode(INode model)
-        {
-            NodeViewModel node = null;
-            switch (model)
-            {
-                case TaskModel taskModel:
-                    node = new TaskViewModel(taskModel);
-                    break;
-                case NodeModel nodeModel:
-                    node = new NodeViewModel(nodeModel);
-                    break;
-            }
-            Add(node);
-            return node;
-        }
-
     }
 }

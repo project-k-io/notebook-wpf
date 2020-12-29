@@ -1,11 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 using ProjectK.Logging;
 
 namespace ProjectK.View.Helpers.Misc
@@ -59,6 +57,5 @@ namespace ProjectK.View.Helpers.Misc
                 Logger.LogError(ex);
             }
         }
-
     }
 }

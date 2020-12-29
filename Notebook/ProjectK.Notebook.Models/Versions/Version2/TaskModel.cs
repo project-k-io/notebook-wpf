@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Text.Json.Serialization;
 
 namespace ProjectK.Notebook.Models.Versions.Version2
 {
     public class TaskModel
     {
-        public string Title { get; set; }
         public int Level = 0;
+        public string Title { get; set; }
         public Guid Id { get; set; }
         public Guid ParentId { get; set; }
         public int Rating { get; set; }
@@ -16,29 +15,6 @@ namespace ProjectK.Notebook.Models.Versions.Version2
         public string SubType { get; set; }
         public string Description { get; set; }
         public string Context { get; set; }
-
-        public TaskModel Copy()
-        {
-            return new TaskModel
-            {
-                Id = Id,
-                ParentId = ParentId,
-                Rating = Rating,
-                DateStarted = DateStarted,
-                DateEnded = DateEnded,
-                Type = Type,
-                SubType = SubType,
-                Title = Title,
-                Description = Description,
-                Context = Context
-            };
-        }
-
-
-        public static TaskModel NetTask()
-        {
-            return new TaskModel {Id = Guid.NewGuid(), DateStarted = DateTime.Now};
-        }
 
         public override string ToString()
         {

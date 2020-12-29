@@ -16,7 +16,8 @@ namespace ProjectK.Utils.Tests
 
 
             // Arrange
-            var text  = "with disruptive business models and/or that are building products and services for markets / demographics that have historically been underserved\r\n";
+            var text =
+                "with disruptive business models and/or that are building products and services for markets / demographics that have historically been underserved\r\n";
             var line0 = "with disruptive business models and/or that are building products and services ";
             var line1 = "for markets / demographics that have historically been underserved";
             var line2 = "";

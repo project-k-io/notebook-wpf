@@ -8,7 +8,7 @@ namespace ProjectK.Notebook.Models.Versions.Version2
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public virtual List<TaskModel> Tasks { get; set; } = new List<TaskModel>();
+        public virtual List<TaskModel> Tasks { get; set; } = new();
 
         public bool IsSame(DataModel notebook)
         {
@@ -31,22 +31,6 @@ namespace ProjectK.Notebook.Models.Versions.Version2
         public void Clear()
         {
             Tasks.Clear();
-        }
-
-        public DataModel Copy()
-        {
-            var model = new DataModel();
-            foreach (var task in Tasks)
-                model.Tasks.Add(task.Copy());
-
-            return model;
-        }
-
-        public void CopyFrom(DataModel model)
-        {
-            Tasks.Clear();
-            foreach (var task in model.Tasks)
-                Tasks.Add(task.Copy());
         }
     }
 }

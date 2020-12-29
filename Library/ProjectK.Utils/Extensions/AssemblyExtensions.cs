@@ -47,7 +47,8 @@ namespace ProjectK.Utils.Extensions
         public static string GetAssemblyVersion(this Assembly assembly)
         {
             var version = assembly.GetName().Version;
-            return $"{version?.Major}.{version?.Minor}.{version?.Build}";
+            return
+                $"{(version != null ? version.Major : (int?) null)}.{(version != null ? version.Minor : (int?) null)}.{(version != null ? version.Build : (int?) null)}";
         }
     }
 }

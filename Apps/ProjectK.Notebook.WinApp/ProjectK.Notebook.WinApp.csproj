@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Authors>Alan Kharebov</Authors>
+    <Company>Project K</Company>
+    <Product>Notebook</Product>
+    <Description>To manage projects</Description>
+    <Copyright>Project K, Inc</Copyright>
+    <Version>1.5.5</Version>
+    <PackageId>ProjectK.Notebook</PackageId>
+    <PackageReleaseNotes>New Text Report</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="images\apple_time_machine_alt.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.Utils.csproj" />
+    <ProjectReference Include="..\..\Notebook\ProjectK.Notebook.Views\ProjectK.Notebook.Views.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\apple_time_machine_alt.png" />
+  </ItemGroup>
+
+</Project>

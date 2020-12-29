@@ -1,0 +1,222 @@
+<UserControl
+    x:Class="ProjectK.Notebook.Views.NodeTreeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
+    xmlns:enums="clr-namespace:ProjectK.Notebook.ViewModels.Enums;assembly=ProjectK.Notebook.ViewModels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:treeViewList="clr-namespace:ProjectK.Views.TreeViewList;assembly=ProjectK.Views"
+    xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
+    d:DesignHeight="200"
+    d:DesignWidth="450"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <design:Designer x:Key="Model" />
+        <converters:LevelToIndentConverter x:Key="LevelIndentConverter" />
+        <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Focusable" Value="false" />
+            <Setter Property="Width" Value="19" />
+            <Setter Property="Height" Value="13" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border
+                            Width="19"
+                            Height="13"
+                            Background="Transparent">
+                            <Border
+                                Width="9"
+                                Height="9"
+                                BorderBrush="#FF7898B5"
+                                BorderThickness="1"
+                                CornerRadius="1"
+                                SnapsToDevicePixels="true">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientBrush.GradientStops>
+                                            <GradientStop Offset=".2" Color="White" />
+                                            <GradientStop Offset="1" Color="#FFC0B7A6" />
+                                        </GradientBrush.GradientStops>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Path
+                                    x:Name="ExpandPath"
+                                    Margin="1,1,1,1"
+                                    Data="M 0,2 L 0,3 2,3 2,5 3,5 3,3 5,3 5,2 3,2 3,0 2,0 2,2 Z"
+                                    Fill="Black" />
+                            </Border>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                <Setter TargetName="ExpandPath" Property="Path.Data" Value="M 0,2 L 0,3 5,3 5,2 Z" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="CellTemplateName" DataType="viewModels:NodeViewModel">
+            <DockPanel>
+                <ToggleButton
+                    x:Name="Expander"
+                    Margin="{Binding Level, Converter={StaticResource LevelIndentConverter}, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}"
+                    ClickMode="Press"
+                    IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}"
+                    Style="{StaticResource ExpandCollapseToggleStyle}" />
+
+                <TextBlock Text="{Binding Path=Name}" />
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type treeViewList:TreeListViewItem}}}" Value="False">
+                    <Setter TargetName="Expander" Property="UIElement.Visibility" Value="Hidden" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+        <GridViewColumnCollection x:Key="Columns">
+            <GridViewColumn
+                Width="200"
+                CellTemplate="{StaticResource CellTemplateName}"
+                Header="Title" />
+            <GridViewColumn Header="M">
+                <GridViewColumn.CellTemplate>
+                    <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Margin="3,0">
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Style.Triggers>
+                                        <!--<DataTrigger Binding="{Binding Path=Modified }" Value="{x:Static viewModels:ModifiedStatus.None}">
+                                            <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png"/>
+                                        </DataTrigger>-->
+                                        <DataTrigger Binding="{Binding Path=Modified}" Value="{x:Static enums:ModifiedStatus.Modified}">
+                                            <Setter Property="Source" Value="Images\icons8_expand_arrow_48px.png" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=Modified}" Value="{x:Static enums:ModifiedStatus.ChildModified}">
+                                            <Setter Property="Source" Value="Images\icons8_expand_arrow_50px.png" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <!--<Image Source="/ProjectK.Notebook.Views;component/icons8-no-synchronize-32.png" Width="16"/>-->
+                    </DataTemplate>
+                </GridViewColumn.CellTemplate>
+            </GridViewColumn>
+            <GridViewColumn
+                Width="60"
+                DisplayMemberBinding="{Binding DateStarted}"
+                Header="Day" />
+            <GridViewColumn Width="70" Header="Start">
+                <GridViewColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding DateStarted, StringFormat=t}" TextAlignment="Right" />
+                    </DataTemplate>
+                </GridViewColumn.CellTemplate>
+            </GridViewColumn>
+            <GridViewColumn Width="70" Header="End">
+                <GridViewColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding DateEnded, StringFormat=t}" TextAlignment="Right" />
+                    </DataTemplate>
+                </GridViewColumn.CellTemplate>
+            </GridViewColumn>
+        </GridViewColumnCollection>
+        <Style x:Key="TreeListViewItemStyle" TargetType="{x:Type treeViewList:TreeListViewItem}">
+            <Setter Property="TreeViewItem.IsSelected" Value="{Binding Path=IsSelected}" />
+            <Setter Property="TreeViewItem.IsExpanded" Value="{Binding Path=IsExpanded}" />
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type treeViewList:TreeListViewItem}">
+                        <StackPanel>
+                            <Border
+                                Name="Bd"
+                                Padding="{TemplateBinding Control.Padding}"
+                                Background="{TemplateBinding Control.Background}"
+                                BorderBrush="{TemplateBinding Control.BorderBrush}"
+                                BorderThickness="{TemplateBinding Control.BorderThickness}">
+
+                                <GridViewRowPresenter
+                                    x:Name="PART_Header"
+                                    Columns="{StaticResource Columns}"
+                                    Content="{TemplateBinding HeaderedItemsControl.Header}" />
+                            </Border>
+                            <ItemsPresenter x:Name="ItemsHost" />
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="TreeViewItem.IsExpanded" Value="false">
+                                <Setter TargetName="ItemsHost" Property="UIElement.Visibility" Value="Collapsed" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="HeaderedItemsControl.HasHeader" Value="false" />
+                                    <Condition Property="FrameworkElement.Width" Value="Auto" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PART_Header" Property="FrameworkElement.MinWidth" Value="75" />
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="HeaderedItemsControl.HasHeader" Value="false" />
+                                    <Condition Property="FrameworkElement.Height" Value="Auto" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PART_Header" Property="FrameworkElement.MinHeight" Value="19" />
+                            </MultiTrigger>
+                            <Trigger Property="TreeViewItem.IsSelected" Value="true">
+                                <Setter TargetName="Bd" Property="Border.Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                <Setter Property="Control.Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="TreeViewItem.IsSelected" Value="true" />
+                                    <Condition Property="TreeViewItem.IsSelectionActive" Value="false" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Bd" Property="Border.Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                                <Setter Property="Control.Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                            </MultiTrigger>
+                            <Trigger Property="UIElement.IsEnabled" Value="false">
+                                <Setter Property="Control.Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TreeListViewStyle" TargetType="{x:Type treeViewList:TreeListView}">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type treeViewList:TreeListView}">
+                        <Border BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="{TemplateBinding Control.BorderThickness}">
+                            <DockPanel>
+                                <GridViewHeaderRowPresenter Columns="{StaticResource Columns}" DockPanel.Dock="Top" />
+                                <ItemsPresenter />
+                            </DockPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid d:DataContext="{StaticResource Model}">
+        <FrameworkElement.Resources>
+            <HierarchicalDataTemplate
+                x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
+                DataType="{x:Type viewModels:NodeViewModel}"
+                ItemsSource="{Binding Path=Nodes}" />
+        </FrameworkElement.Resources>
+        <ScrollViewer
+            FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
+            HorizontalScrollBarVisibility="Auto"
+            VerticalScrollBarVisibility="Auto">
+            <treeViewList:TreeListView
+                x:Name="TreeViewTasks"
+                ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
+                ItemsSource="{Binding Path=RootNode.Nodes}"
+                SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
+                Style="{StaticResource TreeListViewStyle}" />
+        </ScrollViewer>
+    </Grid>
+</UserControl>
