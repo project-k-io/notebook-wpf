@@ -8,7 +8,7 @@ namespace ProjectK.Notebook.WinApp.ViewModels
     {
         public DesignAppViewModel() : base(new OptionsManager<AppSettings>(null))
         {
-            var notebook = DesignMainViewModel.CreateNotebook();
+            var notebook = Sample.CreateNotebook();
             RootNode.Add(notebook);
         }
     }

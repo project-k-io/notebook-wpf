@@ -12,7 +12,6 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <design:DesignMainViewModel x:Key="DesignViewModel"/>
         <ObjectDataProvider
             x:Key="ExampleEnumValues"
             MethodName="GetValues"
@@ -22,7 +21,7 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
-    <Grid d:DataContext="{StaticResource DesignViewModel}">
+    <Grid d:DataContext="{x:Static design:Sample.MainViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

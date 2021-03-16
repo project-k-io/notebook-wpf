@@ -14,7 +14,6 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
         public string GenerateReport(ItemViewModel item)
         {
-            Logger.LogDebug("GenerateReport()");
             try
             {
                 var sb = new StringBuilder();

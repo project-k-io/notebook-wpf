@@ -7,8 +7,8 @@ namespace ProjectK.Notebook.WinApp.Models
     {
         public AppSettings()
         {
-            Connections.Add("AlanDatabase", "Data Source=D:\\db\\alan_notebooks.db");
-            Connections.Add("TestDatabase", "Data Source=D:\\db\\test_notebooks.db");
+            Connections.Add("AlanDatabase", "Sample Source=D:\\db\\alan_notebooks.db");
+            Connections.Add("TestDatabase", "Sample Source=D:\\db\\test_notebooks.db");
         }
         public LayoutSettingsModel Layout { get; set; } = new();
         public Dictionary<string, string> Connections { get; set; } = new();

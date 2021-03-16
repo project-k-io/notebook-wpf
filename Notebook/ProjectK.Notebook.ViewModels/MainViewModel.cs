@@ -45,6 +45,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void SelectTreeTask2(NodeViewModel node)
         {
+            Logger.LogDebug($"SelectTreeTask2({node.Name})");
             node.TypeList = TypeList;
             node.ContextList = ContextList;
             node.TitleList = TaskTitleList;
@@ -52,7 +53,6 @@ namespace ProjectK.Notebook.ViewModels
             if (notebook != null)
             {
                 SetSelectedNode(node);
-                Logger.LogDebug($"SelectedNotebook selected | {notebook.Name}");
             }
 
             SelectTreeTask(node);
@@ -437,7 +437,7 @@ namespace ProjectK.Notebook.ViewModels
                 models.AddRange(nodes);
             }
 
-            // ModelToViewModel Data
+            // ModelToViewModel Sample
             UpdateTypeListAsync(models);
         }
 

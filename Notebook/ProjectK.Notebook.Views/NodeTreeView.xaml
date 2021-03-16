@@ -13,7 +13,6 @@
     d:DesignWidth="450"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <design:DesignMainViewModel x:Key="Model"/>
         <converters:LevelToIndentConverter x:Key="LevelIndentConverter" />
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Focusable" Value="false" />
@@ -195,7 +194,7 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Grid d:DataContext="{StaticResource Model}">
+    <Grid d:DataContext="{x:Static design:Sample.MainViewModel}">
         <FrameworkElement.Resources>
             <HierarchicalDataTemplate
                     x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"

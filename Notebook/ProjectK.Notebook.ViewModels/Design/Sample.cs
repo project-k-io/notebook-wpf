@@ -1,18 +1,23 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.ViewModels.Enums;
+using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels.Design
 {
-    public class DesignMainViewModel : MainViewModel
+    public class Sample
     {
+        public static MainViewModel MainViewModel { get; } = new();
+        public static NodeViewModel Node { get; } = new();
 
-        public DesignMainViewModel()
+        public Sample()
         {
             var notebook = CreateNotebook();
-            RootNode.Add(notebook);
+            MainViewModel.RootNode.Add(notebook);
+            MainViewModel.Title = "Test Title";
+            Init(Node);
         }
-
 
         public static NodeViewModel CreateNotebook()
         {
@@ -50,5 +55,18 @@ namespace ProjectK.Notebook.ViewModels.Design
 
             return notebook;
         }
+
+        public void Init(NodeViewModel node)
+        {
+            node.Model = new NodeModel
+            {
+                Name = "May",
+                Context = "Month",
+                Created = DateTime.Now
+            };
+            node.ContextList = new ObservableCollection<string>();
+            node.ContextList.AddRange(ModelRules.GlobalContextList);
+        }
+
     }
 }

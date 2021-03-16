@@ -41,6 +41,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-preview.2.21154.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-preview.2.21154.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0-preview.2.21154.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0-preview.2.21154.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0-preview.2.21154.6" />
     <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0-preview.2.21154.6" />
   </ItemGroup>

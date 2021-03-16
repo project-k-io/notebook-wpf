@@ -5,10 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400">
-    <UserControl.Resources>
-        <design:DesignMainViewModel x:Key="DesignViewModel"/>
-    </UserControl.Resources>
-    <Grid d:DataContext="{StaticResource DesignViewModel}">
+    <Grid d:DataContext="{x:Static design:Sample.MainViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

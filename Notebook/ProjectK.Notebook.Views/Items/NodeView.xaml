@@ -11,11 +11,8 @@
     d:DesignHeight="200"
     d:DesignWidth="400"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <design:DesignNodeViewModel x:Key="DesignViewModel"/>
-    </UserControl.Resources>
 
-    <Grid d:DataContext="{StaticResource DesignViewModel}">
+    <Grid d:DataContext="{x:Static design:Sample.Node}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />

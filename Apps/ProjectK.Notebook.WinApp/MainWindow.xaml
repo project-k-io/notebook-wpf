@@ -11,7 +11,6 @@
     xmlns:io="clr-namespace:System.IO;assembly=System.IO.FileSystem"
     xmlns:winApp="clr-namespace:ProjectK.Notebook.WinApp"
     xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
-    Title="{Binding Path=Title}"
     MinWidth="800"
     MinHeight="600"
     d:DesignHeight="600"
@@ -19,18 +18,19 @@
     Icon="/images/apple_time_machine_alt.png"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d"
+    d:DataContext="{x:Static design:Sample.MainViewModel}"
+    Title="{Binding Path=Title}"
     >
 
     <Window.Resources>
         <converters:Int32FromGridLengthConverter x:Key="GridLengthConverter" />
-        <design:DesignMainViewModel x:Key="DesignViewModel"/>
     </Window.Resources>
-    <Grid d:DataContext="{StaticResource DesignViewModel}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid d:DataContext="{StaticResource DesignViewModel}">
+        <Grid>
             <Ribbon x:Name="Ribbon" Title="Ribbon Title">
                 <Ribbon.HelpPaneContent>
                     <RibbonButton SmallImageSource="Images/Ribbon/modify.png" />
@@ -80,7 +80,7 @@
                     </RibbonGroup>
                     <RibbonGroup Header="Export Text">
                         <RibbonButton Command="{Binding Path=ExportSelectedAllAsTextCommand}" Label="Export Selected as Text" SmallImageSource="Images/Ribbon/saveas16.png" ToolTip="Export Selected All As Text" />
-                        <RibbonButton Command="{Binding Path=ExportSelectedAllAsJsonCommand}" Label="Export Selected as Json" SmallImageSource="Images/Ribbon/saveas16.png" ToolTip="Export Selected All As Data" />
+                        <RibbonButton Command="{Binding Path=ExportSelectedAllAsJsonCommand}" Label="Export Selected as Json" SmallImageSource="Images/Ribbon/saveas16.png" ToolTip="Export Selected All As Sample" />
                     </RibbonGroup>
                     <RibbonGroup Header="Database">
                         <RibbonButton Command="{Binding Path=OpenDatabaseCommand}" Label="Open Database" SmallImageSource="Images/Ribbon/open16.png" ToolTip="Open Database" />

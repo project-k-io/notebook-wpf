@@ -12,7 +12,6 @@
     d:DesignWidth="1000"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <design:DesignMainViewModel x:Key="DesignViewModel"/>
         <converters:IndexConverter x:Key="IndexConverter" />
         <system:String x:Key="DateFormatF">{0:MM-dd-yyyy HH:mm:ss tt}</system:String>
         <system:Double x:Key="DateWidth">150</system:Double>
@@ -33,7 +32,7 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Grid d:DataContext="{StaticResource DesignViewModel}">
+    <Grid d:DataContext="{x:Static design:Sample.MainViewModel}">
         <ListView
             x:Name="ListViewTasks"
             ButtonBase.Click="ListViewTasks_OnClick"
