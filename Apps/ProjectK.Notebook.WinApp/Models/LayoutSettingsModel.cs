@@ -4,6 +4,6 @@
     {
         public WindowSettingsModel Window { get; set; } = new();
         public OutputSettingsModel Output { get; set; } = new();
-        public MainViewSettingsModel MainViewSettings { get; set; } = new();
+        public MainViewSettingsModel Main { get; set; } = new();
     }
 }

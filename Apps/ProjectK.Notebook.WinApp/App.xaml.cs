@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -82,9 +83,6 @@ namespace ProjectK.Notebook.WinApp
             _viewModel.InitOutput(_output);
             _viewModel.LoadSettings();
 
-            // Open Database
-            _viewModel.OpenDatabase();
-
             // Set MainWindow DataContext
             _window.DataContext = _viewModel;
 
@@ -93,8 +91,10 @@ namespace ProjectK.Notebook.WinApp
 
             // Show 
             _window.Show();
+            _viewModel.OpenDatabase();
             base.OnStartup(e);
         }
+
 
         private async Task WindowOnClosing(object sender, CancelEventArgs e)
         {

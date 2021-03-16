@@ -30,6 +30,7 @@
     <None Remove="Images\Ribbon\repair.png" />
     <None Remove="Images\Ribbon\save16.png" />
     <None Remove="Images\Ribbon\saveas16.png" />
+    <None Remove="SplashScreen1.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,6 +66,10 @@
     <Resource Include="Images\Ribbon\repair.png" />
     <Resource Include="Images\Ribbon\save16.png" />
     <Resource Include="Images\Ribbon\saveas16.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SplashScreen Include="SplashScreen1.png" />
   </ItemGroup>
 
 </Project>

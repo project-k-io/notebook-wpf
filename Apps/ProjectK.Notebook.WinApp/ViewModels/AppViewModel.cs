@@ -26,7 +26,7 @@ namespace ProjectK.Notebook.WinApp.ViewModels
 
         #region Properties
 
-        public MainViewSettingsViewModel MainViewSettings { get; } = new MainViewSettingsViewModel();
+        public LayoutSettingsViewModel Layout { get; set; } = new ();
 
 
         #endregion
@@ -65,7 +65,7 @@ namespace ProjectK.Notebook.WinApp.ViewModels
             try
             {
                 // Layout
-                MainViewSettings.Model = _settings.Layout.MainViewSettings;
+                Layout.Main.Model = _settings.Layout.Main;
 
                 // model settings
                 LastListTaskId = _settings.LastListTaskId;
@@ -91,7 +91,7 @@ namespace ProjectK.Notebook.WinApp.ViewModels
             {
                 PrepareSettings();
                 // Layout
-                _settings.Layout.MainViewSettings = MainViewSettings.Model;
+                _settings.Layout.Main = Layout.Main.Model;
 
                 // model settings
                 _settings.LastListTaskId = LastListTaskId;
