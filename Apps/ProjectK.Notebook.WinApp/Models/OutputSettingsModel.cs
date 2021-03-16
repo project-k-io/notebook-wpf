@@ -1,6 +1,6 @@
-﻿namespace ProjectK.Notebook.WinApp.Settings
+﻿namespace ProjectK.Notebook.WinApp.Models
 {
-    public class OutputSettings
+    public class OutputSettingsModel
     {
         public bool Error { get; set; } // " value="false" />
         public bool Debug { get; set; } // " value="false" />

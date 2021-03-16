@@ -12,6 +12,8 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
     <UserControl.Resources>
+        <design:DesignNodeViewModel x:Key="DesignViewModel"/>
+
         <DataTemplate x:Key="NodeView">
             <items:NodeView DataContext="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=DataContext}" />
         </DataTemplate>
@@ -30,7 +32,7 @@
             TaskTemplate="{StaticResource TaskView}" />
 
     </UserControl.Resources>
-    <Grid d:DataContext="{Binding Source={x:Static design:DesignMainViewModel.Node}}">
+    <Grid d:DataContext="{StaticResource DesignViewModel}">
         <StackPanel>
             <ComboBox Name="ItemViewList" SelectedValue="{Binding Path=Kind, Mode=TwoWay}">
                 <system:String>Notebook</system:String>

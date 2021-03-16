@@ -8,7 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.WinApp.Settings;
+using ProjectK.Notebook.WinApp.Models;
+using ProjectK.Notebook.WinApp.ViewModels;
 using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.WinApp

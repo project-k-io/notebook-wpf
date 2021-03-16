@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using ProjectK.Notebook.ViewModels.Design;
-using ProjectK.Notebook.WinApp.Settings;
+using ProjectK.Notebook.WinApp.Models;
 
-namespace ProjectK.Notebook.WinApp
+namespace ProjectK.Notebook.WinApp.ViewModels
 {
     public class DesignAppViewModel : AppViewModel
     {

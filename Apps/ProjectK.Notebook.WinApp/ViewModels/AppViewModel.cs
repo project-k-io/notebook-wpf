@@ -9,12 +9,12 @@ using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using ProjectK.Logging;
 using ProjectK.Notebook.ViewModels;
-using ProjectK.Notebook.WinApp.Settings;
+using ProjectK.Notebook.WinApp.Models;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.ViewModels;
 
-namespace ProjectK.Notebook.WinApp
+namespace ProjectK.Notebook.WinApp.ViewModels
 {
     public class AppViewModel : MainViewModel
     {
@@ -26,7 +26,7 @@ namespace ProjectK.Notebook.WinApp
 
         #region Properties
 
-        public LayoutViewModel Layout { get; } = new LayoutViewModel();
+        public MainViewSettingsViewModel MainViewSettings { get; } = new MainViewSettingsViewModel();
 
 
         #endregion
@@ -65,9 +65,7 @@ namespace ProjectK.Notebook.WinApp
             try
             {
                 // Layout
-                Layout.OutputHeight = _settings.Layout.OutputHeight;
-                Layout.NavigatorWidth = _settings.Layout.NavigatorWidth;
-                Layout.PropertiesWidth = _settings.Layout.PropertiesWidth;
+                MainViewSettings.Model = _settings.Layout.MainViewSettings;
 
                 // model settings
                 LastListTaskId = _settings.LastListTaskId;
@@ -93,9 +91,7 @@ namespace ProjectK.Notebook.WinApp
             {
                 PrepareSettings();
                 // Layout
-                _settings.Layout.OutputHeight = Layout.OutputHeight;
-                _settings.Layout.NavigatorWidth  = Layout.NavigatorWidth;
-                _settings.Layout.PropertiesWidth = Layout.PropertiesWidth;
+                _settings.Layout.MainViewSettings = MainViewSettings.Model;
 
                 // model settings
                 _settings.LastListTaskId = LastListTaskId;

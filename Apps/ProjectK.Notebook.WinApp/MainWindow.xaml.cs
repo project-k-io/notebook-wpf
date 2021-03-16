@@ -5,7 +5,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProjectK.Logging;
 using ProjectK.Notebook.ViewModels;
-using ProjectK.Notebook.WinApp.Settings;
+using ProjectK.Notebook.WinApp.Models;
+using ProjectK.Notebook.WinApp.ViewModels;
 using ProjectK.View.Helpers.Extensions;
 
 namespace ProjectK.Notebook.WinApp
@@ -43,7 +44,7 @@ namespace ProjectK.Notebook.WinApp
 
         public void LoadSettings()
         {
-            var settings = _settings.Window;
+            var settings = _settings.Layout.Window;
             settings.SizeToFit();
             settings.MoveIntoView();
 
@@ -56,7 +57,7 @@ namespace ProjectK.Notebook.WinApp
 
         public void SaveSettings()
         {
-            var settings = _settings.Window;
+            var settings = _settings.Layout.Window;
 
             if (WindowState != WindowState.Minimized)
             {
