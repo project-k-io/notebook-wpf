@@ -32,7 +32,7 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Grid d:DataContext="{Binding Source={x:Static design:Designer.Main}}">
+    <Grid d:DataContext="{Binding Source={x:Static design:DesignMainViewModel.Main}}">
         <ListView
             x:Name="ListViewTasks"
             ButtonBase.Click="ListViewTasks_OnClick"

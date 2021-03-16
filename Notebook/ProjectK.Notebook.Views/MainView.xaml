@@ -13,7 +13,7 @@
         <KeyBinding Key="F1" Command="Help" />
     </UIElement.InputBindings>
 
-    <Grid d:DataContext="{Binding Source={x:Static design:Designer.Main}}">
+    <Grid d:DataContext="{Binding Source={x:Static design:DesignMainViewModel.Main}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

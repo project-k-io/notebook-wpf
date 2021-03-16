@@ -30,7 +30,7 @@
             TaskTemplate="{StaticResource TaskView}" />
 
     </UserControl.Resources>
-    <Grid d:DataContext="{Binding Source={x:Static design:Designer.Node}}">
+    <Grid d:DataContext="{Binding Source={x:Static design:DesignMainViewModel.Node}}">
         <StackPanel>
             <ComboBox Name="ItemViewList" SelectedValue="{Binding Path=Kind, Mode=TwoWay}">
                 <system:String>Notebook</system:String>
