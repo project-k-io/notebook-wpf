@@ -67,5 +67,10 @@ namespace ProjectK.Notebook.Models
         {
             return this.Text();
         }
+
+        public TaskModel Copy()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

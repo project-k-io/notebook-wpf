@@ -22,5 +22,10 @@ namespace ProjectK.Notebook.Models
 
         // INote
         public string Text { get; set; }
+
+        public NoteModel Copy()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

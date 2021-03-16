@@ -43,7 +43,6 @@ namespace ProjectK.Notebook.Models
 
             return true;
         }
-#if AK
         public NotebookModel Copy()
         {
             var model = new NotebookModel();
@@ -59,7 +58,6 @@ namespace ProjectK.Notebook.Models
             Tasks.Copy(source.Tasks, a => a.Copy());
         }
 
-#endif
         public List<INode> GetItems()
         {
             var items = new List<INode>();

@@ -29,9 +29,6 @@ namespace ProjectK.Utils.Tests
             var lines = StringHelper.ConvertTextInMultipleLines(text, maxLength);
 
             // Assert
-            //AK double actual = account.Balance;
-            //AK Assert.AreEqual(expected, actual, 0.001, "Account not debited correctly");
-
             Assert.AreEqual(lines.Count, 3);
             Assert.AreEqual(lines[0], line0);
             Assert.AreEqual(lines[1], line1);
