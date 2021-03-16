@@ -14,7 +14,7 @@ namespace ProjectK.Notebook.ViewModels.Design
         }
 
 
-        public NodeViewModel CreateNotebook()
+        public static NodeViewModel CreateNotebook()
         {
             var notebook = new NodeViewModel { Model = new NotebookModel { Name = "Time Tracker", Context = "App" }, IsExpanded = true };
 

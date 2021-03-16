@@ -9,6 +9,8 @@
     xmlns:items="clr-namespace:ProjectK.Notebook.Views.Items;assembly=ProjectK.Notebook.Views"
     xmlns:output="clr-namespace:ProjectK.Views.Output;assembly=ProjectK.Views"
     xmlns:io="clr-namespace:System.IO;assembly=System.IO.FileSystem"
+    xmlns:winApp="clr-namespace:ProjectK.Notebook.WinApp"
+    xmlns:converters="clr-namespace:ProjectK.View.Helpers.Converters;assembly=ProjectK.View.Helpers"
     Title="{Binding Path=Title}"
     MinWidth="800"
     MinHeight="600"
@@ -20,6 +22,7 @@
     >
 
     <Window.Resources>
+        <converters:Int32FromGridLengthConverter x:Key="GridLengthConverter" />
         <design:DesignMainViewModel x:Key="DesignViewModel"/>
     </Window.Resources>
     <Grid d:DataContext="{StaticResource DesignViewModel}">
@@ -27,7 +30,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
         <Grid d:DataContext="{StaticResource DesignViewModel}">
             <Ribbon x:Name="Ribbon" Title="Ribbon Title">
                 <Ribbon.HelpPaneContent>
@@ -90,10 +92,12 @@
                 </RibbonTab>
             </Ribbon>
         </Grid>
+        <!--MainView-->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="3*" />
-                <RowDefinition Height="1*" />
+                <RowDefinition Height="5" />
+                <RowDefinition MinHeight="30" Height="{Binding Path=Layout.OutputHeight, Mode=TwoWay, Converter={StaticResource GridLengthConverter}}"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
@@ -139,7 +143,8 @@
                 </TabControl>
 
             </Grid>
-            <output:OutputView Grid.Row="1" DataContext="{Binding Output}" />
+            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" BorderBrush="LightGray" BorderThickness="1" />
+            <output:OutputView Grid.Row="2" DataContext="{Binding Output}" />
         </Grid>
     </Grid>
 

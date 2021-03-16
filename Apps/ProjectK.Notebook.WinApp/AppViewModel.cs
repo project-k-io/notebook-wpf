@@ -26,6 +26,7 @@ namespace ProjectK.Notebook.WinApp
 
         #region Properties
 
+        public LayoutViewModel Layout { get; } = new LayoutViewModel();
 
 
         #endregion
@@ -34,7 +35,8 @@ namespace ProjectK.Notebook.WinApp
 
         public AppViewModel(IOptions<AppSettings> settings)
         {
-            _settings = settings.Value;
+            if(settings != null)
+                _settings = settings.Value;
 
             Assembly = Assembly.GetExecutingAssembly();
             Logger = LogManager.GetLogger<MainViewModel>();
@@ -62,6 +64,9 @@ namespace ProjectK.Notebook.WinApp
             // ISSUE: variable of a compiler-generated type
             try
             {
+                // Layout
+                Layout.OutputHeight = _settings.Layout.OutputHeight;
+
                 // model settings
                 LastListTaskId = _settings.LastListTaskId;
                 LastTreeTaskId = _settings.LastTreeTaskId;
@@ -85,6 +90,8 @@ namespace ProjectK.Notebook.WinApp
             try
             {
                 PrepareSettings();
+                // Layout
+                _settings.Layout.OutputHeight = Layout.OutputHeight;
 
                 // model settings
                 _settings.LastListTaskId = LastListTaskId;
