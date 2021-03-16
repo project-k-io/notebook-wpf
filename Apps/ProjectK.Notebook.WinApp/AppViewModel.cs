@@ -66,6 +66,8 @@ namespace ProjectK.Notebook.WinApp
             {
                 // Layout
                 Layout.OutputHeight = _settings.Layout.OutputHeight;
+                Layout.NavigatorWidth = _settings.Layout.NavigatorWidth;
+                Layout.PropertiesWidth = _settings.Layout.PropertiesWidth;
 
                 // model settings
                 LastListTaskId = _settings.LastListTaskId;
@@ -92,6 +94,8 @@ namespace ProjectK.Notebook.WinApp
                 PrepareSettings();
                 // Layout
                 _settings.Layout.OutputHeight = Layout.OutputHeight;
+                _settings.Layout.NavigatorWidth  = Layout.NavigatorWidth;
+                _settings.Layout.PropertiesWidth = Layout.PropertiesWidth;
 
                 // model settings
                 _settings.LastListTaskId = LastListTaskId;

@@ -96,15 +96,16 @@
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="3*" />
-                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition MinHeight="30" Height="{Binding Path=Layout.OutputHeight, Mode=TwoWay, Converter={StaticResource GridLengthConverter}}"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition MinWidth="30"  Width="{Binding Path=Layout.NavigatorWidth, Mode=TwoWay, Converter={StaticResource GridLengthConverter}}" />
+                    <ColumnDefinition MinWidth="30"  Width="3*" />
+                    <ColumnDefinition MinWidth="30"  Width="{Binding Path=Layout.PropertiesWidth, Mode=TwoWay, Converter={StaticResource GridLengthConverter}}" />
                 </Grid.ColumnDefinitions>
+                <!--TreeView-->
                 <Grid Grid.Column="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -122,6 +123,8 @@
                         <Calendar SelectedDatesChanged="Calendar_OnSelectedDatesChanged" SelectionMode="MultipleRange" />
                     </Expander>
                 </Grid>
+                <GridSplitter Grid.Column="0" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" BorderBrush="LightGray" BorderThickness="1" />
+                <!--MainView-->
                 <TabControl Grid.Column="1">
                     <TabItem Header="Report View">
                         <views:ReportView />
@@ -133,6 +136,7 @@
                         <views:ExcelCsvView />
                     </TabItem>
                 </TabControl>
+                <!--ItemView-->
                 <TabControl Grid.Column="2">
                     <TabItem Header="Item View">
                         <items:ItemView DataContext="{Binding Path=SelectedNode}" />
@@ -141,7 +145,7 @@
                         <ComboBox IsEditable="true" ItemsSource="{Binding Path=ContextList}" />
                     </TabItem>
                 </TabControl>
-
+                <GridSplitter Grid.Column="2" Width="5" HorizontalAlignment="Left"  VerticalAlignment="Stretch" BorderBrush="LightGray" BorderThickness="1" />
             </Grid>
             <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" BorderBrush="LightGray" BorderThickness="1" />
             <output:OutputView Grid.Row="2" DataContext="{Binding Output}" />
