@@ -7,9 +7,7 @@ namespace ProjectK.Logging
     public class OutputLoggerProvider : ILoggerProvider
     {
         private readonly Action<LogLevel, EventId, string> _logEvent;
-
-        private readonly ConcurrentDictionary<string, OutputLogger> _loggers =
-            new();
+        private readonly ConcurrentDictionary<string, OutputLogger> _loggers = new();
 
         public OutputLoggerProvider(Action<LogLevel, EventId, string> logEvent)
         {

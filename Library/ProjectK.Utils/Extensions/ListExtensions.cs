@@ -9,6 +9,7 @@ namespace ProjectK.Utils.Extensions
         {
             if (a == null)
                 return false;
+
             return ii >= 0 && ii < a.Count;
         }
 
