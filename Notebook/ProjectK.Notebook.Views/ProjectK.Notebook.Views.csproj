@@ -7,16 +7,9 @@
 
 	<ItemGroup>
 	  <None Remove="icons8-no-synchronize-32.png" />
-	  <None Remove="Images\action_create_16xmd.png" />
 	  <None Remove="Images\clear.png" />
 	  <None Remove="Images\CloudOK_16x.png" />
 	  <None Remove="Images\CloudRefresh_16x.png" />
-	  <None Remove="Images\copy_6524.png" />
-	  <None Remove="Images\download.png" />
-	  <None Remove="Images\filegroup_10135_32x.png" />
-	  <None Remove="Images\fixtime.png" />
-	  <None Remove="Images\fixtitles.png" />
-	  <None Remove="Images\fixtypes.png" />
 	  <None Remove="Images\icn_edit.png" />
 	  <None Remove="Images\icons8-cloud-sync-32.png" />
 	  <None Remove="Images\icons8-no-synchronize-32.png" />
@@ -39,17 +32,10 @@
 	  <None Remove="Images\icons8_synchronize_48px.png" />
 	  <None Remove="Images\icons8_upload_48px.png" />
 	  <None Remove="Images\icons8_upload_document_32px.png" />
-	  <None Remove="Images\icons8_upload_to_cloud_48px.png" />
 	  <None Remove="Images\icons8_upload_to_the_cloud_32px.png" />
 	  <None Remove="Images\icons8_up_32px.png" />
 	  <None Remove="Images\largeicon.png" />
-	  <None Remove="Images\modify.png" />
-	  <None Remove="Images\new_document.png" />
-	  <None Remove="Images\open16.png" />
 	  <None Remove="Images\project.jpg" />
-	  <None Remove="Images\repair.png" />
-	  <None Remove="Images\save16.png" />
-	  <None Remove="Images\saveas16.png" />
 	  <None Remove="Images\smallicon.png" />
 	</ItemGroup>
 
@@ -64,21 +50,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="Syncfusion.Shared.WPF">
-	    <HintPath>..\..\..\..\..\.nuget\packages\syncfusion.shared.wpf\18.2.0.58\lib\netcoreapp5.0\Syncfusion.Shared.WPF.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Resource Include="Images\icons8-no-synchronize-32.png" />
-	  <Resource Include="Images\action_create_16xmd.png" />
 	  <Resource Include="Images\clear.png" />
-	  <Resource Include="Images\copy_6524.png" />
-	  <Resource Include="Images\download.png" />
-	  <Resource Include="Images\filegroup_10135_32x.png" />
-	  <Resource Include="Images\fixtime.png" />
-	  <Resource Include="Images\fixtitles.png" />
-	  <Resource Include="Images\fixtypes.png" />
 	  <Resource Include="Images\icn_edit.png" />
 	  <Resource Include="Images\icons8_available_updates_48px.png" />
 	  <Resource Include="Images\icons8_checkmark_48px.png" />
@@ -99,17 +72,10 @@
 	  <Resource Include="Images\icons8_synchronize_48px.png" />
 	  <Resource Include="Images\icons8_upload_48px.png" />
 	  <Resource Include="Images\icons8_upload_document_32px.png" />
-	  <Resource Include="Images\icons8_upload_to_cloud_48px.png" />
 	  <Resource Include="Images\icons8_upload_to_the_cloud_32px.png" />
 	  <Resource Include="Images\icons8_up_32px.png" />
 	  <Resource Include="Images\largeicon.png" />
-	  <Resource Include="Images\modify.png" />
-	  <Resource Include="Images\new_document.png" />
-	  <Resource Include="Images\open16.png" />
 	  <Resource Include="Images\project.jpg" />
-	  <Resource Include="Images\repair.png" />
-	  <Resource Include="Images\save16.png" />
-	  <Resource Include="Images\saveas16.png" />
 	  <Resource Include="Images\smallicon.png" />
 	</ItemGroup>
 

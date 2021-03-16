@@ -1,12 +1,16 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Ribbon;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProjectK.Logging;
+using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.WinApp.Settings;
+using ProjectK.View.Helpers.Extensions;
 
 namespace ProjectK.Notebook.WinApp
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : RibbonWindow
     {
         private readonly ILogger _logger = LogManager.GetLogger<MainWindow>();
         private readonly AppSettings _settings;
@@ -22,7 +26,19 @@ namespace ProjectK.Notebook.WinApp
         {
             _logger.LogDebug("Loaded()");
             if (!(DataContext is AppViewModel model)) return;
+
+            model.OnDispatcher = this.GetAddDelegate();
             CommandBindings.AddRange(model.CreateCommandBindings());
+        }
+
+
+
+        private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(DataContext is MainViewModel model)) return;
+            if (!(sender is Calendar calendar)) return;
+            model.UpdateSelectDayTasks(calendar.SelectedDates);
+            model.OnGenerateReportChanged();
         }
 
         public void LoadSettings()

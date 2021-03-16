@@ -1,10 +1,14 @@
-<Window
+<RibbonWindow
     x:Class="ProjectK.Notebook.WinApp.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:ProjectK.Notebook.Views;assembly=ProjectK.Notebook.Views"
+    xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
+    xmlns:items="clr-namespace:ProjectK.Notebook.Views.Items;assembly=ProjectK.Notebook.Views"
+    xmlns:output="clr-namespace:ProjectK.Views.Output;assembly=ProjectK.Views"
+    xmlns:io="clr-namespace:System.IO;assembly=System.IO.FileSystem"
     Title="{Binding Path=Title}"
     MinWidth="800"
     MinHeight="600"
@@ -12,10 +16,131 @@
     d:DesignWidth="800"
     Icon="/images/apple_time_machine_alt.png"
     WindowStartupLocation="CenterOwner"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    >
 
-    <Grid>
-        <views:MainView />
+    <Window.Resources>
+        <design:DesignMainViewModel x:Key="DesignViewModel"/>
+    </Window.Resources>
+    <Grid d:DataContext="{StaticResource DesignViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid d:DataContext="{StaticResource DesignViewModel}">
+            <Ribbon x:Name="Ribbon" Title="Ribbon Title">
+                <Ribbon.HelpPaneContent>
+                    <RibbonButton SmallImageSource="Images/Ribbon/modify.png" />
+                </Ribbon.HelpPaneContent>
+                <Ribbon.QuickAccessToolBar>
+                    <RibbonQuickAccessToolBar>
+                        <RibbonButton Command="Save" Label="Save" SmallImageSource="Images/Ribbon/SaveAs16.png" ToolTip="Save" />
+                    </RibbonQuickAccessToolBar>
+                </Ribbon.QuickAccessToolBar>
+                <Ribbon.ApplicationMenu>
+                    <RibbonApplicationMenu SmallImageSource="Images/FileGroup_10135_32x.png">
+                        <RibbonApplicationMenuItem Command="New" Header="New" ImageSource="Images/Ribbon/new_document.png" KeyTip="N" />
+                        <RibbonApplicationMenuItem Command="Open" Header="Open" ImageSource="Images/Ribbon/Open16.png" KeyTip="O" />
+                        <RibbonApplicationMenuItem Command="Save" Header="Save" ImageSource="Images/Ribbon/Save16.png" KeyTip="S" />
+                        <RibbonApplicationMenuItem Command="SaveAs" Header="Save As" ImageSource="Images/Ribbon/SaveAs16.png" KeyTip="R" />
+                        <RibbonApplicationMenu.AuxiliaryPaneContent>
+                            <RibbonGallery CanUserFilter="false" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <RibbonGalleryCategory Background="Transparent" Header="Recent Documents" ItemsSource="{Binding MostRecentFiles}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type io:FileInfo}">
+                                            <RibbonApplicationMenuItem Command="Open" Header="{Binding Name}" ImageSource="Images/Ribbon/Open16.png" KeyTip="O" ToolTip="{Binding FullName}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel IsItemsHost="true" Orientation="Vertical" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </RibbonGalleryCategory>
+                            </RibbonGallery>
+                        </RibbonApplicationMenu.AuxiliaryPaneContent>
+                    </RibbonApplicationMenu>
+                </Ribbon.ApplicationMenu>
+                <RibbonTab Header="Edit">
+                    <RibbonGroup Header="Fix">
+                        <RibbonButton Command="{Binding Path=FixTimeCommand}" Label="Fix Time" SmallImageSource="Images/Ribbon/FixTime.png" ToolTip="Fix Time" />
+                        <RibbonButton Command="{Binding Path=FixTitlesCommand}" Label="Fix Titles" SmallImageSource="Images/Ribbon/FixTitles.png" ToolTip="Fix Titles" />
+                        <RibbonButton Command="{Binding Path=FixTypesCommand}" Label="Fix Types" SmallImageSource="Images/Ribbon/FixTypes.png" ToolTip="Fix Types" />
+                    </RibbonGroup>
+                    <RibbonGroup Header="parenContext">
+                        <RibbonButton Command="{Binding Path=ExtractContextCommand}" Label="Extract parenContext" SmallImageSource="Images/Ribbon/Download.png" ToolTip="Extract parenContext" />
+                        <RibbonButton Command="{Binding Path=FixContextCommand}" Label="Fix parenContext" SmallImageSource="Images/Ribbon/Repair.png" ToolTip="Fix parenContext" />
+                    </RibbonGroup>
+                    <RibbonGroup Header="Action">
+                        <RibbonButton Command="{Binding Path=CopyTaskCommand}" KeyTip="Ctrl+Ins" Label="Copy" SmallImageSource="Images/Ribbon/Copy_6524.png" ToolTip="Copy current task. Ctrl+Ins" />
+                        <RibbonButton Command="{Binding Path=ContinueTaskCommand}" Label="Continue" SmallImageSource="Images/Ribbon/action_create_16xMD.png" ToolTip="Start next task from current task end date. Shift+Ins" />
+                    </RibbonGroup>
+                    <RibbonGroup Header="Export Text">
+                        <RibbonButton Command="{Binding Path=ExportSelectedAllAsTextCommand}" Label="Export Selected as Text" SmallImageSource="Images/Ribbon/saveas16.png" ToolTip="Export Selected All As Text" />
+                        <RibbonButton Command="{Binding Path=ExportSelectedAllAsJsonCommand}" Label="Export Selected as Json" SmallImageSource="Images/Ribbon/saveas16.png" ToolTip="Export Selected All As Data" />
+                    </RibbonGroup>
+                    <RibbonGroup Header="Database">
+                        <RibbonButton Command="{Binding Path=OpenDatabaseCommand}" Label="Open Database" SmallImageSource="Images/Ribbon/open16.png" ToolTip="Open Database" />
+                        <RibbonButton Command="{Binding Path=SyncDatabaseCommand}" Label="Sync" SmallImageSource="Images/Ribbon/icons8_upload_to_cloud_48px.png" ToolTip="Sync Database" />
+                    </RibbonGroup>
+                    <RibbonGroup Header="Notebook">
+                        <RibbonButton Command="{Binding Path=AddNotebookCommand}" Label="Add Notebook" SmallImageSource="Images/Ribbon/open16.png" ToolTip="Add Notebook" />
+                    </RibbonGroup>
+                </RibbonTab>
+            </Ribbon>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TabControl Grid.Row="0">
+                        <TabItem Header="TaskModel TreeView">
+                            <views:NodeTreeView x:Name="TasksTreeView" />
+                        </TabItem>
+                        <TabItem Header="Activity View">
+                            <views:ActivitiesView DataContext="{Binding}" />
+                        </TabItem>
+                    </TabControl>
+                    <Expander Grid.Row="1">
+                        <Calendar SelectedDatesChanged="Calendar_OnSelectedDatesChanged" SelectionMode="MultipleRange" />
+                    </Expander>
+                </Grid>
+                <TabControl Grid.Column="1">
+                    <TabItem Header="Report View">
+                        <views:ReportView />
+                    </TabItem>
+                    <TabItem Header="List View">
+                        <views:NodeListView />
+                    </TabItem>
+                    <TabItem Header="Excel CSV View">
+                        <views:ExcelCsvView />
+                    </TabItem>
+                </TabControl>
+                <TabControl Grid.Column="2">
+                    <TabItem Header="Item View">
+                        <items:ItemView DataContext="{Binding Path=SelectedNode}" />
+                    </TabItem>
+                    <TabItem Header="parenContext List">
+                        <ComboBox IsEditable="true" ItemsSource="{Binding Path=ContextList}" />
+                    </TabItem>
+                </TabControl>
+
+            </Grid>
+            <output:OutputView Grid.Row="1" DataContext="{Binding Output}" />
+        </Grid>
     </Grid>
 
-</Window>
+</RibbonWindow>
