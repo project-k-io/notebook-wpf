@@ -276,14 +276,7 @@ namespace ProjectK.Notebook.ViewModels
         public string Title
         {
             get => _title;
-            set
-            {
-                if (_title == null)
-                    return;
-
-                _title = value;
-                RaisePropertyChanged();
-            }
+            set => Set(ref _title, value);
         }
 
         public string TextReport
@@ -341,6 +334,7 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand OpenDatabaseCommand { get; }
         public ICommand SyncDatabaseCommand { get; }
         public ICommand AddNotebookCommand { get; }
+        public ICommand CommandCopyExcelCsvText { get; }
 
         #endregion
 
@@ -373,6 +367,7 @@ namespace ProjectK.Notebook.ViewModels
             ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await ExportSelectedAllAsJson());
             SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
+            CommandCopyExcelCsvText = new RelayCommand(CopyExcelCsvText);
 
             // Add Context 
             ContextList.AddRange(ModelRules.GlobalContextList);

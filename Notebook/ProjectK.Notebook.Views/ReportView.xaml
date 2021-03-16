@@ -7,10 +7,12 @@
     xmlns:enums="clr-namespace:ProjectK.Notebook.ViewModels.Enums;assembly=ProjectK.Notebook.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+    xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
     <UserControl.Resources>
+        <design:DesignMainViewModel x:Key="DesignViewModel"/>
         <ObjectDataProvider
             x:Key="ExampleEnumValues"
             MethodName="GetValues"
@@ -20,16 +22,15 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
-    <Grid>
-
+    <Grid d:DataContext="{StaticResource DesignViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ToolBar Grid.Row="0">
             <CheckBox
-                Command="{Binding CommandGenerateReport}"
-                Content="Optimize"
+                Command="{Binding ShowReportCommand}"
+                Content="Show Report"
                 IsChecked="{Binding UseTimeOptimization}" />
             <Separator />
             <ComboBox

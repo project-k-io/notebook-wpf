@@ -7,19 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
+    xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
     d:DesignHeight="200"
     d:DesignWidth="400"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <domain:NodeModel
-            x:Key="Model"
-            Name="May"
-            Context="Month"
-            Created="{x:Static system:DateTime.Now}" />
-        <viewModels:NodeViewModel x:Key="ViewModel" Model="{StaticResource Model}" />
+        <design:DesignNodeViewModel x:Key="DesignViewModel"/>
     </UserControl.Resources>
 
-    <Grid d:DataContext="{StaticResource ViewModel}">
+    <Grid d:DataContext="{StaticResource DesignViewModel}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />
@@ -85,8 +81,8 @@
                     <ColumnDefinition Width="10" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <DatePicker Grid.Column="0" SelectedDate="{Binding Path=DateCreated}" />
-                <TextBox Grid.Column="2" Text="{Binding Path=TimeCreated, StringFormat=t}" />
+                <DatePicker Grid.Column="0" SelectedDate="{Binding Path=Created}" />
+                <TextBox Grid.Column="2" Text="{Binding Path=Created, StringFormat=t}" />
                 <Button
                     Grid.Column="4"
                     Width="40"

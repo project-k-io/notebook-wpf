@@ -3,8 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400">
-    <Grid>
+    <UserControl.Resources>
+        <design:DesignMainViewModel x:Key="DesignViewModel"/>
+    </UserControl.Resources>
+    <Grid d:DataContext="{StaticResource DesignViewModel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

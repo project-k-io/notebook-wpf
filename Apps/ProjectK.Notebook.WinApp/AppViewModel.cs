@@ -24,6 +24,12 @@ namespace ProjectK.Notebook.WinApp
 
         #endregion
 
+        #region Properties
+
+
+
+        #endregion
+
         #region Constructors
 
         public AppViewModel(IOptions<AppSettings> settings)
@@ -37,6 +43,18 @@ namespace ProjectK.Notebook.WinApp
 
         #endregion
 
+        #region Private Functions
+
+        public void InitOutput(OutputViewModel output)
+        {
+            Output = output;
+            Output.UpdateFilter = () =>
+                CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
+        }
+
+        #endregion
+
+        #region Public Functions
 
         public void LoadSettings()
         {
@@ -61,8 +79,6 @@ namespace ProjectK.Notebook.WinApp
                 Logger.LogError(ex);
             }
         }
-
-
         public void SaveSettings()
         {
             Logger.LogDebug("SaveSettings()");
@@ -87,7 +103,6 @@ namespace ProjectK.Notebook.WinApp
                 Logger.LogError(ex);
             }
         }
-
         public CommandBindingCollection CreateCommandBindings()
         {
             var commandBindings = new CommandBindingCollection
@@ -97,7 +112,6 @@ namespace ProjectK.Notebook.WinApp
             };
             return commandBindings;
         }
-
         public async Task SaveAppSettings(string directory)
         {
             var path = Path.Combine(directory, "appsettings.json");
@@ -107,7 +121,6 @@ namespace ProjectK.Notebook.WinApp
             };
             await FileHelper.SaveToFileAsync(path, root);
         }
-
         public void OpenDatabase()
         {
             var key = "AlanDatabase";
@@ -116,7 +129,6 @@ namespace ProjectK.Notebook.WinApp
             OpenDatabase(connectionString);
             SetTitle(key);
         }
-
         public async Task OpenFileAsync()
         {
             try
@@ -136,14 +148,6 @@ namespace ProjectK.Notebook.WinApp
         }
 
 
-        #region Private Functions
-
-        public void InitOutput(OutputViewModel output)
-        {
-            Output = output;
-            Output.UpdateFilter = () =>
-                CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
-        }
 
         #endregion
     }
