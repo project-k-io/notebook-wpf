@@ -151,5 +151,30 @@ namespace ProjectK.Notebook.Data
             Logger.LogDebug($"{text}: TaskModel count is {tasks.Count}");
             foreach (var task in tasks) Logger.LogDebug(task.ToString());
         }
+
+        public void DeleteNotebook(Guid id)
+        {
+            var notebook = _database.Notebooks.First(n => n.Id == id);
+            if (notebook == null)
+                return;
+
+            _database.Notebooks.Remove(notebook);
+        }
+
+        public async Task<(bool foound, NotebookModel notebook)> FirstOrDefaultNotebook()
+        {
+            var notebooks = await _database.Notebooks.ToListAsync();
+
+            // Selected Notebook
+            if (notebooks.Count == 0)
+                return (false, null);
+
+            var notebook =  notebooks.FirstOrDefault();
+            if(notebook == null)
+                return (false, null);
+
+
+            return (true, notebook);
+        }
     }
 }
