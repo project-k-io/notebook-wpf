@@ -30,7 +30,7 @@
     <None Remove="Images\Ribbon\repair.png" />
     <None Remove="Images\Ribbon\save16.png" />
     <None Remove="Images\Ribbon\saveas16.png" />
-    <None Remove="SplashScreen1.png" />
+    <None Remove="NotebookSplashScreen.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,7 +71,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <SplashScreen Include="SplashScreen1.png" />
+    <SplashScreen Include="NotebookSplashScreen.png" />
   </ItemGroup>
 
 </Project>
