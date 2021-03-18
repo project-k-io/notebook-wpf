@@ -5,13 +5,13 @@ using ProjectK.Notebook.Models;
 
 namespace ProjectK.Notebook.Data
 {
-    public class NotebookContext : DbContext
+    public class Database : DbContext
     {
-        private static readonly ILogger Logger = LogManager.GetLogger<NotebookContext>();
+        private static readonly ILogger Logger = LogManager.GetLogger<Database>();
 
         private readonly string _connectionString;
 
-        public NotebookContext(string connectionString)
+        public Database(string connectionString)
         {
             _connectionString = connectionString;
         }

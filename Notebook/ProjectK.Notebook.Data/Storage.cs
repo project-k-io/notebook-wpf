@@ -20,46 +20,46 @@ namespace ProjectK.Notebook.Data
 
         #endregion
 
-        private NotebookContext _db;
+        private Database _database;
 
 
         public async Task SaveChangesAsync()
         {
-            await _db.SaveChangesAsync();
+            await _database.SaveChangesAsync();
         }
 
         public List<NotebookModel> GetNonRootNotebooks()
         {
-            var notebooks = _db.Notebooks.Where(n => n.NonRoot).ToList();
+            var notebooks = _database.Notebooks.Where(n => n.NonRoot).ToList();
             return notebooks;
         }
 
         public List<NotebookModel> GetNotebooks()
         {
-            var notebooks = _db.Notebooks.Local.ToList();
+            var notebooks = _database.Notebooks.Local.ToList();
             return notebooks;
         }
 
         public async Task AddNotebook(NotebookModel notebook)
         {
-            await _db.Notebooks.AddAsync(notebook);
+            await _database.Notebooks.AddAsync(notebook);
         }
 
         public void OpenDatabase(string connectionString)
         {
-            _db = new NotebookContext(connectionString);
+            _database = new Database(connectionString);
 
             // this is for demo purposes only, to make it easier
             // to get up and running
-            _db.Database.EnsureCreated();
+            _database.Database.EnsureCreated();
 
             // load the entities into EF Core
-            _db.Notebooks.Load();
+            _database.Notebooks.Load();
         }
 
         public async Task CloseConnection()
         {
-            await _db.Database.CloseConnectionAsync();
+            await _database.Database.CloseConnectionAsync();
         }
 
         public async Task ImportData(NotebookModel notebook, List<TaskModel> tasks)
@@ -67,14 +67,14 @@ namespace ProjectK.Notebook.Data
             // Set NotebookId
             foreach (var task in tasks) task.NotebookId = notebook.Id;
 
-            await _db.Tasks.AddRangeAsync(tasks);
+            await _database.Tasks.AddRangeAsync(tasks);
             await SaveChangesAsync();
         }
 
         public async Task<NotebookModel> GetNotebook(string path)
         {
             // Load Database
-            var notebook = _db.Notebooks.FirstOrDefault(n => n.Name == path);
+            var notebook = _database.Notebooks.FirstOrDefault(n => n.Name == path);
             if (notebook != null)
                 return notebook;
 
@@ -87,7 +87,7 @@ namespace ProjectK.Notebook.Data
                 Description = ""
             };
 
-            _db.Notebooks.Add(notebook);
+            _database.Notebooks.Add(notebook);
             await SaveChangesAsync();
             return notebook;
         }
@@ -95,11 +95,11 @@ namespace ProjectK.Notebook.Data
         public void AddModel(INode model)
         {
             if (model is TaskModel task)
-                _db.Tasks.Add(task);
+                _database.Tasks.Add(task);
             else if (model is NoteModel note)
-                _db.Notes.Add(note);
+                _database.Notes.Add(note);
             else if (model is NodeModel node)
-                _db.Nodes.Add(node);
+                _database.Nodes.Add(node);
         }
 
         public async Task AddRange(List<INode> models)
@@ -116,33 +116,33 @@ namespace ProjectK.Notebook.Data
                     nodes.Add(node);
 
             if (!nodes.IsNullOrEmpty())
-                await _db.Nodes.AddRangeAsync(nodes);
+                await _database.Nodes.AddRangeAsync(nodes);
 
             if (!tasks.IsNullOrEmpty())
-                await _db.Tasks.AddRangeAsync(tasks);
+                await _database.Tasks.AddRangeAsync(tasks);
 
             if (!notes.IsNullOrEmpty())
-                await _db.Notes.AddRangeAsync(notes);
+                await _database.Notes.AddRangeAsync(notes);
         }
 
         public async Task<EntityEntry<NotebookModel>> Add(NotebookModel notebookModel)
         {
-            return await _db.Notebooks.AddAsync(notebookModel);
+            return await _database.Notebooks.AddAsync(notebookModel);
         }
 
         public void Remove(NotebookModel notebook)
         {
-            _db.Notebooks.Remove(notebook);
+            _database.Notebooks.Remove(notebook);
         }
 
         public void RemoveRange(List<INode> models)
         {
-            _db.RemoveRange(models);
+            _database.RemoveRange(models);
         }
 
         public async Task<List<TaskModel>> GetTasks()
         {
-            return await _db.Tasks.ToListAsync();
+            return await _database.Tasks.ToListAsync();
         }
 
         public async Task ShowTasks(string text)
