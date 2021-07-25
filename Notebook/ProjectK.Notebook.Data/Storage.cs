@@ -47,14 +47,21 @@ namespace ProjectK.Notebook.Data
 
         public void OpenDatabase(string connectionString)
         {
-            _database = new Database(connectionString);
+            try
+            {
+                _database = new Database(connectionString);
 
-            // this is for demo purposes only, to make it easier
-            // to get up and running
-            _database.Database.EnsureCreated();
+                // this is for demo purposes only, to make it easier
+                // to get up and running
+                _database.Database.EnsureCreated();
 
-            // load the entities into EF Core
-            _database.Notebooks.Load();
+                // load the entities into EF Core
+                _database.Notebooks.Load();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e);
+            }
         }
 
         public async Task CloseConnection()
