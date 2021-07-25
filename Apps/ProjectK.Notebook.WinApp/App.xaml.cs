@@ -1,10 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Navigation;
-using System.Windows.Threading;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -12,6 +6,11 @@ using ProjectK.Logging;
 using ProjectK.Notebook.WinApp.Models;
 using ProjectK.Notebook.WinApp.ViewModels;
 using ProjectK.ViewModels;
+using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace ProjectK.Notebook.WinApp
 {
@@ -27,7 +26,7 @@ namespace ProjectK.Notebook.WinApp
         public App()
         {
             _host = Host.CreateDefaultBuilder() // Use default settings
-                //new HostBuilder()          // Initialize an empty HostBuilder
+                                                //new HostBuilder()          // Initialize an empty HostBuilder
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     _basePath = Environment.CurrentDirectory;

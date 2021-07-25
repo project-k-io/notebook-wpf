@@ -1,10 +1,10 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using GalaSoft.MvvmLight;
-using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
 
 namespace ProjectK.ViewModels
 {
@@ -27,15 +27,15 @@ namespace ProjectK.ViewModels
         }
 
         public OutputButtonViewModel ButtonClear { get; set; } =
-            new() {Image = "Clear", Label = "Clear"};
+            new() { Image = "Clear", Label = "Clear" };
 
-        public OutputButtonViewModel ButtonDebug { get; set; } = new() {Image = "Debug", Label = "Logs", IsChecked = true};
+        public OutputButtonViewModel ButtonDebug { get; set; } = new() { Image = "Debug", Label = "Logs", IsChecked = true };
 
-        public OutputButtonViewModel ButtonErrors { get; set; } = new() {Image = "Error", Label = "Errors", IsChecked = false};
+        public OutputButtonViewModel ButtonErrors { get; set; } = new() { Image = "Error", Label = "Errors", IsChecked = false };
 
-        public OutputButtonViewModel ButtonMessages { get; set; } = new() {Image = "Message", Label = "Messages", IsChecked = false};
+        public OutputButtonViewModel ButtonMessages { get; set; } = new() { Image = "Message", Label = "Messages", IsChecked = false };
 
-        public OutputButtonViewModel ButtonWarnings { get; set; } = new() {Image = "Warning", Label = "Warnings", IsChecked = false};
+        public OutputButtonViewModel ButtonWarnings { get; set; } = new() { Image = "Warning", Label = "Warnings", IsChecked = false };
 
         public Action UpdateFilter { get; set; }
 
@@ -124,7 +124,7 @@ namespace ProjectK.ViewModels
 
         public void LogEvent(LogLevel logLevel, EventId eventId, string message)
         {
-            AddNewRecord(new LoggingEventArgs {Level = logLevel, EventId = eventId, Message = message});
+            AddNewRecord(new LoggingEventArgs { Level = logLevel, EventId = eventId, Message = message });
         }
     }
 }

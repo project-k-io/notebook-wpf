@@ -1,11 +1,11 @@
-﻿using System;
+﻿using ProjectK.Notebook.Models.Extensions;
+using ProjectK.Notebook.Models.Interfaces;
+using ProjectK.Utils.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using ProjectK.Notebook.Models.Extensions;
-using ProjectK.Notebook.Models.Interfaces;
-using ProjectK.Utils.Extensions;
 
 namespace ProjectK.Notebook.Models
 {

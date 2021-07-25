@@ -16,7 +16,7 @@ namespace ProjectK.View.Helpers.Converters
                 level = i;
 
             var left = level * IndentSize;
-            return new Thickness((int) left, 0.0, 0.0, 0.0);
+            return new Thickness((int)left, 0.0, 0.0, 0.0);
         }
 
         public object ConvertBack(object o, Type type, object parameter, CultureInfo culture)

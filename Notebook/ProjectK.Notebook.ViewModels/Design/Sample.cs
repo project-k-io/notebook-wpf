@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using ProjectK.Notebook.Models;
+﻿using ProjectK.Notebook.Models;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Utils.Extensions;
+using System;
+using System.Collections.ObjectModel;
 
 namespace ProjectK.Notebook.ViewModels.Design
 {

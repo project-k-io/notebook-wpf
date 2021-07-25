@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProjectK.Notebook.Models;
+using System;
 
 // using ProjectK.NotebookModel.Models.Versions.Version2;
 
@@ -49,8 +49,8 @@ namespace ProjectK.Notebook.ViewModels.Tests
         public void AddTest()
         {
             // Arrange
-            var parent = new NodeViewModel {Model = new TaskModel {Id = Guid.NewGuid()}};
-            var child = new NodeViewModel {Model = new TaskModel {Id = Guid.NewGuid()}};
+            var parent = new NodeViewModel { Model = new TaskModel { Id = Guid.NewGuid() } };
+            var child = new NodeViewModel { Model = new TaskModel { Id = Guid.NewGuid() } };
 
             // Act
             parent.Add(child);

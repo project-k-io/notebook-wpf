@@ -1,13 +1,13 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProjectK.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.WinApp.Models;
 using ProjectK.Notebook.WinApp.ViewModels;
 using ProjectK.View.Helpers.Extensions;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Ribbon;
 
 namespace ProjectK.Notebook.WinApp
 {

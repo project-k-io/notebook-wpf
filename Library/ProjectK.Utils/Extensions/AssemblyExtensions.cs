@@ -39,7 +39,7 @@ namespace ProjectK.Utils.Extensions
 
         public static string GetAssemblyTitle(this Assembly assembly)
         {
-            return assembly.GetFirstAttributeValue((Expression<Func<AssemblyTitleAttribute, object>>) (x => x.Title))
+            return assembly.GetFirstAttributeValue((Expression<Func<AssemblyTitleAttribute, object>>)(x => x.Title))
                 .ToString();
         }
 
@@ -48,7 +48,7 @@ namespace ProjectK.Utils.Extensions
         {
             var version = assembly.GetName().Version;
             return
-                $"{(version != null ? version.Major : (int?) null)}.{(version != null ? version.Minor : (int?) null)}.{(version != null ? version.Build : (int?) null)}";
+                $"{(version != null ? version.Major : (int?)null)}.{(version != null ? version.Minor : (int?)null)}.{(version != null ? version.Build : (int?)null)}";
         }
     }
 }

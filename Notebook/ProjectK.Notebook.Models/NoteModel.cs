@@ -1,8 +1,8 @@
-﻿using System;
+﻿using ProjectK.Notebook.Models.Interfaces;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Serialization;
-using ProjectK.Notebook.Models.Interfaces;
 
 namespace ProjectK.Notebook.Models
 {

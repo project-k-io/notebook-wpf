@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Linq;
-using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
@@ -17,6 +11,11 @@ using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Input;
 using TaskModel = ProjectK.Notebook.Models.Versions.Version1.TaskModel;
 
 namespace ProjectK.Notebook.ViewModels

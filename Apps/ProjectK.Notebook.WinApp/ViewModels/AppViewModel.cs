@@ -1,10 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Data;
-using System.Windows.Input;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using ProjectK.Logging;
@@ -13,6 +7,12 @@ using ProjectK.Notebook.WinApp.Models;
 using ProjectK.Utils;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.ViewModels;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace ProjectK.Notebook.WinApp.ViewModels
 {
@@ -26,7 +26,7 @@ namespace ProjectK.Notebook.WinApp.ViewModels
 
         #region Properties
 
-        public LayoutSettingsViewModel Layout { get; set; } = new ();
+        public LayoutSettingsViewModel Layout { get; set; } = new();
 
 
         #endregion
@@ -35,7 +35,7 @@ namespace ProjectK.Notebook.WinApp.ViewModels
 
         public AppViewModel(IOptions<AppSettings> settings)
         {
-            if(settings != null)
+            if (settings != null)
                 _settings = settings.Value;
 
             Assembly = Assembly.GetExecutingAssembly();

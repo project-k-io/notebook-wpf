@@ -11,7 +11,7 @@ namespace ProjectK.Notebook.WinApp.ViewModels
 
         public int OutputHeight
         {
-            get => _outputHeight; 
+            get => _outputHeight;
             set => Set(ref _outputHeight, value);
         }
         public int NavigatorWidth { get => _navigatorWidth; set => Set(ref _navigatorWidth, value); }
@@ -22,7 +22,7 @@ namespace ProjectK.Notebook.WinApp.ViewModels
             get => new()
             {
                 NavigatorWidth = _navigatorWidth,
-                PropertiesWidth = _propertiesWidth, 
+                PropertiesWidth = _propertiesWidth,
                 OutputHeight = _outputHeight
             };
             set

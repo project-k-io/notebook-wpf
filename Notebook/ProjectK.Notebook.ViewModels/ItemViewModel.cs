@@ -1,8 +1,8 @@
-﻿using System;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
+using System;
 
 namespace ProjectK.Notebook.ViewModels
 {

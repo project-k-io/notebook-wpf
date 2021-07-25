@@ -1,5 +1,5 @@
-﻿using System;
-using ProjectK.Notebook.Models.Interfaces;
+﻿using ProjectK.Notebook.Models.Interfaces;
+using System;
 
 namespace ProjectK.Notebook.Models.Extensions
 {

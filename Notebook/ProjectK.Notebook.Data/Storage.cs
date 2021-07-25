@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Utils.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ProjectK.Notebook.Data
 {
@@ -169,8 +169,8 @@ namespace ProjectK.Notebook.Data
             if (notebooks.Count == 0)
                 return (false, null);
 
-            var notebook =  notebooks.FirstOrDefault();
-            if(notebook == null)
+            var notebook = notebooks.FirstOrDefault();
+            if (notebook == null)
                 return (false, null);
 
 

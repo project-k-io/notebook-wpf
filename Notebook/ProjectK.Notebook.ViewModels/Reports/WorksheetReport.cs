@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Reports;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Utils.Extensions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace ProjectK.Notebook.ViewModels.Reports
 {
@@ -36,7 +36,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
             foreach (var kv1 in sortedList)
             {
                 var key1 = kv1.Key;
-                var record = new ReportRecord {Type = key1, Text = key1};
+                var record = new ReportRecord { Type = key1, Text = key1 };
                 reportModule.Records.Add(record);
                 foreach (var kv2 in kv1.Value)
                 {
@@ -47,7 +47,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                         if (node2.Model is TaskModel task2)
                             timeSpan += task2.Duration;
 
-                    var record2 = new ReportRecord {Level = 2, Text = key2, Duration = timeSpan, Type = key1};
+                    var record2 = new ReportRecord { Level = 2, Text = key2, Duration = timeSpan, Type = key1 };
                     record.Duration += record2.Duration;
                     reportModule.Records.Add(record2);
                 }
@@ -111,7 +111,7 @@ namespace ProjectK.Notebook.ViewModels.Reports
                 if (selectedNode.Context == "Week")
                 {
                     var nodes = selectedNode.Nodes;
-                    var lastNode = (NodeViewModel) nodes.LastOrDefault();
+                    var lastNode = (NodeViewModel)nodes.LastOrDefault();
                     if (lastNode != null)
                     {
                         var dateStarted = lastNode.Model is TaskModel lastTask ? lastTask.DateStarted : DateTime.Now;

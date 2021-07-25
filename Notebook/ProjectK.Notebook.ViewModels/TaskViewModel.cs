@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
@@ -8,6 +6,8 @@ using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
+using System;
+using System.Windows.Input;
 
 namespace ProjectK.Notebook.ViewModels
 {
