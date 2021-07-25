@@ -1,7 +1,7 @@
-﻿using System;
-using System.Windows.Input;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using System;
+using System.Windows.Input;
 
 namespace ProjectK.ViewModels
 {
@@ -13,13 +13,7 @@ namespace ProjectK.ViewModels
         public bool IsChecked
         {
             get => _isChecked;
-            set
-            {
-                if (_isChecked == value)
-                    return;
-                _isChecked = value;
-                RaisePropertyChanged(nameof(IsChecked));
-            }
+            set => Set(ref _isChecked, value);
         }
 
 
@@ -43,9 +37,7 @@ namespace ProjectK.ViewModels
         private void OnClicked()
         {
             var clicked = Clicked;
-            if (clicked == null)
-                return;
-            clicked(this, EventArgs.Empty);
+            clicked?.Invoke(this, EventArgs.Empty);
         }
     }
 }

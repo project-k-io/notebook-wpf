@@ -1,20 +1,20 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.Win32;
+using ProjectK.Logging;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.Notebook.WinApp.Models;
+using ProjectK.Utils;
+using ProjectK.View.Helpers.Extensions;
+using ProjectK.ViewModels;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.Win32;
-using ProjectK.Logging;
-using ProjectK.Notebook.ViewModels;
-using ProjectK.Notebook.WinApp.Settings;
-using ProjectK.Utils;
-using ProjectK.View.Helpers.Extensions;
-using ProjectK.ViewModels;
 
-namespace ProjectK.Notebook.WinApp
+namespace ProjectK.Notebook.WinApp.ViewModels
 {
     public class AppViewModel : MainViewModel
     {
@@ -24,11 +24,19 @@ namespace ProjectK.Notebook.WinApp
 
         #endregion
 
+        #region Properties
+
+        public LayoutSettingsViewModel Layout { get; set; } = new();
+
+
+        #endregion
+
         #region Constructors
 
         public AppViewModel(IOptions<AppSettings> settings)
         {
-            _settings = settings.Value;
+            if (settings != null)
+                _settings = settings.Value;
 
             Assembly = Assembly.GetExecutingAssembly();
             Logger = LogManager.GetLogger<MainViewModel>();
@@ -37,6 +45,18 @@ namespace ProjectK.Notebook.WinApp
 
         #endregion
 
+        #region Private Functions
+
+        public void InitOutput(OutputViewModel output)
+        {
+            Output = output;
+            Output.UpdateFilter = () =>
+                CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
+        }
+
+        #endregion
+
+        #region Public Functions
 
         public void LoadSettings()
         {
@@ -44,6 +64,9 @@ namespace ProjectK.Notebook.WinApp
             // ISSUE: variable of a compiler-generated type
             try
             {
+                // Layout
+                Layout.Main.Model = _settings.Layout.Main;
+
                 // model settings
                 LastListTaskId = _settings.LastListTaskId;
                 LastTreeTaskId = _settings.LastTreeTaskId;
@@ -61,14 +84,14 @@ namespace ProjectK.Notebook.WinApp
                 Logger.LogError(ex);
             }
         }
-
-
         public void SaveSettings()
         {
             Logger.LogDebug("SaveSettings()");
             try
             {
                 PrepareSettings();
+                // Layout
+                _settings.Layout.Main = Layout.Main.Model;
 
                 // model settings
                 _settings.LastListTaskId = LastListTaskId;
@@ -87,7 +110,6 @@ namespace ProjectK.Notebook.WinApp
                 Logger.LogError(ex);
             }
         }
-
         public CommandBindingCollection CreateCommandBindings()
         {
             var commandBindings = new CommandBindingCollection
@@ -97,7 +119,6 @@ namespace ProjectK.Notebook.WinApp
             };
             return commandBindings;
         }
-
         public async Task SaveAppSettings(string directory)
         {
             var path = Path.Combine(directory, "appsettings.json");
@@ -107,7 +128,6 @@ namespace ProjectK.Notebook.WinApp
             };
             await FileHelper.SaveToFileAsync(path, root);
         }
-
         public void OpenDatabase()
         {
             var key = "AlanDatabase";
@@ -116,7 +136,6 @@ namespace ProjectK.Notebook.WinApp
             OpenDatabase(connectionString);
             SetTitle(key);
         }
-
         public async Task OpenFileAsync()
         {
             try
@@ -136,14 +155,6 @@ namespace ProjectK.Notebook.WinApp
         }
 
 
-        #region Private Functions
-
-        public void InitOutput(OutputViewModel output)
-        {
-            Output = output;
-            Output.UpdateFilter = () =>
-                CollectionViewSource.GetDefaultView(Output.Records).Filter = o => Output.Filter(o);
-        }
 
         #endregion
     }

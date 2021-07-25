@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
@@ -25,6 +15,16 @@ using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
 using ProjectK.ViewModels;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -45,6 +45,7 @@ namespace ProjectK.Notebook.ViewModels
 
         public void SelectTreeTask2(NodeViewModel node)
         {
+            Logger.LogDebug($"SelectTreeTask2({node.Name})");
             node.TypeList = TypeList;
             node.ContextList = ContextList;
             node.TitleList = TaskTitleList;
@@ -52,7 +53,6 @@ namespace ProjectK.Notebook.ViewModels
             if (notebook != null)
             {
                 SetSelectedNode(node);
-                Logger.LogDebug($"SelectedNotebook selected | {notebook.Name}");
             }
 
             SelectTreeTask(node);
@@ -246,7 +246,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #region Fields
 
-        private readonly Storage _db = new();
+        private readonly Storage _storage = new();
         private ReportTypes _reportType = ReportTypes.Notes;
         private string _excelCsvText;
         private string _textReport;
@@ -276,14 +276,7 @@ namespace ProjectK.Notebook.ViewModels
         public string Title
         {
             get => _title;
-            set
-            {
-                if (_title == null)
-                    return;
-
-                _title = value;
-                RaisePropertyChanged();
-            }
+            set => Set(ref _title, value);
         }
 
         public string TextReport
@@ -341,6 +334,7 @@ namespace ProjectK.Notebook.ViewModels
         public ICommand OpenDatabaseCommand { get; }
         public ICommand SyncDatabaseCommand { get; }
         public ICommand AddNotebookCommand { get; }
+        public ICommand CommandCopyExcelCsvText { get; }
 
         #endregion
 
@@ -373,6 +367,7 @@ namespace ProjectK.Notebook.ViewModels
             ExportSelectedAllAsJsonCommand = new RelayCommand(async () => await ExportSelectedAllAsJson());
             SyncDatabaseCommand = new RelayCommand(async () => await SyncDatabaseAsync());
             AddNotebookCommand = new RelayCommand(async () => await AddNotebookAsync());
+            CommandCopyExcelCsvText = new RelayCommand(CopyExcelCsvText);
 
             // Add Context 
             ContextList.AddRange(ModelRules.GlobalContextList);
@@ -420,17 +415,17 @@ namespace ProjectK.Notebook.ViewModels
 
         public async Task SyncDatabaseAsync()
         {
-            await _db.SaveChangesAsync();
+            await _storage.SaveChangesAsync();
             RootNode.ResetParentChildModified();
             RootNode.ResetModified();
         }
 
         public void OpenDatabase(string connectionString)
         {
-            _db.OpenDatabase(connectionString);
+            _storage.OpenDatabase(connectionString);
 
             // bind to the source
-            var notebookModels = _db.GetNotebooks();
+            var notebookModels = _storage.GetNotebooks();
 
             var models = new List<INode>();
             foreach (var model in notebookModels)
@@ -442,7 +437,7 @@ namespace ProjectK.Notebook.ViewModels
                 models.AddRange(nodes);
             }
 
-            // ModelToViewModel Data
+            // ModelToViewModel Sample
             UpdateTypeListAsync(models);
         }
 
@@ -468,14 +463,14 @@ namespace ProjectK.Notebook.ViewModels
         public async Task CloseDatabaseAsync()
         {
             await SyncDatabaseAsync();
-            await _db.SaveChangesAsync();
-            await _db.CloseConnection();
+            await _storage.SaveChangesAsync();
+            await _storage.CloseConnection();
         }
 
         private async Task AddNotebookAsync()
         {
             Logger.LogDebug("AddNotebook");
-            var notebookNames = _db.GetNotebooks().Select(notebook => notebook.Name).ToList();
+            var notebookNames = _storage.GetNotebooks().Select(notebook => notebook.Name).ToList();
             var notebookName = StringHelper.GetUniqueName("Notebook", notebookNames);
 
             // Create Notebook
@@ -496,9 +491,9 @@ namespace ProjectK.Notebook.ViewModels
             try
             {
                 Logger.LogDebug($"OpenFileAsync | {Path.GetDirectoryName(path)} | {Path.GetFileName(path)} ");
-                var notebook = new NotebookModel {Name = path};
+                var notebook = new NotebookModel { Name = path };
                 var tasks = await ImportHelper.ReadFromFileVersionTwo(path);
-                await _db.ImportData(notebook, tasks);
+                await _storage.ImportData(notebook, tasks);
                 await ImportNotebook(notebook);
             }
             catch (Exception e)
@@ -513,7 +508,7 @@ namespace ProjectK.Notebook.ViewModels
             Logger.LogDebug($"Import NotebookModel: {notebookModel.Name}");
 
             // Add NotebookModel
-            await _db.Add(notebookModel);
+            await _storage.Add(notebookModel);
             // this will create Primary Key for notebook
             var (notebook, nodes) = AddNotebook(notebookModel);
             if (notebook != null)
@@ -857,36 +852,19 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private void DeleteNode(NodeViewModel node, IActionService service)
+        private async Task DeleteNode(NodeViewModel node, IActionService service)
         {
             node.DeleteNode(service);
 
             if (node.Context == "Notebook")
             {
-#if AK
-                var notebook = Notebooks.First(n => n.Id == node.Id);
-                if (notebook == null)
-                    return;
-
-                Notebooks.Remove(notebook);
-
-                // Selected Notebook
-                if (Notebooks.Count == 0)
-                {
-                    SelectedNotebook = null;
-                }
-                else
-                {
-                    if (notebook.Main.Id == SelectedNotebook.Main.Id) SelectedNotebook = Notebooks.FirstOrDefault();
-                }
-
-                _db.Remove(notebook.Main as NotebookModel);
-#endif
+                _storage.DeleteNotebook(node.Id);
+                var notebook = await _storage.FirstOrDefaultNotebook();
             }
             else
             {
                 var models = node.GetModels();
-                _db.RemoveRange(models);
+                _storage.RemoveRange(models);
             }
         }
 
@@ -935,10 +913,10 @@ namespace ProjectK.Notebook.ViewModels
 
             var model = parentNode.CreateModel(notebookId);
             var node = parentNode.CreateNode(model);
-            _db.AddModel(model);
+            _storage.AddModel(model);
             try
             {
-                await _db.SaveChangesAsync();
+                await _storage.SaveChangesAsync();
             }
             catch (Exception e)
             {

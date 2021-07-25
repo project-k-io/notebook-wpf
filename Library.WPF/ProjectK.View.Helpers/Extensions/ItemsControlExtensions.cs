@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using ProjectK.Logging;
+using System;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
 
 namespace ProjectK.View.Helpers.Extensions
 {
@@ -21,7 +21,7 @@ namespace ProjectK.View.Helpers.Extensions
                     currentContainer.IsExpanded = true;
                     if (currentContainer.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
                     {
-                        var eh = (EventHandler) null;
+                        var eh = (EventHandler)null;
                         eh = (param0, param1) =>
                         {
                             if (currentContainer.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
@@ -60,7 +60,7 @@ namespace ProjectK.View.Helpers.Extensions
                 currentContainer.IsExpanded = true;
                 if (currentContainer.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
                 {
-                    var eh = (EventHandler) null;
+                    var eh = (EventHandler)null;
                     eh = (param0, param1) =>
                     {
                         if (currentContainer.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)

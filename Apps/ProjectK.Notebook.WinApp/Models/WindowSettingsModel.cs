@@ -1,9 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 using System.Windows;
 
-namespace ProjectK.Notebook.WinApp.Settings
+namespace ProjectK.Notebook.WinApp.Models
 {
-    public class WindowSettings
+    public class WindowSettingsModel
     {
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public WindowState WindowState { get; set; }

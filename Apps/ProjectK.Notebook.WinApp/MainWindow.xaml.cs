@@ -1,12 +1,17 @@
-﻿using System.Windows;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ProjectK.Logging;
-using ProjectK.Notebook.WinApp.Settings;
+using ProjectK.Notebook.ViewModels;
+using ProjectK.Notebook.WinApp.Models;
+using ProjectK.Notebook.WinApp.ViewModels;
+using ProjectK.View.Helpers.Extensions;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Ribbon;
 
 namespace ProjectK.Notebook.WinApp
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : RibbonWindow
     {
         private readonly ILogger _logger = LogManager.GetLogger<MainWindow>();
         private readonly AppSettings _settings;
@@ -22,12 +27,24 @@ namespace ProjectK.Notebook.WinApp
         {
             _logger.LogDebug("Loaded()");
             if (!(DataContext is AppViewModel model)) return;
+
+            model.OnDispatcher = this.GetAddDelegate();
             CommandBindings.AddRange(model.CreateCommandBindings());
+        }
+
+
+
+        private void Calendar_OnSelectedDatesChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(DataContext is MainViewModel model)) return;
+            if (!(sender is Calendar calendar)) return;
+            model.UpdateSelectDayTasks(calendar.SelectedDates);
+            model.OnGenerateReportChanged();
         }
 
         public void LoadSettings()
         {
-            var settings = _settings.Window;
+            var settings = _settings.Layout.Window;
             settings.SizeToFit();
             settings.MoveIntoView();
 
@@ -40,7 +57,7 @@ namespace ProjectK.Notebook.WinApp
 
         public void SaveSettings()
         {
-            var settings = _settings.Window;
+            var settings = _settings.Layout.Window;
 
             if (WindowState != WindowState.Minimized)
             {

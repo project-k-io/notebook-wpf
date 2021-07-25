@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Utils;
+using System;
+using System.Text;
 
 namespace ProjectK.Notebook.ViewModels.Reports
 {
@@ -14,7 +14,6 @@ namespace ProjectK.Notebook.ViewModels.Reports
 
         public string GenerateReport(ItemViewModel item)
         {
-            Logger.LogDebug("GenerateReport()");
             try
             {
                 var sb = new StringBuilder();

@@ -1,15 +1,16 @@
-﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
-using ProjectK.Notebook.WinApp.Settings;
+using ProjectK.Notebook.WinApp.Models;
+using ProjectK.Notebook.WinApp.ViewModels;
 using ProjectK.ViewModels;
+using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace ProjectK.Notebook.WinApp
 {
@@ -25,7 +26,7 @@ namespace ProjectK.Notebook.WinApp
         public App()
         {
             _host = Host.CreateDefaultBuilder() // Use default settings
-                //new HostBuilder()          // Initialize an empty HostBuilder
+                                                //new HostBuilder()          // Initialize an empty HostBuilder
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     _basePath = Environment.CurrentDirectory;
@@ -81,9 +82,6 @@ namespace ProjectK.Notebook.WinApp
             _viewModel.InitOutput(_output);
             _viewModel.LoadSettings();
 
-            // Open Database
-            _viewModel.OpenDatabase();
-
             // Set MainWindow DataContext
             _window.DataContext = _viewModel;
 
@@ -92,8 +90,10 @@ namespace ProjectK.Notebook.WinApp
 
             // Show 
             _window.Show();
+            _viewModel.OpenDatabase();
             base.OnStartup(e);
         }
+
 
         private async Task WindowOnClosing(object sender, CancelEventArgs e)
         {
@@ -112,11 +112,18 @@ namespace ProjectK.Notebook.WinApp
 
         private async Task SaveSettingsAsync()
         {
-            _window.SaveSettings();
-            _viewModel.SaveSettings();
+            try
+            {
+                _window.SaveSettings();
+                _viewModel.SaveSettings();
 
-            await _viewModel.CloseDatabaseAsync();
-            await _viewModel.SaveAppSettings(_basePath);
+                await _viewModel.CloseDatabaseAsync();
+                await _viewModel.SaveAppSettings(_basePath);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+            }
         }
     }
 }

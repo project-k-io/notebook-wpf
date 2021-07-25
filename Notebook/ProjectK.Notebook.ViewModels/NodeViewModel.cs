@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
@@ -14,6 +11,11 @@ using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Utils;
 using ProjectK.Utils.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Input;
 using TaskModel = ProjectK.Notebook.Models.Versions.Version1.TaskModel;
 
 namespace ProjectK.Notebook.ViewModels
@@ -47,107 +49,7 @@ namespace ProjectK.Notebook.ViewModels
 
         #endregion
 
-        public void DeleteNode(IActionService service)
-        {
-            Logger.LogDebug($"Delete Node : {Name}");
-            var item = this;
-            if (service.DeleteMessageBox())
-                return;
-
-            var parent = item.Parent;
-            if (parent == null)
-                return;
-
-            var num1 = parent.Nodes.IndexOf(item);
-            service.Dispatcher(() => parent.Remove(item));
-
-            var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
-            if (parentNode == null)
-                return;
-
-            service.SelectItem(parentNode);
-            service.Handled();
-        }
-
-        public void FixTitles()
-        {
-            foreach (var node in Nodes)
-            {
-                var title = this.GetSubNodeTitle(node.Model);
-                if (!string.IsNullOrEmpty(title))
-                    node.Name = title;
-
-                node.FixTitles();
-            }
-        }
-
-        public NodeViewModel CreateNode(INode model)
-        {
-            var node = new NodeViewModel(model);
-            Add(node);
-            return node;
-        }
-
-        public void FixTypes()
-        {
-            Model.FixTypes(Name);
-            foreach (var node in Nodes)
-                node.FixTypes();
-        }
-
-        public void LoadFrom(TaskModel model)
-        {
-            IsSelected = model.IsSelected;
-            IsExpanded = model.IsExpanded;
-            Description = model.Description;
-            if (Model is Models.TaskModel task)
-            {
-                task.Type = model.Type;
-                task.DateStarted = model.DateStarted;
-                task.DateEnded = model.DateEnded;
-            }
-
-            Name = model.Title;
-
-            if (model.SubTasks.IsNullOrEmpty())
-                return;
-
-            foreach (var subTask in model.SubTasks)
-            {
-                var node = new NodeViewModel();
-                node.Model = new Models.TaskModel();
-                node.LoadFrom(subTask);
-                Nodes.Add(node);
-            }
-        }
-
         #region Properties
-
-        // Main 
-
-        public NodeViewModel()
-        {
-            Kind = "Node";
-        }
-
-        public NodeViewModel(INode model) : this()
-        {
-            Model = model;
-        }
-
-
-        public void ViewModelToModel(INode model)
-        {
-            model.Id = Id;
-            model.ParentId = ParentId;
-            model.Name = Name;
-            model.Created = Created;
-            model.Context = Context;
-        }
-
-
-        // Main Wrapper
-
 
         public NodeViewModel Parent { get; set; }
         public ObservableCollection<string> TypeList { get; set; }
@@ -160,13 +62,35 @@ namespace ProjectK.Notebook.ViewModels
             set => Set(ref _isExpanded, value);
         }
 
-
         public NodeViewModel LastSubNode => Nodes.LastOrDefault();
         // ToDo: Improve allocation, maybe allocate only when you needed?
 
         #endregion
 
+        #region Commands
+        public ICommand CommandSetCreatedTime { get; }
+
+        #endregion
+
         #region Constructors
+
+        public NodeViewModel()
+        {
+            Kind = "Node";
+            CommandSetCreatedTime = new RelayCommand(SetCreatedTime);
+        }
+
+        private void SetCreatedTime()
+        {
+            Created = DateTime.Now;
+        }
+
+        public NodeViewModel(INode model) : this()
+        {
+            Model = model;
+        }
+
+
 
         #endregion
 
@@ -192,6 +116,15 @@ namespace ProjectK.Notebook.ViewModels
         #endregion
 
         #region Public functions
+
+        public void ViewModelToModel(INode model)
+        {
+            model.Id = Id;
+            model.ParentId = ParentId;
+            model.Name = Name;
+            model.Created = Created;
+            model.Context = Context;
+        }
 
         public void SaveTo(List<INode> list)
         {
@@ -319,6 +252,81 @@ namespace ProjectK.Notebook.ViewModels
             models.Add(Model);
             return models;
         }
+
+        public void DeleteNode(IActionService service)
+        {
+            Logger.LogDebug($"Delete Node : {Name}");
+            var item = this;
+            if (service.DeleteMessageBox())
+                return;
+
+            var parent = item.Parent;
+            if (parent == null)
+                return;
+
+            var num1 = parent.Nodes.IndexOf(item);
+            service.Dispatcher(() => parent.Remove(item));
+
+            var parentNode = num1 > 0 ? parent.Nodes[num1 - 1] : parent;
+            if (parentNode == null)
+                return;
+
+            service.SelectItem(parentNode);
+            service.Handled();
+        }
+
+        public void FixTitles()
+        {
+            foreach (var node in Nodes)
+            {
+                var title = this.GetSubNodeTitle(node.Model);
+                if (!string.IsNullOrEmpty(title))
+                    node.Name = title;
+
+                node.FixTitles();
+            }
+        }
+
+        public NodeViewModel CreateNode(INode model)
+        {
+            var node = new NodeViewModel(model);
+            Add(node);
+            return node;
+        }
+
+        public void FixTypes()
+        {
+            Model.FixTypes(Name);
+            foreach (var node in Nodes)
+                node.FixTypes();
+        }
+
+        public void LoadFrom(TaskModel model)
+        {
+            IsSelected = model.IsSelected;
+            IsExpanded = model.IsExpanded;
+            Description = model.Description;
+            if (Model is Models.TaskModel task)
+            {
+                task.Type = model.Type;
+                task.DateStarted = model.DateStarted;
+                task.DateEnded = model.DateEnded;
+            }
+
+            Name = model.Title;
+
+            if (model.SubTasks.IsNullOrEmpty())
+                return;
+
+            foreach (var subTask in model.SubTasks)
+            {
+                var node = new NodeViewModel();
+                node.Model = new Models.TaskModel();
+                node.LoadFrom(subTask);
+                Nodes.Add(node);
+            }
+        }
+
 
         #endregion
     }

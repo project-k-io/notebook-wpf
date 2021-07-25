@@ -1,9 +1,9 @@
-﻿using System;
+﻿using ProjectK.Notebook.Models.Extensions;
+using ProjectK.Notebook.Models.Interfaces;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Serialization;
-using ProjectK.Notebook.Models.Extensions;
-using ProjectK.Notebook.Models.Interfaces;
 
 namespace ProjectK.Notebook.Models
 {
@@ -46,7 +46,7 @@ namespace ProjectK.Notebook.Models
 
         public bool IsSame(TaskModel b)
         {
-            return ((ITask) this).IsSame(b);
+            return ((ITask)this).IsSame(b);
         }
 
         public void Init(Versions.Version2.TaskModel task2)
@@ -66,6 +66,11 @@ namespace ProjectK.Notebook.Models
         public override string ToString()
         {
             return this.Text();
+        }
+
+        public TaskModel Copy()
+        {
+            throw new NotImplementedException();
         }
     }
 }

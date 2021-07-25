@@ -13,7 +13,6 @@
     d:DesignWidth="450"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <design:Designer x:Key="Model" />
         <converters:LevelToIndentConverter x:Key="LevelIndentConverter" />
         <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Focusable" Value="false" />
@@ -107,29 +106,25 @@
                     </DataTemplate>
                 </GridViewColumn.CellTemplate>
             </GridViewColumn>
-            <GridViewColumn
-                Width="60"
-                DisplayMemberBinding="{Binding DateStarted}"
-                Header="Day" />
-            <GridViewColumn Width="70" Header="Start">
+            <GridViewColumn Width="70" Header="Day">
                 <GridViewColumn.CellTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding DateStarted, StringFormat=t}" TextAlignment="Right" />
+                    <DataTemplate DataType="viewModels:NodeViewModel">
+                        <TextBlock Text="{Binding Created, StringFormat=d}" TextAlignment="Right" />
                     </DataTemplate>
                 </GridViewColumn.CellTemplate>
             </GridViewColumn>
-            <GridViewColumn Width="70" Header="End">
+            <GridViewColumn Width="70" Header="Time">
                 <GridViewColumn.CellTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding DateEnded, StringFormat=t}" TextAlignment="Right" />
+                    <DataTemplate DataType="viewModels:NodeViewModel">
+                        <TextBlock Text="{Binding Created, StringFormat=t}" TextAlignment="Right" />
                     </DataTemplate>
                 </GridViewColumn.CellTemplate>
             </GridViewColumn>
         </GridViewColumnCollection>
         <Style x:Key="TreeListViewItemStyle" TargetType="{x:Type treeViewList:TreeListViewItem}">
-            <Setter Property="TreeViewItem.IsSelected" Value="{Binding Path=IsSelected}" />
-            <Setter Property="TreeViewItem.IsExpanded" Value="{Binding Path=IsExpanded}" />
-            <Setter Property="Control.Template">
+            <Setter Property="IsSelected" Value="{Binding Path=IsSelected}" />
+            <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded}" />
+            <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type treeViewList:TreeListViewItem}">
                         <StackPanel>
@@ -139,7 +134,6 @@
                                 Background="{TemplateBinding Control.Background}"
                                 BorderBrush="{TemplateBinding Control.BorderBrush}"
                                 BorderThickness="{TemplateBinding Control.BorderThickness}">
-
                                 <GridViewRowPresenter
                                     x:Name="PART_Header"
                                     Columns="{StaticResource Columns}"
@@ -200,23 +194,23 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Grid d:DataContext="{StaticResource Model}">
+    <Grid d:DataContext="{x:Static design:Sample.MainViewModel}">
         <FrameworkElement.Resources>
             <HierarchicalDataTemplate
-                x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
-                DataType="{x:Type viewModels:NodeViewModel}"
-                ItemsSource="{Binding Path=Nodes}" />
+                    x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
+                    DataType="{x:Type viewModels:NodeViewModel}"
+                    ItemsSource="{Binding Path=Nodes}" />
         </FrameworkElement.Resources>
         <ScrollViewer
-            FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
-            HorizontalScrollBarVisibility="Auto"
-            VerticalScrollBarVisibility="Auto">
+                FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto" Grid.RowSpan="2">
             <treeViewList:TreeListView
-                x:Name="TreeViewTasks"
-                ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
-                ItemsSource="{Binding Path=RootNode.Nodes}"
-                SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
-                Style="{StaticResource TreeListViewStyle}" />
+                    x:Name="TreeViewTasks"
+                    ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
+                    ItemsSource="{Binding Path=RootNode.Nodes}"
+                    SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
+                    Style="{StaticResource TreeListViewStyle}" />
         </ScrollViewer>
     </Grid>
 </UserControl>
