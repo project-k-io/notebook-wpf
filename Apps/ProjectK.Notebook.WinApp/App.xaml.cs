@@ -112,11 +112,18 @@ namespace ProjectK.Notebook.WinApp
 
         private async Task SaveSettingsAsync()
         {
-            _window.SaveSettings();
-            _viewModel.SaveSettings();
+            try
+            {
+                _window.SaveSettings();
+                _viewModel.SaveSettings();
 
-            await _viewModel.CloseDatabaseAsync();
-            await _viewModel.SaveAppSettings(_basePath);
+                await _viewModel.CloseDatabaseAsync();
+                await _viewModel.SaveAppSettings(_basePath);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e);
+            }
         }
     }
 }
