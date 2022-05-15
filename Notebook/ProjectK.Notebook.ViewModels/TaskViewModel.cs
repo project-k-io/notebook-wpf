@@ -1,13 +1,15 @@
-﻿using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
 using System;
+using System.ComponentModel;
 using System.Windows.Input;
+using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.Toolkit.Mvvm.Messaging.Messages;
 
 namespace ProjectK.Notebook.ViewModels
 {
@@ -38,13 +40,27 @@ namespace ProjectK.Notebook.ViewModels
         public string Type
         {
             get => Task.Type;
-            set => this.Set(Type, v => Task.Type = v, value);
+            set
+            {
+                if(Task.Type == value)
+                    return;
+
+                Task.Type = value;
+                OnPropertyChanged();
+            }
         }
 
         public string SubType
         {
             get => Task.SubType;
-            set => this.Set(SubType, v => Task.SubType = v, value);
+            set
+            {
+                if (Task.SubType == value)
+                    return;
+
+                Task.SubType = value;
+                OnPropertyChanged();
+            }
         }
 
         public DateTime DateStarted
@@ -52,9 +68,14 @@ namespace ProjectK.Notebook.ViewModels
             get => Task.DateStarted;
             set
             {
-                if (!this.Set(DateStarted, v => Task.DateStarted = v, value)) return;
-                RaisePropertyChanged(nameof(TimeStarted));
-                RaisePropertyChanged(nameof(Duration));
+                if (Task.DateStarted == value)
+                    return;
+
+                Task.DateStarted = value;
+
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TimeStarted));
+                OnPropertyChanged(nameof(Duration));
             }
         }
 
@@ -63,9 +84,13 @@ namespace ProjectK.Notebook.ViewModels
             get => Task.DateEnded;
             set
             {
-                if (!this.Set(DateEnded, v => Task.DateEnded = v, value)) return;
-                RaisePropertyChanged(nameof(TimeEnded));
-                RaisePropertyChanged(nameof(Duration));
+                if (Task.DateEnded == value)
+                    return;
+
+                Task.DateEnded = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TimeEnded));
+                OnPropertyChanged(nameof(Duration));
             }
         }
 
@@ -78,9 +103,9 @@ namespace ProjectK.Notebook.ViewModels
                 var d = DateEnded;
                 var t = value;
                 DateStarted = new DateTime(d.Year, d.Month, d.Day, t.Hour, t.Minute, t.Second, t.Millisecond);
-                RaisePropertyChanged(); // MC
-                RaisePropertyChanged(nameof(DateStarted));
-                RaisePropertyChanged(nameof(Duration));
+                OnPropertyChanged(); // MC
+                OnPropertyChanged(nameof(DateStarted));
+                OnPropertyChanged(nameof(Duration));
             }
         }
 
@@ -92,9 +117,9 @@ namespace ProjectK.Notebook.ViewModels
                 var d = DateEnded;
                 var t = value;
                 DateEnded = new DateTime(d.Year, d.Month, d.Day, t.Hour, t.Minute, t.Second, t.Millisecond);
-                RaisePropertyChanged(); //MC
-                RaisePropertyChanged(nameof(DateEnded));
-                RaisePropertyChanged(nameof(Duration));
+                OnPropertyChanged(); //MC
+                OnPropertyChanged(nameof(DateEnded));
+                OnPropertyChanged(nameof(Duration));
             }
         }
 
@@ -109,17 +134,15 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-
-        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default, T newValue = default, bool broadcast = false)
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
-
-            if (!ModelRules.IsTaskModelProperty(propertyName))
+            base.OnPropertyChanged(e);
+            if (!ModelRules.IsTaskModelProperty(e.PropertyName))
                 return;
 
-            Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+            Logger?.LogDebug($@"[Node] PropertyChanged: {e.PropertyName}");
             Modified = ModifiedStatus.Modified;
-            MessengerInstance.Send(new NotificationMessage<TaskViewModel>(this, "Modified"));
+            WeakReferenceMessenger.Default.Send(new ValueChangedMessage<TaskViewModel>(this));
         }
 
         #region Properties
@@ -145,7 +168,7 @@ namespace ProjectK.Notebook.ViewModels
         public TimeSpan Total
         {
             get => _total;
-            set => Set(ref _total, value);
+            set => SetProperty(ref _total, value);
         }
 
         #endregion

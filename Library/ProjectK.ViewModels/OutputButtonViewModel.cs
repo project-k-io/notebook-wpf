@@ -1,11 +1,11 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using System;
+﻿using System;
 using System.Windows.Input;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace ProjectK.ViewModels
 {
-    public class OutputButtonViewModel : ViewModelBase
+    public class OutputButtonViewModel : ObservableObject
     {
         private int _count;
         private bool _isChecked = true;
@@ -13,14 +13,14 @@ namespace ProjectK.ViewModels
         public bool IsChecked
         {
             get => _isChecked;
-            set => Set(ref _isChecked, value);
+            set => SetProperty(ref _isChecked, value);
         }
 
 
         public int Count
         {
             get => _count;
-            set => Set(ref _count, value);
+            set => SetProperty(ref _count, value);
         }
 
         public string Label { get; set; }

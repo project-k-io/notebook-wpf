@@ -1,12 +1,12 @@
-﻿using GalaSoft.MvvmLight;
-using ProjectK.Notebook.Models.Interfaces;
+﻿using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
 using System;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class ItemViewModel : ViewModelBase
+    public class ItemViewModel : ObservableObject
     {
         private bool _isSelected;
         private string _kind;
@@ -15,7 +15,7 @@ namespace ProjectK.Notebook.ViewModels
         public string Kind
         {
             get => _kind;
-            set => Set(ref _kind, value);
+            set => SetProperty(ref _kind, value);
         }
 
         public INode Model { get; set; }
@@ -23,49 +23,91 @@ namespace ProjectK.Notebook.ViewModels
         public string Description
         {
             get => Model.Description;
-            set => this.Set(Description, v => Model.Description = v, value);
+            set
+            {
+                if (Model.Description == value)
+                    return;
+
+                Model.Description = value;
+                OnPropertyChanged();
+            }
         }
 
         public Guid Id
         {
             get => Model.Id;
-            set => this.Set(Id, v => Model.Id = v, value);
+            set
+            {
+                if (Model.Id == value)
+                    return;
+
+                Model.Id = value;
+                OnPropertyChanged();
+            }
         }
 
         public Guid ParentId
         {
             get => Model.ParentId;
-            set => this.Set(ParentId, v => Model.ParentId = v, value);
+            set
+            {
+                if (Model.ParentId == value)
+                    return;
+
+                Model.ParentId = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Name
         {
             get => Model.Name;
-            set => this.Set(Name, v => Model.Name = v, value);
+            set
+            {
+                if (Model.Name == value)
+                    return;
+
+                Model.Name = value;
+                OnPropertyChanged();
+            }
         }
 
         public DateTime Created
         {
             get => Model.Created;
-            set => this.Set(Created, v => Model.Created = v, value);
+            set
+            {
+                if (Model.Created == value)
+                    return;
+
+                Model.Created = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Context
         {
             get => Model.Context;
-            set => this.Set(Context, v => Model.Context = v, value);
+            set
+            {
+                if (Model.Context == value)
+                    return;
+
+                Model.Context = value;
+                OnPropertyChanged();
+            }
         }
 
         public ModifiedStatus Modified
         {
             get => _modified;
-            set => Set(ref _modified, value);
+            set => SetProperty(ref _modified, value);
         }
 
         public bool IsSelected
         {
             get => _isSelected;
-            set => Set(ref _isSelected, value);
+            set => SetProperty(ref _isSelected, value);
         }
     }
 }

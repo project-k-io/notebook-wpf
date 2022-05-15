@@ -1,6 +1,4 @@
-﻿using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Extensions;
@@ -14,8 +12,12 @@ using ProjectK.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.Toolkit.Mvvm.Messaging.Messages;
 using TaskModel = ProjectK.Notebook.Models.Versions.Version1.TaskModel;
 
 namespace ProjectK.Notebook.ViewModels
@@ -59,7 +61,7 @@ namespace ProjectK.Notebook.ViewModels
         public bool IsExpanded
         {
             get => _isExpanded;
-            set => Set(ref _isExpanded, value);
+            set => SetProperty(ref _isExpanded, value);
         }
 
         public NodeViewModel LastSubNode => Nodes.LastOrDefault();
@@ -101,16 +103,16 @@ namespace ProjectK.Notebook.ViewModels
             return $"{Context}:{Name}";
         }
 
-        public override void RaisePropertyChanged<T>(string propertyName = null, T oldValue = default,
-            T newValue = default, bool broadcast = false)
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            base.RaisePropertyChanged(propertyName, oldValue, newValue, broadcast);
-            if (!ModelRules.IsNodeModelProperty(propertyName)) return;
+            base.OnPropertyChanged(e);
+            if (!ModelRules.IsNodeModelProperty(e.PropertyName)) 
+                return;
 
-            Logger?.LogDebug($@"[Node] PropertyChanged: {propertyName} | {oldValue} | {newValue}");
+            Logger?.LogDebug($@"[Node] PropertyChanged: {e.PropertyName}");
             Modified = ModifiedStatus.Modified;
             SetParentChildModified();
-            MessengerInstance.Send(new NotificationMessage<INode>(Model, "Modified"));
+            WeakReferenceMessenger.Default.Send(new ValueChangedMessage<INode>(Model));
         }
 
         #endregion

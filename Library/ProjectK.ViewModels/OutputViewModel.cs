@@ -1,14 +1,14 @@
-﻿using GalaSoft.MvvmLight;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace ProjectK.ViewModels
 {
-    public class OutputViewModel : ViewModelBase
+    public class OutputViewModel : ObservableObject
     {
         public OutputViewModel()
         {

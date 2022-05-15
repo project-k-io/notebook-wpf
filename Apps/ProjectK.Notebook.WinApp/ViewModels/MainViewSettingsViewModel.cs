@@ -1,9 +1,9 @@
-﻿using GalaSoft.MvvmLight;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using ProjectK.Notebook.WinApp.Models;
 
 namespace ProjectK.Notebook.WinApp.ViewModels
 {
-    public class MainViewSettingsViewModel : ViewModelBase
+    public class MainViewSettingsViewModel : ObservableObject
     {
         private int _outputHeight = 400;
         private int _navigatorWidth = 200;
@@ -12,10 +12,10 @@ namespace ProjectK.Notebook.WinApp.ViewModels
         public int OutputHeight
         {
             get => _outputHeight;
-            set => Set(ref _outputHeight, value);
+            set => SetProperty(ref _outputHeight, value);
         }
-        public int NavigatorWidth { get => _navigatorWidth; set => Set(ref _navigatorWidth, value); }
-        public int PropertiesWidth { get => _propertiesWidth; set => Set(ref _propertiesWidth, value); }
+        public int NavigatorWidth { get => _navigatorWidth; set => SetProperty(ref _navigatorWidth, value); }
+        public int PropertiesWidth { get => _propertiesWidth; set => SetProperty(ref _propertiesWidth, value); }
 
         public MainViewSettingsModel Model
         {

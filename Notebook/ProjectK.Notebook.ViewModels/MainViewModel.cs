@@ -1,7 +1,4 @@
-﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Interfaces;
@@ -25,10 +22,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Messaging;
+using Microsoft.Toolkit.Mvvm.Messaging.Messages;
 
 namespace ProjectK.Notebook.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : ObservableObject
     {
         private Dictionary<Guid, TaskViewModel> Tasks { get; } = new();
 
@@ -69,7 +70,7 @@ namespace ProjectK.Notebook.ViewModels
             SelectedNodeList.AddToList(task);
             OnSelectedDaysChanged();
             SetSelectedNode(!SelectedNodeList.IsNullOrEmpty() ? SelectedNodeList[0] : task);
-            RaisePropertyChanged(nameof(SelectedNodeList));
+            OnPropertyChanged(nameof(SelectedNodeList));
         }
 
         public void FixTime()
@@ -268,7 +269,7 @@ namespace ProjectK.Notebook.ViewModels
         public ReportTypes ReportType
         {
             get => _reportType;
-            set => Set(ref _reportType, value);
+            set => SetProperty(ref _reportType, value);
         }
 
         public Assembly Assembly { get; set; }
@@ -276,13 +277,13 @@ namespace ProjectK.Notebook.ViewModels
         public string Title
         {
             get => _title;
-            set => Set(ref _title, value);
+            set => SetProperty(ref _title, value);
         }
 
         public string TextReport
         {
             get => _textReport;
-            set => Set(ref _textReport, value);
+            set => SetProperty(ref _textReport, value);
         }
 
         public Guid LastListTaskId { get; set; }
@@ -292,25 +293,25 @@ namespace ProjectK.Notebook.ViewModels
         public NodeViewModel SelectedTreeNode
         {
             get => _selectedTreeNode;
-            set => Set(ref _selectedTreeNode, value);
+            set => SetProperty(ref _selectedTreeNode, value);
         }
 
         public ItemViewModel SelectedNode
         {
             get => _selectedNode;
-            set => Set(ref _selectedNode, value);
+            set => SetProperty(ref _selectedNode, value);
         }
 
         public string ExcelCsvText
         {
             get => _excelCsvText;
-            set => Set(ref _excelCsvText, value);
+            set => SetProperty(ref _excelCsvText, value);
         }
 
         public bool UseTimeOptimization
         {
             get => _useTimeOptimization;
-            set => Set(ref _useTimeOptimization, value);
+            set => SetProperty(ref _useTimeOptimization, value);
         }
 
         public bool CanSave { get; set; }
@@ -371,16 +372,15 @@ namespace ProjectK.Notebook.ViewModels
 
             // Add Context 
             ContextList.AddRange(ModelRules.GlobalContextList);
-
-            MessengerInstance.Register<NotificationMessage<NodeViewModel>>(this, NotifyMe);
-            MessengerInstance.Register<NotificationMessage<TaskViewModel>>(this, NotifyMe);
+            WeakReferenceMessenger.Default.Register<ValueChangedMessage<NodeViewModel>>(this, (r,m)=>{});
+            WeakReferenceMessenger.Default.Register<ValueChangedMessage<TaskViewModel>>(this, NotifyMe);
         }
 
 
-        private void NotifyMe(NotificationMessage<NodeViewModel> notificationMessage)
+        private void NotifyMe(object recipient, ValueChangedMessage<NodeViewModel> message)
         {
-            var notification = notificationMessage.Notification;
-            var node = notificationMessage.Content;
+            var notification = recipient;
+            var node = message.Value;
             Logger.LogDebug($"Main={node.Name} {notification}");
             switch (notification)
             {
@@ -389,10 +389,10 @@ namespace ProjectK.Notebook.ViewModels
             }
         }
 
-        private void NotifyMe(NotificationMessage<TaskViewModel> notificationMessage)
+        private void NotifyMe(object recipient, ValueChangedMessage<TaskViewModel> message)
         {
-            var notification = notificationMessage.Notification;
-            var task = notificationMessage.Content;
+            var notification = recipient;
+            var task = message.Value;
             Logger.LogDebug($"Main={task.Name} {notification}");
             switch (notification)
             {
@@ -768,7 +768,7 @@ namespace ProjectK.Notebook.ViewModels
                     await AddNode(node, state, service);
                     break;
                 case KeyboardKeys.Delete:
-                    DeleteNode(node, service);
+                    await DeleteNode(node, service);
                     break;
 
                 case KeyboardKeys.Left:
