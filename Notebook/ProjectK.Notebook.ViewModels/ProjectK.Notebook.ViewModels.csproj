@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.Utils.csproj" />
+    <ProjectReference Include="..\..\Library\ProjectK.ViewModels\ProjectK.ViewModels.csproj" />
+    <ProjectReference Include="..\ProjectK.Notebook.Data\ProjectK.Notebook.Data.csproj" />
+    <ProjectReference Include="..\ProjectK.Notebook.Models\ProjectK.Notebook.Models.csproj" />
+  </ItemGroup>
+
+</Project>

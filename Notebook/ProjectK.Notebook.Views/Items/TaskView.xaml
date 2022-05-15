@@ -1,0 +1,136 @@
+<UserControl x:Class="ProjectK.Notebook.Views.Items.TaskView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:domain="clr-namespace:ProjectK.Notebook.Models;assembly=ProjectK.Notebook.Models"
+             mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="300">
+    <UserControl.Resources>
+        <domain:TaskModel
+            x:Key="Model"
+            Name="May"
+            Context="Month"
+            Description="Task Description"
+            Type="TaskModel"
+            SubType="Testing"
+            DateStarted="{x:Static system:DateTime.Now}"
+            DateEnded="{x:Static system:DateTime.Now}" />
+        <viewModels:TaskViewModel
+            x:Key="ViewModel"
+            Model="{StaticResource Model}" />
+    </UserControl.Resources>
+
+    <Grid d:DataContext="{StaticResource ViewModel}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0" />
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <!--Context-->
+            <Label Content="Context" Grid.Row="1" Grid.Column="1" />
+            <ComboBox Grid.Row="1" Grid.Column="3" IsEditable="true" IsReadOnly="true"
+                      ItemsSource="{Binding ContextList}"
+                      Text="{Binding Path=Context}" />
+            <!--Title-->
+            <Label Content="Title" Grid.Row="2" Grid.Column="1" />
+            <ComboBox Grid.Row="2" Grid.Column="3" IsEditable="true" ItemsSource="{Binding TitleList}"
+                      Text="{Binding Path=Name}" />
+            <!--Start-->
+            <Label Content="Start" Grid.Row="5" Grid.Column="1" />
+            <Grid Row="5" Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <DatePicker Grid.Column="0" Margin="0,2,2,2" SelectedDate="{Binding Path=DateStarted}" />
+                <TextBox Grid.Column="2" Margin="2" Text="{Binding Path=TimeStarted, StringFormat=t}" />
+                <Button Grid.Column="4" Margin="2" Width="40" Content="Now" Command="{Binding CommandSetStartedTime}" />
+            </Grid>
+            <!--End-->
+            <Label Content="End" Grid.Row="6" Grid.Column="1" />
+            <Grid Row="6" Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <DatePicker Grid.Column="0" Margin="0, 2, 2,2" SelectedDate="{Binding Path= DateEnded}" />
+                <TextBox Grid.Column="2" Margin="2" Text="{Binding Path=TimeEnded, StringFormat=t}" />
+                <Button Grid.Column="4" Margin="2" Width="40" Content="Now" Command="{Binding CommandSetEndedTime}" />
+            </Grid>
+            <!--Duration-->
+            <Label Content="Duration" Grid.Row="7" Grid.Column="1" />
+            <TextBox Grid.Row="7" Grid.Column="3" Text="{Binding Path=Duration, StringFormat={}{0:g}, Mode=OneWay}"
+                     IsReadOnly="True" />
+
+            <!--<TextBox Grid.Row="7" Grid.Column="3" IsReadOnly="True">
+                <TextBox.Text>
+                    <MultiBinding StringFormat="{}{0:D1} days {0:D1} hrs {1:D1} min" Mode="OneWay">
+                        <Binding Path="Duration.Days" />
+                        <Binding Path="Duration.Hours" />
+                        <Binding Path="Duration.Minutes" />
+                    </MultiBinding>
+                </TextBox.Text>
+            </TextBox>-->
+            <!--Type-->
+            <Label Content="Type" Grid.Row="8" Grid.Column="1" />
+            <ComboBox Grid.Row="8" Grid.Column="3" IsEditable="true"
+                      ItemsSource="{Binding TypeList}"
+                      Text="{Binding  Path=Type}" />
+            <!--SubType-->
+            <Label Content="SubType" Grid.Row="9" Grid.Column="1" />
+            <TextBox Grid.Row="9" Grid.Column="3"
+                     Text="{Binding Path=SubType}" />
+        </Grid>
+
+        <!--Description-->
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="5" />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Content="Description" />
+            <TextBox Grid.Row="1"
+                     MinHeight="60"
+                     Text="{Binding Path=Description}"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True"
+                     SpellCheck.IsEnabled="True"
+                     VerticalScrollBarVisibility="Auto" />
+        </Grid>
+    </Grid>
+</UserControl>

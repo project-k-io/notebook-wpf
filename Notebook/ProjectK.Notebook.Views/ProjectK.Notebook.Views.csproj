@@ -1,0 +1,82 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="icons8-no-synchronize-32.png" />
+	  <None Remove="Images\clear.png" />
+	  <None Remove="Images\CloudOK_16x.png" />
+	  <None Remove="Images\CloudRefresh_16x.png" />
+	  <None Remove="Images\icn_edit.png" />
+	  <None Remove="Images\icons8-cloud-sync-32.png" />
+	  <None Remove="Images\icons8-no-synchronize-32.png" />
+	  <None Remove="Images\icons8_available_updates_48px.png" />
+	  <None Remove="Images\icons8_checkmark_48px.png" />
+	  <None Remove="Images\icons8_cloud_checked_32px.png" />
+	  <None Remove="Images\icons8_cloud_sync_48px.png" />
+	  <None Remove="Images\icons8_documents_folder_48px.png" />
+	  <None Remove="Images\icons8_double_tick_48px.png" />
+	  <None Remove="Images\icons8_download_from_cloud_48px.png" />
+	  <None Remove="Images\icons8_expand_arrow_48px.png" />
+	  <None Remove="Images\icons8_expand_arrow_50px.png" />
+	  <None Remove="Images\icons8_external_32px.png" />
+	  <None Remove="Images\icons8_file_48px.png" />
+	  <None Remove="Images\icons8_folder_tree_48px.png" />
+	  <None Remove="Images\icons8_no_synchronize_32px_1.png" />
+	  <None Remove="Images\icons8_storm_32px.png" />
+	  <None Remove="Images\icons8_stream_32px.png" />
+	  <None Remove="Images\icons8_synchronize_24px.png" />
+	  <None Remove="Images\icons8_synchronize_48px.png" />
+	  <None Remove="Images\icons8_upload_48px.png" />
+	  <None Remove="Images\icons8_upload_document_32px.png" />
+	  <None Remove="Images\icons8_upload_to_the_cloud_32px.png" />
+	  <None Remove="Images\icons8_up_32px.png" />
+	  <None Remove="Images\largeicon.png" />
+	  <None Remove="Images\project.jpg" />
+	  <None Remove="Images\smallicon.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Library.WPF\ProjectK.View.Helpers\ProjectK.View.Helpers.csproj" />
+	  <ProjectReference Include="..\..\Library.WPF\ProjectK.Views\ProjectK.Views.csproj" />
+	  <ProjectReference Include="..\..\Notebook\ProjectK.Notebook.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Images\icons8-no-synchronize-32.png" />
+	  <Resource Include="Images\clear.png" />
+	  <Resource Include="Images\icn_edit.png" />
+	  <Resource Include="Images\icons8_available_updates_48px.png" />
+	  <Resource Include="Images\icons8_checkmark_48px.png" />
+	  <Resource Include="Images\icons8_cloud_checked_32px.png" />
+	  <Resource Include="Images\icons8_cloud_sync_48px.png" />
+	  <Resource Include="Images\icons8_documents_folder_48px.png" />
+	  <Resource Include="Images\icons8_double_tick_48px.png" />
+	  <Resource Include="Images\icons8_download_from_cloud_48px.png" />
+	  <Resource Include="Images\icons8_expand_arrow_48px.png" />
+	  <Resource Include="Images\icons8_expand_arrow_50px.png" />
+	  <Resource Include="Images\icons8_external_32px.png" />
+	  <Resource Include="Images\icons8_file_48px.png" />
+	  <Resource Include="Images\icons8_folder_tree_48px.png" />
+	  <Resource Include="Images\icons8_no_synchronize_32px_1.png" />
+	  <Resource Include="Images\icons8_storm_32px.png" />
+	  <Resource Include="Images\icons8_stream_32px.png" />
+	  <Resource Include="Images\icons8_synchronize_24px.png" />
+	  <Resource Include="Images\icons8_synchronize_48px.png" />
+	  <Resource Include="Images\icons8_upload_48px.png" />
+	  <Resource Include="Images\icons8_upload_document_32px.png" />
+	  <Resource Include="Images\icons8_upload_to_the_cloud_32px.png" />
+	  <Resource Include="Images\icons8_up_32px.png" />
+	  <Resource Include="Images\largeicon.png" />
+	  <Resource Include="Images\project.jpg" />
+	  <Resource Include="Images\smallicon.png" />
+	</ItemGroup>
+
+</Project>
