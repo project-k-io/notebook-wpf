@@ -1,7 +1,6 @@
-﻿namespace ProjectK.Notebook.WinApp.ViewModels
+﻿namespace ProjectK.Notebook.WinApp.ViewModels;
+
+public class LayoutSettingsViewModel
 {
-    public class LayoutSettingsViewModel
-    {
-        public MainViewSettingsViewModel Main { get; set; } = new();
-    }
+    public MainViewSettingsViewModel Main { get; set; } = new();
 }

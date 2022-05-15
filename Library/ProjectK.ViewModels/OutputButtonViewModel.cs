@@ -3,41 +3,40 @@ using System.Windows.Input;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
-namespace ProjectK.ViewModels
+namespace ProjectK.ViewModels;
+
+public class OutputButtonViewModel : ObservableObject
 {
-    public class OutputButtonViewModel : ObservableObject
+    private int _count;
+    private bool _isChecked = true;
+
+    public bool IsChecked
     {
-        private int _count;
-        private bool _isChecked = true;
-
-        public bool IsChecked
-        {
-            get => _isChecked;
-            set => SetProperty(ref _isChecked, value);
-        }
+        get => _isChecked;
+        set => SetProperty(ref _isChecked, value);
+    }
 
 
-        public int Count
-        {
-            get => _count;
-            set => SetProperty(ref _count, value);
-        }
+    public int Count
+    {
+        get => _count;
+        set => SetProperty(ref _count, value);
+    }
 
-        public string Label { get; set; }
+    public string Label { get; set; }
 
-        public bool IsCountVisible { get; set; } = true;
+    public bool IsCountVisible { get; set; } = true;
 
-        public ICommand ClickedCommand => new RelayCommand(OnClicked);
+    public ICommand ClickedCommand => new RelayCommand(OnClicked);
 
 
-        public string Image { get; set; }
+    public string Image { get; set; }
 
-        public event EventHandler Clicked;
+    public event EventHandler Clicked;
 
-        private void OnClicked()
-        {
-            var clicked = Clicked;
-            clicked?.Invoke(this, EventArgs.Empty);
-        }
+    private void OnClicked()
+    {
+        var clicked = Clicked;
+        clicked?.Invoke(this, EventArgs.Empty);
     }
 }

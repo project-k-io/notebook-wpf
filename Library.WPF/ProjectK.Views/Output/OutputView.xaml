@@ -12,9 +12,9 @@
 
     <UserControl.Resources>
         <viewModels:OutputViewModel x:Key="Model">
-            <viewModels:OutputViewModel.Records>
+            <vm:OutputViewModel.Records>
                 <vm:OutputRecordViewModel Id="1" Date="{x:Static system:DateTime.Now}" Duration="123456" />
-            </viewModels:OutputViewModel.Records>
+            </vm:OutputViewModel.Records>
         </viewModels:OutputViewModel>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
         <Style x:Key="ImageStyle">

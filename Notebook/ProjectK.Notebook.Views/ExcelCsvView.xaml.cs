@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace ProjectK.Notebook.Views
+namespace ProjectK.Notebook.Views;
+
+public partial class ExcelCsvView : UserControl
 {
-    public partial class ExcelCsvView : UserControl
+    public ExcelCsvView()
     {
-        public ExcelCsvView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

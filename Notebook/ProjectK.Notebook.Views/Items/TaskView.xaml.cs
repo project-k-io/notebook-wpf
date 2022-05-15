@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace ProjectK.Notebook.Views.Items
+namespace ProjectK.Notebook.Views.Items;
+
+public partial class TaskView : UserControl
 {
-    public partial class TaskView : UserControl
+    public TaskView()
     {
-        public TaskView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -1,76 +1,76 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <Authors>Alan Kharebov</Authors>
-    <Company>Project K</Company>
-    <Product>Notebook</Product>
-    <Description>To manage projects</Description>
-    <Copyright>Project K, Inc</Copyright>
-    <Version>1.5.5</Version>
-    <PackageId>ProjectK.Notebook</PackageId>
-    <PackageReleaseNotes>New Text Report</PackageReleaseNotes>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<Authors>Alan Kharebov</Authors>
+		<Company>Project K</Company>
+		<Product>Notebook</Product>
+		<Description>To manage projects</Description>
+		<Copyright>Project K, Inc</Copyright>
+		<Version>1.5.5</Version>
+		<PackageId>ProjectK.Notebook</PackageId>
+		<PackageReleaseNotes>New Text Report</PackageReleaseNotes>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Images\apple_time_machine_alt.png" />
-    <None Remove="Images\filegroup_10135_32x.png" />
-    <None Remove="Images\modify.png" />
-    <None Remove="Images\Ribbon\action_create_16xmd.png" />
-    <None Remove="Images\Ribbon\copy_6524.png" />
-    <None Remove="Images\Ribbon\download.png" />
-    <None Remove="Images\Ribbon\fixtime.png" />
-    <None Remove="Images\Ribbon\fixtitles.png" />
-    <None Remove="Images\Ribbon\fixtypes.png" />
-    <None Remove="Images\Ribbon\icons8_upload_to_cloud_48px.png" />
-    <None Remove="Images\Ribbon\new_document.png" />
-    <None Remove="Images\Ribbon\open16.png" />
-    <None Remove="Images\Ribbon\repair.png" />
-    <None Remove="Images\Ribbon\save16.png" />
-    <None Remove="Images\Ribbon\saveas16.png" />
-    <None Remove="NotebookSplashScreen.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Images\apple_time_machine_alt.png" />
+		<None Remove="Images\filegroup_10135_32x.png" />
+		<None Remove="Images\modify.png" />
+		<None Remove="Images\Ribbon\action_create_16xmd.png" />
+		<None Remove="Images\Ribbon\copy_6524.png" />
+		<None Remove="Images\Ribbon\download.png" />
+		<None Remove="Images\Ribbon\fixtime.png" />
+		<None Remove="Images\Ribbon\fixtitles.png" />
+		<None Remove="Images\Ribbon\fixtypes.png" />
+		<None Remove="Images\Ribbon\icons8_upload_to_cloud_48px.png" />
+		<None Remove="Images\Ribbon\new_document.png" />
+		<None Remove="Images\Ribbon\open16.png" />
+		<None Remove="Images\Ribbon\repair.png" />
+		<None Remove="Images\Ribbon\save16.png" />
+		<None Remove="Images\Ribbon\saveas16.png" />
+		<None Remove="NotebookSplashScreen.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.Utils.csproj" />
-    <ProjectReference Include="..\..\Notebook\ProjectK.Notebook.Views\ProjectK.Notebook.Views.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.Utils.csproj" />
+		<ProjectReference Include="..\..\Notebook\ProjectK.Notebook.Views\ProjectK.Notebook.Views.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="Images\apple_time_machine_alt.png" />
-    <Resource Include="Images\filegroup_10135_32x.png" />
-    <Resource Include="Images\Ribbon\action_create_16xmd.png" />
-    <Resource Include="Images\Ribbon\copy_6524.png" />
-    <Resource Include="Images\Ribbon\download.png" />
-    <Resource Include="Images\Ribbon\fixtime.png" />
-    <Resource Include="Images\Ribbon\fixtitles.png" />
-    <Resource Include="Images\Ribbon\fixtypes.png" />
-    <Resource Include="Images\Ribbon\icons8_upload_to_cloud_48px.png" />
-    <Resource Include="Images\Ribbon\modify.png" />
-    <Resource Include="Images\Ribbon\new_document.png" />
-    <Resource Include="Images\Ribbon\open16.png" />
-    <Resource Include="Images\Ribbon\repair.png" />
-    <Resource Include="Images\Ribbon\save16.png" />
-    <Resource Include="Images\Ribbon\saveas16.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<Resource Include="Images\apple_time_machine_alt.png" />
+		<Resource Include="Images\filegroup_10135_32x.png" />
+		<Resource Include="Images\Ribbon\action_create_16xmd.png" />
+		<Resource Include="Images\Ribbon\copy_6524.png" />
+		<Resource Include="Images\Ribbon\download.png" />
+		<Resource Include="Images\Ribbon\fixtime.png" />
+		<Resource Include="Images\Ribbon\fixtitles.png" />
+		<Resource Include="Images\Ribbon\fixtypes.png" />
+		<Resource Include="Images\Ribbon\icons8_upload_to_cloud_48px.png" />
+		<Resource Include="Images\Ribbon\modify.png" />
+		<Resource Include="Images\Ribbon\new_document.png" />
+		<Resource Include="Images\Ribbon\open16.png" />
+		<Resource Include="Images\Ribbon\repair.png" />
+		<Resource Include="Images\Ribbon\save16.png" />
+		<Resource Include="Images\Ribbon\saveas16.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <SplashScreen Include="NotebookSplashScreen.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<SplashScreen Include="NotebookSplashScreen.png" />
+	</ItemGroup>
 
 </Project>

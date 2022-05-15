@@ -1,13 +1,12 @@
-﻿namespace ProjectK.Notebook.ViewModels.Enums
+﻿namespace ProjectK.Notebook.ViewModels.Enums;
+
+public enum KeyboardKeys
 {
-    public enum KeyboardKeys
-    {
-        None,
-        Insert,
-        Delete,
-        Left,
-        Right,
-        Up,
-        Down
-    }
+    None,
+    Insert,
+    Delete,
+    Left,
+    Right,
+    Up,
+    Down
 }

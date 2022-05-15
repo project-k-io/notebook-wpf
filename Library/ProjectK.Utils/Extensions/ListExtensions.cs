@@ -1,57 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ProjectK.Utils.Extensions
+namespace ProjectK.Utils.Extensions;
+
+public static class ListExtensions
 {
-    public static class ListExtensions
+    public static bool IsValidIndex<T>(this ICollection<T> a, int ii)
     {
-        public static bool IsValidIndex<T>(this ICollection<T> a, int ii)
+        if (a == null)
+            return false;
+
+        return ii >= 0 && ii < a.Count;
+    }
+
+    public static bool IsNullOrEmpty<T>(this ICollection<T> a)
+    {
+        return !IsValidIndex(a, 0);
+    }
+
+    public static void AddToList<T>(this ICollection<T> list, T task) where T : ITreeNode<T>
+    {
+        list.Add(task);
+        foreach (var subTask in task.Nodes)
+            AddToList(list, subTask);
+    }
+
+    public static void AddRange<T>(this ICollection<T> target, ICollection<T> source)
+    {
+        foreach (var item in source) target.Add(item);
+    }
+
+
+    public static bool IsSame<T>(this IList<T> listA, IList<T> listB, Func<T, T, bool> isSame)
+    {
+        if (listA.Count != listB.Count)
+            return false;
+
+        for (var i = 0; i < listA.Count; i++)
         {
-            if (a == null)
+            var a = listB[i];
+            var b = listA[i];
+
+            if (!isSame(a, b))
                 return false;
-
-            return ii >= 0 && ii < a.Count;
         }
 
-        public static bool IsNullOrEmpty<T>(this ICollection<T> a)
-        {
-            return !IsValidIndex(a, 0);
-        }
+        return true;
+    }
 
-        public static void AddToList<T>(this ICollection<T> list, T task) where T : ITreeNode<T>
-        {
-            list.Add(task);
-            foreach (var subTask in task.Nodes)
-                AddToList(list, subTask);
-        }
-
-        public static void AddRange<T>(this ICollection<T> target, ICollection<T> source)
-        {
-            foreach (var item in source) target.Add(item);
-        }
-
-
-        public static bool IsSame<T>(this IList<T> listA, IList<T> listB, Func<T, T, bool> isSame)
-        {
-            if (listA.Count != listB.Count)
-                return false;
-
-            for (var i = 0; i < listA.Count; i++)
-            {
-                var a = listB[i];
-                var b = listA[i];
-
-                if (!isSame(a, b))
-                    return false;
-            }
-
-            return true;
-        }
-
-        public static void Copy<T>(this IList<T> listA, IList<T> listB, Func<T, T> copy)
-        {
-            foreach (var nodeB in listB)
-                listA.Add(copy(nodeB));
-        }
+    public static void Copy<T>(this IList<T> listA, IList<T> listB, Func<T, T> copy)
+    {
+        foreach (var nodeB in listB)
+            listA.Add(copy(nodeB));
     }
 }

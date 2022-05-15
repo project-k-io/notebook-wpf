@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
 
-namespace ProjectK.Notebook.ConsoleApp
+namespace ProjectK.Notebook.ConsoleApp;
+
+internal class Program
 {
-    internal class Program
+    private static async Task Main()
     {
-        private static async Task Main()
-        {
-            var scenario = new Scenario();
-            await scenario.ImportDatabase();
-        }
+        var scenario = new Scenario();
+        await scenario.ImportDatabase();
     }
 }

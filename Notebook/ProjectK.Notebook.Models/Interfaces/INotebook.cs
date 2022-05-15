@@ -1,6 +1,5 @@
-﻿namespace ProjectK.Notebook.Models.Interfaces
+﻿namespace ProjectK.Notebook.Models.Interfaces;
+
+public interface INotebook : INode
 {
-    public interface INotebook : INode
-    {
-    }
 }

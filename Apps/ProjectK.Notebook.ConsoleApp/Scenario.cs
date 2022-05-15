@@ -1,22 +1,21 @@
-﻿using ProjectK.Notebook.Data;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using ProjectK.Notebook.Data;
 
-namespace ProjectK.Notebook.ConsoleApp
+namespace ProjectK.Notebook.ConsoleApp;
+
+public class Scenario
 {
-    public class Scenario
-    {
-        private const string ConnectionString = "Data Source=D:\\db\\test_notebooks2.db";
-        private const string DataPath = @"D:\Data\Alan.json";
-        private readonly Storage _db = new();
+    private const string ConnectionString = "Data Source=D:\\db\\test_notebooks2.db";
+    private const string DataPath = @"D:\Data\Alan.json";
+    private readonly Storage _db = new();
 
-        public async Task ImportDatabase()
-        {
-            _db.OpenDatabase(ConnectionString);
-            await _db.ShowTasks("Before Import");
-            var notebook = await _db.GetNotebook(DataPath);
-            var tasks = await ImportHelper.ReadFromFileVersionTwo(DataPath);
-            await _db.ImportData(notebook, tasks);
-            await _db.ShowTasks("After Import");
-        }
+    public async Task ImportDatabase()
+    {
+        _db.OpenDatabase(ConnectionString);
+        await _db.ShowTasks("Before Import");
+        var notebook = await _db.GetNotebook(DataPath);
+        var tasks = await ImportHelper.ReadFromFileVersionTwo(DataPath);
+        await _db.ImportData(notebook, tasks);
+        await _db.ShowTasks("After Import");
     }
 }

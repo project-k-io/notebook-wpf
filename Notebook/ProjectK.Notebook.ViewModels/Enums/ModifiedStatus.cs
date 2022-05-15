@@ -1,9 +1,8 @@
-﻿namespace ProjectK.Notebook.ViewModels.Enums
+﻿namespace ProjectK.Notebook.ViewModels.Enums;
+
+public enum ModifiedStatus
 {
-    public enum ModifiedStatus
-    {
-        None,
-        Modified,
-        ChildModified
-    }
+    None,
+    Modified,
+    ChildModified
 }

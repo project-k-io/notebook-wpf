@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace ProjectK.Notebook.ViewModels.Helpers
+namespace ProjectK.Notebook.ViewModels.Helpers;
+
+public class TaskEventArgs : EventArgs
 {
-    public class TaskEventArgs : EventArgs
-    {
-        public NodeViewModel Task { get; set; }
-    }
+    public NodeViewModel Task { get; set; }
 }

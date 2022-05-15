@@ -197,20 +197,20 @@
     <Grid d:DataContext="{x:Static design:Sample.MainViewModel}">
         <FrameworkElement.Resources>
             <HierarchicalDataTemplate
-                    x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
-                    DataType="{x:Type viewModels:NodeViewModel}"
-                    ItemsSource="{Binding Path=Nodes}" />
+                x:Key="{DataTemplateKey {x:Type viewModels:NodeViewModel}}"
+                DataType="{x:Type viewModels:NodeViewModel}"
+                ItemsSource="{Binding Path=Nodes}" />
         </FrameworkElement.Resources>
         <ScrollViewer
-                FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
-                HorizontalScrollBarVisibility="Auto"
-                VerticalScrollBarVisibility="Auto" Grid.RowSpan="2">
+            FocusManager.FocusedElement="{Binding ElementName=TreeViewTasks}"
+            HorizontalScrollBarVisibility="Auto"
+            VerticalScrollBarVisibility="Auto" Grid.RowSpan="2">
             <treeViewList:TreeListView
-                    x:Name="TreeViewTasks"
-                    ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
-                    ItemsSource="{Binding Path=RootNode.Nodes}"
-                    SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
-                    Style="{StaticResource TreeListViewStyle}" />
+                x:Name="TreeViewTasks"
+                ItemContainerStyle="{StaticResource TreeListViewItemStyle}"
+                ItemsSource="{Binding Path=RootNode.Nodes}"
+                SelectedItemChanged="TreeViewTasks_SelectedItemChanged"
+                Style="{StaticResource TreeListViewStyle}" />
         </ScrollViewer>
     </Grid>
 </UserControl>

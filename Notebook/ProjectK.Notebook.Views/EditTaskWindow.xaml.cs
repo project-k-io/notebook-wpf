@@ -1,12 +1,11 @@
 ﻿using System.Windows;
 
-namespace ProjectK.Notebook.Views
+namespace ProjectK.Notebook.Views;
+
+public partial class EditTaskWindow : Window
 {
-    public partial class EditTaskWindow : Window
+    public EditTaskWindow()
     {
-        public EditTaskWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

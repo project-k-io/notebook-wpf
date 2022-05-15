@@ -1,13 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
+using Microsoft.Extensions.Logging;
 
-namespace ProjectK.Logging
+namespace ProjectK.Logging;
+
+public class LoggingEventArgs : EventArgs
 {
-    public class LoggingEventArgs : EventArgs
-    {
-        public string State { get; set; }
-        public string Message { get; set; }
-        public LogLevel Level { get; set; }
-        public EventId EventId { get; set; }
-    }
+    public string State { get; set; }
+    public string Message { get; set; }
+    public LogLevel Level { get; set; }
+    public EventId EventId { get; set; }
 }

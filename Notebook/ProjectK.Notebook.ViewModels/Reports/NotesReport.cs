@@ -1,70 +1,69 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Text;
+using Microsoft.Extensions.Logging;
 using ProjectK.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Utils;
-using System;
-using System.Text;
 
-namespace ProjectK.Notebook.ViewModels.Reports
+namespace ProjectK.Notebook.ViewModels.Reports;
+
+public class NotesReport
 {
-    public class NotesReport
+    private const char SpaceChar = ' ';
+    private static readonly ILogger Logger = LogManager.GetLogger<NotesReport>();
+
+    public string GenerateReport(ItemViewModel item)
     {
-        private const char SpaceChar = ' ';
-        private static readonly ILogger Logger = LogManager.GetLogger<NotesReport>();
-
-        public string GenerateReport(ItemViewModel item)
+        try
         {
-            try
-            {
-                var sb = new StringBuilder();
-                if (item is NodeViewModel node)
-                    GenerateReport(node, sb, 0);
+            var sb = new StringBuilder();
+            if (item is NodeViewModel node)
+                GenerateReport(node, sb, 0);
 
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                return "";
-            }
+            return sb.ToString();
         }
-
-        private void GenerateReport(NodeViewModel node, StringBuilder sb, int offset)
+        catch (Exception ex)
         {
-            const int max = 80;
-            if (node == null)
-                return;
+            Logger.LogError(ex);
+            return "";
+        }
+    }
 
-            if (node.Model is TaskModel task)
+    private void GenerateReport(NodeViewModel node, StringBuilder sb, int offset)
+    {
+        const int max = 80;
+        if (node == null)
+            return;
+
+        if (node.Model is TaskModel task)
+        {
+            var description = string.IsNullOrEmpty(task.Description) ? "" : task.Description;
+
+            if (string.IsNullOrEmpty(description))
             {
-                var description = string.IsNullOrEmpty(task.Description) ? "" : task.Description;
-
-                if (string.IsNullOrEmpty(description))
+                sb.Append(new string(SpaceChar, offset));
+                sb.AppendLine(node.Name);
+            }
+            else
+            {
+                if (description.Length > max)
                 {
-                    sb.Append(new string(SpaceChar, offset));
-                    sb.AppendLine(node.Name);
+                    var lines = StringHelper.ConvertTextInMultipleLines(description, max);
+                    foreach (var line in lines)
+                    {
+                        sb.Append(new string(SpaceChar, offset));
+                        sb.AppendLine(line);
+                    }
                 }
                 else
                 {
-                    if (description.Length > max)
-                    {
-                        var lines = StringHelper.ConvertTextInMultipleLines(description, max);
-                        foreach (var line in lines)
-                        {
-                            sb.Append(new string(SpaceChar, offset));
-                            sb.AppendLine(line);
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(new string(SpaceChar, offset));
-                        sb.AppendLine(description);
-                    }
+                    sb.Append(new string(SpaceChar, offset));
+                    sb.AppendLine(description);
                 }
             }
-
-
-            foreach (var subTask in node.Nodes) GenerateReport(subTask, sb, offset + 2);
         }
+
+
+        foreach (var subTask in node.Nodes) GenerateReport(subTask, sb, offset + 2);
     }
 }

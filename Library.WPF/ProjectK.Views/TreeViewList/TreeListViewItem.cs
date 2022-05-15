@@ -1,33 +1,32 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace ProjectK.Views.TreeViewList
+namespace ProjectK.Views.TreeViewList;
+
+public class TreeListViewItem : TreeViewItem
 {
-    public class TreeListViewItem : TreeViewItem
+    private int _level = -1;
+
+    public int Level
     {
-        private int _level = -1;
-
-        public int Level
+        get
         {
-            get
-            {
-                if (_level == -1)
-                    _level = ItemsControlFromItemContainer(this) is TreeListViewItem treeListViewItem
-                        ? treeListViewItem.Level + 1
-                        : 0;
+            if (_level == -1)
+                _level = ItemsControlFromItemContainer(this) is TreeListViewItem treeListViewItem
+                    ? treeListViewItem.Level + 1
+                    : 0;
 
-                return _level;
-            }
+            return _level;
         }
+    }
 
-        protected override DependencyObject GetContainerForItemOverride()
-        {
-            return new TreeListViewItem();
-        }
+    protected override DependencyObject GetContainerForItemOverride()
+    {
+        return new TreeListViewItem();
+    }
 
-        protected override bool IsItemItsOwnContainerOverride(object item)
-        {
-            return item is TreeListViewItem;
-        }
+    protected override bool IsItemItsOwnContainerOverride(object item)
+    {
+        return item is TreeListViewItem;
     }
 }

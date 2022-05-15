@@ -1,10 +1,9 @@
-﻿namespace ProjectK.Notebook.ViewModels.Enums
+﻿namespace ProjectK.Notebook.ViewModels.Enums;
+
+public enum KeyboardStates
 {
-    public enum KeyboardStates
-    {
-        None,
-        IsShiftPressed,
-        IsControlPressed,
-        IsCtrlShiftPressed
-    }
+    None,
+    IsShiftPressed,
+    IsControlPressed,
+    IsCtrlShiftPressed
 }

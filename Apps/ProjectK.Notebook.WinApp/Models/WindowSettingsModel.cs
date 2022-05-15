@@ -1,42 +1,41 @@
 ﻿using System.Text.Json.Serialization;
 using System.Windows;
 
-namespace ProjectK.Notebook.WinApp.Models
+namespace ProjectK.Notebook.WinApp.Models;
+
+public class WindowSettingsModel
 {
-    public class WindowSettingsModel
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public WindowState WindowState { get; set; }
+
+    public double Top { get; set; } //                   " value="100" />
+    public double Left { get; set; } //                  " value="100" />
+    public double Width { get; set; } // " value="800" />
+    public double Height { get; set; } // " value="600" />
+
+    public void SizeToFit()
     {
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public WindowState WindowState { get; set; }
+        if (Height > SystemParameters.VirtualScreenHeight) Height = SystemParameters.VirtualScreenHeight;
 
-        public double Top { get; set; } //                   " value="100" />
-        public double Left { get; set; } //                  " value="100" />
-        public double Width { get; set; } // " value="800" />
-        public double Height { get; set; } // " value="600" />
+        if (Width > SystemParameters.VirtualScreenWidth) Width = SystemParameters.VirtualScreenWidth;
+    }
 
-        public void SizeToFit()
-        {
-            if (Height > SystemParameters.VirtualScreenHeight) Height = SystemParameters.VirtualScreenHeight;
+    public void MoveIntoView()
+    {
+        if (Top + Height / 2 >
+            SystemParameters.VirtualScreenHeight)
+            Top =
+                SystemParameters.VirtualScreenHeight -
+                Height;
 
-            if (Width > SystemParameters.VirtualScreenWidth) Width = SystemParameters.VirtualScreenWidth;
-        }
+        if (Left + Width / 2 >
+            SystemParameters.VirtualScreenWidth)
+            Left =
+                SystemParameters.VirtualScreenWidth -
+                Width;
 
-        public void MoveIntoView()
-        {
-            if (Top + Height / 2 >
-                SystemParameters.VirtualScreenHeight)
-                Top =
-                    SystemParameters.VirtualScreenHeight -
-                    Height;
+        if (Top < 0) Top = 0;
 
-            if (Left + Width / 2 >
-                SystemParameters.VirtualScreenWidth)
-                Left =
-                    SystemParameters.VirtualScreenWidth -
-                    Width;
-
-            if (Top < 0) Top = 0;
-
-            if (Left < 0) Left = 0;
-        }
+        if (Left < 0) Left = 0;
     }
 }

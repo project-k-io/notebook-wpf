@@ -1,7 +1,6 @@
-﻿namespace ProjectK.Notebook.Models.Interfaces
+﻿namespace ProjectK.Notebook.Models.Interfaces;
+
+public interface INote : IItem
 {
-    public interface INote : IItem
-    {
-        public string Text { get; set; }
-    }
+    public string Text { get; set; }
 }

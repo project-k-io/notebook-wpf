@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace ProjectK.Notebook.Views
+namespace ProjectK.Notebook.Views;
+
+public partial class ReportView : UserControl
 {
-    public partial class ReportView : UserControl
+    public ReportView()
     {
-        public ReportView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

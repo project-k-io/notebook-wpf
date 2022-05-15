@@ -1,31 +1,30 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
+using Microsoft.Extensions.Logging;
 
-namespace ProjectK.Logging
+namespace ProjectK.Logging;
+
+public class OutputLogger : ILogger
 {
-    public class OutputLogger : ILogger
+    private readonly Action<LogLevel, EventId, string> _logEvent;
+
+    public OutputLogger(Action<LogLevel, EventId, string> logEvent)
     {
-        private readonly Action<LogLevel, EventId, string> _logEvent;
+        _logEvent = logEvent;
+    }
 
-        public OutputLogger(Action<LogLevel, EventId, string> logEvent)
-        {
-            _logEvent = logEvent;
-        }
+    public IDisposable BeginScope<TState>(TState state)
+    {
+        return null;
+    }
 
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            return null;
-        }
-
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            return true;
-        }
+    public bool IsEnabled(LogLevel logLevel)
+    {
+        return true;
+    }
 
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-        {
-            _logEvent?.Invoke(logLevel, eventId, formatter(state, exception));
-        }
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    {
+        _logEvent?.Invoke(logLevel, eventId, formatter(state, exception));
     }
 }

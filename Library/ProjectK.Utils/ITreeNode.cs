@@ -1,9 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace ProjectK.Utils
+namespace ProjectK.Utils;
+
+public interface ITreeNode<T>
 {
-    public interface ITreeNode<T>
-    {
-        ObservableCollection<T> Nodes { get; }
-    }
+    ObservableCollection<T> Nodes { get; }
 }

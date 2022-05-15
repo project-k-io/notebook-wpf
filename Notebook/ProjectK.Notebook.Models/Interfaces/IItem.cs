@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace ProjectK.Notebook.Models.Interfaces
+namespace ProjectK.Notebook.Models.Interfaces;
+
+public interface IItem : INode
 {
-    public interface IItem : INode
-    {
-        Guid NotebookId { get; set; }
-    }
+    Guid NotebookId { get; set; }
 }
