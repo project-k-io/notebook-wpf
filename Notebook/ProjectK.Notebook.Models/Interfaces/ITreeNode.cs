@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace ProjectK.Utils;
+namespace ProjectK.Notebook.Models.Interfaces;
 
 public interface ITreeNode<T>
 {

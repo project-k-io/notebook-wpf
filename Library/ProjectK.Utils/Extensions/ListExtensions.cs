@@ -18,13 +18,6 @@ public static class ListExtensions
         return !IsValidIndex(a, 0);
     }
 
-    public static void AddToList<T>(this ICollection<T> list, T task) where T : ITreeNode<T>
-    {
-        list.Add(task);
-        foreach (var subTask in task.Nodes)
-            AddToList(list, subTask);
-    }
-
     public static void AddRange<T>(this ICollection<T> target, ICollection<T> source)
     {
         foreach (var item in source) target.Add(item);

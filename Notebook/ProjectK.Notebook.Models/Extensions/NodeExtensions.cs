@@ -1,10 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using ProjectK.Notebook.Models.Interfaces;
 
 namespace ProjectK.Notebook.Models.Extensions;
 
 public static class NodeExtensions
 {
+    public static void AddToList<T>(this ICollection<T> list, T task) where T : ITreeNode<T>
+    {
+        list.Add(task);
+        foreach (var subTask in task.Nodes)
+            AddToList(list, subTask);
+    }
+
     public static bool IsSame(this INode a, INode b)
     {
         if (a.Id != b.Id) return false;

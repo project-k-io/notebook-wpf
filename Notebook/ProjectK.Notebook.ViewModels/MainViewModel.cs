@@ -15,6 +15,7 @@ using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.Toolkit.Mvvm.Messaging.Messages;
 using ProjectK.Notebook.Data;
 using ProjectK.Notebook.Models;
+using ProjectK.Notebook.Models.Extensions;
 using ProjectK.Notebook.Models.Interfaces;
 using ProjectK.Notebook.Models.Reports;
 using ProjectK.Notebook.ViewModels.Enums;
