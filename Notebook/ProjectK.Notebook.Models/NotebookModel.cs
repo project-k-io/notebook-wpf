@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using ProjectK.Notebook.Models.Extensions;
 using ProjectK.Notebook.Models.Interfaces;
-using ProjectK.Utils.Extensions;
+using ProjectK.ToolKit.Utils.Extensions;
 
 namespace ProjectK.Notebook.Models;
 

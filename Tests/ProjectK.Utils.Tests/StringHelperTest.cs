@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ProjectK.ToolKit.Utils;
 
 namespace ProjectK.Utils.Tests;
 

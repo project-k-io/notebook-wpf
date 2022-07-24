@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ProjectK.Utils;
+namespace ProjectK.ToolKit.Utils;
 
 public class StringHelper
 {

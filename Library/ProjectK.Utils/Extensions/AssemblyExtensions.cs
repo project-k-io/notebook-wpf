@@ -4,7 +4,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ProjectK.Utils.Extensions;
+namespace ProjectK.ToolKit.Utils.Extensions;
 
 public static class AssemblyExtensions
 {

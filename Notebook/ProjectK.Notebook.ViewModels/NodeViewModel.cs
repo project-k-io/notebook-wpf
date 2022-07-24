@@ -16,8 +16,7 @@ using ProjectK.Notebook.ViewModels.Enums;
 using ProjectK.Notebook.ViewModels.Extensions;
 using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
-using ProjectK.Utils;
-using ProjectK.Utils.Extensions;
+using ProjectK.ToolKit.Utils.Extensions;
 using TaskModel = ProjectK.Notebook.Models.Versions.Version1.TaskModel;
 
 namespace ProjectK.Notebook.ViewModels;

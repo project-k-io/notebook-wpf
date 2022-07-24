@@ -47,7 +47,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.Utils.csproj" />
+		<ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.ToolKit.Utils.csproj" />
 		<ProjectReference Include="..\..\Notebook\ProjectK.Notebook.Views\ProjectK.Notebook.Views.csproj" />
 	</ItemGroup>
 

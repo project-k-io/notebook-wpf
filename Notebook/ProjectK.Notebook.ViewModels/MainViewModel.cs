@@ -24,8 +24,8 @@ using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Notebook.ViewModels.Reports;
 using ProjectK.Notebook.ViewModels.Services;
-using ProjectK.Utils;
-using ProjectK.Utils.Extensions;
+using ProjectK.ToolKit.Utils;
+using ProjectK.ToolKit.Utils.Extensions;
 using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.ViewModels;

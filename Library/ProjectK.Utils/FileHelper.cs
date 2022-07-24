@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
 using ProjectK.Extensions.Logging;
 
-namespace ProjectK.Utils;
+namespace ProjectK.ToolKit.Utils;
 
 public class FileHelper
 {

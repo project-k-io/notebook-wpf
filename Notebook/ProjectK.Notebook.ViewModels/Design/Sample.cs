@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.ViewModels.Enums;
-using ProjectK.Utils.Extensions;
+using ProjectK.ToolKit.Utils.Extensions;
 
 namespace ProjectK.Notebook.ViewModels.Design;
 
