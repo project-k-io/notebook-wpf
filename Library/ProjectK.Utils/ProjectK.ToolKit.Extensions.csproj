@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>ea3351e1-9b34-4785-8dd1-c90c09aff297</UserSecretsId>
+    <Title>Project K ToolKit  Extensions</Title>
+    <Company>Project K, Inc.</Company>
+    <Description>Project K ToolKit  Extensions</Description>
+    <Copyright>Project K, Inc.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
