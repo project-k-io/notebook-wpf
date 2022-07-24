@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using ProjectK.Extensions.Logging;
 using ProjectK.ToolKit.ViewModels;
 
-namespace ProjectK.Views.Output;
+namespace ProjectK.Toolkit.Wpf.Controls.Output;
 
 public partial class OutputView : UserControl
 {

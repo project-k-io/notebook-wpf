@@ -6,7 +6,7 @@ using System.Windows.Data;
 using Microsoft.Extensions.Logging;
 using ProjectK.Extensions.Logging;
 
-namespace ProjectK.View.Helpers.Extensions;
+namespace ProjectK.Toolkit.Wpf.Helpers.Extensions;
 
 public static class ItemsControlExtensions
 {

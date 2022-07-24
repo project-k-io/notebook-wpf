@@ -12,7 +12,7 @@ using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.WinApp.Models;
 using ProjectK.ToolKit.Extensions;
 using ProjectK.ToolKit.ViewModels;
-using ProjectK.View.Helpers.Extensions;
+using ProjectK.Toolkit.Wpf.Helpers.Extensions;
 
 namespace ProjectK.Notebook.WinApp.ViewModels;
 

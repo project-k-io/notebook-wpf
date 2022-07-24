@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace ProjectK.View.Helpers.Converters;
+namespace ProjectK.Toolkit.Wpf.Helpers.Converters;
 
 public class IndexConverter : IValueConverter
 {

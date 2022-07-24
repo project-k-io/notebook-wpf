@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace ProjectK.View.Helpers.Extensions;
+namespace ProjectK.Toolkit.Wpf.Helpers.Extensions;
 
 public static class TreeViewExtensions
 {

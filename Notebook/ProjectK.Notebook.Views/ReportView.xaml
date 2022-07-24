@@ -8,6 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     xmlns:design="clr-namespace:ProjectK.Notebook.ViewModels.Design;assembly=ProjectK.Notebook.ViewModels"
+    xmlns:viewModels="clr-namespace:ProjectK.Notebook.ViewModels;assembly=ProjectK.Notebook.ViewModels"
+    d:DataContext="{d:DesignInstance viewModels:MainViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -34,6 +36,9 @@
             <Separator />
             <ComboBox
                 Width="100"
+                d:IsDropDownOpen="True"
+                d:SelectedIndex="1"
+                d:ItemsSource="{d:SampleData}"
                 ItemsSource="{Binding Source={StaticResource ExampleEnumValues}}"
                 SelectedItem="{Binding ReportType}">
                 <b:Interaction.Triggers>

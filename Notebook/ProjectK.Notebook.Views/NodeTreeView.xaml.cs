@@ -5,8 +5,8 @@ using System.Windows.Input;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.ViewModels.Services;
 using ProjectK.Notebook.Views.Helpers;
-using ProjectK.View.Helpers.Extensions;
-using ProjectK.Views.TreeViewList;
+using ProjectK.Toolkit.Wpf.Controls.TreeViewList;
+using ProjectK.Toolkit.Wpf.Helpers.Extensions;
 
 namespace ProjectK.Notebook.Views;
 

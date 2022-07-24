@@ -7,7 +7,7 @@ using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.WinApp.Models;
 using ProjectK.Notebook.WinApp.ViewModels;
-using ProjectK.View.Helpers.Extensions;
+using ProjectK.Toolkit.Wpf.Helpers.Extensions;
 
 namespace ProjectK.Notebook.WinApp;
 

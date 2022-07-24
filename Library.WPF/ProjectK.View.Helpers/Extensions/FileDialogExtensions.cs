@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Microsoft.Win32;
 
-namespace ProjectK.View.Helpers.Extensions;
+namespace ProjectK.Toolkit.Wpf.Helpers.Extensions;
 
 public static class FileDialogExtensions
 {

@@ -5,8 +5,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ProjectK.ToolKit.ViewModels;assembly=ProjectK.ToolKit.ViewModels"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    mc:Ignorable="d" x:Class="ProjectK.Views.Output.OutputView"
-    d:DesignWidth="400" d:DesignHeight="100">
+    mc:Ignorable="d" x:Class="ProjectK.Toolkit.Wpf.Controls.Output.OutputView"
+    d:DesignWidth="600" >
 
     <UserControl.Resources>
         <vm:OutputViewModel x:Key="Model">
@@ -18,19 +18,19 @@
         <Style x:Key="ImageStyle">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Image}" Value="Clear">
-                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_c_cancel.png" />
+                    <Setter Property="Image.Source" Value="/ProjectK.Toolkit.Wpf.Controls;component/Images/vld_c_cancel.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Image}" Value="Warning">
-                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_warning.png" />
+                    <Setter Property="Image.Source" Value="/ProjectK.Toolkit.Wpf.Controls;component/Images/vld_s_warning.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Image}" Value="Message">
-                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_information.png" />
+                    <Setter Property="Image.Source" Value="/ProjectK.Toolkit.Wpf.Controls;component/Images/vld_s_information.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Image}" Value="Error">
-                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_error.png" />
+                    <Setter Property="Image.Source" Value="/ProjectK.Toolkit.Wpf.Controls;component/Images/vld_s_error.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Image}" Value="Debug">
-                    <Setter Property="Image.Source" Value="/ProjectK.Views;component/Images/vld_s_completeandok.png" />
+                    <Setter Property="Image.Source" Value="/ProjectK.Toolkit.Wpf.Controls;component/Images/vld_s_completeandok.png" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -72,7 +72,10 @@
             <ToolBar Background="#FFC5CDE5" ItemTemplate="{StaticResource ButtonDataTemplate}"
                      ItemsSource="{Binding CommandButtons}" />
         </ToolBarTray>
-        <ListView x:Name="ListViewMessages" Grid.Row="1" ItemsSource="{Binding Records}">
+        <ListView x:Name="ListViewMessages" Grid.Row="1" 
+                  d:ItemsSource="{d:SampleData}"
+                  ItemsSource="{Binding Records}"
+                  >
             <ListView.View>
                 <GridView AllowsColumnReorder="false">
                     <GridViewColumn Header="Id" Width="50" DisplayMemberBinding="{Binding Id}" />

@@ -44,8 +44,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Library.WPF\ProjectK.View.Helpers\ProjectK.View.Helpers.csproj" />
-	  <ProjectReference Include="..\..\Library.WPF\ProjectK.Views\ProjectK.Views.csproj" />
+	  <ProjectReference Include="..\..\Library.WPF\ProjectK.View.Helpers\ProjectK.Toolkit.Wpf.Helpers.csproj" />
+	  <ProjectReference Include="..\..\Library.WPF\ProjectK.Views\ProjectK.Toolkit.Wpf.Controls.csproj" />
 	  <ProjectReference Include="..\..\Notebook\ProjectK.Notebook.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
 	</ItemGroup>
 

@@ -6,9 +6,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notebook", "Notebook", "{56
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library.WPF", "Library.WPF", "{74D77381-2287-443E-A6BC-CDD8CE433F78}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.View.Helpers", "Library.WPF\ProjectK.View.Helpers\ProjectK.View.Helpers.csproj", "{70CCD5CF-126C-4ED1-906B-A910264BAAA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Toolkit.Wpf.Helpers", "Library.WPF\ProjectK.View.Helpers\ProjectK.Toolkit.Wpf.Helpers.csproj", "{70CCD5CF-126C-4ED1-906B-A910264BAAA0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Views", "Library.WPF\ProjectK.Views\ProjectK.Views.csproj", "{4ED5AC60-F3AA-400F-B23D-AA4D963F02A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Toolkit.Wpf.Controls", "Library.WPF\ProjectK.Views\ProjectK.Toolkit.Wpf.Controls.csproj", "{4ED5AC60-F3AA-400F-B23D-AA4D963F02A1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.Notebook.ViewModels", "Notebook\ProjectK.Notebook.ViewModels\ProjectK.Notebook.ViewModels.csproj", "{4129BE1B-516E-4CA6-B5F9-0D597FAB121E}"
 EndProject

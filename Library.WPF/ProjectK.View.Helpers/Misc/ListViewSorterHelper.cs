@@ -6,7 +6,7 @@ using System.Windows.Data;
 using Microsoft.Extensions.Logging;
 using ProjectK.Extensions.Logging;
 
-namespace ProjectK.View.Helpers.Misc;
+namespace ProjectK.Toolkit.Wpf.Helpers.Misc;
 
 public class ListViewSorterHelper
 {

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Threading;
 
-namespace ProjectK.View.Helpers.Extensions;
+namespace ProjectK.Toolkit.Wpf.Helpers.Extensions;
 
 public static class FrameworkElementExtensions
 {
