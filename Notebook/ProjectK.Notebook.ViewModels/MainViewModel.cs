@@ -24,8 +24,8 @@ using ProjectK.Notebook.ViewModels.Helpers;
 using ProjectK.Notebook.ViewModels.Interfaces;
 using ProjectK.Notebook.ViewModels.Reports;
 using ProjectK.Notebook.ViewModels.Services;
+using ProjectK.ToolKit.Extensions;
 using ProjectK.ToolKit.Utils;
-using ProjectK.ToolKit.Utils.Extensions;
 using ProjectK.ViewModels;
 
 namespace ProjectK.Notebook.ViewModels;
@@ -115,7 +115,7 @@ public class MainViewModel : ObservableObject
         if (!(SelectedNode is NodeViewModel node))
             return;
 
-        var (path, ok) = FileHelper.GetNewFileName(Title, "Export", node.Name, ".txt");
+        var (path, ok) = FileExtensions.GetNewFileName(Title, "Export", node.Name, ".txt");
         if (!ok)
             return;
 
@@ -129,16 +129,16 @@ public class MainViewModel : ObservableObject
         if (!(SelectedNode is NodeViewModel node))
             return;
 
-        var (path, ok) = FileHelper.GetNewFileName(Title, "Export", node.Name, ".json");
+        var (path, ok) = FileExtensions.GetNewFileName(Title, "Export", node.Name, ".json");
         if (!ok)
             return;
 
         var notebook = new NotebookModel();
         notebook.ViewModelToModel(node);
 
-        var text = await FileHelper.GetJsonAsync(notebook);
+        var text = await notebook.GetJsonAsync();
 
-        // await FileHelper.SaveToFileAsync(path, notebook);
+        // await FileExtensions.SaveToFileAsync(path, notebook);
         await File.WriteAllTextAsync(path, text);
         Process.Start("explorer", path);
     }
@@ -469,7 +469,7 @@ public class MainViewModel : ObservableObject
     {
         Logger.LogDebug("AddNotebook");
         var notebookNames = _storage.GetNotebooks().Select(notebook => notebook.Name).ToList();
-        var notebookName = StringHelper.GetUniqueName("Notebook", notebookNames);
+        var notebookName = "Notebook".GetUniqueName(notebookNames);
 
         // Create Notebook
         var model = new NotebookModel

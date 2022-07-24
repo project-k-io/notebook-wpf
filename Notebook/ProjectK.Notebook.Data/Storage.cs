@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Interfaces;
-using ProjectK.ToolKit.Utils.Extensions;
+using ProjectK.ToolKit.Utils;
 
 namespace ProjectK.Notebook.Data;
 

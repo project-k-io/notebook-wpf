@@ -8,7 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notebook", "Notebook", "{56
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library.WPF", "Library.WPF", "{74D77381-2287-443E-A6BC-CDD8CE433F78}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.ToolKit.Utils", "Library\ProjectK.Utils\ProjectK.ToolKit.Utils.csproj", "{F2FECDB7-8E43-44E5-8D61-F0EB40ED71E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.ToolKit.Extensions", "Library\ProjectK.Utils\ProjectK.ToolKit.Extensions.csproj", "{F2FECDB7-8E43-44E5-8D61-F0EB40ED71E9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectK.ViewModels", "Library\ProjectK.ViewModels\ProjectK.ViewModels.csproj", "{95E0FCBB-B26E-440A-8603-039C7393EE3C}"
 EndProject

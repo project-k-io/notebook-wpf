@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.WinApp.Models;
+using ProjectK.ToolKit.Extensions;
 using ProjectK.ToolKit.Utils;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.ViewModels;
@@ -128,7 +129,7 @@ public class AppViewModel : MainViewModel
         {
             AppSettings = _settings
         };
-        await FileHelper.SaveToFileAsync(path, root);
+        await path.SaveToFileAsync(root);
     }
 
     public void OpenDatabase()

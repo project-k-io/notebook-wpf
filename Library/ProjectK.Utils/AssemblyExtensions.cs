@@ -1,10 +1,8 @@
-﻿// Assembly location: C:\Users\alan\Downloads\Ver 1.1.8\Debug\Vibor.Helpers.dll
-
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ProjectK.ToolKit.Utils.Extensions;
+namespace ProjectK.ToolKit.Utils;
 
 public static class AssemblyExtensions
 {

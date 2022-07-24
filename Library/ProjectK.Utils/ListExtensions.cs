@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ProjectK.ToolKit.Utils.Extensions;
+namespace ProjectK.ToolKit.Utils;
 
 public static class ListExtensions
 {
@@ -15,7 +15,7 @@ public static class ListExtensions
 
     public static bool IsNullOrEmpty<T>(this ICollection<T> a)
     {
-        return !IsValidIndex(a, 0);
+        return !a.IsValidIndex(0);
     }
 
     public static void AddRange<T>(this ICollection<T> target, ICollection<T> source)

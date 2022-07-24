@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ProjectK.Notebook.Models.Versions.Version2;
+using ProjectK.ToolKit.Extensions;
 using ProjectK.ToolKit.Utils;
 using TaskModel = ProjectK.Notebook.Models.TaskModel;
 
@@ -11,7 +12,7 @@ public static class ImportHelper
     public static async Task<List<TaskModel>> ReadFromFileVersionTwo(string path)
     {
         // Load DataModel
-        var dataModel = await FileHelper.ReadFromFileAsync<DataModel>(path);
+        var dataModel = await path.ReadFromFileAsync<DataModel>();
 
         // Add Tasks
         var tasks = new List<TaskModel>();

@@ -4,9 +4,9 @@ using System.Text;
 
 namespace ProjectK.ToolKit.Utils;
 
-public class StringHelper
+public static class StringExtensions
 {
-    public static List<string> ConvertTextInMultipleLines(string text, int maxLength)
+    public static List<string> ConvertTextInMultipleLines(this string text, int maxLength)
     {
         var separators = new[] { "\r\n", "\r", "\n" };
         var paragraphs = text.Split(separators, StringSplitOptions.None);
@@ -20,7 +20,7 @@ public class StringHelper
         return lines;
     }
 
-    public static List<string> ConvertTextInMultipleLines(string text, int maxLength, char separator)
+    public static List<string> ConvertTextInMultipleLines(this string text, int maxLength, char separator)
     {
         var lines = new List<string>();
         var words = text.Split(separator);
@@ -45,7 +45,7 @@ public class StringHelper
         return lines;
     }
 
-    public static string GetUniqueName(string name, List<string> names)
+    public static string GetUniqueName(this string name, List<string> names)
     {
         var num = 1;
         string newName;

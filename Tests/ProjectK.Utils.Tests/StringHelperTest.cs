@@ -27,7 +27,7 @@ public class StringHelperTest
         var maxLength = 80;
 
         // Act
-        var lines = StringHelper.ConvertTextInMultipleLines(text, maxLength);
+        var lines = text.ConvertTextInMultipleLines(maxLength);
 
         // Assert
         Assert.AreEqual(lines.Count, 3);

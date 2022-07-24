@@ -48,7 +48,7 @@ public class NotesReport
             {
                 if (description.Length > max)
                 {
-                    var lines = StringHelper.ConvertTextInMultipleLines(description, max);
+                    var lines = description.ConvertTextInMultipleLines(max);
                     foreach (var line in lines)
                     {
                         sb.Append(new string(SpaceChar, offset));
