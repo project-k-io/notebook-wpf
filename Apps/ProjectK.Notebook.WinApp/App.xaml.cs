@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
+using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.WinApp.Models;
 using ProjectK.Notebook.WinApp.ViewModels;
 using ProjectK.ViewModels;

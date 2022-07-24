@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
-using ProjectK.Logging;
+using ProjectK.Extensions.Logging;
 
 namespace ProjectK.ViewModels;
 

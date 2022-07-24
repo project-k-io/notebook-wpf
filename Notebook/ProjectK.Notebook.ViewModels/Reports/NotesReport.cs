@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using ProjectK.Logging;
+using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Utils;
 

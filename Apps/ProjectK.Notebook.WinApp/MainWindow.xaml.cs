@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using ProjectK.Logging;
+using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.WinApp.Models;
 using ProjectK.Notebook.WinApp.ViewModels;

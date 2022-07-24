@@ -6,10 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ProjectK.Logging\ProjectK.Logging.csproj" />
+    <PackageReference Include="ProjectK.Extensions.Logging" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,7 @@ using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Win32;
-using ProjectK.Logging;
+using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.WinApp.Models;
 using ProjectK.Utils;

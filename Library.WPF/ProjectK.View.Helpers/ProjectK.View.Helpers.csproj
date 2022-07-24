@@ -14,10 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Library\ProjectK.Logging\ProjectK.Logging.csproj" />
+    <PackageReference Include="ProjectK.Extensions.Logging" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
