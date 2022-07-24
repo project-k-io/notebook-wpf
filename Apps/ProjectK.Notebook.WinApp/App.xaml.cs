@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.WinApp.Models;
 using ProjectK.Notebook.WinApp.ViewModels;
-using ProjectK.ViewModels;
+using ProjectK.ToolKit.ViewModels;
 
 namespace ProjectK.Notebook.WinApp;
 

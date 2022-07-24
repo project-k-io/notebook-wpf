@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using ProjectK.Extensions.Logging;
 
-namespace ProjectK.ViewModels;
+namespace ProjectK.ToolKit.ViewModels;
 
 public class OutputViewModel : ObservableObject
 {

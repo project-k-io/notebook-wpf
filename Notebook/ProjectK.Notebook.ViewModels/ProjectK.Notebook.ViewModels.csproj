@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.ToolKit.Extensions.csproj" />
-    <ProjectReference Include="..\..\Library\ProjectK.ViewModels\ProjectK.ViewModels.csproj" />
+    <ProjectReference Include="..\..\Library\ProjectK.ViewModels\ProjectK.ToolKit.ViewModels.csproj" />
     <ProjectReference Include="..\ProjectK.Notebook.Data\ProjectK.Notebook.Data.csproj" />
     <ProjectReference Include="..\ProjectK.Notebook.Models\ProjectK.Notebook.Models.csproj" />
   </ItemGroup>

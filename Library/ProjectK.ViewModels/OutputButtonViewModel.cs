@@ -3,7 +3,7 @@ using System.Windows.Input;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 
-namespace ProjectK.ViewModels;
+namespace ProjectK.ToolKit.ViewModels;
 
 public class OutputButtonViewModel : ObservableObject
 {

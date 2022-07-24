@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\ProjectK.ViewModels\ProjectK.ViewModels.csproj" />
+    <ProjectReference Include="..\..\Library\ProjectK.ViewModels\ProjectK.ToolKit.ViewModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
