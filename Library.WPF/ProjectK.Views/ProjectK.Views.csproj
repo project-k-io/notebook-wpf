@@ -15,10 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="ProjectK.ToolKit.Extensions" Version="1.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Library\ProjectK.ViewModels\ProjectK.ToolKit.ViewModels.csproj" />
+    <PackageReference Include="ProjectK.ToolKit.ViewModels" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

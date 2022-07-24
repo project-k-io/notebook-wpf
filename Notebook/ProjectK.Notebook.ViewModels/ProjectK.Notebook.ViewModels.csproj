@@ -6,10 +6,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+    <PackageReference Include="ProjectK.ToolKit.ViewModels" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\ProjectK.ViewModels\ProjectK.ToolKit.ViewModels.csproj" />
     <ProjectReference Include="..\ProjectK.Notebook.Data\ProjectK.Notebook.Data.csproj" />
     <ProjectReference Include="..\ProjectK.Notebook.Models\ProjectK.Notebook.Models.csproj" />
   </ItemGroup>
