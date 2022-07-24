@@ -1,12 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<!--Custom Directory Properties-->
+	<PropertyGroup>
+		<SolutionDirectory>$([System.IO.Path]::GetDirectoryName($(SolutionPath)))</SolutionDirectory>
+		<OrganizationDirectory>$([System.IO.Path]::GetDirectoryName($(SolutionDirectory)))</OrganizationDirectory>
+		<ReposDirectory>$([System.IO.Path]::GetDirectoryName($(OrganizationDirectory)))</ReposDirectory>
+		<NuGetDirectory>$([System.IO.Path]::Combine($(OrganizationDirectory), "NuGet"))</NuGetDirectory>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Title>Project K ToolKit ViewModels</Title>
+		<Company>Project K, Inc.</Company>
+		<Description>Project K ToolKit ViewModels</Description>
+		<Copyright>Project K, Inc.</Copyright>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageOutputPath>$(NuGetDirectory)</PackageOutputPath>
+		<Version>1.0.0</Version>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
-    <PackageReference Include="ProjectK.Extensions.Logging" Version="1.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+		<PackageReference Include="ProjectK.Extensions.Logging" Version="1.0.0" />
+	</ItemGroup>
 
 </Project>

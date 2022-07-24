@@ -21,8 +21,7 @@ public partial class OutputView : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        ListViewMessages.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, CopyCmdExecuted,
-            CopyCmdCanExecute));
+        ListViewMessages.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, CopyCmdExecuted, CopyCmdCanExecute));
 
         if (!(ListViewMessages.Items is INotifyCollectionChanged collectionChanged))
             return;

@@ -3,19 +3,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
-    xmlns:viewModels="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
-    xmlns:vm1="clr-namespace:ProjectK.ViewModels;assembly=ProjectK.ViewModels"
+    xmlns:vm="clr-namespace:ProjectK.ToolKit.ViewModels;assembly=ProjectK.ToolKit.ViewModels"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     mc:Ignorable="d" x:Class="ProjectK.Views.Output.OutputView"
     d:DesignWidth="400" d:DesignHeight="100">
 
     <UserControl.Resources>
-        <viewModels:OutputViewModel x:Key="Model">
+        <vm:OutputViewModel x:Key="Model">
             <vm:OutputViewModel.Records>
                 <vm:OutputRecordViewModel Id="1" Date="{x:Static system:DateTime.Now}" Duration="123456" />
             </vm:OutputViewModel.Records>
-        </viewModels:OutputViewModel>
+        </vm:OutputViewModel>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
         <Style x:Key="ImageStyle">
             <Style.Triggers>
@@ -36,7 +34,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <DataTemplate x:Key="ToggleButtonDataTemplate" DataType="{x:Type viewModels:OutputButtonViewModel}">
+        <DataTemplate x:Key="ToggleButtonDataTemplate" DataType="{x:Type vm:OutputButtonViewModel}">
             <ToggleButton IsChecked="{Binding IsChecked}" Command="{Binding ClickedCommand}">
                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4">
                     <Image Width="16" Height="16">
@@ -50,7 +48,7 @@
                 </StackPanel>
             </ToggleButton>
         </DataTemplate>
-        <DataTemplate x:Key="ButtonDataTemplate" DataType="{x:Type vm1:OutputButtonViewModel}">
+        <DataTemplate x:Key="ButtonDataTemplate" DataType="{x:Type vm:OutputButtonViewModel}">
             <Button Command="{Binding ClickedCommand}">
                 <StackPanel Orientation="Horizontal" Margin="0,-4,0,-4" VerticalAlignment="Center">
                     <Image Width="16" Height="16">
