@@ -6,10 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.ToolKit.Extensions.csproj" />
+    <PackageReference Include="ProjectK.ToolKit.Extensions" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

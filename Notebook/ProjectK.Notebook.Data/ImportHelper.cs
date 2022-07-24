@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using ProjectK.Notebook.Models.Versions.Version2;
 using ProjectK.ToolKit.Extensions;
-using ProjectK.ToolKit.Utils;
 using TaskModel = ProjectK.Notebook.Models.TaskModel;
 
 namespace ProjectK.Notebook.Data;

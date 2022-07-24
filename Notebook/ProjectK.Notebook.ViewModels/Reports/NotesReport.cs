@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.Models;
-using ProjectK.ToolKit.Utils;
+using ProjectK.ToolKit.Extensions;
 
 namespace ProjectK.Notebook.ViewModels.Reports;
 

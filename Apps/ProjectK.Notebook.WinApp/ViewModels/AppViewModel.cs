@@ -11,7 +11,6 @@ using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.ViewModels;
 using ProjectK.Notebook.WinApp.Models;
 using ProjectK.ToolKit.Extensions;
-using ProjectK.ToolKit.Utils;
 using ProjectK.View.Helpers.Extensions;
 using ProjectK.ViewModels;
 

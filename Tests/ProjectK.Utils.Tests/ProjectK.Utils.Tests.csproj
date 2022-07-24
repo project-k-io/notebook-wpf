@@ -14,10 +14,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Library\ProjectK.Utils\ProjectK.ToolKit.Extensions.csproj" />
+    <PackageReference Include="ProjectK.ToolKit.Extensions" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

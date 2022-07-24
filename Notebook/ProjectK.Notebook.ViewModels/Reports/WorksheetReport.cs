@@ -8,7 +8,7 @@ using ProjectK.Extensions.Logging;
 using ProjectK.Notebook.Models;
 using ProjectK.Notebook.Models.Reports;
 using ProjectK.Notebook.ViewModels.Extensions;
-using ProjectK.ToolKit.Utils;
+using ProjectK.ToolKit.Extensions;
 
 namespace ProjectK.Notebook.ViewModels.Reports;
 
