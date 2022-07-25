@@ -41,11 +41,11 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+	  <PackageReference Include="ProjectK.Toolkit.Wpf.Controls" Version="1.0.0" />
+	  <PackageReference Include="ProjectK.Toolkit.Wpf.Helpers" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Library.WPF\ProjectK.View.Helpers\ProjectK.Toolkit.Wpf.Helpers.csproj" />
-	  <ProjectReference Include="..\..\Library.WPF\ProjectK.Views\ProjectK.Toolkit.Wpf.Controls.csproj" />
 	  <ProjectReference Include="..\..\Notebook\ProjectK.Notebook.ViewModels\ProjectK.Notebook.ViewModels.csproj" />
 	</ItemGroup>
 
