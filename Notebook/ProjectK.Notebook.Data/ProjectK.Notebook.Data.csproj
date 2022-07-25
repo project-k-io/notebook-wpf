@@ -7,10 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ProjectK.Notebook.Models\ProjectK.Notebook.Models.csproj" />
+    <PackageReference Include="ProjectK.Notebook.Models" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

@@ -15,7 +15,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Notebook\ProjectK.Notebook.Data\ProjectK.Notebook.Data.csproj" />
-		<ProjectReference Include="..\..\Notebook\ProjectK.Notebook.Models\ProjectK.Notebook.Models.csproj" />
 	</ItemGroup>
 
 </Project>
